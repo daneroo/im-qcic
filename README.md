@@ -1,9 +1,33 @@
-# Apollo GraphQL Subscriptions Example
+# QCIC - Graphql subscription server and clients
 
-<p align="center">
-  <img src="https://github.com/bmsantos/apollo-graphql-subscriptions-example/raw/master/subs.gif" />
-</p>
+Quis custodiet ipsos custodes - Who will watch the watchers
 
+## TODO
+
+- ~~checkin package-lock.json~~
+- ~~update npm version (client and server)~~
+- publish to zeit/now
+- client add yargs --server option
+- ann node client
+
+## server
+```bash
+cd server-app
+npm install
+npm start
+```
+### From GraphiQL
+- [http://localhost:5000/graphiql?variables=null&operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%0A%20%20newMessage%0A%7D%0A](Subscribe)
+- [http://localhost:5000/graphiql?variables=&operationName=AddMessage&query=mutation%20AddMessage%20%7B%0A%20%20addMessage(message%3A%20%22one%22)%0A%7D%0A](Publish)
+
+## References
+- [https://dev-blog.apollodata.com/tutorial-graphql-subscriptions-server-side-e51c32dc2951](GraphQL Tutorial w/Subscriptions)
+- [https://github.com/apollographql/graphql-subscriptions](graphql-subscriptions)
+- [http://dev.apollodata.com/tools/](Apollo Tools Guide)
+
+-----------------------
+# Upstream
+Forked from [https://github.com/bmsantos/apollo-graphql-subscriptions-example](github.com/bmsantos/apollo-graphql-subscriptions-example)
 
 Simple application used to demonstrate minimalistic setup for an Apollo GraphQL Subscriptions architecture.
 
@@ -48,8 +72,8 @@ yarn start
 ## Test it
 
 1. Open a browser window with the [client page](http://localhost:3000)
-1. Open another browser window with [GraphiQL Subscriptions](http://localhost:5060/graphiql?operationName=OnNewMessage&query=subscription+OnNewMessage+%7B%0A++newMessage(userId%3A+123)%0A%7D) and press ►
-1. Open another browser window with [GraphiQL Mutations](http://localhost:5060/graphiql?operationName=AddMessage&query=mutation+AddMessage%28%24message%3A+String%21%2C+%24broadcast%3A+Boolean%21%29+%7B%0A+addMessage%28message%3A+%24message%2C+broadcast%3A+%24broadcast%29%0A%7D&variables=%7B%0A+%22message%22%3A+%22Kombucha%22%2C%0A+%22broadcast%22%3A+true%0A%7D) and press ►
+1. Open another browser window with [GraphiQL Subscriptions](http://localhost:5000/graphiql?operationName=OnNewMessage&query=subscription+OnNewMessage+%7B%0A++newMessage(userId%3A+123)%0A%7D) and press ►
+1. Open another browser window with [GraphiQL Mutations](http://localhost:5000/graphiql?operationName=AddMessage&query=mutation+AddMessage%28%24message%3A+String%21%2C+%24broadcast%3A+Boolean%21%29+%7B%0A+addMessage%28message%3A+%24message%2C+broadcast%3A+%24broadcast%29%0A%7D&variables=%7B%0A+%22message%22%3A+%22Kombucha%22%2C%0A+%22broadcast%22%3A+true%0A%7D) and press ►
 
 
 Your client page as well as the GraphiQL subscription page should now be displaying the new message.

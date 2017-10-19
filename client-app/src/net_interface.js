@@ -1,12 +1,12 @@
 import { ApolloClient, createNetworkInterface } from "react-apollo";
 import { addGraphQLSubscriptions, SubscriptionClient } from "subscriptions-transport-ws";
 
-const uri = 'http://localhost:5060/graphql';
+const uri = 'http://localhost:5000/graphql';
 
 const authToken = Math.floor((Math.random() * 100000000) + 1);
 
 // Subscriptions - Create WebSocket client
-const wsClient = new SubscriptionClient('ws://localhost:5000', {
+const wsClient = new SubscriptionClient('ws://localhost:5000/subscriptions', {
   reconnect: true,
   connectionParams: {
     authToken: authToken

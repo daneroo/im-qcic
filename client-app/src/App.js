@@ -1,20 +1,20 @@
 import React, { Component } from "react";
 import { gql, graphql, withApollo } from "react-apollo";
-import { authToken } from "./net_interface"
+// import { authToken } from "./net_interface"
 
 const GET_MESSAGES_QUERY = gql`query {
     messages
 }`;
 
 const ON_NEW_MESSAGE_SUBSCRIPTION = gql`
-    subscription onNewMessage($userId: Int!) {
-        newMessage(userId: $userId)
+    subscription onNewMessage {
+        newMessage
     }
 `;
 
 const MUTATE_MESSAGE = gql`
-    mutation AddMessage($message: String!, $broadcast: Boolean!) {
-        addMessage(message: $message, broadcast: $broadcast)
+    mutation AddMessage($message: String!) {
+        addMessage(message: $message)
     }
 `;
 
@@ -24,15 +24,17 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      messageList: []
+      messageList: ["What??"]
     };
-    this.mutationMessage = "Hello Apollo GraphQL Subscriptions";
-    this.broadcast = false;
+    this.mutationMessage = "Blablabla";
+    console.log('CONSTRUCTOR')
   }
 
   componentWillReceiveProps = (nextProps) => {
     if (!nextProps.data.loading) {
 
+      console.log('use',ON_NEW_MESSAGE_SUBSCRIPTION)
+      console.log('nextProps',nextProps)
       this.setState({
         messageList: [...nextProps.data.messages]
       });
@@ -49,9 +51,9 @@ class App extends Component {
 
       this.unsubscribe = nextProps.data.subscribeToMore({
         document: ON_NEW_MESSAGE_SUBSCRIPTION,
-        variables: {
-          userId: authToken
-        },
+        // variables: {
+        //   userId: authToken
+        // },
         // this is where the magic happens.
         updateQuery: this.updateQuery,
         onError: (err) => console.error(err),
@@ -90,7 +92,7 @@ class App extends Component {
      this.props.client.mutate({
        operationName: "AddMessage",
        mutation: MUTATE_MESSAGE,
-       variables: { message: this.mutationMessage, broadcast: this.broadcast }
+       variables: { message: this.mutationMessage }
      });
   };
 
@@ -105,13 +107,13 @@ class App extends Component {
         <header>
           <h1>Apollo Client Subscription Example</h1>
           <p>
-            Open <a href="http://localhost:5060/graphiql">GraphiQL</a> and submit the following mutation:
+            Open <a href="http://localhost:5000/graphiql">GraphiQL</a> and submit the following mutation:
             <br />
             <br />
           </p>
           <pre>
             mutation AddMessage {'{\n    '}
-              addMessage(message: "Hello Apollo Subscriptions", broadcast: true)
+              addMessage(message: "Hello Apollo Subscriptions")
             {'\n}\n'}
           </pre>
           <p>
@@ -127,9 +129,9 @@ class App extends Component {
         <input type="checkbox" onChange={this.updateBroadcastFlag.bind(this)} defaultValue={this.broadcast}/>
         <input type="button" onClick={this.onUnsubscribe.bind(this)} value="Unsubscribe"/>
 
-        { loading ? (<p>Loading…</p>) : (
-          <ul> { this.state.messageList.map(entry => JSON.parse(entry)).map(entry => (
-            <li key={entry.id}>{entry.message}</li>)) }
+        { loading ? (<p>Loadingeroo…</p>) : (
+          <ul> { this.state.messageList.map(entry => (
+            <li>{entry}</li>)) }
           </ul> )}
       </main>
     );
