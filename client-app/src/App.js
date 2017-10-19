@@ -24,17 +24,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      messageList: ["What??"]
+      messageList: []
     };
     this.mutationMessage = "Blablabla";
-    console.log('CONSTRUCTOR')
   }
 
   componentWillReceiveProps = (nextProps) => {
     if (!nextProps.data.loading) {
 
-      console.log('use',ON_NEW_MESSAGE_SUBSCRIPTION)
-      console.log('nextProps',nextProps)
       this.setState({
         messageList: [...nextProps.data.messages]
       });
@@ -84,10 +81,6 @@ class App extends Component {
     this.mutationMessage = event.target.value;
   };
 
-  updateBroadcastFlag = (event) => {
-    this.broadcast = event.target.checked;
-  };
-
   onMutationSubmit = () => {
      this.props.client.mutate({
        operationName: "AddMessage",
@@ -107,31 +100,20 @@ class App extends Component {
         <header>
           <h1>Apollo Client Subscription Example</h1>
           <p>
-            Open <a href="http://localhost:5000/graphiql">GraphiQL</a> and submit the following mutation:
-            <br />
-            <br />
-          </p>
-          <pre>
-            mutation AddMessage {'{\n    '}
-              addMessage(message: "Hello Apollo Subscriptions")
-            {'\n}\n'}
-          </pre>
-          <p>
-            <br />
-            You should see a console entry in this window with the above message.
+            Open GraphiQL &nbsp;
+            <a target="_blank" href="http://localhost:5000/graphiql?query=query%7Bmessages%7D">Query</a>, &nbsp;
+            <a target="_blank" href="http://localhost:5000/graphiql?operationName=AddMessage&query=mutation%20AddMessage%20%7B%20addMessage(message%3A%20%22one%22)%20%7D">Mutate</a>, &nbsp;
+            <a target="_blank" href="http://localhost:5000/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D">Subscribe</a>
           </p>
         </header>
 
         <input type="text" onChange={this.updateMutationMessage.bind(this)} defaultValue={this.mutationMessage}/>
-        <input type="button" onClick={this.onMutationSubmit.bind(this)} value="Mutate"/>
-        <br />
-        <span>Broadcast</span>
-        <input type="checkbox" onChange={this.updateBroadcastFlag.bind(this)} defaultValue={this.broadcast}/>
+        <input type="button" onClick={this.onMutationSubmit.bind(this)} value="Mutate"/> &nbsp;
         <input type="button" onClick={this.onUnsubscribe.bind(this)} value="Unsubscribe"/>
 
-        { loading ? (<p>Loadingeroo…</p>) : (
-          <ul> { this.state.messageList.map(entry => (
-            <li>{entry}</li>)) }
+        { loading ? (<p>Loading…</p>) : (
+          <ul> { this.state.messageList.map((message,idx) => (
+            <li key={idx}>{message}</li>)) }
           </ul> )}
       </main>
     );

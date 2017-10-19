@@ -17,8 +17,9 @@ npm install
 npm start
 ```
 ### From GraphiQL
-- [http://localhost:5000/graphiql?variables=null&operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%0A%20%20newMessage%0A%7D%0A](Subscribe)
-- [http://localhost:5000/graphiql?variables=&operationName=AddMessage&query=mutation%20AddMessage%20%7B%0A%20%20addMessage(message%3A%20%22one%22)%0A%7D%0A](Publish)
+- [http://localhost:5000/graphiql?query=query%7Bmessages%7D](Query)
+- [http://localhost:5000/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D](Subscribe)
+- [http://localhost:5000/graphiql?operationName=AddMessage&query=mutation%20AddMessage%20%7B%20addMessage(message%3A%20%22one%22)%20%7D](Mutate)
 
 ## References
 - [https://dev-blog.apollodata.com/tutorial-graphql-subscriptions-server-side-e51c32dc2951](GraphQL Tutorial w/Subscriptions)
