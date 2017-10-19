@@ -6,9 +6,10 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 - ~~checkin package-lock.json~~
 - ~~update npm version (client and server)~~
-- publish to zeit/now
+- babel-preset-env now: please read babeljs.io/env to update
 - client add yargs --server option
 - ann node client
+- publish to zeit/now
 
 ## server
 ```bash
