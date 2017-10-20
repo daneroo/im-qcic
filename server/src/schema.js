@@ -47,10 +47,10 @@ const resolvers = {
   },
   Subscription: {
     newMessage: {
-      // resolve: (payload, args, context, _info) => {
-      //   console.log({payload, args, context})
-      //   return payload
-      // },
+      resolve: (payload, args, context, _info) => {
+        // console.log({payload, args, context})
+        return payload
+      },
       subscribe: () => pubsub.asyncIterator('newMessage')
     }
   }
