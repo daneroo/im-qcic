@@ -13,7 +13,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## server
 ```bash
-cd server-app
+cd server
 npm install
 npm run build && npm start
 ```
