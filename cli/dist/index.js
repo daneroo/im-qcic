@@ -12,22 +12,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 main();
 function main() {
-  setInterval(function () {
+  setInterval(() => {
     console.log('subscribing');
-    var subscriptionObserver = subscribe();
-    setTimeout(function () {
+    const subscriptionObserver = subscribe();
+    setTimeout(() => {
       console.log('unsubscribing');
       subscriptionObserver.unsubscribe();
     }, 10000);
   }, 20000);
-  setInterval(function () {
+  setInterval(() => {
     Promise.resolve()
     // .then(query)
     .then(mutate).then(query);
   }, 2000);
 }
 
-var myId = Math.random().toFixed(5).slice(2);
+const myId = Math.random().toFixed(5).slice(2);
 function newMessage() {
   return ['cli', myId, new Date().toISOString()].join(':');
 }
@@ -36,13 +36,13 @@ function subscribe() {
     query: _queries.ON_NEW_MESSAGE_SUBSCRIPTION
     // variables: { repoFullName: repoName },
   }).subscribe({
-    next: function next(data) {
+    next(data) {
       console.log('sub.data', data);
     },
-    error: function error(err) {
+    error(err) {
       console.error('sub.err', err);
     },
-    complete: function complete() {
+    complete() {
       console.log('sub.complete');
     }
   });
@@ -51,17 +51,17 @@ function query() {
   return _net_interface2.default.query({
     fetchPolicy: 'network-only', // "cache-first" | "cache-and-network" | "network-only" | "cache-only" | "standby"
     query: _queries.GET_MESSAGES_QUERY
-  }).then(function (result) {
+  }).then(result => {
     console.log('query.last', result.data.messages.slice(-1));
   });
 }
 
 function mutate() {
   return _net_interface2.default.mutate({
-    operationName: "AddMessage",
+    operationName: 'AddMessage',
     mutation: _queries.MUTATE_MESSAGE,
     variables: { message: newMessage() }
-  }).then(function (result) {
+  }).then(result => {
     console.log('mutate', result.data);
   });
 }
