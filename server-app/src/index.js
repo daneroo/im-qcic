@@ -1,57 +1,30 @@
-import { createServer } from "http";
-import { SubscriptionServer } from "subscriptions-transport-ws";
-import { graphqlExpress, graphiqlExpress } from "graphql-server-express";
-import {subscriptionManager, schema} from "./subscriptions";
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-require("babel-polyfill");
+import express from 'express'
+import bodyParser from 'body-parser'
+import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
+import { createServer } from 'http'
+import { execute, subscribe } from 'graphql'
+import { SubscriptionServer } from 'subscriptions-transport-ws'
+import cors from 'cors'
 
-// Create WebSocket server
-const appWS = createServer((request, response) => {
-  response.writeHead(404);
-  response.end();
-});
+import { schema } from './schema'
 
-const subscriptionServer = new SubscriptionServer({
-  onConnect: async (connectionParams, webSocket) => {
-    console.log('WebSocket connection established');
-    // the following object fields will be added to subscriptions context and filter methods
-    return {
-      authToken: connectionParams.authToken
-    }
-  },
-  onUnsubscribe: (a, b) => {
-    console.log('Unsubscribing');
-  },
-  onDisconnect: (a, b) => {
-    console.log('Disconnecting');
-  },
-  subscriptionManager: subscriptionManager
-}, {
-  server: appWS,
-  path: '/'
-});
-
-appWS.listen(5000, () => {
-  console.log(`Websocket listening on port 5000`)
-});
-
-// Init HTTP server and GraphQL Endpoints
-const app = express();
-
-app.use('*', cors());
-
-app.use('/graphql', bodyParser.json(), graphqlExpress(request =>
-  ({schema, context: {authToken: parseInt(request.headers.authtoken)}}))
-);
-
+const PORT = 5000
+const app = express()
+app.use('*', cors())
+app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: 'ws://localhost:5000/',
-  query: 'query { messages }'
-}));
+  subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`
+}))
 
-app.listen(5060, () => {
-  console.log(`Server listening on port 5060`);
-});
+const server = createServer(app)
+server.listen(PORT, () => {
+  new SubscriptionServer({
+    execute,
+    subscribe,
+    schema
+  }, {
+    server: server,
+    path: '/subscriptions'
+  })
+})

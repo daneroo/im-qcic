@@ -24,17 +24,17 @@ var _mySchema = require('./my-schema');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var PORT = 5000;
-var app = (0, _express2.default)();
+const PORT = 5000;
+const app = (0, _express2.default)();
 app.use('*', (0, _cors2.default)());
 app.use('/graphql', _bodyParser2.default.json(), (0, _apolloServerExpress.graphqlExpress)({ schema: _mySchema.schema }));
 app.use('/graphiql', (0, _apolloServerExpress.graphiqlExpress)({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: 'ws://localhost:' + PORT + '/subscriptions'
+  subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`
 }));
 
-var server = (0, _http.createServer)(app);
-server.listen(PORT, function () {
+const server = (0, _http.createServer)(app);
+server.listen(PORT, () => {
   new _subscriptionsTransportWs.SubscriptionServer({
     execute: _graphql.execute,
     subscribe: _graphql.subscribe,

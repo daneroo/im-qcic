@@ -15,7 +15,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ```bash
 cd server-app
 npm install
-npm start
+npm run build && npm start
 ```
 ### From GraphiQL
 - [http://localhost:5000/graphiql?query=query%7Bmessages%7D](Query)

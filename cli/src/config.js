@@ -1,4 +1,7 @@
+const BASEURI = process.env('BASEURI') || 'localhost:5000'
+// const { BASEURI } = process.env
+
 export default {
-  uri: 'http://localhost:5000/graphql',      // for http(s)://
-  wsuri: 'ws://localhost:5000/subscriptions' // for ws://
+  uri: `https://${BASEURI}/graphql`,      // for http(s)://
+  wsuri: `wss://${BASEURI}/subscriptions` // for ws://
 }
