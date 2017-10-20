@@ -1,27 +1,9 @@
-import client from "./net_interface";
-import { gql } from "react-apollo";
+import client from './net_interface'
 import 'isomorphic-fetch'
-
-console.log('hello cli')
-
-const GET_MESSAGES_QUERY = gql`query {
-  messages
-}`;
-
-const ON_NEW_MESSAGE_SUBSCRIPTION = gql`
-  subscription onNewMessage {
-      newMessage
-  }
-`;
-
-const MUTATE_MESSAGE = gql`
-  mutation AddMessage($message: String!) {
-      addMessage(message: $message)
-  }
-`;
+import { GET_MESSAGES_QUERY, MUTATE_MESSAGE, ON_NEW_MESSAGE_SUBSCRIPTION } from './queries'
 
 main()
-function main() {
+function main () {
   setInterval(() => {
     console.log('subscribing')
     const subscriptionObserver = subscribe()
@@ -38,17 +20,21 @@ function main() {
   }, 2000)
 }
 
-function subscribe() {
+const myId = Math.random().toFixed(5).slice(2)
+function newMessage () {
+  return ['cli', myId, new Date().toISOString()].join(':')
+}
+function subscribe () {
   return client.subscribe({
     query: ON_NEW_MESSAGE_SUBSCRIPTION
     // variables: { repoFullName: repoName },
   }).subscribe({
-    next(data) { console.log('sub.data', data) },
-    error(err) { console.error('sub.err', err); },
-    complete() { console.log('sub.complete') },
-  });
+    next (data) { console.log('sub.data', data) },
+    error (err) { console.error('sub.err', err) },
+    complete () { console.log('sub.complete') }
+  })
 }
-function query() {
+function query () {
   return client.query({
     fetchPolicy: 'network-only', // "cache-first" | "cache-and-network" | "network-only" | "cache-only" | "standby"
     query: GET_MESSAGES_QUERY
@@ -57,13 +43,12 @@ function query() {
   })
 }
 
-function mutate() {
+function mutate () {
   return client.mutate({
-    operationName: "AddMessage",
+    operationName: 'AddMessage',
     mutation: MUTATE_MESSAGE,
-    variables: { message: 'cli:' + new Date().toISOString() }
+    variables: { message: newMessage() }
   }).then(result => {
     console.log('mutate', result.data)
   })
-
 }

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.authToken = exports.default = undefined;
 
-var _reactApollo = require("react-apollo");
+var _apolloClient = require("apollo-client");
 
 var _ws = require("ws");
 
@@ -13,14 +13,16 @@ var _ws2 = _interopRequireDefault(_ws);
 
 var _subscriptionsTransportWs = require("subscriptions-transport-ws");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _config = require("./config");
 
-var uri = 'http://localhost:5000/graphql';
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var authToken = Math.floor(Math.random() * 100000000 + 1);
 
 // Subscriptions - Create WebSocket client
-var wsClient = new _subscriptionsTransportWs.SubscriptionClient('ws://localhost:5000/subscriptions', {
+var wsClient = new _subscriptionsTransportWs.SubscriptionClient(_config2.default.wsuri, {
   reconnect: true,
   connectionParams: {
     authToken: authToken
@@ -37,10 +39,13 @@ var authTokenMiddleware = {
   }
 };
 
-var networkInterface = (0, _subscriptionsTransportWs.addGraphQLSubscriptions)((0, _reactApollo.createNetworkInterface)({ uri: uri }), wsClient);
+var networkInterface = (0, _subscriptionsTransportWs.addGraphQLSubscriptions)((0, _apolloClient.createNetworkInterface)({
+  uri: _config2.default.uri
+}), wsClient);
+
 networkInterface.use([authTokenMiddleware]);
 
-var client = new _reactApollo.ApolloClient({ networkInterface: networkInterface });
+var client = new _apolloClient.ApolloClient({ networkInterface: networkInterface });
 
 exports.default = client;
 exports.authToken = authToken;
