@@ -13,6 +13,18 @@ const pubsub = new _graphqlSubscriptions.PubSub();
 
 // The DB
 const messages = [];
+const messagesToKeep = 10;
+function saveMessageAndTrim(message) {
+  // append
+  messages.push(message);
+  // console.log(`- |messages|=${messages.length}`)
+  // remove fro the head
+  while (messages.length > messagesToKeep) {
+    // should I publish this removal?
+    messages.shift();
+  }
+  // console.log(`+ |messages|=${messages.length}`)
+}
 
 const typeDefs = `
 type Query {
@@ -36,17 +48,17 @@ const resolvers = {
     addMessage(root, { message }, context) {
       // context authToken?, stamp?
       console.log('addMessage', message);
-      messages.push(message);
+      saveMessageAndTrim(message);
       pubsub.publish('newMessage', message);
       return true;
     }
   },
   Subscription: {
     newMessage: {
-      resolve: (payload, args, context, _info) => {
-        console.log({ payload, args, context });
-        return payload;
-      },
+      // resolve: (payload, args, context, _info) => {
+      //   console.log({payload, args, context})
+      //   return payload
+      // },
       subscribe: () => pubsub.asyncIterator('newMessage')
     }
   }
@@ -54,7 +66,7 @@ const resolvers = {
 const schema = (0, _graphqlTools.makeExecutableSchema)({ typeDefs, resolvers });
 
 setInterval(() => {
-  const payload = new Date().toISOString();
+  const payload = 'srv:0:' + new Date().toISOString();
   console.log('publishing', payload);
   pubsub.publish('newMessage', payload);
 }, 10000);
