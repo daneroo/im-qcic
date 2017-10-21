@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "QCIC GraphQL Server Subscriptions example",
   "main": "index.js",
-  "// was for zeit/now use latest stable":{
+  "// was for zeit/now use latest stable": {
     "engines": {
       "node": "8.7.0"
-    }  
+    }
   },
   "now": {
     "alias": "gql-qcic",
@@ -16,8 +16,7 @@
     }
   },
   "scripts": {
-    "build": "babel src --out-dir dist",
-    "start": "node dist/index.js",
+    "start": "node src/index.js",
     "lint": "standard",
     "secscan": "nsp check",
     "test": "npm run lint && npm run secscan"

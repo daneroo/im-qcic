@@ -35,6 +35,8 @@ Uses package.json for many params: name,alias,env
 now --public   # deploy
 now alias      # aliases latest deployment to name in package.json:now.alias
 now rm --safe gql-qcic  # cleanup
+# lookup first istance and tail -ts logs
+now logs -f $(now ls gql-qcic|tail +5|head -1|cut -d\  -f 2)
 open https://gql-qcic.now.sh/graphiql
 
 open 'https://gql-qcic.now.sh/graphiql?query=query%7Bmessages%7D'
