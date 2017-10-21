@@ -4,6 +4,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- npm outdated: server: graphql-tools
 - Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
 - cli: add yargs --server, --heartbeat,... options
 - ~~publish to zeit/now~~
@@ -35,10 +36,11 @@ Uses package.json for many params: name,alias,env
 now --public   # deploy
 now alias      # aliases latest deployment to name in package.json:now.alias
 now rm --safe gql-qcic  # cleanup
+
 # lookup first istance and tail -ts logs
 now logs -f $(now ls gql-qcic|tail +5|head -1|cut -d\  -f 2)
-open https://gql-qcic.now.sh/graphiql
 
+open 'https://gql-qcic.now.sh/graphiql'
 open 'https://gql-qcic.now.sh/graphiql?query=query%7Bmessages%7D'
 open 'https://gql-qcic.now.sh/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D'
 ```

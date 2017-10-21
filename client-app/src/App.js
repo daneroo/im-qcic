@@ -70,7 +70,11 @@ class App extends Component {
   };
 
   onNewMessage = (message) => {
-    let messages = [...this.state.messageList, message];
+    const messagesToKeep = 10
+    const originStamp = message.split(':').slice(2).join(':')
+    const delta = +new Date()-new Date(originStamp)
+    message = message + ' Δ '+delta+' ms'
+    let messages = [...this.state.messageList, message].slice(-messagesToKeep);
     this.setState({
       messageList: messages
     });
