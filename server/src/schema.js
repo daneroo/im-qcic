@@ -1,5 +1,5 @@
-import { makeExecutableSchema } from 'graphql-tools'
-import { PubSub } from 'graphql-subscriptions'
+const { makeExecutableSchema } = require('graphql-tools')
+const { PubSub } = require('graphql-subscriptions')
 
 const pubsub = new PubSub()
 
@@ -63,4 +63,4 @@ setInterval(() => {
   pubsub.publish('newMessage', payload)
 }, 10000)
 
-export { schema }
+module.exports = { schema }

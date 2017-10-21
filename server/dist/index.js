@@ -1,44 +1,34 @@
 'use strict';
 
-var _express = require('express');
+const express = require('express');
+const bodyParser = require('body-parser');
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
+const { createServer } = require('http');
+const { execute, subscribe } = require('graphql');
+const { SubscriptionServer } = require('subscriptions-transport-ws');
+const cors = require('cors');
+const { schema } = require('./schema');
 
-var _express2 = _interopRequireDefault(_express);
+const {
+  PORT,
+  // BASEURI,
+  WSBASEURI
+} = require('./config');
 
-var _bodyParser = require('body-parser');
-
-var _bodyParser2 = _interopRequireDefault(_bodyParser);
-
-var _apolloServerExpress = require('apollo-server-express');
-
-var _http = require('http');
-
-var _graphql = require('graphql');
-
-var _subscriptionsTransportWs = require('subscriptions-transport-ws');
-
-var _cors = require('cors');
-
-var _cors2 = _interopRequireDefault(_cors);
-
-var _schema = require('./schema');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const PORT = 5000;
-const app = (0, _express2.default)();
-app.use('*', (0, _cors2.default)());
-app.use('/graphql', _bodyParser2.default.json(), (0, _apolloServerExpress.graphqlExpress)({ schema: _schema.schema }));
-app.use('/graphiql', (0, _apolloServerExpress.graphiqlExpress)({
+const app = express();
+app.use('*', cors());
+app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`
+  subscriptionsEndpoint: `${WSBASEURI}/subscriptions`
 }));
 
-const server = (0, _http.createServer)(app);
+const server = createServer(app);
 server.listen(PORT, () => {
-  new _subscriptionsTransportWs.SubscriptionServer({
-    execute: _graphql.execute,
-    subscribe: _graphql.subscribe,
-    schema: _schema.schema
+  new SubscriptionServer({
+    execute,
+    subscribe,
+    schema
   }, {
     server: server,
     path: '/subscriptions'

@@ -4,8 +4,10 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
-- publish to zeit/now
-- client add yargs --server option
+- Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
+- cli: add yargs --server, --heartbeat,... options
+- ~~publish to zeit/now~~
+- ~~remo babel from cli and server~~
 - ~~cli client without babel~~
 - ~~checkin package-lock.json~~
 - ~~update npm version (client and server)~~
@@ -17,8 +19,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 cd cli
 npm install
 npm start
-BASEURI=https://sub-server.now.sh npm start
+BASEURI=https://gql-qcic.now.sh npm start
 ```
+
 ## server
 ```bash
 cd server
@@ -29,14 +32,13 @@ npm run build && npm start
 ### Deploy to zeit/now
 Uses package.json for many params: name,alias,env
 ```
-now --public
-now alias
-now rm --safe
-open https://sub-server.now.sh
+now --public   # deploy
+now alias      # aliases latest deployment to name in package.json:now.alias
+now rm --safe gql-qcic  # cleanup
+open https://gql-qcic.now.sh/graphiql
 
-#now alias https://sub-server-lparsgrwob.now.sh sub-server
-#now --public -e BASEURI="https://sub-server.now.sh"
-#now alias $(now --public -e BASEURI="https://sub-server.now.sh") sub-server
+open 'https://gql-qcic.now.sh/graphiql?query=query%7Bmessages%7D'
+open 'https://gql-qcic.now.sh/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D'
 ```
 
 ### From GraphiQL

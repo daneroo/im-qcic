@@ -1,20 +1,24 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
-import { createServer } from 'http'
-import { execute, subscribe } from 'graphql'
-import { SubscriptionServer } from 'subscriptions-transport-ws'
-import cors from 'cors'
+const express = require('express')
+const bodyParser = require('body-parser')
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
+const { createServer } = require('http')
+const { execute, subscribe } = require('graphql')
+const { SubscriptionServer } = require('subscriptions-transport-ws')
+const cors = require('cors')
+const { schema } = require('./schema')
 
-import { schema } from './schema'
+const {
+  PORT,
+  // BASEURI,
+  WSBASEURI
+} = require('./config')
 
-const PORT = 5000
 const app = express()
 app.use('*', cors())
 app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
-  subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`
+  subscriptionsEndpoint: `${WSBASEURI}/subscriptions`
 }))
 
 const server = createServer(app)

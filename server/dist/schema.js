@@ -1,15 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.schema = undefined;
+const { makeExecutableSchema } = require('graphql-tools');
+const { PubSub } = require('graphql-subscriptions');
 
-var _graphqlTools = require('graphql-tools');
-
-var _graphqlSubscriptions = require('graphql-subscriptions');
-
-const pubsub = new _graphqlSubscriptions.PubSub();
+const pubsub = new PubSub();
 
 // The DB
 const messages = [];
@@ -63,7 +57,7 @@ const resolvers = {
     }
   }
 };
-const schema = (0, _graphqlTools.makeExecutableSchema)({ typeDefs, resolvers });
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 setInterval(() => {
   const payload = 'srv:0:' + new Date().toISOString();
@@ -71,4 +65,4 @@ setInterval(() => {
   pubsub.publish('newMessage', payload);
 }, 10000);
 
-exports.schema = schema;
+module.exports = { schema };

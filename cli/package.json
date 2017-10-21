@@ -1,5 +1,5 @@
 {
-  "name": "sub-client",
+  "name": "cli-qcic",
   "version": "0.1.0",
   "description": "Apollo Subscriptions Command Line Client",
   "scripts": {
