@@ -4,19 +4,41 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- publish to zeit/now
+- client add yargs --server option
+- ~~cli client without babel~~
 - ~~checkin package-lock.json~~
 - ~~update npm version (client and server)~~
 - ~~babel-preset-env now: please read babeljs.io/env to update~~
-- client add yargs --server option
 - ~~add node cli client~~
-- publish to zeit/now
 
+## cli client
+```
+cd cli
+npm install
+npm start
+BASEURI=https://sub-server.now.sh npm start
+```
 ## server
 ```bash
 cd server
 npm install
 npm run build && npm start
 ```
+
+### Deploy to zeit/now
+Uses package.json for many params: name,alias,env
+```
+now --public
+now alias
+now rm --safe
+open https://sub-server.now.sh
+
+#now alias https://sub-server-lparsgrwob.now.sh sub-server
+#now --public -e BASEURI="https://sub-server.now.sh"
+#now alias $(now --public -e BASEURI="https://sub-server.now.sh") sub-server
+```
+
 ### From GraphiQL
 - [http://localhost:5000/graphiql?query=query%7Bmessages%7D](Query)
 - [http://localhost:5000/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D](Subscribe)

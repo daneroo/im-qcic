@@ -1,6 +1,9 @@
-import client from './net_interface'
-import 'isomorphic-fetch'
-import { GET_MESSAGES_QUERY, MUTATE_MESSAGE, ON_NEW_MESSAGE_SUBSCRIPTION } from './queries'
+const client = require('./net_interface')
+require('isomorphic-fetch')
+const {
+  GET_MESSAGES_QUERY,
+  MUTATE_MESSAGE, ON_NEW_MESSAGE_SUBSCRIPTION
+} = require('./queries')
 
 main()
 function main () {

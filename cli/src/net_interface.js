@@ -1,7 +1,8 @@
-import { ApolloClient, createNetworkInterface } from 'apollo-client'
-import WebSocket from 'ws'
-import { addGraphQLSubscriptions, SubscriptionClient } from 'subscriptions-transport-ws'
-import config from './config'
+'use strict'
+const { ApolloClient, createNetworkInterface } = require('apollo-client')
+const WebSocket = require('ws')
+const { addGraphQLSubscriptions, SubscriptionClient } = require('subscriptions-transport-ws')
+const config = require('./config')
 
 const authToken = Math.floor((Math.random() * 100000000) + 1)
 
@@ -13,6 +14,12 @@ const wsClient = new SubscriptionClient(config.wsuri, {
   }
 }, WebSocket)
 
+let networkInterface = addGraphQLSubscriptions(
+  createNetworkInterface({
+    uri: config.uri
+  }),
+  wsClient)
+
 const authTokenMiddleware = {
   applyMiddleware (req, next) {
     if (!req.options.headers) {
@@ -22,15 +29,9 @@ const authTokenMiddleware = {
     next()
   }
 }
-
-let networkInterface = addGraphQLSubscriptions(
-  createNetworkInterface({
-    uri: config.uri
-  }),
-  wsClient)
-
 networkInterface.use([authTokenMiddleware])
 
 const client = new ApolloClient({ networkInterface })
 
-export { client as default, authToken }
+module.exports = client
+// export { client as default, authToken }
