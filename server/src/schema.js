@@ -32,7 +32,7 @@ type Subscription {
 
 const resolvers = {
   Query: {
-    messages (root, { }, context) {
+    messages (root, { _noargs }, context) {
       return messages
     }
   },

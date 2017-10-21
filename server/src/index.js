@@ -9,7 +9,7 @@ const { schema } = require('./schema')
 
 const {
   PORT,
-  // BASEURI,
+  // BASEURI, // not used
   WSBASEURI
 } = require('./config')
 
@@ -23,7 +23,7 @@ app.use('/graphiql', graphiqlExpress({
 
 const server = createServer(app)
 server.listen(PORT, () => {
-  new SubscriptionServer({
+  new SubscriptionServer({ // eslint-disable-line no-new
     execute,
     subscribe,
     schema
