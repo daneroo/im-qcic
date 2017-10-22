@@ -5,14 +5,15 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ## TODO
 
 - ui with next.js/apollo
-- remove cliena-app
 - ui with material-ui
 - npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
 - scope packages to @imetrical/qcic...
 - Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
-- cli: add yargs --server, --heartbeat,... options
-- Below is ~~DONE~~
+- cli: add yargs --listen, --heartbeat,... options
+
+##  ~~DONE~~
+- ~~remove client-app~~
 - ~~add structure to Message (server/cli/withAppolo)~~
 - ~~publish to zeit/now~~
 - ~~remo babel from cli and server~~
@@ -37,7 +38,9 @@ npm install
 npm run dev
 ```
 ### Deploy to zeit/now
-...
+now --public   # deploy
+now alias      # aliases latest deployment
+now rm --safe ui-qcic  # cleanup
 
 ## api server
 ```bash
@@ -50,7 +53,7 @@ npm run build && npm start
 Uses package.json for many params: name,alias,env
 ```
 now --public   # deploy
-now alias      # aliases latest deployment to name in package.json:now.alias
+now alias      # aliases latest deployment
 now rm --safe api-qcic  # cleanup
 
 # lookup first istance and tail -ts logs

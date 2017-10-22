@@ -1,4 +1,6 @@
 require('isomorphic-fetch')
+const ulid = require('ulid')
+
 const {
   // GET_MESSAGES_QUERY,
   MUTATE_MESSAGE, ON_NEW_MESSAGE_SUBSCRIPTION
@@ -41,7 +43,9 @@ function subscribe () {
     next (data) {
       const m = data.newMessage
       const delta = +new Date() - new Date(m.stamp)
-      console.log('sub.data', m.id, m.host, m.stamp, m.text, ' Δ ' + delta + ' ms')
+      const serverStamp = ulid.decodeTime(m.id)
+      const deltaServer = +new Date() - new Date(serverStamp)
+      console.log('sub.data', m.id, m.host, m.stamp, m.text, ' Δ ' + delta + ' ms', ' Δsrv ' + deltaServer + ' ms')
     },
     error (err) { console.error('sub.err', err) },
     complete () { console.log('sub.complete') }

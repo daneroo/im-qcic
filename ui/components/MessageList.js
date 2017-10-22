@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ulid from 'ulid'
 import { gql, graphql, withApollo } from "react-apollo";
 import {
   GET_MESSAGES_QUERY,
@@ -61,6 +62,9 @@ class MessageList extends Component {
     const messagesToKeep = 10
     const delta = +new Date() - new Date(message.stamp)
     message.delta = delta
+    const serverStamp = ulid.decodeTime(message.id)
+    message.deltaServer = +new Date() - new Date(serverStamp)
+
     let messages = [...this.state.messageList, message].slice(-messagesToKeep);
     this.setState({
       messageList: messages
@@ -103,8 +107,25 @@ class MessageList extends Component {
 
         {loading ? (<p>Loading…</p>) : (
           <ul> {this.state.messageList.map((m, idx) => (
-            <li key={m.id}>{m.stamp} <span className="host">{m.host}</span> {m.text}  {m.delta ? <span>Δ {m.delta} ms</span> : ''}</li>))}
+            <li key={m.id}>
+              <span>{m.stamp}</span>
+              <span className="host">{m.host}</span>
+              <span>{m.text}</span>
+              <span>{m.delta ? <span>Δ {m.delta} ms</span> : ''}</span>
+              <span>{m.deltaServer ? <span>Δ {m.deltaServer} ms</span> : ''}</span>
+            </li>))}
           </ul>)}
+
+        <style jsx>{`
+          span {
+            margin-right: 25px;
+          }
+          span.host {
+            display: inline-block;
+            width: 5em;
+          }
+        `}</style>
+
       </main>
     );
   }

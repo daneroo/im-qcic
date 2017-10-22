@@ -81,13 +81,11 @@ setInterval(() => {
   const message = {
     id: ulid(),
     stamp: new Date().toISOString(),
-    host: 'gql',
+    host: 'api',
     text: 'hello'
   }
   saveMessageAndTrim(message)
   console.log('publishing', message)
-  const t = ulid.decodeTime(message.id)
-  console.log('ulid.decodeTime(id)', t, new Date(t))
 
   pubsub.publish('newMessage', message)
 }, 10000)
