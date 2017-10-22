@@ -39,9 +39,9 @@ npm run dev
 ### Deploy to zeit/now
 ...
 
-## server
+## api server
 ```bash
-cd server
+cd api
 npm install
 npm run build && npm start
 ```
