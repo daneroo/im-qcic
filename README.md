@@ -5,6 +5,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ## TODO
 
 - ui with next.js/apollo/material-ui
+- npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
 - scope packages to @imetrical/qcic...
 - Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
@@ -26,6 +27,15 @@ npm install
 npm start
 BASEURI=https://gql-qcic.now.sh npm start
 ```
+
+## ui client
+```
+cd ui
+npm install
+npm run dev
+```
+### Deploy to zeit/now
+...
 
 ## server
 ```bash
