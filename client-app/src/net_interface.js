@@ -2,7 +2,7 @@ import { ApolloClient, createNetworkInterface } from "react-apollo";
 import { addGraphQLSubscriptions, SubscriptionClient } from "subscriptions-transport-ws";
 
 // const BASEURI = 'http://localhost:5000'
-const BASEURI = 'https://gql-qcic.now.sh'
+const BASEURI = 'https://api-qcic.now.sh'
 const WSBASEURI = BASEURI.replace(/^http/, 'ws')
 
 const uri = `${BASEURI}/graphql`;

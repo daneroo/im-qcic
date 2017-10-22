@@ -10,7 +10,7 @@
     "alias": "ui-qcic",
     "name": "ui-qcic",
     "env": {
-      "BASEURI": "https://gql-qcic.now.sh"
+      "BASEURI": "https://api-qcic.now.sh"
     }
   },
   "dependencies": {
