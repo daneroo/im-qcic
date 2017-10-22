@@ -41,6 +41,7 @@ npm run dev
 now --public   # deploy
 now alias      # aliases latest deployment
 now rm --safe ui-qcic  # cleanup
+now logs -f $(now ls ui-qcic|tail +5|head -1|cut -d\  -f 2)
 
 ## api server
 ```bash
