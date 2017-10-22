@@ -1,5 +1,5 @@
 {
-  "name": "gql-qcic",
+  "name": "api-qcic",
   "version": "1.0.0",
   "description": "QCIC GraphQL Server Subscriptions example",
   "main": "index.js",
@@ -9,10 +9,10 @@
     }
   },
   "now": {
-    "alias": "gql-qcic",
-    "name": "gql-qcic",
+    "alias": "api-qcic",
+    "name": "api-qcic",
     "env": {
-      "BASEURI": "https://gql-qcic.now.sh"
+      "BASEURI": "https://api-qcic.now.sh"
     }
   },
   "scripts": {

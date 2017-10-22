@@ -27,7 +27,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 cd cli
 npm install
 npm start
-BASEURI=https://gql-qcic.now.sh npm start
+BASEURI=https://api-qcic.now.sh npm start
 ```
 
 ## ui client
@@ -51,13 +51,13 @@ Uses package.json for many params: name,alias,env
 ```
 now --public   # deploy
 now alias      # aliases latest deployment to name in package.json:now.alias
-now rm --safe gql-qcic  # cleanup
+now rm --safe api-qcic  # cleanup
 
 # lookup first istance and tail -ts logs
-now logs -f $(now ls gql-qcic|tail +5|head -1|cut -d\  -f 2)
+now logs -f $(now ls api-qcic|tail +5|head -1|cut -d\  -f 2)
 
-open 'https://gql-qcic.now.sh/graphiql'
-open 'https://gql-qcic.now.sh/graphiql?query=query%20%7B%0A%20%20messages%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A'
+open 'https://api-qcic.now.sh/graphiql'
+open 'https://api-qcic.now.sh/graphiql?query=query%20%7B%0A%20%20messages%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A'
 ```
 
 ### From GraphiQL
