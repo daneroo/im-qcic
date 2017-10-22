@@ -7,12 +7,12 @@ const pubsub = new PubSub()
 // The DB
 const messages = [{
   id: ulid(0),
-  stamp: "1970T00:00:00.000Z",
-  host: "origin",
-  text: "In the begining"
+  stamp: '1970T00:00:00.000Z',
+  host: 'origin',
+  text: 'In the begining'
 }]
 const messagesToKeep = 10
-function saveMessageAndTrim(message) {
+function saveMessageAndTrim (message) {
   // append
   messages.push(message)
   // console.log(`- |messages|=${messages.length}`)
@@ -51,12 +51,12 @@ type Subscription {
 
 const resolvers = {
   Query: {
-    messages(root, { _noargs }, context) {
+    messages (root, { _noargs }, context) {
       return messages
     }
   },
   Mutation: {
-    addMessage(root, { message }, context) {
+    addMessage (root, { message }, context) {
       // context authToken?, stamp?
       console.log('addMessage', message)
       message.id = ulid()
@@ -81,11 +81,14 @@ setInterval(() => {
   const message = {
     id: ulid(),
     stamp: new Date().toISOString(),
-    host: "gql",
-    text: "hello"
+    host: 'gql',
+    text: 'hello'
   }
   saveMessageAndTrim(message)
   console.log('publishing', message)
+  const t = ulid.decodeTime(message.id)
+  console.log('ulid.decodeTime(id)', t, new Date(t))
+
   pubsub.publish('newMessage', message)
 }, 10000)
 
