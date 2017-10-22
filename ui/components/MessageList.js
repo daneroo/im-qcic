@@ -1,37 +1,10 @@
 import React, { Component } from "react";
 import { gql, graphql, withApollo } from "react-apollo";
-// import { authToken } from "./net_interface"
-
-const GET_MESSAGES_QUERY = gql`
-query getAll {
-  messages {
-    id
-    stamp
-    host
-    text
-  }
-}`;
-
-const ON_NEW_MESSAGE_SUBSCRIPTION = gql`
-subscription OnNewMessage {
-  newMessage {
-    id
-    stamp
-    host
-    text
-  }
-}`;
-
-const MUTATE_MESSAGE = gql`
-mutation AddMessage($stamp: String!,$host: String!,$text: String!) {
-  addMessage(message: {
-    stamp: $stamp
-    host: $host,
-    text: $text
-  }) {
-    id
-  }
-}`;
+import {
+  GET_MESSAGES_QUERY,
+  ON_NEW_MESSAGE_SUBSCRIPTION,
+  MUTATE_MESSAGE
+} from '../lib/queries'
 
 //@withApollo - react-scripts do not yet support decorators - https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#can-i-use-decorators
 class MessageList extends Component {
@@ -79,14 +52,14 @@ class MessageList extends Component {
     // this.onUnsubscribe();
   };
 
-  updateQuery = (prev, {subscriptionData}) => {
+  updateQuery = (prev, { subscriptionData }) => {
     const newMessage = subscriptionData.data.newMessage;
     return this.onNewMessage(newMessage);
   };
 
   onNewMessage = (message) => {
     const messagesToKeep = 10
-    const delta = +new Date()-new Date(message.stamp)
+    const delta = +new Date() - new Date(message.stamp)
     message.delta = delta
     let messages = [...this.state.messageList, message].slice(-messagesToKeep);
     this.setState({
@@ -101,12 +74,12 @@ class MessageList extends Component {
   };
 
   onMutationSubmit = () => {
-     this.props.client.mutate({
-       operationName: "AddMessage",
-       mutation: MUTATE_MESSAGE,
-       variables: { 
+    this.props.client.mutate({
+      operationName: "AddMessage",
+      mutation: MUTATE_MESSAGE,
+      variables: {
         stamp: new Date().toISOString(),
-        host:'browser',
+        host: 'browser',
         text: this.mutationMessage
       }
     });
@@ -117,21 +90,21 @@ class MessageList extends Component {
   };
 
   render() {
-    const {loading} = this.props.data;
+    const { loading } = this.props.data;
     return (
       <main>
         <header>
           <h1>Apollo Client Subscription Example</h1>
         </header>
 
-        <input type="text" onChange={this.updateMutationMessage.bind(this)} defaultValue={this.mutationMessage}/>
-        <input type="button" onClick={this.onMutationSubmit.bind(this)} value="Mutate"/> &nbsp;
-        <input type="button" onClick={this.onUnsubscribe.bind(this)} value="Unsubscribe"/>
+        <input type="text" onChange={this.updateMutationMessage.bind(this)} defaultValue={this.mutationMessage} />
+        <input type="button" onClick={this.onMutationSubmit.bind(this)} value="Mutate" /> &nbsp;
+        <input type="button" onClick={this.onUnsubscribe.bind(this)} value="Unsubscribe" />
 
-        { loading ? (<p>Loading…</p>) : (
-          <ul> { this.state.messageList.map((m,idx) => (
-            <li key={m.id}>{m.stamp} <span className="host">{m.host}</span> {m.text}  {m.delta ? <span>Δ {m.delta} ms</span> :''}</li>)) }
-          </ul> )}
+        {loading ? (<p>Loading…</p>) : (
+          <ul> {this.state.messageList.map((m, idx) => (
+            <li key={m.id}>{m.stamp} <span className="host">{m.host}</span> {m.text}  {m.delta ? <span>Δ {m.delta} ms</span> : ''}</li>))}
+          </ul>)}
       </main>
     );
   }

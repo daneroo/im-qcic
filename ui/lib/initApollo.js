@@ -1,7 +1,7 @@
+import fetch from 'isomorphic-fetch'
 import { ApolloClient, createNetworkInterface } from 'react-apollo'
 import { addGraphQLSubscriptions, SubscriptionClient } from "subscriptions-transport-ws";
-
-import fetch from 'isomorphic-fetch'
+import { uri, wsuri } from './config'
 
 let apolloClient = null
 
@@ -10,12 +10,6 @@ if (!process.browser) {
   global.fetch = fetch
 }
 
-const BASEURI = 'http://localhost:5000'
-// const BASEURI = 'https://gql-qcic.now.sh'
-const WSBASEURI = BASEURI.replace(/^http/, 'ws')
-
-const uri = `${BASEURI}/graphql`;
-const wsuri = `${WSBASEURI}/subscriptions`;
 
 function create(initialState) {
   let networkInterface = createNetworkInterface({
