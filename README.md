@@ -4,7 +4,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
-- ui with next.js/apollo/material-ui
+- ui with next.js/apollo
+- remove cliena-app
+- ui with material-ui
 - npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
 - scope packages to @imetrical/qcic...
