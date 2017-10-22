@@ -1,12 +1,18 @@
 const { makeExecutableSchema } = require('graphql-tools')
 const { PubSub } = require('graphql-subscriptions')
+const ulid = require('ulid')
 
 const pubsub = new PubSub()
 
 // The DB
-const messages = []
+const messages = [{
+  id: ulid(0),
+  stamp: "1970T00:00:00.000Z",
+  host: "origin",
+  text: "In the begining"
+}]
 const messagesToKeep = 10
-function saveMessageAndTrim (message) {
+function saveMessageAndTrim(message) {
   // append
   messages.push(message)
   // console.log(`- |messages|=${messages.length}`)
@@ -19,30 +25,44 @@ function saveMessageAndTrim (message) {
 }
 
 const typeDefs = `
+input MessageInput {
+  stamp: String!
+  host: String!
+  text: String!
+}
+
+type Message {
+  id: ID!
+  stamp: String!
+  host: String!
+  text: String!
+}
+
 type Query {
-  messages: [String!]!
+  messages: [Message]
 }
 type Mutation {
-  addMessage(message: String!): Boolean!
+  addMessage(message: MessageInput): Message
 }
 type Subscription {
-  newMessage: String
+  newMessage: Message
 }
 `
 
 const resolvers = {
   Query: {
-    messages (root, { _noargs }, context) {
+    messages(root, { _noargs }, context) {
       return messages
     }
   },
   Mutation: {
-    addMessage (root, { message }, context) {
+    addMessage(root, { message }, context) {
       // context authToken?, stamp?
       console.log('addMessage', message)
+      message.id = ulid()
       saveMessageAndTrim(message)
       pubsub.publish('newMessage', message)
-      return true
+      return message
     }
   },
   Subscription: {
@@ -58,9 +78,15 @@ const resolvers = {
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
 setInterval(() => {
-  const payload = 'srv:0:' + new Date().toISOString()
-  console.log('publishing', payload)
-  pubsub.publish('newMessage', payload)
+  const message = {
+    id: ulid(),
+    stamp: new Date().toISOString(),
+    host: "gql",
+    text: "hello"
+  }
+  saveMessageAndTrim(message)
+  console.log('publishing', message)
+  pubsub.publish('newMessage', message)
 }, 10000)
 
 module.exports = { schema }

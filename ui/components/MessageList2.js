@@ -3,38 +3,38 @@ import { gql, graphql, withApollo } from "react-apollo";
 // import { authToken } from "./net_interface"
 
 const GET_MESSAGES_QUERY = gql`
-  query getAll {
-    messages {
-      id
-      stamp
-      host
-      text
-    }
-  }`;
+query getAll {
+  messages {
+    id
+    stamp
+    host
+    text
+  }
+}`;
 
 const ON_NEW_MESSAGE_SUBSCRIPTION = gql`
-  subscription OnNewMessage {
-    newMessage {
-      id
-      stamp
-      host
-      text
-    }
-  }`;
+subscription OnNewMessage {
+  newMessage {
+    id
+    stamp
+    host
+    text
+  }
+}`;
 
 const MUTATE_MESSAGE = gql`
-  mutation AddMessage($stamp: String!,$host: String!,$text: String!) {
-    addMessage(message: {
-      stamp: $stamp
-      host: $host,
-      text: $text
-    }) {
-      id
-    }
-  }`;
+mutation AddMessage($stamp: String!,$host: String!,$text: String!) {
+  addMessage(message: {
+    stamp: $stamp
+    host: $host,
+    text: $text
+  }) {
+    id
+  }
+}`;
 
 //@withApollo - react-scripts do not yet support decorators - https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#can-i-use-decorators
-class App extends Component {
+class MessageList extends Component {
 
   constructor() {
     super();
@@ -105,11 +105,11 @@ class App extends Component {
        operationName: "AddMessage",
        mutation: MUTATE_MESSAGE,
        variables: { 
-         stamp: new Date().toISOString(),
-         host:'browser',
-         text: this.mutationMessage
-       }
-     });
+        stamp: new Date().toISOString(),
+        host:'browser',
+        text: this.mutationMessage
+      }
+    });
   };
 
   onUnsubscribe = () => {
@@ -139,4 +139,4 @@ class App extends Component {
 
 export default graphql(
   GET_MESSAGES_QUERY
-)(withApollo(App))
+)(withApollo(MessageList))

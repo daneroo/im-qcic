@@ -4,9 +4,13 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- ui with next.js/apollo/material-ui
 - npm outdated: server: graphql-tools
+- scope packages to @imetrical/qcic...
 - Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
 - cli: add yargs --server, --heartbeat,... options
+- Below is ~~DONE~~
+- ~~add structure to Message (server/cli/withAppolo)~~
 - ~~publish to zeit/now~~
 - ~~remo babel from cli and server~~
 - ~~cli client without babel~~
@@ -41,14 +45,13 @@ now rm --safe gql-qcic  # cleanup
 now logs -f $(now ls gql-qcic|tail +5|head -1|cut -d\  -f 2)
 
 open 'https://gql-qcic.now.sh/graphiql'
-open 'https://gql-qcic.now.sh/graphiql?query=query%7Bmessages%7D'
-open 'https://gql-qcic.now.sh/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D'
+open 'https://gql-qcic.now.sh/graphiql?query=query%20%7B%0A%20%20messages%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A'
 ```
 
 ### From GraphiQL
-- [http://localhost:5000/graphiql?query=query%7Bmessages%7D](Query)
-- [http://localhost:5000/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%20newMessage%20%7D](Subscribe)
-- [http://localhost:5000/graphiql?operationName=AddMessage&query=mutation%20AddMessage%20%7B%20addMessage(message%3A%20%22one%22)%20%7D](Mutate)
+- [http://localhost:5000/graphiql?query=query%20getAll%20%7B%0A%20%20messages%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A&operationName=getAll](Query)
+- [http://localhost:5000/graphiql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%0A%20%20newMessage%20%7B%0A%20%20%20%20id%2C%0A%20%20%20%20stamp%2Chost%2Ctext%0A%20%20%7D%0A%7D%0A](Subscribe)
+- [http://localhost:5000/graphiql?operationName=AddMessage&query=mutation%20AddMessage%20%7B%0A%20%20addMessage(message%3A%20%7B%0A%20%20%20%20stamp%3A%221970T00%3A00%3A00.000Z%22%0A%20%20%20%20host%3A%22browser%22%2C%0A%20%20%20%20text%3A%22ping%22%0A%20%20%7D)%20%7B%0A%20%20%20%20id%2Cstamp%2Chost%2Ctext%0A%20%20%7D%0A%7D%0A](Mutate)
 
 ## References
 - [https://dev-blog.apollodata.com/tutorial-graphql-subscriptions-server-side-e51c32dc2951](GraphQL Tutorial w/Subscriptions)
