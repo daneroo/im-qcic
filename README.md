@@ -5,6 +5,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ## TODO
 
 - ui with next.js/apollo
+  - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
+- logo with ω: ωωωω and http://snapsvg.io/
+  - ωho ωill ωatch the ωatchers
 - ui with material-ui
 - npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
