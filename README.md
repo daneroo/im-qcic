@@ -7,11 +7,11 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - ui with next.js/apollo
   - [move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)
 - ui with material
+  - Test with local/global [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
   - [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
   - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
 - logo with ω: ωωωω and http://snapsvg.io/
   - ωho ωill ωatch the ωatchers
-- ui with material-ui
 - npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
 - scope packages to @imetrical/qcic...
@@ -19,6 +19,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - cli: add yargs --listen, --heartbeat,... options
 
 ##  ~~DONE~~
+- ~~ui with material-ui~~
 - ~~remove client-app~~
 - ~~add structure to Message (server/cli/withAppolo)~~
 - ~~publish to zeit/now~~

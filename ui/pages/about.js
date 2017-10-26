@@ -33,7 +33,18 @@ export default (props) => (
         <li>Page:
           <p>our convenience componenent, wraps withRoot, no longer has global styles</p>
         </li>
-        <li>inline jsx: global or not... </li>
+        <li>inline jsx: 
+          <p>when using the <a href="https://github.com/zeit/styled-jsx#server-side-rendering" taget="blank">style-jsx</a> tag, wether global or not, you must take care to leverage SSR.
+            <br/>
+            <tt>
+              &lt;style [global] jsx&gt; <br/>
+                p {'{'}  <br/>
+                    color: red; <br/>
+                  {'}'} <br/>
+              &lt;/style&gt;
+            </tt>
+          </p>
+        </li>
       </ul>
       <h2>GraphQL</h2>
       <p>
@@ -49,5 +60,10 @@ export default (props) => (
         This example relies on <a href='http://graph.cool'>graph.cool</a> for its GraphQL backend.
       </p>
     </article>
+    {/* <style jsx>{`
+      p {
+        color: red;
+      }
+    `}</style> */}
   </Page>
 )
