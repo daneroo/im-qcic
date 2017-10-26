@@ -4,7 +4,6 @@ import Head from 'next/head'
 const menuItems = [
   { path: '/', name: 'Home' },
   { path: '/about', name: 'About' },
-  { path: '/aboutM', name: 'About (M)' },
   { path: '/dialog', name: 'Dialog' },
   { path: '/table', name: 'Table' },
   { path: '/error', name: 'Error (404)' },
