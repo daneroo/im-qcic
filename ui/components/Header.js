@@ -7,6 +7,7 @@ const menuItems = [
   { path: '/aboutM', name: 'About (M)' },
   { path: '/dialog', name: 'Dialog' },
   { path: '/table', name: 'Table' },
+  { path: '/error', name: 'Error (404)' },
 ]
 function title(pathname) {
   for (let m of menuItems) {
@@ -23,26 +24,8 @@ export default ({ pathname }) => (
     </Head>
 
     {menuItems.map(m => <Link key={m.path} prefetch href={m.path}>
-      <a className={pathname === m.path && 'is-active'}>{m.name}</a>
+      <a className={(pathname === m.path)?'is-active':''}>{m.name}</a>
     </Link>)}
-
-    <style jsx>{`
-      header {
-        margin-bottom: 25px;
-      }
-      a {
-        color: #999999
-        font-size: 14px;
-        margin-right: 15px;
-        text-decoration: none;
-      }
-      a:hover {
-        color: #000000
-      }
-      .is-active {
-        color: #000000
-        // text-decoration: underline;
-      }
-    `}</style>
+    {/* Local styles for the Header component : moved to global in withRoot*/}
   </header>
 )

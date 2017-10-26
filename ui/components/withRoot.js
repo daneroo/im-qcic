@@ -14,7 +14,44 @@ const styles = theme => ({
       MozOsxFontSmoothing: 'grayscale', // Antialiasing.
     },
     body: {
+      // 'font-family': "'Roboto', sans-serif",
+      fontFamily: ['Roboto', 'sans-serif'],
       margin: 0,
+      padding: '25px 50px;'
+    },
+    a: {
+      color: '#067df7', // TODO(daneroo): blue, get from theme!
+      textDecoration: 'none'
+    },
+    'a:hover': {
+      color: '#000000'
+    },
+
+    // header links (Top menu)
+    header: {
+      // 'margin-bottom': '25px'
+      marginBottom: 25
+    },
+    'header a': {
+      color: '#999999', // TODO(daneroo): grey, get from theme!
+      fontSize: 14,
+      marginRight: 15
+    },
+    'header a.is-active': {
+      color: '#000000',
+    },
+    'header a:hover': {
+      color: '#000000',
+    },
+
+    // for about page but applies to all pages
+    // 'p,li': {
+    article: {
+      margin: [0, 'auto'],
+      maxWidth: 650,
+      color: '#666666', // TODO(daneroo): light grey, get from theme! '#888888'
+      fontSize: 14,
+      lineHeight: '24px' // must have units
     },
   },
 });
@@ -40,7 +77,7 @@ function withRoot(BaseComponent) {
     componentDidMount() {
       // Remove the server-side injected CSS.
       const jssStyles = document.querySelector('#jss-server-side');
-      console.log('jssStyles',jssStyles)
+      console.log('jssStyles', jssStyles)
       if (jssStyles && jssStyles.parentNode) {
         jssStyles.parentNode.removeChild(jssStyles);
       }
@@ -54,16 +91,9 @@ function withRoot(BaseComponent) {
         >
           <AppWrapper>
             <BaseComponent {...this.props} />
-            {/* <style jsx global>{`
-            * {
-              font-family: 'Roboto', sans-serif;
-              // font-family: 'Roboto Mono', monospace;
-              // font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
-            }
-            `}</style> */}
           </AppWrapper>
         </MuiThemeProvider>
-  );
+      );
     }
   }
 

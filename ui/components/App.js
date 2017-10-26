@@ -1,3 +1,4 @@
+// Deprecated
 export default ({ children }) => (
   <main>
     {children}
@@ -29,6 +30,23 @@ export default ({ children }) => (
       article {
         margin: 0 auto;
         max-width: 650px;
+      }
+
+      header {
+        margin-bottom: 25px;
+      }
+      header a {
+        color: #999999
+        font-size: 14px;
+        margin-right: 15px;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #000000
+      }
+      .is-active {
+        color: #000000
+        // text-decoration: underline;
       }
     `}</style>
   </main>

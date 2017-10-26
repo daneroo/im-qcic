@@ -7,6 +7,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - ui with next.js/apollo
   - [move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)
 - ui with material
+  - [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
   - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
 - logo with ω: ωωωω and http://snapsvg.io/
   - ωho ωill ωatch the ωatchers

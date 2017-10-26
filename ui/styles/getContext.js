@@ -10,6 +10,8 @@ import createGenerateClassName from 'material-ui/styles/createGenerateClassName'
 
 const theme = createMuiTheme({
   palette: {
+    // you can override othere theme variable here. https://material-ui-next.com/customization/themes/#themes
+    // background: {default:'white'},
     primary: purple,
     secondary: green,
   },
