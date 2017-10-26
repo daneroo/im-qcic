@@ -2,22 +2,20 @@
 
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
+import Page from '../components/Page'
+import Header from '../components/Header'
 import BasicTable from '../components/BasicTable';
 import withRoot from '../components/withRoot';
-
-const styles = {
-  root: {
-    textAlign: 'center',
-    paddingTop: 200,
-  },
-};
 
 class Table extends Component {
   render() {
     return (
-      <BasicTable />
+      <Page>
+        <Header pathname={this.props.url.pathname} />
+        <BasicTable />
+      </Page>
     );
   }
 }
 
-export default withRoot(withStyles(styles)(Table));
+export default Table;

@@ -40,6 +40,7 @@ function withRoot(BaseComponent) {
     componentDidMount() {
       // Remove the server-side injected CSS.
       const jssStyles = document.querySelector('#jss-server-side');
+      console.log('jssStyles',jssStyles)
       if (jssStyles && jssStyles.parentNode) {
         jssStyles.parentNode.removeChild(jssStyles);
       }
@@ -53,9 +54,16 @@ function withRoot(BaseComponent) {
         >
           <AppWrapper>
             <BaseComponent {...this.props} />
+            {/* <style jsx global>{`
+            * {
+              font-family: 'Roboto', sans-serif;
+              // font-family: 'Roboto Mono', monospace;
+              // font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
+            }
+            `}</style> */}
           </AppWrapper>
         </MuiThemeProvider>
-      );
+  );
     }
   }
 

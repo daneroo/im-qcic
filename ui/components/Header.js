@@ -1,18 +1,30 @@
 import Link from 'next/link'
+import Head from 'next/head'
 
+const menuItems = [
+  { path: '/', name: 'Home' },
+  { path: '/about', name: 'About' },
+  { path: '/aboutM', name: 'About (M)' },
+  { path: '/dialog', name: 'Dialog' },
+  { path: '/table', name: 'Table' },
+]
+function title(pathname) {
+  for (let m of menuItems) {
+    if (m.path === pathname) {
+      return m.name
+    }
+  }
+  return ''
+}
 export default ({ pathname }) => (
   <header>
-    <Link prefetch href='/'>
-      <a className={pathname === '/' && 'is-active'}>Home</a>
-    </Link>
+    <Head>
+      <title>{title(pathname)}</title>
+    </Head>
 
-    <Link prefetch href='/about'>
-      <a className={pathname === '/about' && 'is-active'}>About</a>
-    </Link>
-
-    <Link prefetch href='/table'>
-      <a className={pathname === '/table' && 'is-active'}>Table</a>
-    </Link>
+    {menuItems.map(m => <Link key={m.path} prefetch href={m.path}>
+      <a className={pathname === m.path && 'is-active'}>{m.name}</a>
+    </Link>)}
 
     <style jsx>{`
       header {
