@@ -79,7 +79,6 @@ function withRoot(BaseComponent) {
     componentDidMount() {
       // Remove the server-side injected CSS.
       const jssStyles = document.querySelector('#jss-server-side');
-      console.log('jssStyles', jssStyles)
       if (jssStyles && jssStyles.parentNode) {
         jssStyles.parentNode.removeChild(jssStyles);
       }
