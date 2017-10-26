@@ -15,17 +15,25 @@ export default (props) => (
       <h1>The Idea Behind This Example</h1>
 
       <h2>Next.js</h2>
-      <p>Server-side rendered, React based framework</p>
+      <p><a href="https://github.com/zeit/next.js/">Next.js</a> is a server-side rendered, React based framework</p>
 
       <h2>Material-ui</h2>
       <p>Using <a href="https://material-ui-next.com/" target="_blank">material-ui (next)</a></p>
-      <p>Styling:... _document.js, withRoot HOC, /style/getContext(defines theme) inine</p>
+      <h3>Styling:</h3>
       <ul>
-        <li>/style/getContext.js: creates material theme and jss sheetmanager. This is where we can override the material theme properties</li>
-        <li>_document.js: replaces next.js default document includes head element, calls /styles/getContext</li>
-        <li>withRoot HOC: injects MuiThemeProvider with configured theme, also calls /styles.getContext.js, but also has some global css, meant to be a reset</li>
-        <li>Page: our convenience componenent, wraps withRoot, no longer has global styles</li>
-        <li>inline jsx:</li>
+        <li>/style/getContext.js:
+          <p>creates material theme and jss sheetmanager. This is where we can override the material theme properties</p>
+        </li>
+        <li>_document.js:
+          <p> replaces next.js default document includes head element, calls /styles/getContext</p>
+        </li>
+        <li>withRoot HOC:
+          <p>injects MuiThemeProvider with configured theme, also calls /styles.getContext.js, but also has some global css, meant to be a reset</p>
+        </li>
+        <li>Page:
+          <p>our convenience componenent, wraps withRoot, no longer has global styles</p>
+        </li>
+        <li>inline jsx: global or not... </li>
       </ul>
       <h2>GraphQL</h2>
       <p>

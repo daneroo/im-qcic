@@ -48,12 +48,14 @@ const styles = theme => ({
     // 'p,li': {
     article: {
       margin: [0, 'auto'],
-      maxWidth: 650,
+      maxWidth: 650
+    },
+    'article p': {
       color: '#666666', // TODO(daneroo): light grey, get from theme! '#888888'
       fontSize: 14,
       lineHeight: '24px' // must have units
-    },
-  },
+    }
+  }
 });
 
 let AppWrapper = props => props.children;
