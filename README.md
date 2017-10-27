@@ -5,8 +5,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ## TODO
 
 - ui with next.js/apollo
-  - [move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)
+  - stale / refetch
 - ui with material
+  - [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons
   - Test with local/global [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
   - [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
   - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
@@ -19,6 +20,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - cli: add yargs --listen, --heartbeat,... options
 
 ##  ~~DONE~~
+- ~~ui [move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)~~
 - ~~ui with material-ui~~
 - ~~remove client-app~~
 - ~~add structure to Message (server/cli/withAppolo)~~
