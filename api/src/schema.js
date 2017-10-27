@@ -7,7 +7,7 @@ const pubsub = new PubSub()
 // The DB
 const messages = [{
   id: ulid(0),
-  stamp: '1970T00:00:00.000Z',
+  stamp: '1970-01-01T00:00:00.000Z',
   host: 'origin',
   text: 'In the begining'
 }]
