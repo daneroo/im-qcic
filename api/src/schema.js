@@ -85,7 +85,7 @@ setInterval(() => {
     text: 'hello'
   }
   saveMessageAndTrim(message)
-  console.log('publishing', message)
+  // console.log('publishing', message)
 
   pubsub.publish('newMessage', message)
 }, 10000)
