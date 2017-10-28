@@ -1,4 +1,10 @@
 import React, { Component } from "react";
+import Button from 'material-ui/Button';
+import Paper from 'material-ui/Paper';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
+import { withStyles } from 'material-ui/styles';
+
 import ulid from 'ulid'
 import { gql, graphql, withApollo } from "react-apollo";
 import {
@@ -7,18 +13,38 @@ import {
   MUTATE_MESSAGE
 } from '../lib/queries'
 
+const styles = theme => ({
+  container: {
+    // display: 'flex',
+    flexWrap: 'wrap',
+  },
+  formElements: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    // width: 200,
+  }
+});
 //@withApollo - react-scripts do not yet support decorators - https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#can-i-use-decorators
 class MessageList extends Component {
 
   constructor() {
     super();
-    this.mutationMessage = "Blablabla";
   }
 
-  updateMutationMessage = (event) => {
-    this.mutationMessage = event.target.value;
+
+  state = {
+    message: 'Hello all',
+    topic: 'chat.demo'
   };
 
+  // handles all textFields
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
+  // -=-= Mutation
   onMutationSubmit = () => {
     this.props.client.mutate({
       operationName: "AddMessage",
@@ -26,14 +52,14 @@ class MessageList extends Component {
       variables: {
         stamp: new Date().toISOString(),
         host: 'browser',
-        text: this.mutationMessage
+        text: this.state.message
       }
     });
   };
 
+  // -=-= Subscription
+  // Perform a refetch and subscribe on mount
   componentWillMount() {
-    console.log('componentWillMount')
-    console.log('refetch')
     this.props.data.refetch()
 
     // subscribe to new messages
@@ -42,8 +68,9 @@ class MessageList extends Component {
     }
 
   }
+
+  // unsubscribe on unmount
   componentWillUnmount = () => {
-    console.log('componentWillUnmount')
     if (process.browser && this.unsubscribe) {
       this.unsubscribe();
       delete this.unsubscribe
@@ -51,6 +78,7 @@ class MessageList extends Component {
   };
 
   render() {
+    const { classes } = this.props;
     const { data: { loading, error, messges } } = this.props;
 
     if (loading) {
@@ -60,33 +88,56 @@ class MessageList extends Component {
     }
     return (
       <main>
-        <input type="text" onChange={this.updateMutationMessage.bind(this)} defaultValue={this.mutationMessage} />
-        <input type="button" onClick={this.onMutationSubmit.bind(this)} value="Mutate" /> &nbsp;
-        {/* <input type="button" onClick={this.onUnsubscribe.bind(this)} value="Unsubscribe" /> */}
+        <form className={classes.container} noValidate autoComplete="off">
+          <TextField
+            id="message"
+            label="Message"
+            className={classes.formElements}
+            value={this.state.message}
+            onChange={this.handleChange('message')}
+            helperText="The text that will be broadcast"
+          />
+          <TextField
+            id="topic"
+            label="Topic"
+            className={classes.formElements}
+            value={this.state.topic}
+            onChange={this.handleChange('topic')}
+            helperText="The channel it is sent on"
+          />
+          <Button raised color="primary" className={classes.formElements} onClick={this.onMutationSubmit.bind(this)}>Send</Button>
+          {/* <Button raised color="accent" onClick={this.onMutationSubmit.bind(this)}>Send</Button> */}
+        </form>
 
-        <ul> {this.props.data.messages.map((m, idx) => (
-          <li key={m.id}>
-            <span><tt>{m.id.slice(-5)}</tt></span>
-            <span>{m.stamp}</span>
-            <span className="host">{m.host}</span>
-            <span>{m.text}</span>
-            <span>{m.delta ? <span>Δ {m.delta} ms</span> : ''}</span>
-            <span>{m.deltaServer ? <span>Δ {m.deltaServer} ms</span> : ''}</span>
-          </li>))}
-          <pre>{JSON.stringify(this.props.data.messages.slice(-1), null, 2)}</pre>
-        </ul>
-
-
-        <style jsx>{`
-          span {
-            margin-right: 25px;
-          }
-          span.host {
-            display: inline-block;
-            width: 5em;
-          }
-        `}</style>
-
+        <Paper style={{ margin: 40 }} elevation={0} >
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>id</TableCell>
+                <TableCell numeric>Stamp</TableCell>
+                <TableCell numeric>Host</TableCell>
+                <TableCell numeric>Text</TableCell>
+                <TableCell numeric> Δ Origin (ms)</TableCell>
+                <TableCell numeric> Δ Server (ms)</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.props.data.messages.map(m => {
+                return (
+                  <TableRow key={m.id}>
+                    <TableCell>{m.id.slice(-5)}</TableCell>
+                    <TableCell numeric>{m.stamp}</TableCell>
+                    <TableCell numeric>{m.host}</TableCell>
+                    <TableCell numeric>{m.text}</TableCell>
+                    <TableCell numeric>{m.delta}</TableCell>
+                    <TableCell numeric>{m.deltaServer}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <pre>{JSON.stringify(this.props.data.messages.slice(-1)[0])}</pre>
+        </Paper>
       </main>
     );
   }
@@ -107,6 +158,7 @@ export default graphql(
               if (!subscriptionData.data) {
                 return prev;
               }
+
               const newMessage = subscriptionData.data.newMessage;
 
               const delta = +new Date() - new Date(newMessage.stamp)
@@ -126,4 +178,4 @@ export default graphql(
       };
     }
   }
-)(withApollo(MessageList))
+)(withApollo(withStyles(styles)(MessageList)))

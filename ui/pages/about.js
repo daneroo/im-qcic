@@ -60,10 +60,5 @@ export default (props) => (
         This example relies on <a href='http://graph.cool'>graph.cool</a> for its GraphQL backend.
       </p>
     </article>
-    {/* <style jsx>{`
-      p {
-        color: red;
-      }
-    `}</style> */}
   </Page>
 )

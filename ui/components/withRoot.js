@@ -20,11 +20,11 @@ const styles = theme => ({
       padding: '25px 50px;'
     },
     a: {
-      color: '#067df7', // TODO(daneroo): blue, get from theme!
+      color: theme.palette.primary[500], // blue for now
       textDecoration: 'none'
     },
     'a:hover': {
-      color: '#000000'
+      color: theme.palette.common.black
     },
 
     // header links (Top menu)
@@ -33,15 +33,16 @@ const styles = theme => ({
       marginBottom: 25
     },
     'header a': {
-      color: '#999999', // TODO(daneroo): grey, get from theme!
+      color: theme.palette.grey[500], // #9e9e9e
+      // color: theme.palette.shades.light.text.disabled, // similar
       fontSize: 14,
       marginRight: 15
     },
     'header a.is-active': {
-      color: '#000000',
+      color: theme.palette.common.black,
     },
     'header a:hover': {
-      color: '#000000',
+      color: theme.palette.common.black,
     },
 
     // for about page but applies to all pages
@@ -50,8 +51,9 @@ const styles = theme => ({
       margin: [0, 'auto'],
       maxWidth: 650
     },
+    // 'article p': theme.typography.body1,
     'article p': {
-      color: '#666666', // TODO(daneroo): light grey, get from theme! '#888888'
+      color: theme.palette.grey[700], // #616161
       fontSize: 14,
       lineHeight: '24px' // must have units
     }

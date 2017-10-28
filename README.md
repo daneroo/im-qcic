@@ -4,10 +4,13 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
-- ui with next.js/apollo
-  - stale / refetch
+- Add standard.js
+- Refactor MessageList Grapql HOC: withMessages
+- Rename components/withRoot -> lib/withMaterialRoot (only used in Page)
+- SendMessage Form to own Component (withData)
 - ui with material
   - [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons
+  - Header (with Material, and remove styles?)
   - Test with local/global [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
   - [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
   - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
@@ -20,8 +23,12 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - cli: add yargs --listen, --heartbeat,... options
 
 ##  ~~DONE~~
-- ~~ui [move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)~~
-- ~~ui with material-ui~~
+- remove BasicTable/Dialog
+- ~~ui with material~~
+  - ~~reafactor getContext:styles from theme/palette~~
+  - ~~with next.js/apollo - stale / refetch componentWillMount~~
+  - ~~[move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)~~
+  - ~~with material-ui~~
 - ~~remove client-app~~
 - ~~add structure to Message (server/cli/withAppolo)~~
 - ~~publish to zeit/now~~
