@@ -6,7 +6,6 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 - Add standard.js
 - Refactor MessageList Grapql HOC: withMessages
-- Rename components/withRoot -> lib/withMaterialRoot (only used in Page)
 - SendMessage Form to own Component (withData)
 - ui with material
   - [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons
@@ -23,7 +22,8 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - cli: add yargs --listen, --heartbeat,... options
 
 ##  ~~DONE~~
-- remove BasicTable/Dialog
+- ~~Rename components/withRoot -> lib/withMaterialRoot (only used in Page)~~
+- ~~remove BasicTable/Dialog~~
 - ~~ui with material~~
   - ~~reafactor getContext:styles from theme/palette~~
   - ~~with next.js/apollo - stale / refetch componentWillMount~~

@@ -88,37 +88,39 @@ class MessageList extends Component {
     }
     return (
       <main>
-        <form className={classes.container} noValidate autoComplete="off">
-          <TextField
-            id="message"
-            label="Message"
-            className={classes.formElements}
-            value={this.state.message}
-            onChange={this.handleChange('message')}
-            helperText="The text that will be broadcast"
-          />
-          <TextField
-            id="topic"
-            label="Topic"
-            className={classes.formElements}
-            value={this.state.topic}
-            onChange={this.handleChange('topic')}
-            helperText="The channel it is sent on"
-          />
-          <Button raised color="primary" className={classes.formElements} onClick={this.onMutationSubmit.bind(this)}>Send</Button>
-          {/* <Button raised color="accent" onClick={this.onMutationSubmit.bind(this)}>Send</Button> */}
-        </form>
+        <Paper elevation={0} >
+          <form className={classes.container} noValidate autoComplete="off">
+            <TextField
+              id="message"
+              label="Message"
+              className={classes.formElements}
+              value={this.state.message}
+              onChange={this.handleChange('message')}
+              helperText="The text that will be broadcast"
+            />
+            <TextField
+              id="topic"
+              label="Topic"
+              className={classes.formElements}
+              value={this.state.topic}
+              onChange={this.handleChange('topic')}
+              helperText="The channel it is sent on"
+            />
+            <Button raised color="primary" className={classes.formElements} onClick={this.onMutationSubmit.bind(this)}>Send</Button>
+            {/* <Button raised color="accent" onClick={this.onMutationSubmit.bind(this)}>Send</Button> */}
+          </form>
+        </Paper>
 
-        <Paper style={{ margin: 40 }} elevation={0} >
+        <Paper elevation={0} >
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>id</TableCell>
-                <TableCell numeric>Stamp</TableCell>
-                <TableCell numeric>Host</TableCell>
-                <TableCell numeric>Text</TableCell>
-                <TableCell numeric> Δ Origin (ms)</TableCell>
-                <TableCell numeric> Δ Server (ms)</TableCell>
+                {<TableCell>id</TableCell>}
+                <TableCell>Stamp</TableCell>
+                <TableCell>Host</TableCell>
+                <TableCell>Text</TableCell>
+                {/* <TableCell numeric> Δ Origin (ms)</TableCell> */}
+                {/* <TableCell numeric> Δ Server (ms)</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -126,11 +128,11 @@ class MessageList extends Component {
                 return (
                   <TableRow key={m.id}>
                     <TableCell>{m.id.slice(-5)}</TableCell>
-                    <TableCell numeric>{m.stamp}</TableCell>
-                    <TableCell numeric>{m.host}</TableCell>
-                    <TableCell numeric>{m.text}</TableCell>
-                    <TableCell numeric>{m.delta}</TableCell>
-                    <TableCell numeric>{m.deltaServer}</TableCell>
+                    <TableCell>{m.stamp}</TableCell>
+                    <TableCell>{m.host}</TableCell>
+                    <TableCell>{m.text}</TableCell>
+                    {/* <TableCell numeric>{m.delta}</TableCell> */}
+                    {/* <TableCell numeric>{m.deltaServer}</TableCell> */}
                   </TableRow>
                 );
               })}

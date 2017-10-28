@@ -3,7 +3,7 @@
 //  - not in _document.js
 //  - not in withRoot wrapper
 
-import withRoot from './withRoot';
+import withRoot from '../lib/withMaterialRoot';
 
 export default withRoot(({ children }) => (
   <main>
