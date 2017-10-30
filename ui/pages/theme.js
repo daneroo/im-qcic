@@ -1,10 +1,13 @@
 import Page from '../components/Page'
 import Header from '../components/Header'
-import ThemeJSON from '../components/ThemeJSON'
+import { withTheme } from 'material-ui/styles';
 
-export default (props) => (
+
+const Theme = (props) => (
   <Page>
     <Header pathname={props.url.pathname} />
-    <ThemeJSON />
+    <pre>{JSON.stringify(props.theme, null, 2)}</pre>
   </Page>
 )
+
+export default withTheme()(Theme);
