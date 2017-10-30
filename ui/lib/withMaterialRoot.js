@@ -21,42 +21,11 @@ const styles = theme => ({
     },
     a: {
       color: theme.palette.primary[500], // blue for now
+      '&:hover': {
+        color: theme.palette.common.black
+      },
       textDecoration: 'none'
     },
-    'a:hover': {
-      color: theme.palette.common.black
-    },
-
-    // header links (Top menu)
-    header: {
-      // 'margin-bottom': '25px'
-      marginBottom: 25
-    },
-    'header a': {
-      color: theme.palette.grey[500], // #9e9e9e
-      // color: theme.palette.shades.light.text.disabled, // similar
-      fontSize: 14,
-      marginRight: 15
-    },
-    'header a.is-active': {
-      color: theme.palette.common.black,
-    },
-    'header a:hover': {
-      color: theme.palette.common.black,
-    },
-
-    // for about page but applies to all pages
-    // 'p,li': {
-    article: {
-      margin: [0, 'auto'],
-      maxWidth: 650
-    },
-    // 'article p': theme.typography.body1,
-    'article p': {
-      color: theme.palette.grey[700], // #616161
-      fontSize: 14,
-      lineHeight: '24px' // must have units
-    }
   }
 });
 

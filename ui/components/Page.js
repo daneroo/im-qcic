@@ -3,9 +3,9 @@
 //  - not in _document.js
 //  - not in withRoot wrapper
 
-import withRoot from '../lib/withMaterialRoot';
+import withMaterialRoot from '../lib/withMaterialRoot';
 
-export default withRoot(({ children }) => (
+export default withMaterialRoot(({ children }) => (
   <main>
     {children}
     {/* Global style for all <Page /> elements, this is applied to late!!! */}

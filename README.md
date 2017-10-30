@@ -6,11 +6,8 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 - Add standard.js
 - Refactor MessageList Grapql HOC: withMessages
-- SendMessage Form to own Component (withData)
 - ui with material
-  - [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons
-  - Header (with Material, and remove styles?)
-  - Test with local/global [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
+  - _document.js:? [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
   - [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
   - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
 - logo with ω: ωωωω and http://snapsvg.io/
@@ -22,6 +19,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - cli: add yargs --listen, --heartbeat,... options
 
 ##  ~~DONE~~
+- ~~Header with Material, and remove global styles?)~~
+- ~~ui [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons~~
+- ~~SendMessage Form to own Component (withData)~~
 - ~~Rename components/withRoot -> lib/withMaterialRoot (only used in Page)~~
 - ~~remove BasicTable/Dialog~~
 - ~~ui with material~~

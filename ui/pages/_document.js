@@ -32,6 +32,8 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
+          {/* not needed with SVGIcon based material-ui-icons */}
+          {/* <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" /> */}
         </Head>
         <body>
           <Main />
