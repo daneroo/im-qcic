@@ -4,19 +4,24 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- name change to im-wwww
 - Add standard.js
 - Refactor MessageList Grapql HOC: withMessages
-- ui with material
+- ui styled jsx
+  -Compare stock (git clone next.js/server/document.js) with our custom _document.js
   - _document.js:? [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
-  - [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
-  - [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
+
+- ui About in markwon in material
+- ui [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
+- ui [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
 - logo with ω: ωωωω and http://snapsvg.io/
+  - also favicon
   - ωho ωill ωatch the ωatchers
 - npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
 - scope packages to @imetrical/qcic...
 - Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
-- cli: add yargs --listen, --heartbeat,... options
+- cli: add yargs/commander --listen, --heartbeat,... options
 
 ##  ~~DONE~~
 - ~~Header with Material, and remove global styles?)~~
