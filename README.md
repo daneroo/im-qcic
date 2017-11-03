@@ -5,6 +5,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ## TODO
 
 - name change to im-wwww
+- add topic to Message, for filtering
 - Add standard.js
 - Refactor MessageList Grapql HOC: withMessages
 - ui styled jsx
