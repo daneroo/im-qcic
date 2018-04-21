@@ -3,12 +3,12 @@ module.exports = {
   start
 }
 
-function start ({pubnub, channel, delay} = {}) {
+function start ({pubnub, channel, delay, quorum} = {}) {
   if (!pubnub) {
     console.error('Missing PubNuB instance')
     return
   }
-  const state = {} // last message received
+  const state = {} // last message received per publisher
   pubnub.addListener({
     status: showStatus,
     // message: showMessage
@@ -19,7 +19,7 @@ function start ({pubnub, channel, delay} = {}) {
   })
 
   setInterval(() => {
-    checkExpired(state, delay * 2)
+    checkExpired(state, delay * 2, quorum)
   }, delay)
 }
 
@@ -33,16 +33,20 @@ function monitorMessage (state) {
   }
 }
 
-function checkExpired (state, maxDelay) {
-  // console.log('watch', state)
+function checkExpired (state, maxDelay, quorum) {
+  let present = 0
   for (const publisher in state) {
     const message = state[publisher]
     const {stamp, delay} = fromTimeToken(message.timetoken)
-    // console.log('-watch', publisher, stamp, delay)
     if (delay > maxDelay) {
       console.log('missing publisher', publisher, 'since', stamp.toISOString())
       delete state[publisher]
+    } else {
+      present++
     }
+  }
+  if (present < quorum) {
+    console.log('quorum not satisfied', {quorum, present})
   }
 }
 
@@ -52,7 +56,6 @@ function showMessage (message) {
 }
 
 function showStatus (statusEvent) {
-  // console.log('status', statusEvent)
   if (statusEvent.category === 'PNConnectedCategory') {
     console.log('connected')
   }
