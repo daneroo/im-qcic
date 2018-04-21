@@ -1,6 +1,11 @@
 # Pubnub experiment for qcic
 
-Decouple the parts:
+## TODO 
+- integrate with slack (alarm until cleared)
+- quorum for scrobbleCast
+- out of sync for scrobbleCast
+- quorum (1) for ted1k
+- QoS for ted1k (samples in last minute/hour/day)
 
 ## Simple
 - publish heartbeat (interval)
@@ -10,7 +15,9 @@ npm start -- -s
 npm start -- -p
 npm start -- -p
 ```
-## req-response
+
+
+## req-response (like nats...)
 
 - subscribe to req responding with heartbeat payload
 - publish req 
