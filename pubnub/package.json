@@ -1,0 +1,29 @@
+{
+  "name": "pubnub-qcic",
+  "version": "1.0.0",
+  "description": "Pubnub node.js client",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "standard",
+    "secscan": "nsp check",
+    "test": "npm run lint && npm run secscan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "devDependencies": {
+    "nsp": "^3.2.1",
+    "standard": "^11.0.1"
+  },
+  "dependencies": {
+    "pubnub": "^4.20.2"
+  }
+}
