@@ -1,4 +1,5 @@
 const os = require('os')
+const fs = require('fs')
 
 // export default {
 module.exports = {
@@ -7,10 +8,21 @@ module.exports = {
     'pubnub-qcic': require('../package').version,
     node: process.versions.node
   },
-  pubnub: {
-    keys: {
-      publish: 'pub-c-f438cd3e-2525-461c-a956-63483b41b6d8',
-      subscribe: 'sub-c-ab4da160-39be-11e8-8bb7-3ab51ec5ed79'
+  credentials: getConfig('credentials.saas.json', {
+    pubnub: {
+      publishKey: 'put-your-pub-here',
+      subscribeKey: 'put-your-sub-here'
     }
+  })
+}
+
+// used for SaaS credentials
+function getConfig (path, defaultValue) {
+  try {
+    // fs.accessSync(path, fs.constants.R_OK)
+    return JSON.parse(fs.readFileSync(path).toString())
+  } catch (err) {
+    console.warn('getConfig', err.message)
+    return defaultValue
   }
 }
