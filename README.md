@@ -4,9 +4,8 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
-- name change to im-wwww
 - add topic to Message, for filtering
-- Add standard.js
+- Add standard.js to ui (others done)
 - Refactor MessageList Grapql HOC: withMessages
 - ui styled jsx
   -Compare stock (git clone next.js/server/document.js) with our custom _document.js
@@ -25,6 +24,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - cli: add yargs/commander --listen, --heartbeat,... options
 
 ##  ~~DONE~~
+- ~~name change to im-wwww: keeping im-qcic~~
 - ~~Header with Material, and remove global styles?)~~
 - ~~ui [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons~~
 - ~~SendMessage Form to own Component (withData)~~

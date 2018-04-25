@@ -1,6 +1,8 @@
 # Pubnub experiment for qcic
 
 ## TODO 
+
+- s3-db to store alarms 
 - integrate with slack (alarm until cleared)
 - quorum for scrobbleCast
 - out of sync for scrobbleCast
