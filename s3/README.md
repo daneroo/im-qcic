@@ -3,23 +3,35 @@
 `s3-db` manages a bucket per environment, per table.
 e.g.: `qcic.test-alarms` or `qcic.production-objects`.
 
+The access key we create has permisions on all the `qcic*` buckets
+
+## TODO
+- make `keyrotation.sh` script
+
 ## S3 permission related operations
-These operations are done using a more privileged user (im-dan)
+These key management operations are done using a more privileged user (im-dan)
+
 ### Setup
-- Create user
-- Create policy for s3 access (`qcic-iam-sw-rw-policy.json`)
-- Attach policy to user
-- Create acces-key for user
+- Create user, acces-key s3 policy, attach to user
+```
+./setup.sh
+```
+
+### Status
+```
+./status
+```
 
 ### Rotating keys
+Not yet done
 
 ### Teardown
-- detach policy from user
-- delete policy
-- delete access key(s)
-- (optionsl) remove buckets
+- detach policy from user, delete policy, access key, user
+```
+./teardown.sh
+```
 
-
+## Playground snippets
 
 ### Bucket creation and operations
 This is to create bucket with correct policy. 
