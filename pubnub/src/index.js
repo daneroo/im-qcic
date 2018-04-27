@@ -1,5 +1,6 @@
 
 const heartbeat = require('./heartbeat')
+const alarm = require('./alarm')
 
 main()
 async function main () {
@@ -12,24 +13,19 @@ async function main () {
     .options({
       s: {
         alias: 'sub',
-        describe: 'start subscriber loop',
+        describe: 'start subscriber (watcher) loop',
         boolean: true
       },
       p: {
         alias: 'pub',
         describe: 'start publish loop',
         boolean: true
+      },
+      a: {
+        alias: 'alarm',
+        describe: 'test an alarm',
+        boolean: true
       }
-      // q: {
-      //   alias: 'requestor',
-      //   describe: 'start requestor loop',
-      //   boolean: true
-      // },
-      // r: {
-      //   alias: 'responder',
-      //   describe: 'start responder',
-      //   boolean: true
-      // }
     })
     .argv
 
@@ -40,5 +36,9 @@ async function main () {
   if (argv.pub) {
     console.log('start publish loop')
     heartbeat.publish()
+  }
+  if (argv.alarm) {
+    console.log('test an alarm')
+    alarm.test()
   }
 }

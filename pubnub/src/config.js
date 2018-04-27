@@ -12,8 +12,19 @@ module.exports = {
     pubnub: {
       publishKey: 'put-your-pub-here',
       subscribeKey: 'put-your-sub-here'
+    },
+    s3db: {
+      // name: 'aws-s3',
+      // region: 'us-west-2',
+      accessKeyId: 'your-access-key-id',
+      secretAccessKey: 'you-secret-access-key'
     }
-  })
+  }),
+  s3db: {
+    name: 'qcic'
+    // namePattern: '${db.name}.${db.environment}-${name}' // default
+    // environment: 'test' // for testing
+  }
 }
 
 // used for SaaS credentials

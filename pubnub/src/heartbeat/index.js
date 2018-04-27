@@ -5,7 +5,7 @@ const publisher = require('./publisher')
 const subscriber = require('./subscriber')
 
 const channel = 'wwww.hb'
-const delay = 3000 // default publish interval
+const delay = 10000 // default publish interval
 const quorum = 1
 module.exports = {
   publish,
