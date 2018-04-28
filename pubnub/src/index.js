@@ -11,30 +11,35 @@ async function main () {
     .help('h')
     .alias('h', 'help')
     .options({
-      s: {
-        alias: 'sub',
-        describe: 'start subscriber (watcher) loop',
+      w: {
+        alias: 'watch',
+        describe: 'start  watcher loop',
         boolean: true
       },
       p: {
         alias: 'pub',
-        describe: 'start publish loop',
+        describe: 'start publish (heartbeat) loop',
         boolean: true
       },
       a: {
         alias: 'alarm',
-        describe: 'test an alarm',
+        describe: 'trigger a test alarm',
+        boolean: true
+      },
+      r: {
+        alias: 'resolve',
+        describe: 'resolve a test alarm',
         boolean: true
       }
     })
     .argv
 
-  if (argv.sub) {
-    console.log('start subscriber loop')
+  if (argv.watch) {
+    console.log('starting watcher loop')
     heartbeat.watch()
   }
   if (argv.pub) {
-    console.log('start publish loop')
+    console.log('start publish (heartbeat) loop')
     heartbeat.publish()
   }
   if (argv.alarm) {

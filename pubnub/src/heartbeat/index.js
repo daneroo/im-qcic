@@ -2,7 +2,7 @@
 const PubNub = require('pubnub')
 const config = require('../config')
 const publisher = require('./publisher')
-const subscriber = require('./subscriber')
+const watcher = require('./watcher')
 
 const channel = 'wwww.hb'
 const delay = 10000 // default publish interval
@@ -17,7 +17,7 @@ function publish () {
 }
 
 function watch () {
-  subscriber.start({pubnub: newPubNub(), channel, delay, quorum})
+  watcher.start({pubnub: newPubNub(), channel, delay, quorum})
 }
 
 function newPubNub () {

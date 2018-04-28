@@ -13,7 +13,8 @@ function start ({pubnub, channel, delay} = {}) {
   setInterval(async () => {
     const payload = {
       // my: 'payload',
-      idx: selfIdx++
+      idx: selfIdx++,
+      stamp: new Date().toISOString()
     }
     try {
       const response = await send({pubnub, payload, channel})

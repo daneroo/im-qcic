@@ -8,12 +8,37 @@ const {
   save,
   remove
 } = require('./db')
+const {notify} = require('./slack')
 
 module.exports = {
+  trigger,
+  resolve,
   test
 }
 
-// create then delete an alarm
+async function trigger (alarm) {
+  const existingAlarm = await get('alarms', alarm.id)
+  if (!existingAlarm) {
+    // send to slack first
+    await notify(alarm, true)
+    const salarm = await save('alarms', alarm)
+    console.log('trigger: alarm saved:', salarm)
+  } else {
+    console.log('trigger: alarm already set', existingAlarm)
+  }
+}
+async function resolve (alarm) {
+  const existingAlarm = await get('alarms', alarm.id)
+  if (existingAlarm) {
+    await notify(alarm, false)
+    await remove('alarms', existingAlarm.id)
+    console.log('resolve: alarm deleted')
+  } else {
+    // console.log('resolve: no alarm to resolve')
+  }
+}
+
+// test: create then delete an alarm
 async function test () {
   const alarm = {
     id: 'qcic.heartbeat.test', // default UUID
@@ -34,7 +59,7 @@ async function test () {
     console.log('existing alarms (meta)', alarms)
 
     a = await get('alarms', alarm.id)
-    console.log('alarm exists', a)
+    console.log('alarm if exists', a)
 
     if (a) {
       const dalarm = await remove('alarms', alarm.id)

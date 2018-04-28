@@ -18,6 +18,12 @@ module.exports = {
       // region: 'us-west-2',
       accessKeyId: 'your-access-key-id',
       secretAccessKey: 'you-secret-access-key'
+    },
+    slack: {
+      // Incoming WebHooks : Posts to #qcic as qcicbot
+      inhook: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX',
+      // Slack API Tester - old token from https://api.slack.com/custom-integrations/legacy-tokens
+      token: 'xoxp-xxxxxxxxxxx-xxxxxxxxxxx-xxxxxxxxxxx-xxxxxxxxxx'
     }
   }),
   s3db: {

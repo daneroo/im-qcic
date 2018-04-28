@@ -1,4 +1,5 @@
 
+const alarm = require('../alarm')
 module.exports = {
   start
 }
@@ -19,7 +20,7 @@ function start ({pubnub, channel, delay, quorum} = {}) {
   })
 
   setInterval(() => {
-    checkExpired(state, delay * 2, quorum)
+    checkState(state, delay * 2, quorum)
   }, delay)
 }
 
@@ -33,7 +34,8 @@ function monitorMessage (state) {
   }
 }
 
-function checkExpired (state, maxDelay, quorum) {
+// -only consider one topic (channel) for now
+function checkState (state, maxDelay, quorum) {
   let present = 0
   for (const publisher in state) {
     const message = state[publisher]
@@ -45,8 +47,13 @@ function checkExpired (state, maxDelay, quorum) {
       present++
     }
   }
+
+  // trigger/resolve alarm
+  const alrm = {id: 'qcic.heartbeat.quorum', quorum, present}
   if (present < quorum) {
-    console.log('quorum not satisfied', {quorum, present})
+    alarm.trigger(alrm)
+  } else {
+    alarm.resolve(alrm)
   }
 }
 
