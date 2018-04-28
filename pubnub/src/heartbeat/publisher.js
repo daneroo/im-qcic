@@ -9,30 +9,38 @@ function start ({pubnub, channel, delay} = {}) {
     return
   }
 
-  let selfIdx = 1000
   setInterval(async () => {
-    const payload = {
-      // my: 'payload',
-      idx: selfIdx++,
-      stamp: new Date().toISOString()
-    }
     try {
-      const response = await send({pubnub, payload, channel})
-      const sent = new Date(Math.ceil(+response.timetoken / 10000))
-      // const delay = +new Date() - sent
-      const stamp = sent.toISOString()
-
-      // , 'Δ' + delay + 'ms'
-      console.log('msg', payload, '@' + stamp, '>' + pubnub.getUUID())
+      await send({pubnub, channel})
     } catch (error) {
       console.log('error', error)
     }
   }, delay)
 }
 
-async function send ({pubnub, payload, channel}) {
-  return pubnub.publish({
+async function send ({pubnub, channel}) {
+  const payload = {
+    stamp: new Date().toISOString()
+  }
+
+  const response = await pubnub.publish({
     message: payload,
     channel: channel
   })
+
+  logSent(pubnub, channel, payload, response)
+  return response
+}
+
+function logSent (pubnub, channel, payload, response) {
+  const pstamp = new Date(Math.ceil(+response.timetoken / 10000))
+  // const delay = +new Date() - sent
+  const ostamp = new Date(payload.stamp)
+  console.log([ostamp, pstamp, new Date()].map(d => d.toISOString()))
+
+  const pdelay = +new Date() - pstamp
+  const odelay = +new Date() - ostamp
+
+  // , 'Δ' + delay + 'ms'
+  console.log('→', pubnub.getUUID(), channel, payload, 'Δp' + pdelay + 'ms', 'Δo' + odelay + 'ms')
 }

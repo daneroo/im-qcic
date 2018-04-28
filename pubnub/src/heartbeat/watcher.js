@@ -12,7 +12,6 @@ function start ({pubnub, channel, delay, quorum} = {}) {
   const state = {} // last message received per publisher
   pubnub.addListener({
     status: showStatus,
-    // message: showMessage
     message: monitorMessage(state)
   })
   pubnub.subscribe({
@@ -26,7 +25,7 @@ function start ({pubnub, channel, delay, quorum} = {}) {
 
 function monitorMessage (state) {
   return (message) => {
-    showMessage(message)
+    logReceived(message)
     if (!state[message.publisher]) {
       console.log('new publisher', message.publisher)
     }
@@ -57,9 +56,14 @@ function checkState (state, maxDelay, quorum) {
   }
 }
 
-function showMessage (message) {
+function logReceived (message) {
+  // {"channel":"qcic.heartbeat","actualChannel":null,"subscribedChannel":"qcic.heartbeat","timetoken":"15249423335129324","publisher":"de4e85c5-ef2d-4e6d-a7f4-737930cf08b8","message":{"stamp":"2018-04-28T19:05:33.372Z"}}
   const {stamp, delay} = fromTimeToken(message.timetoken)
-  console.log('msg', message.message, '@' + stamp.toISOString(), '<' + message.publisher, 'Δ' + delay + 'ms')
+  const ostamp = new Date(message.message.stamp)
+  const odelay = +new Date() - ostamp
+  // console.log('msg', message.message, '@' + stamp.toISOString(), '<' + message.publisher, 'Δ' + delay + 'ms')
+  console.log([ostamp, stamp, new Date()].map(d => d.toISOString()))
+  console.log('←', message.publisher, message.channel, message.message, 'Δp' + delay + 'ms', 'Δo' + odelay + 'ms')
 }
 
 function showStatus (statusEvent) {
