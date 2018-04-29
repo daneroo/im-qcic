@@ -27,9 +27,9 @@ module.exports = {
     }
   }),
   s3db: {
-    name: 'qcic'
+    name: 'qcic',
     // namePattern: '${db.name}.${db.environment}-${name}' // default
-    // environment: 'test' // for testing
+    environment: 'production' // default is dev. TODO(daneroo): should respect NODE_ENV?
   }
 }
 
