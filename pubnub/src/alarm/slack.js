@@ -12,7 +12,9 @@ async function notify (alarm, active) {
   const tmpl = template(alarm, active)
   const res = await web.chat.postMessage({ channel, ...tmpl })
   // `res` contains information about the posted message
-  console.log('Message sent: ', res.ts)
+  const shortText = `${alarm.id}: Alarm ${active ? 'triggered' : 'resolved'} `
+
+  console.log('Slack notified: ', shortText, new Date(res.ts * 1000).toISOString())
   return res
 }
 

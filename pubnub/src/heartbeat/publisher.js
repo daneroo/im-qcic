@@ -1,4 +1,7 @@
 
+// const {short} = require('./format')
+const {short, deltaMs} = require('./format')
+
 module.exports = {
   start
 }
@@ -11,14 +14,14 @@ function start ({pubnub, channel, delay} = {}) {
 
   setInterval(async () => {
     try {
-      await send({pubnub, channel})
+      await publish({pubnub, channel})
     } catch (error) {
       console.log('error', error)
     }
   }, delay)
 }
 
-async function send ({pubnub, channel}) {
+async function publish ({pubnub, channel}) {
   const payload = {
     stamp: new Date().toISOString()
   }
@@ -33,14 +36,14 @@ async function send ({pubnub, channel}) {
 }
 
 function logSent (pubnub, channel, payload, response) {
-  const pstamp = new Date(Math.ceil(+response.timetoken / 10000))
-  // const delay = +new Date() - sent
-  const ostamp = new Date(payload.stamp)
-  console.log([ostamp, pstamp, new Date()].map(d => d.toISOString()))
+  // this is the latency between assign pubnub timetoken and received time
+  // const pnstamp = fromTimeToken(response.timetoken)
+  // const pndelay = deltaMs(pstamp, now)
 
-  const pdelay = +new Date() - pstamp
-  const odelay = +new Date() - ostamp
+  // this is the end-to end latency, from origin stamp, to received publish acknowledgment
+  const now = new Date()
+  const stamp = new Date(payload.stamp)
+  const delay = deltaMs(stamp, now)
 
-  // , 'Δ' + delay + 'ms'
-  console.log('→', pubnub.getUUID(), channel, payload, 'Δp' + pdelay + 'ms', 'Δo' + odelay + 'ms')
+  console.log('→', short(pubnub.getUUID(), channel), payload, 'Δ=' + delay + 'ms')
 }

@@ -1,46 +1,57 @@
 
 const alarm = require('../alarm')
+const {short, fromTimeToken, deltaMs} = require('./format')
+
 module.exports = {
   start
 }
 
+// TODO(daneroo) if we wish to stop, we need to remove listeners, unsubscribe, and clearInterval
 function start ({pubnub, channel, delay, quorum} = {}) {
   if (!pubnub) {
     console.error('Missing PubNuB instance')
     return
   }
-  const state = {} // last message received per publisher
+
+  // Map: publisher -> message (last received)
+  // shared between accumulateMessageState and checkState
+  const state = {}
+
   pubnub.addListener({
-    status: showStatus,
-    message: monitorMessage(state)
+    status: showConnectedStatus,
+    message: accumulateMessageState(pubnub, channel, state)
   })
   pubnub.subscribe({
     channels: [channel]
   })
 
   setInterval(() => {
-    checkState(state, delay * 2, quorum)
+    checkState(state, channel, delay * 2, quorum)
   }, delay)
 }
 
-function monitorMessage (state) {
+function accumulateMessageState (pubnub, channel, state) {
   return (message) => {
-    logReceived(message)
     if (!state[message.publisher]) {
-      console.log('new publisher', message.publisher)
+      console.log('+', short(message.publisher, message.channel), 'new publisher')
     }
     state[message.publisher] = message
+    logReceived(pubnub, message)
   }
 }
 
-// -only consider one topic (channel) for now
-function checkState (state, maxDelay, quorum) {
+// maxDelay should allow for missing 1 or 2 messages plus the variability in message delivery,
+//  plus the offset between the receive and checkState loops
+function checkState (state, channel, maxDelay, quorum) {
   let present = 0
   for (const publisher in state) {
     const message = state[publisher]
-    const {stamp, delay} = fromTimeToken(message.timetoken)
+
+    const stamp = fromTimeToken(message.timetoken)
+    const delay = deltaMs(stamp, new Date())
+    // console.log('  ...', short(message.publisher, message.channel), 'Δ' + delay + 'ms')
     if (delay > maxDelay) {
-      console.log('missing publisher', publisher, 'since', stamp.toISOString())
+      console.log('-', short(message.publisher, message.channel), 'lost publisher', '@' + stamp.toISOString())
       delete state[publisher]
     } else {
       present++
@@ -48,7 +59,7 @@ function checkState (state, maxDelay, quorum) {
   }
 
   // trigger/resolve alarm
-  const alrm = {id: 'qcic.heartbeat.quorum', quorum, present}
+  const alrm = {id: channel + '.quorum', quorum, present}
   if (present < quorum) {
     alarm.trigger(alrm)
   } else {
@@ -56,24 +67,25 @@ function checkState (state, maxDelay, quorum) {
   }
 }
 
-function logReceived (message) {
-  // {"channel":"qcic.heartbeat","actualChannel":null,"subscribedChannel":"qcic.heartbeat","timetoken":"15249423335129324","publisher":"de4e85c5-ef2d-4e6d-a7f4-737930cf08b8","message":{"stamp":"2018-04-28T19:05:33.372Z"}}
-  const {stamp, delay} = fromTimeToken(message.timetoken)
-  const ostamp = new Date(message.message.stamp)
-  const odelay = +new Date() - ostamp
-  // console.log('msg', message.message, '@' + stamp.toISOString(), '<' + message.publisher, 'Δ' + delay + 'ms')
-  console.log([ostamp, stamp, new Date()].map(d => d.toISOString()))
-  console.log('←', message.publisher, message.channel, message.message, 'Δp' + delay + 'ms', 'Δo' + odelay + 'ms')
+// print a short summary of received message
+function logReceived (pubnub, message) {
+  // this is the latency between assign pubnub timetoken and received time
+  // const pstamp = fromTimeToken(message.timetoken)
+  // const pdelay = deltaMs(pstamp, now)
+
+  // this is the end-to end latency, from origin stamp, and receiving time
+  // this is only meaningful if origin stamp and receiver are on the same clock
+  const now = new Date()
+  const stamp = new Date(message.message.stamp)
+  const delay = deltaMs(stamp, now)
+  const indicator = (message.publisher === pubnub.getUUID()) ? '=' : '~'
+
+  console.log('←', short(message.publisher, message.channel), message.message, 'Δ' + indicator + delay + 'ms')
 }
 
-function showStatus (statusEvent) {
+// Pubnub Connected status
+function showConnectedStatus (statusEvent) {
   if (statusEvent.category === 'PNConnectedCategory') {
     console.log('connected')
   }
-}
-
-function fromTimeToken (timetoken) {
-  const stamp = new Date(Math.ceil(+timetoken / 10000))
-  const delay = +new Date() - stamp
-  return {stamp, delay}
 }

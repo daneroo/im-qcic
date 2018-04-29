@@ -7,17 +7,22 @@ const watcher = require('./watcher')
 const channel = 'qcic.heartbeat'
 const delay = 10000 // default publish interval
 const quorum = 1
+
 module.exports = {
   publish,
   watch
 }
 
+// re-use same pubnub client for publish and watch,
+// to determine if origin clock can be used reliably for latency calculation (watcher)
+const pubnub = newPubNub()
+
 function publish () {
-  publisher.start({pubnub: newPubNub(), channel, delay})
+  publisher.start({pubnub, channel, delay})
 }
 
 function watch () {
-  watcher.start({pubnub: newPubNub(), channel, delay, quorum})
+  watcher.start({pubnub, channel, delay, quorum})
 }
 
 function newPubNub () {
