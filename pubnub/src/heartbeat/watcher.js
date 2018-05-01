@@ -13,9 +13,13 @@ function start ({pubnub, channel, delay, quorum} = {}) {
     return
   }
 
-  // Map: publisher -> message (last received)
   // shared between accumulateMessageState and checkState
-  const state = {}
+  // lastSeen:  stamp (for any publisher)
+  // publishers: publisher -> message (last received per publisher)
+  const state = {
+    lastSeen: '1970-01-01T00:00:00Z',
+    publishers: {}
+  }
 
   pubnub.addListener({
     status: showConnectedStatus,
@@ -26,16 +30,29 @@ function start ({pubnub, channel, delay, quorum} = {}) {
   })
 
   setInterval(() => {
-    checkState(state, channel, delay * 2, quorum)
+    checkState(state, channel, delay * 2 + 1000, quorum)
   }, delay)
 }
 
+// binds context into handler closure, returns handler
 function accumulateMessageState (pubnub, channel, state) {
   return (message) => {
-    if (!state[message.publisher]) {
+    const publishers = state.publishers
+    if (!publishers[message.publisher]) {
       console.log('+', short(message.publisher, message.channel), 'new publisher')
     }
-    state[message.publisher] = message
+
+    // store message in state
+    publishers[message.publisher] = message
+
+    // update lastSeen from message.stamp
+    // TODO(daneroo): should it be message.timetoken ?
+    if (message.message.stamp > state.lastSeen) {
+      // console.log('  ...', short(message.publisher, message.channel), {lastSeen: state.lastSeen, message})
+      state.lastSeen = message.message.stamp
+    }
+
+    // log it
     logReceived(pubnub, message)
   }
 }
@@ -44,22 +61,25 @@ function accumulateMessageState (pubnub, channel, state) {
 //  plus the offset between the receive and checkState loops
 function checkState (state, channel, maxDelay, quorum) {
   let present = 0
-  for (const publisher in state) {
-    const message = state[publisher]
+  const publishers = state.publishers
+
+  for (const publisher in publishers) {
+    const message = publishers[publisher]
 
     const stamp = fromTimeToken(message.timetoken)
     const delay = deltaMs(stamp, new Date())
     // console.log('  ...', short(message.publisher, message.channel), 'Δ' + delay + 'ms')
     if (delay > maxDelay) {
       console.log('-', short(message.publisher, message.channel), 'lost publisher', '@' + stamp.toISOString())
-      delete state[publisher]
+      delete publishers[publisher]
     } else {
       present++
     }
   }
 
   // trigger/resolve alarm
-  const alrm = {id: channel + '.quorum', quorum, present}
+  const stamp = new Date().toISOString()
+  const alrm = {id: channel + '.quorum', quorum, present, lastSeen: state.lastSeen, stamp}
   if (present < quorum) {
     alarm.trigger(alrm)
   } else {

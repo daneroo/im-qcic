@@ -8,6 +8,7 @@ const {
   save,
   remove
 } = require('./db')
+
 const {notify} = require('./slack')
 
 module.exports = {
@@ -27,9 +28,12 @@ async function trigger (alarm) {
     console.log('trigger: alarm already set', existingAlarm)
   }
 }
+
+// Note: the lastSeen field is taken from existingAlarm
 async function resolve (alarm) {
   const existingAlarm = await get('alarms', alarm.id)
   if (existingAlarm) {
+    alarm.lastSeen = existingAlarm.lastSeen
     await notify(alarm, false)
     await remove('alarms', existingAlarm.id)
     console.log('resolve: alarm deleted')
