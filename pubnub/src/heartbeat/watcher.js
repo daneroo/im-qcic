@@ -6,12 +6,19 @@ module.exports = {
   start
 }
 
+// TODO(daneroo): make this into a class, and bind in call or in constructor
+// constructor() {
+//   this.onClick = this.onClick.bind(this);
+// }
+
 // TODO(daneroo) if we wish to stop, we need to remove listeners, unsubscribe, and clearInterval
 function start ({pubnub, channel, delay, quorum} = {}) {
   if (!pubnub) {
     console.error('Missing PubNuB instance')
     return
   }
+
+  const maxDelay = delay * 2 + 1000
 
   // shared between accumulateMessageState and checkState
   // lastSeen:  stamp (for any publisher)
@@ -30,7 +37,7 @@ function start ({pubnub, channel, delay, quorum} = {}) {
   })
 
   setInterval(() => {
-    checkState(state, channel, delay * 2 + 1000, quorum)
+    checkState(state, channel, maxDelay, quorum)
   }, delay)
 }
 

@@ -5,7 +5,7 @@ const publisher = require('./publisher')
 const watcher = require('./watcher')
 
 const channel = 'qcic.heartbeat'
-const delay = 10000 // default publish interval
+const delay = 60000 // default publish interval
 const quorum = 1
 
 module.exports = {
