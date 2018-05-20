@@ -45,6 +45,31 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - ~~babel-preset-env now: please read babeljs.io/env to update~~
 - ~~add node cli client~~
 
+## k8s
+gcloud bring up cluster:
+
+```
+gcloud auth login
+gcloud config set project im-infra
+gcloud components update
+
+gcloud compute zones list # requires project..
+gcloud config set compute/region northamerica-northeast1
+gcloud config set compute/zone northamerica-northeast1-a
+
+gcloud beta container --project "im-infra" clusters create "k1" --zone "us-central1-a" --username "admin" --cluster-version "1.9.7-gke.0" --machine-type "n1-standard-1" --image-type "COS" --disk-size "100" --scopes "https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --num-nodes "1" --network "default" --enable-cloud-logging --enable-cloud-monitoring --subnetwork "default" --addons HorizontalPodAutoscaling,HttpLoadBalancing,KubernetesDashboard --enable-autorepair
+
+source <(kubectl completion bash)
+
+watch kubectl get svc,deploy,po,pvc,ing,secrets,nodes
+
+kubectl run hello-server --image gcr.io/google-samples/hello-app:1.0 --port 8080
+kubectl expose deployment hello-server --type "LoadBalancer"
+kubectl scale --replicas=3 deployment/hello-server
+
+gcloud container clusters delete k1
+```
+
 ## cli client
 ```
 cd cli
