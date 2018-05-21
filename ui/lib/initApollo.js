@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { ApolloClient, createNetworkInterface } from 'react-apollo'
-import { addGraphQLSubscriptions, SubscriptionClient } from "subscriptions-transport-ws";
+import { addGraphQLSubscriptions, SubscriptionClient } from 'subscriptions-transport-ws'
 import { uri, wsuri } from './config'
 
 let apolloClient = null
@@ -10,17 +10,16 @@ if (!process.browser) {
   global.fetch = fetch
 }
 
-
-function create(initialState) {
+function create (initialState) {
   let networkInterface = createNetworkInterface({
-    uri: uri, // Server URL (must be absolute)
+    uri: uri // Server URL (must be absolute)
   })
   // No Subscriptions on server-side
-  if (process.browser){
+  if (process.browser) {
     const wsClient = new SubscriptionClient(wsuri, {
-      reconnect: true,
-    });
-    networkInterface = addGraphQLSubscriptions(networkInterface, wsClient)    
+      reconnect: true
+    })
+    networkInterface = addGraphQLSubscriptions(networkInterface, wsClient)
   }
 
   return new ApolloClient({
@@ -30,7 +29,7 @@ function create(initialState) {
   })
 }
 
-export default function initApollo(initialState) {
+export default function initApollo (initialState) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {

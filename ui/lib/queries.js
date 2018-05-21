@@ -1,4 +1,4 @@
-import { gql } from "react-apollo";
+import { gql } from 'react-apollo'
 
 export const GET_MESSAGES_QUERY = gql`
 query getAll {
@@ -8,7 +8,7 @@ query getAll {
     host
     text
   }
-}`;
+}`
 
 export const ON_NEW_MESSAGE_SUBSCRIPTION = gql`
 subscription OnNewMessage {
@@ -18,7 +18,7 @@ subscription OnNewMessage {
     host
     text
   }
-}`;
+}`
 
 export const MUTATE_MESSAGE = gql`
 mutation AddMessage($stamp: String!,$host: String!,$text: String!) {
@@ -29,4 +29,4 @@ mutation AddMessage($stamp: String!,$host: String!,$text: String!) {
   }) {
     id
   }
-}`;
+}`

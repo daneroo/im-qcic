@@ -3,5 +3,5 @@
 const BASEURI = 'https://api-qcic.now.sh'
 const WSBASEURI = BASEURI.replace(/^http/, 'ws')
 
-export const uri = `${BASEURI}/graphql`;
-export const wsuri = `${WSBASEURI}/subscriptions`;
+export const uri = `${BASEURI}/graphql`
+export const wsuri = `${WSBASEURI}/subscriptions`

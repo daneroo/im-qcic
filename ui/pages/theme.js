@@ -1,7 +1,6 @@
 import Page from '../components/Page'
 import Header from '../components/Header'
-import { withTheme } from 'material-ui/styles';
-
+import { withTheme } from '@material-ui/core/styles'
 
 const Theme = (props) => (
   <Page>
@@ -10,4 +9,4 @@ const Theme = (props) => (
   </Page>
 )
 
-export default withTheme()(Theme);
+export default withTheme()(Theme)

@@ -1,12 +1,16 @@
-import React, { Component } from "react";
-import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import TextField from 'material-ui/TextField';
-import { withStyles } from 'material-ui/styles';
+import React, { Component } from 'react'
+import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
 import ulid from 'ulid'
-import { gql, graphql, withApollo } from "react-apollo";
+import { graphql, withApollo } from 'react-apollo'
 import {
   GET_MESSAGES_QUERY,
   ON_NEW_MESSAGE_SUBSCRIPTION,
@@ -14,23 +18,27 @@ import {
 } from '../lib/queries'
 
 const styles = theme => ({
-  container: {
+  paper: theme.mixins.gutters({
+    paddingTop: 16,
+    paddingBottom: 16,
+    marginTop: theme.spacing.unit * 3
+  }),
+
+  form: {
     // display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   formElements: {
     marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing.unit
     // width: 200,
   }
-});
-//@withApollo - react-scripts do not yet support decorators - https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#can-i-use-decorators
+})
+// @withApollo - react-scripts do not yet support decorators - https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#can-i-use-decorators
 class MessageList extends Component {
-
-  constructor() {
-    super();
-  }
-
+  // constructor () {
+  //   super()
+  // }
 
   state = {
     message: 'Hello all',
@@ -40,78 +48,77 @@ class MessageList extends Component {
   // handles all textFields
   handleChange = name => event => {
     this.setState({
-      [name]: event.target.value,
-    });
+      [name]: event.target.value
+    })
   };
 
   // -=-= Mutation
   onMutationSubmit = () => {
     this.props.client.mutate({
-      operationName: "AddMessage",
+      operationName: 'AddMessage',
       mutation: MUTATE_MESSAGE,
       variables: {
         stamp: new Date().toISOString(),
         host: 'browser',
         text: this.state.message
       }
-    });
+    })
   };
 
   // -=-= Subscription
   // Perform a refetch and subscribe on mount
-  componentWillMount() {
+  componentWillMount () {
     this.props.data.refetch()
 
     // subscribe to new messages
     if (process.browser) {
-      this.unsubscribe = this.props.subscribeToNewMessages();
+      this.unsubscribe = this.props.subscribeToNewMessages()
     }
-
   }
 
   // unsubscribe on unmount
   componentWillUnmount = () => {
     if (process.browser && this.unsubscribe) {
-      this.unsubscribe();
+      this.unsubscribe()
       delete this.unsubscribe
     }
   };
 
-  render() {
-    const { classes } = this.props;
-    const { data: { loading, error, messges } } = this.props;
+  render () {
+    const { classes } = this.props
+    const { data: { loading, error } } = this.props
 
     if (loading) {
-      return <p>Loading...</p>;
+      return <p>Loading...</p>
     } else if (error) {
-      return <p>Error!</p>;
+      return <p>Error!</p>
     }
     return (
       <main>
-        <Paper elevation={0} >
-          <form className={classes.container} noValidate autoComplete="off">
+        <Paper className={classes.paper} elevation={1} >
+          <form className={classes.form} noValidate autoComplete='off'>
             <TextField
-              id="message"
-              label="Message"
+              id='message'
+              label='Message'
               className={classes.formElements}
               value={this.state.message}
               onChange={this.handleChange('message')}
-              helperText="The text that will be broadcast"
+              helperText='The text that will be broadcast'
             />
             <TextField
-              id="topic"
-              label="Topic"
+              id='topic'
+              label='Topic'
               className={classes.formElements}
               value={this.state.topic}
               onChange={this.handleChange('topic')}
-              helperText="The channel it is sent on"
+              helperText='The channel it is sent on'
             />
-            <Button raised color="primary" className={classes.formElements} onClick={this.onMutationSubmit.bind(this)}>Send</Button>
-            {/* <Button raised color="accent" onClick={this.onMutationSubmit.bind(this)}>Send</Button> */}
+            <Button variant='raised' color='primary' className={classes.formElements} onClick={this.onMutationSubmit.bind(this)}>Send</Button>
+            {/* <Button variant="raised" color="accent" onClick={this.onMutationSubmit.bind(this)}>Send</Button> */}
           </form>
         </Paper>
 
-        <Paper elevation={0} >
+        <Paper className={classes.paper} elevation={1} >
           <Table>
             <TableHead>
               <TableRow>
@@ -134,14 +141,16 @@ class MessageList extends Component {
                     {/* <TableCell numeric>{m.delta}</TableCell> */}
                     {/* <TableCell numeric>{m.deltaServer}</TableCell> */}
                   </TableRow>
-                );
+                )
               })}
             </TableBody>
           </Table>
+        </Paper>
+        <Paper className={classes.paper} elevation={1} >
           <pre>{JSON.stringify(this.props.data.messages.slice(-1)[0])}</pre>
         </Paper>
       </main>
-    );
+    )
   }
 }
 
@@ -158,26 +167,25 @@ export default graphql(
               const messagesToKeep = 4
 
               if (!subscriptionData.data) {
-                return prev;
+                return prev
               }
 
-              const newMessage = subscriptionData.data.newMessage;
+              const newMessage = subscriptionData.data.newMessage
 
               const delta = +new Date() - new Date(newMessage.stamp)
               newMessage.delta = delta
               const serverStamp = ulid.decodeTime(newMessage.id)
               newMessage.deltaServer = +new Date() - new Date(serverStamp)
 
-
               console.log('newMessage', JSON.stringify(newMessage))
               // return prev
               return Object.assign({}, prev, {
                 messages: [...prev.messages.slice(-messagesToKeep), newMessage]
-              });
+              })
             }
-          });
+          })
         }
-      };
+      }
     }
   }
 )(withApollo(withStyles(styles)(MessageList)))

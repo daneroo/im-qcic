@@ -1,11 +1,18 @@
+import React from 'react'
 import Page from '../components/Page'
 import Header from '../components/Header'
 import MessageList from '../components/MessageList'
+import { withRouter } from 'next/router'
 import withData from '../lib/withData'
 
-export default withData((props) => (
-  <Page>
-    <Header pathname={props.url.pathname} />
-    <MessageList />
-  </Page>
-))
+class Index extends React.Component {
+  render () {
+    const {router} = this.props
+    return <Page>
+      <Header pathname={router.pathname} />
+      <MessageList />
+    </Page>
+  }
+}
+
+export default withRouter(withData(Index))

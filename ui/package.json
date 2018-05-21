@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "standard"
   },
   "now": {
     "alias": "ui-qcic",
@@ -14,18 +15,27 @@
     }
   },
   "dependencies": {
+    "@material-ui/core": "^1.0.0",
+    "@material-ui/icons": "^1.0.0",
     "classnames": "^2.2.5",
     "graphql": "^0.9.3",
     "isomorphic-fetch": "^2.2.1",
-    "material-ui": "^1.0.0-beta.17",
-    "material-ui-icons": "^1.0.0-beta.17",
-    "next": "^4.1.3",
-    "react": "^16.0.0",
+    "jss": "^9.8.1",
+    "next": "^6.0.3",
+    "react": "^16.3.2",
     "react-apollo": "^1.1.3",
-    "react-dom": "^16.0.0",
+    "react-dom": "^16.3.2",
+    "react-jss": "^8.4.0",
     "subscriptions-transport-ws": "^0.7.3",
-    "ulid": "^1.0.2"
+    "ulid": "^2.3.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "standard": "^11.0.1"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  }
 }
