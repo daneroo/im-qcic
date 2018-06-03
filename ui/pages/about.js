@@ -19,7 +19,7 @@ const styles = theme => ({
 
 class About extends React.Component {
   render () {
-    const {router} = this.props
+    const { router } = this.props
     const { article } = this.props.classes
 
     return (

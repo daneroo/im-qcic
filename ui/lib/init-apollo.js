@@ -1,6 +1,10 @@
 import fetch from 'isomorphic-fetch'
-import { ApolloClient, createNetworkInterface } from 'react-apollo'
-import { addGraphQLSubscriptions, SubscriptionClient } from 'subscriptions-transport-ws'
+import { ApolloClient } from 'apollo-client'
+import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { createHttpLink } from 'apollo-link-http'
+import { WebSocketLink } from 'apollo-link-ws'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+
 import { uri, wsuri } from './config'
 
 let apolloClient = null
@@ -11,21 +15,17 @@ if (!process.browser) {
 }
 
 function create (initialState) {
-  let networkInterface = createNetworkInterface({
-    uri: uri // Server URL (must be absolute)
-  })
-  // No Subscriptions on server-side
-  if (process.browser) {
-    const wsClient = new SubscriptionClient(wsuri, {
+  const link = (!process.browser)
+    ? createHttpLink({ uri }) // No Subscriptions on server-side
+    : new WebSocketLink(new SubscriptionClient(wsuri, {
       reconnect: true
-    })
-    networkInterface = addGraphQLSubscriptions(networkInterface, wsClient)
-  }
+    }))
 
   return new ApolloClient({
-    initialState,
+    connectToDevTools: process.browser,
     ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
-    networkInterface: networkInterface
+    link,
+    cache: new InMemoryCache().restore(initialState || {})
   })
 }
 

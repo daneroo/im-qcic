@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow'
 import TextField from '@material-ui/core/TextField'
 import { withStyles } from '@material-ui/core/styles'
 
-import ulid from 'ulid'
+import {decodeTime} from 'ulid'
 import { graphql, withApollo } from 'react-apollo'
 import {
   GET_MESSAGES_QUERY,
@@ -174,7 +174,7 @@ export default graphql(
 
               const delta = +new Date() - new Date(newMessage.stamp)
               newMessage.delta = delta
-              const serverStamp = ulid.decodeTime(newMessage.id)
+              const serverStamp = decodeTime(newMessage.id)
               newMessage.deltaServer = +new Date() - new Date(serverStamp)
 
               console.log('newMessage', JSON.stringify(newMessage))

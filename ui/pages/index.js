@@ -3,7 +3,6 @@ import Page from '../components/Page'
 import Header from '../components/Header'
 import MessageList from '../components/MessageList'
 import { withRouter } from 'next/router'
-import withData from '../lib/withData'
 
 class Index extends React.Component {
   render () {
@@ -15,4 +14,4 @@ class Index extends React.Component {
   }
 }
 
-export default withRouter(withData(Index))
+export default withRouter(Index)

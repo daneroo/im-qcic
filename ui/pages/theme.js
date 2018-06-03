@@ -1,12 +1,13 @@
 import Page from '../components/Page'
 import Header from '../components/Header'
+import { withRouter } from 'next/router'
 import { withTheme } from '@material-ui/core/styles'
 
 const Theme = (props) => (
   <Page>
-    <Header pathname={props.url.pathname} />
+    <Header pathname={props.router.pathname} />
     <pre>{JSON.stringify(props.theme, null, 2)}</pre>
   </Page>
 )
 
-export default withTheme()(Theme)
+export default withRouter(withTheme()(Theme))
