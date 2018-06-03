@@ -1,4 +1,4 @@
-// gql is a transitive dependancy of apollo-client, apollo-link-core, and subscriptions-transport-ws
+// gql WAS a transitive dependancy of apollo-client, apollo-link-core, and subscriptions-transport-ws
 const gql = require('graphql-tag')
 
 module.exports = {

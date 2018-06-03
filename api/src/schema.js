@@ -1,6 +1,6 @@
 const { makeExecutableSchema } = require('graphql-tools')
 const { PubSub } = require('graphql-subscriptions')
-const ulid = require('ulid')
+const ulid = require('ulid').ulid
 
 const pubsub = new PubSub()
 

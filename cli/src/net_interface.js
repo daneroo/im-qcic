@@ -1,37 +1,24 @@
 'use strict'
-const { ApolloClient, createNetworkInterface } = require('apollo-client')
+
 const WebSocket = require('ws')
-const { addGraphQLSubscriptions, SubscriptionClient } = require('subscriptions-transport-ws')
+// const { ApolloLink } = require('apollo-link')
+// const { HttpLink } from 'apollo-link-http';
+const { WebSocketLink } = require('apollo-link-ws')
+const { SubscriptionClient } = require('subscriptions-transport-ws')
+const { ApolloClient } = require('apollo-client')
+const { InMemoryCache } = require('apollo-cache-inmemory')
+
 const config = require('./config')
 
-const authToken = Math.floor((Math.random() * 100000000) + 1)
-
-// Subscriptions - Create WebSocket client
-const wsClient = new SubscriptionClient(config.wsuri, {
-  reconnect: true,
-  connectionParams: {
-    authToken: authToken
-  }
+const client = new SubscriptionClient(config.wsuri, {
+  reconnect: true
 }, WebSocket)
 
-let networkInterface = addGraphQLSubscriptions(
-  createNetworkInterface({
-    uri: config.uri
-  }),
-  wsClient)
+const link = new WebSocketLink(client)
 
-const authTokenMiddleware = {
-  applyMiddleware (req, next) {
-    if (!req.options.headers) {
-      req.options.headers = {}
-    }
-    req.options.headers['authToken'] = authToken
-    next()
-  }
-}
-networkInterface.use([authTokenMiddleware])
+const apolloClient = new ApolloClient({
+  link,
+  cache: new InMemoryCache()
+})
 
-const client = new ApolloClient({ networkInterface })
-
-module.exports = client
-// export { client as default, authToken }
+module.exports = apolloClient

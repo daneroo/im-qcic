@@ -94,7 +94,7 @@ now logs -f $(now ls ui-qcic|tail +5|head -1|cut -d\  -f 2)
 ```bash
 cd api
 npm install
-npm run build && npm start
+npm start
 ```
 
 ### Deploy to zeit/now
