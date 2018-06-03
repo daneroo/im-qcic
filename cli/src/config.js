@@ -6,7 +6,7 @@ const WSBASEURI = process.env['WSBASEURI'] || BASEURI.replace(/^http/, 'ws')
 
 // export default {
 module.exports = {
-  uri: `${BASEURI}/graphql`,      // for http(s)://
+  uri: `${BASEURI}/graphql`, // for http(s)://
   wsuri: `${WSBASEURI}/subscriptions`, // for ws://
   hostname: os.hostname()
 }
