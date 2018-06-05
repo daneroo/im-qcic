@@ -1,5 +1,18 @@
 # Pubnub experiment for qcic
 
+## Deploy 
+This deploys, makes the alias the the latest deployment, and cleans up previous deployments
+```
+now --public && now alias && now rm pubnub-qcic --safe --yes
+```
+
+Deployment depends on a secret `pubnub_qcic_creds` with the contents of `credentials.saas.json`, which is `.gitignored` and therefore not uploaded
+```
+now secret rm pubnub_qcic_creds # requires prompt
+
+PUBNUB_QCIC_CREDS=$(cat credentials.saas.json)
+now secret add pubnub_qcic_creds "${PUBNUB_QCIC_CREDS}"
+```
 ## TODO 
 
 - refactor for config injection (Go receiver model)

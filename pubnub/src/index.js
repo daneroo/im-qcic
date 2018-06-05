@@ -46,4 +46,25 @@ async function main () {
     console.log('test an alarm')
     alarm.test()
   }
+
+  keepNowHappyByListening()
+}
+
+function keepNowHappyByListening () {
+  const http = require('http')
+
+  const {name, version} = require('../package')
+  const port = '8080'
+
+  const app = new http.Server()
+
+  app.on('request', (req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' })
+    res.write('Hello World')
+    res.end('\n')
+  })
+
+  app.listen(port, () => {
+    console.log(`${name}-${version} is listening on port ${port}`)
+  })
 }

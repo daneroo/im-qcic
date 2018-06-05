@@ -3,11 +3,25 @@
   "version": "1.0.0",
   "description": "Pubnub node.js client",
   "main": "src/index.js",
+  "now": {
+    "alias": "pubnub-qcic",
+    "name": "pubnub-qcic",
+    "scale": {
+      "sfo1": {
+        "min": 1,
+        "max": 1
+      }
+    },
+    "env": {
+      "PUBNUB_QCIC_CREDS": "@pubnub_qcic_creds"
+    }
+  },
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/index.js --pub --watch",
     "lint": "standard",
     "secscan": "nsp check",
-    "test": "npm run lint && npm run secscan"
+    "test": "npm run lint && npm run secscan",
+    "deploy": "now --public && now alias && now rm pubnub-qcic --safe --yes"
   },
   "repository": {
     "type": "git",

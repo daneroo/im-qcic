@@ -37,6 +37,10 @@ module.exports = {
 function getConfig (path, defaultValue) {
   try {
     // fs.accessSync(path, fs.constants.R_OK)
+    if (process.env.PUBNUB_QCIC_CREDS) {
+      console.log('Using secret from ENV (PUBNUB_QCIC_CREDS)')
+      return JSON.parse(process.env.PUBNUB_QCIC_CREDS)
+    }
     return JSON.parse(fs.readFileSync(path).toString())
   } catch (err) {
     console.warn('getConfig', err.message)
