@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "netlify": "next build && next export && netlifyctl deploy -b out",
     "start": "next start",
     "lint": "standard",
     "secscan": "nsp check",
