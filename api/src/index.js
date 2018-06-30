@@ -21,6 +21,19 @@ app.use('/graphiql', graphiqlExpress({
   subscriptionsEndpoint: `${WSBASEURI}/subscriptions`
 }))
 
+app.get('/', function (req, res) {
+  res.json({ you: 'Home', status: 'OK' })
+})
+app.get('/health', function (req, res) {
+  const randomFailure = Math.random() > 0.95
+  // chose 503, 4xx are client errors, and 503 is implicitly temporary
+  if (randomFailure) {
+    res.status(503).json({ error: 'randomly not healthy', status: 'ERROR' })
+  } else {
+    res.json({ status: 'OK' })
+  }
+})
+
 const server = createServer(app)
 server.listen(PORT, () => {
   new SubscriptionServer({ // eslint-disable-line no-new
