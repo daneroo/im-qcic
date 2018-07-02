@@ -22,15 +22,20 @@ app.use('/graphiql', graphiqlExpress({
 }))
 
 app.get('/', function (req, res) {
-  res.json({ you: 'Home', status: 'OK' })
+  res.json({ you: 'Home', status: 'OK', stamp: new Date().toISOString() })
 })
 app.get('/health', function (req, res) {
-  const randomFailure = Math.random() > 0.95
+  const stamp = new Date().toISOString()
+  // const randomFailure = Math.random() > 0.95
+  const minute = new Date().getMinutes()
+  const hour = new Date().getHours()
+  const randomFailure = (minute < 20) && (hour % 4 === 0)
   // chose 503, 4xx are client errors, and 503 is implicitly temporary
+  console.log({randomFailure})
   if (randomFailure) {
-    res.status(503).json({ error: 'randomly not healthy', status: 'ERROR' })
+    res.status(503).json({ error: 'randomly not healthy', status: 'ERROR', stamp })
   } else {
-    res.json({ status: 'OK' })
+    res.json({ status: 'OK', stamp })
   }
 })
 
