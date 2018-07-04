@@ -29,7 +29,7 @@ app.get('/health', function (req, res) {
   // const randomFailure = Math.random() > 0.95
   const minute = new Date().getMinutes()
   const hour = new Date().getHours()
-  const randomFailure = (minute < 20) && (hour % 4 === 0)
+  const randomFailure = (minute < 20) && (hour === 0)
   // chose 503, 4xx are client errors, and 503 is implicitly temporary
   console.log({randomFailure})
   if (randomFailure) {
