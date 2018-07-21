@@ -4,6 +4,8 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- [Go/GraphQL](https://outcrawl.com/go-graphql-realtime-chat/)
+- [AppSync and GraphQL](https://andrewgriffithsonline.com/blog/serverless-websockets-on-aws/)
 - add topic to Message, for filtering
 - Add standard.js to ui (others done)
 - Refactor MessageList Grapql HOC: withMessages
