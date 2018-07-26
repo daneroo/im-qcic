@@ -7,7 +7,6 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - [Go/GraphQL](https://outcrawl.com/go-graphql-realtime-chat/)
 - [AppSync and GraphQL](https://andrewgriffithsonline.com/blog/serverless-websockets-on-aws/)
 - add topic to Message, for filtering
-- Add standard.js to ui (others done)
 - Refactor MessageList Grapql HOC: withMessages
 - ui styled jsx
   -Compare stock (git clone next.js/server/document.js) with our custom _document.js
@@ -76,16 +75,7 @@ gcloud container clusters delete k1
 See `./cli/README.md`
 
 ## ui client
-```
-cd ui
-npm install
-npm run dev
-```
-### Deploy to zeit/now
-now --public   # deploy
-now alias      # aliases latest deployment
-now rm --safe ui-qcic  # cleanup
-now logs -f $(now ls ui-qcic|tail +5|head -1|cut -d\  -f 2)
+See `./ui/README.md`
 
 ## api server
 See `./api/README.md`

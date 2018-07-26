@@ -7,43 +7,36 @@
     "netlify": "next build && next export && netlifyctl deploy -b out",
     "start": "next start",
     "lint": "standard",
-    "secscan": "nsp check",
-    "test": "npm run lint && npm run secscan"
-  },
-  "now": {
-    "alias": "ui-qcic",
-    "name": "ui-qcic",
-    "env": {
-      "BASEURI": "https://api-qcic.now.sh"
-    }
+    "test": "npm run lint && npm audit",
+    "deploy": "now --public && now alias  && now rm --safe --yes ui-qcic",
+    "logs": "now logs -f $(now ls ui-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')"
   },
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
-    "apollo-cache-inmemory": "^1.2.2",
-    "apollo-client": "^2.3.2",
+    "apollo-cache-inmemory": "^1.2.6",
+    "apollo-client": "^2.3.7",
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
-    "classnames": "^2.2.5",
+    "classnames": "^2.2.6",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "isomorphic-fetch": "^2.2.1",
-    "jss": "^9.8.2",
-    "next": "^6.0.3",
-    "react": "^16.4.0",
-    "react-apollo": "^2.1.4",
-    "react-dom": "^16.4.0",
-    "react-jss": "^8.4.0",
-    "subscriptions-transport-ws": "^0.9.9",
+    "jss": "^9.8.7",
+    "next": "^6.1.1",
+    "react": "^16.4.1",
+    "react-apollo": "^2.1.9",
+    "react-dom": "^16.4.1",
+    "react-jss": "^8.6.1",
+    "subscriptions-transport-ws": "^0.9.13",
     "ulid": "^2.3.0"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "standard": "^11.0.1",
-    "nsp": "^3.2.1"
+    "babel-eslint": "^8.2.6",
+    "standard": "^11.0.1"
   },
   "standard": {
     "parser": "babel-eslint"

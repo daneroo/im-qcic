@@ -119,6 +119,10 @@ class MessageList extends Component {
         </Paper>
 
         <Paper className={classes.paper} elevation={1} >
+          <pre>{JSON.stringify(this.props.data.messages.slice(-1)[0])}</pre>
+        </Paper>
+
+        <Paper className={classes.paper} elevation={1} >
           <Table>
             <TableHead>
               <TableRow>
@@ -145,9 +149,6 @@ class MessageList extends Component {
               })}
             </TableBody>
           </Table>
-        </Paper>
-        <Paper className={classes.paper} elevation={1} >
-          <pre>{JSON.stringify(this.props.data.messages.slice(-1)[0])}</pre>
         </Paper>
       </main>
     )

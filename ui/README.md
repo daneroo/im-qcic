@@ -10,13 +10,34 @@ It was enhanced to make GrapQL subscriptions work
 - about in markdown
 - static deployment with no data? (netlify)
 
-## Deploy to now
-see ../README.md
+### Deploy to zeit/now
+```
+npm run deploy
+npm run logs
+```
+in detail:
+```
+now --public   # deploy
+now alias      # aliases latest deployment
+now rm --safe ui-qcic  # cleanup
+
+# lookup first istance and tail -ts logs
+now logs -f $(now ls ui-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')
+```
+
+## num locally
+```
+npm install
+npm run dev
+```
+
 
 ## Deploy to netlify
 ```
 npm run netlify
 ```
+
+## Tool setup
 TL;DR
 ```
 brew tap netlify/netlifyctl
