@@ -6,23 +6,22 @@
     "start": "node src/index.js",
     "lint": "standard",
     "secscan": "nsp check",
-    "test": "npm run lint && npm run secscan"
+    "test": "npm run lint && npm audit"
   },
   "devDependencies": {
-    "nsp": "^3.2.1",
     "standard": "^11.0.1"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.2.2",
-    "apollo-client": "^2.3.2",
+    "apollo-cache-inmemory": "^1.2.6",
+    "apollo-client": "^2.3.7",
     "apollo-link": "^1.2.2",
     "apollo-link-ws": "^1.0.8",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "isomorphic-fetch": "^2.2.1",
-    "subscriptions-transport-ws": "^0.9.9",
+    "subscriptions-transport-ws": "^0.9.13",
     "ulid": "^2.3.0",
-    "ws": "^5.2.0"
+    "ws": "^6.0.0"
   },
   "standard": {
     "ignore": [

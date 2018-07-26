@@ -73,12 +73,7 @@ gcloud container clusters delete k1
 ```
 
 ## cli client
-```
-cd cli
-npm install
-npm start
-BASEURI=https://api-qcic.now.sh npm start
-```
+See `./cli/README.md`
 
 ## ui client
 ```
