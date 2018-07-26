@@ -1,26 +1,16 @@
+const http = require('http')
 const express = require('express')
-const bodyParser = require('body-parser')
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
-const { createServer } = require('http')
-const { execute, subscribe } = require('graphql')
-const { SubscriptionServer } = require('subscriptions-transport-ws')
 const cors = require('cors')
-const { schema } = require('./schema')
-
+const { ApolloServer } = require('apollo-server-express')
+const { typeDefs, resolvers } = require('./schema')
 const {
   PORT,
-  // BASEURI, // not used
-  WSBASEURI
+  BASEURI,
+  WSBASEURI // not used (yet)
 } = require('./config')
 
 const app = express()
 app.use('*', cors())
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
-app.use('/graphiql', graphiqlExpress({
-  endpointURL: '/graphql',
-  subscriptionsEndpoint: `${WSBASEURI}/subscriptions`
-}))
-
 app.get('/', function (req, res) {
   res.json({ you: 'Home', status: 'OK', stamp: new Date().toISOString() })
 })
@@ -31,7 +21,7 @@ app.get('/health', function (req, res) {
   const hour = new Date().getHours()
   const randomFailure = (minute < 20) && (hour === 0)
   // chose 503, 4xx are client errors, and 503 is implicitly temporary
-  console.log({randomFailure})
+  console.log({stamp, randomFailure})
   if (randomFailure) {
     res.status(503).json({ error: 'randomly not healthy', status: 'ERROR', stamp })
   } else {
@@ -39,14 +29,18 @@ app.get('/health', function (req, res) {
   }
 })
 
-const server = createServer(app)
-server.listen(PORT, () => {
-  new SubscriptionServer({ // eslint-disable-line no-new
-    execute,
-    subscribe,
-    schema
-  }, {
-    server: server,
-    path: '/subscriptions'
-  })
+const server = new ApolloServer({
+  // These will be defined for both new or existing servers
+  typeDefs,
+  resolvers
+})
+
+server.applyMiddleware({ app }) // app is from an existing express app
+
+const httpServer = http.createServer(app)
+server.installSubscriptionHandlers(httpServer)
+
+httpServer.listen({ port: PORT }, () => {
+  console.log(`QCIC Graphql Server ready at ${BASEURI}:${PORT}${server.graphqlPath}`)
+  console.log(`QCIC Subscriptions  ready at ${WSBASEURI}:${PORT}${server.subscriptionsPath}`)
 })

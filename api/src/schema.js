@@ -1,8 +1,8 @@
-const { makeExecutableSchema } = require('graphql-tools')
-const { PubSub } = require('graphql-subscriptions')
-const ulid = require('ulid').ulid
+const { PubSub, gql } = require('apollo-server')
 
 const pubsub = new PubSub()
+
+const ulid = require('ulid').ulid
 
 // The DB
 const messages = [{
@@ -24,30 +24,35 @@ function saveMessageAndTrim (message) {
   // console.log(`+ |messages|=${messages.length}`)
 }
 
-const typeDefs = `
-input MessageInput {
-  stamp: String!
-  host: String!
-  text: String!
-}
+// Type definitions define the "shape" of your data and specify
+// which ways the data can be fetched from the GraphQL server.
+const typeDefs = gql`
+  # Comments in GraphQL are defined with the hash (#) symbol.
+  input MessageInput {
+    stamp: String!
+    host: String!
+    text: String!
+  }
 
-type Message {
-  id: ID!
-  stamp: String!
-  host: String!
-  text: String!
-}
+  type Message {
+    id: ID!
+    stamp: String!
+    host: String!
+    text: String!
+  }
 
-type Query {
-  messages: [Message]
-}
-type Mutation {
-  addMessage(message: MessageInput): Message
-}
-type Subscription {
-  newMessage: Message
-}
+  type Query {
+    messages: [Message]
+  }
+  type Mutation {
+    addMessage(message: MessageInput): Message
+  }
+  type Subscription {
+    newMessage: Message
+  }
 `
+
+const MESSAGE_ADDED = 'MESSAGE_ADDED'
 
 const resolvers = {
   Query: {
@@ -61,7 +66,7 @@ const resolvers = {
       console.log('addMessage', message)
       message.id = ulid()
       saveMessageAndTrim(message)
-      pubsub.publish('newMessage', message)
+      pubsub.publish(MESSAGE_ADDED, message)
       return message
     }
   },
@@ -71,11 +76,10 @@ const resolvers = {
         // console.log({payload, args, context})
         return payload
       },
-      subscribe: () => pubsub.asyncIterator('newMessage')
+      subscribe: () => pubsub.asyncIterator([MESSAGE_ADDED])
     }
   }
 }
-const schema = makeExecutableSchema({ typeDefs, resolvers })
 
 setInterval(() => {
   const message = {
@@ -87,7 +91,7 @@ setInterval(() => {
   saveMessageAndTrim(message)
   // console.log('publishing', message)
 
-  pubsub.publish('newMessage', message)
+  pubsub.publish(MESSAGE_ADDED, message)
 }, 10000)
 
-module.exports = { schema }
+module.exports = { typeDefs, resolvers }

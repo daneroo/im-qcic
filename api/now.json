@@ -1,0 +1,11 @@
+{
+  "name": "api-qcic",
+  "alias": "api.qcic.n.imetrical.com",
+  "type": "npm",
+  "env": {
+    "BASEURI": "https://api.qcic.n.imetrical.com"
+  },
+  "engines": {
+    "node": "10.x.x"
+    }
+}
