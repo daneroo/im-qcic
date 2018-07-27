@@ -4,6 +4,15 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- [graphql-yoga to replace api - add express middleware](https://oss.prisma.io/content/GraphQL-Yoga/01-Overview.html)
+- [gatsby](https://next.gatsbyjs.org/docs/gatsby-starters/)
+  - https://gatsby-starter-personal-blog.greglobinski.com/
+  - https://gatsby-starter-hero-blog.greglobinski.com/
+  - https://github.com/Vagr9K/gatsby-material-starter
+  - https://material-ui.com/premium-themes/
+    - https://github.com/creativetimofficial/material-dashboard-react
+    - https://github.com/creativetimofficial/material-kit/
+
 - [Go/GraphQL](https://outcrawl.com/go-graphql-realtime-chat/)
 - [AppSync and GraphQL](https://andrewgriffithsonline.com/blog/serverless-websockets-on-aws/)
 - add topic to Message, for filtering
