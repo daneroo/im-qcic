@@ -1,4 +1,5 @@
-Severless(.com) Event Gateway
+# Severless(.com) Event Gateway
+See https://serverless.com/event-gateway/
 
 Deployed using `im-dan` credentials from shannon
 and credential from eventgateway (in .gitignored `CREDS` file)

@@ -4,6 +4,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- nats basic experiment
 - [graphql-yoga to replace api - add express middleware](https://oss.prisma.io/content/GraphQL-Yoga/01-Overview.html)
 - [gatsby](https://next.gatsbyjs.org/docs/gatsby-starters/)
   - https://gatsby-starter-personal-blog.greglobinski.com/
@@ -79,6 +80,12 @@ kubectl scale --replicas=3 deployment/hello-server
 
 gcloud container clusters delete k1
 ```
+
+## experiments
+### nats
+See `./nats/README.md`
+### pubnub
+See `./pubnub/README.md`
 
 ## cli client
 See `./cli/README.md`

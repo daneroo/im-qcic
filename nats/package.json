@@ -1,0 +1,22 @@
+{
+  "name": "nats-qcic",
+  "version": "1.0.0",
+  "description": "QCIC nats messaging example",
+  "main": "index.js",
+  "// engines moved to now.json": {},
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "standard",
+    "secscan": "npm audit",
+    "test": "npm run lint && npm run secscan"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "standard": "^11.0.1"
+  },
+  "dependencies": {
+    "nats": "^1.0.1"
+  }
+}
