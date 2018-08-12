@@ -4,6 +4,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- [] Move nats to `im-infra`, with `im-dd-client`.
+- add `env.json` support to `ui/lib/config`
+- add nats URL to `api/src/config`
 - nats basic experiment
 - [graphql-yoga to replace api - add express middleware](https://oss.prisma.io/content/GraphQL-Yoga/01-Overview.html)
 - [gatsby](https://next.gatsbyjs.org/docs/gatsby-starters/)

@@ -1,34 +1,59 @@
 # Nats
 
+- This is where I start my shared `nats` instance.
+- The nats service is run on `dirac`, and is exposed at `dl.imetrical.com:4222`
+
+
+## Refereneces
 - [node-nats](https://github.com/nats-io/node-nats)
 - [Go-nats](https://github.com/nats-io/go-nats)
 
-## starting a local server
+## Operating
+```
+make start
+make stop
+make test # both smoke and speed
+make smoke-test
+make speed-test
+make clean
+```
 
-- 4222 is for clients.
+## Starting a local server
+_equivalent to:_ `make start`.
+
+- 4222 is for clients. Exposed at large (No auth yet)
 - 8222 is an HTTP management port for information reporting.
-- 6222 is a routing port for clustering.
+- 6222 is a routing port for clustering. NOT EXPOSED
 
 ```
-docker run -d --name nats -p 4222:4222 -p 8222:8222 nats
+docker-compose up -d
 ```
 
-Smoke test:
-- https://nats.io/documentation/tutorials/nats-benchmarking/
+## Smoke tests
+This just establishes a connection to the monitoring port.
+
+You can install `nats-top` with `go get github.com/nats-io/nats-top`
 ```
-# go get github.com/nats-io/nats-top
 nats-top
+nats-top -s dirac.imetrical.com
 
-# go build $GOPATH/src/github.com/nats-io/go-nats/examples/nats-bench.go
+#this should not work (8222 is not published)
+nats-top -s dl.imetrical.com
+```
+
+This uses the nats-bench:
+```
+./nats-bench -np 1 -ns 1 -n 100 -ms 1024 smoke-test
+./nats-bench -s dirac.imetrical.com -np 1 -ns 1 -n 100 -ms 1024 smoke-test
+./nats-bench -s dl.imetrical.com -np 1 -ns 1 -n 100 -ms 1024 smoke-test
+```
+- https://nats.io/documentation/tutorials/nats-benchmarking/
+
+```
 # -=-= PUB
 ./nats-bench -np 1 -n 100000 -ms 16 foo
 # -=-= PUB - SUB
 ./nats-bench -np 1 -ns 1 -n 100000000 -ms 16 foo
 # -=-= PUB - SUB 1:N
 ./nats-bench -np 1 -ns 5 -n 100000000 -ms 16 foo
-
-# cd $GOPATH/src; mkdir -p github\.com/nats-io && cd github.com/nats-io
-# git clone git@github.com:nats-io/gnatsd.git
-# git clone git@github.com:nats-io/go-nats.git
-go get github.com/nats-io/nuid
 ```
