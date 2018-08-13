@@ -1,0 +1,20 @@
+{
+  "name": "mail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard",
+    "secscan": "npm audit",
+    "test": "npm run lint && npm run secscan"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^4.6.7",
+    "nodemailer-mailgun-transport": "^1.4.0"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
+  }
+}
