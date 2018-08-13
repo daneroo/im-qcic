@@ -4,6 +4,11 @@ const pubsub = new PubSub()
 
 const ulid = require('ulid').ulid
 
+let natsPublish = null
+function setNatsPublish (publish) {
+  natsPublish = publish
+}
+
 // The DB
 const messages = [{
   id: ulid(0),
@@ -65,8 +70,11 @@ const resolvers = {
       // context authToken?, stamp?
       console.log('addMessage', message)
       message.id = ulid()
-      saveMessageAndTrim(message)
-      pubsub.publish(MESSAGE_ADDED, message)
+      // refactor this...
+      // publishInternal(message, true)
+      if (natsPublish) {
+        natsPublish(message.text)
+      }
       return message
     }
   },
@@ -81,17 +89,13 @@ const resolvers = {
   }
 }
 
-setInterval(() => {
-  const message = {
-    id: ulid(),
-    stamp: new Date().toISOString(),
-    host: 'api',
-    text: 'hello'
-  }
+function publishInternal (message, bridge) {
   saveMessageAndTrim(message)
-  // console.log('publishing', message)
-
   pubsub.publish(MESSAGE_ADDED, message)
-}, 10000)
+}
 
-module.exports = { typeDefs, resolvers }
+function publishToGQL (message) {
+  publishInternal(message, false)
+}
+
+module.exports = { typeDefs, resolvers, publishToGQL, setNatsPublish }

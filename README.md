@@ -4,7 +4,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
-- [] Move nats to `im-infra`, with `im-dd-client`.
+- [] Move `nats/` to `im-infra`, with `im-dd-client`.
 - add `env.json` support to `ui/lib/config`
 - add nats URL to `api/src/config`
 - nats basic experiment
@@ -59,6 +59,24 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - ~~babel-preset-env now: please read babeljs.io/env to update~~
 - ~~add node cli client~~
 
+## components
+### nats
+See `./nats/README.md`
+
+Start the shared nats instance, as well as test client code
+
+### pubnub
+See `./pubnub/README.md`
+
+## cli client
+See `./cli/README.md`
+
+## ui client
+See `./ui/README.md`
+
+## api server
+See `./api/README.md`
+
 ## k8s
 gcloud bring up cluster:
 
@@ -83,21 +101,6 @@ kubectl scale --replicas=3 deployment/hello-server
 
 gcloud container clusters delete k1
 ```
-
-## experiments
-### nats
-See `./nats/README.md`
-### pubnub
-See `./pubnub/README.md`
-
-## cli client
-See `./cli/README.md`
-
-## ui client
-See `./ui/README.md`
-
-## api server
-See `./api/README.md`
 
 
 ## References

@@ -2,17 +2,25 @@ const http = require('http')
 const express = require('express')
 const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
-const { typeDefs, resolvers } = require('./schema')
-const {
-  PORT,
-  BASEURI,
-  WSBASEURI // not used (yet)
-} = require('./config')
+
+const schema = require('./schema')
+const heartbeat = require('./heartbeat')
+const natsbridge = require('./natsbridge')
+const config = require('./config')
+
+const { port } = config.express
+
+schema.setNatsPublish(natsbridge.publishToNats)
+heartbeat.start(natsbridge.publishToNats)
+natsbridge.start(schema.publishToGQL)
 
 const app = express()
 app.use('*', cors())
 app.get('/', function (req, res) {
   res.json({ you: 'Home', status: 'OK', stamp: new Date().toISOString() })
+})
+app.get('/version', function (req, res) {
+  res.json(config.version)
 })
 app.get('/health', function (req, res) {
   const stamp = new Date().toISOString()
@@ -31,8 +39,9 @@ app.get('/health', function (req, res) {
 
 const server = new ApolloServer({
   // These will be defined for both new or existing servers
-  typeDefs,
-  resolvers
+  typeDefs: schema.typeDefs,
+  resolvers: schema.resolvers
+
 })
 
 server.applyMiddleware({ app }) // app is from an existing express app
@@ -40,7 +49,7 @@ server.applyMiddleware({ app }) // app is from an existing express app
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
-httpServer.listen({ port: PORT }, () => {
-  console.log(`QCIC Graphql Server ready at ${BASEURI}:${PORT}${server.graphqlPath}`)
-  console.log(`QCIC Subscriptions  ready at ${WSBASEURI}:${PORT}${server.subscriptionsPath}`)
+httpServer.listen({ port }, () => {
+  console.log(`QCIC Graphql Server ready at http://0.0.0.0:${port}${server.graphqlPath}`)
+  console.log(`QCIC Subscriptions  ready at ws://:${port}${server.subscriptionsPath}`)
 })

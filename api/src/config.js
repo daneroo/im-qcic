@@ -1,20 +1,26 @@
 'use strict'
 
-const PORT = 5000
+const os = require('os')
 
-// For now the ws baseURI is derived from BASEURI
-// because we deploy on same host:port
-// BASEURI Has to be explicit, until we fix the graphiqlExpress
-// - consider using only websockets..
-const BASEURI = process.env['BASEURI'] || `http://localhost:${PORT}`
-const WSBASEURI = process.env['WSBASEURI'] || BASEURI.replace(/^http/, 'ws')
-const NODEJS = process.version
+const PORT = 5000
+const hostname = process.env.HOSTALIAS || os.hostname()
+const topic = 'im.qcic.heartbeat'
+
 // export default {
 module.exports = {
-  PORT,
-  BASEURI,
-  WSBASEURI,
-  NODEJS
+  hostname,
+  version: { // also exposed as API /version
+    name: require('../package').name,
+    app: require('../package').version,
+    node: process.version
+  },
+  express: {
+    port: PORT
+  },
+  nats: {
+    servers: [process.env.NATSURL || 'nats://dirac.imetrical.com:4222'],
+    topic // used as a single topic/subject for pub and sub, may turn into a base/prefix
+  }
 }
 
 console.log('Config:', JSON.stringify(module.exports, null, 2))

@@ -8,26 +8,23 @@ const nats = require('nats').connect({
 const interval = 10000
 setupHandlers(nats)
 
-const subject = 'qcic'
-
-nats.subscribe(subject, function (msg, reply, subject) {
-  console.log(`<<[${subject}]: ${msg}`)
-})
-
+const topic = 'im.qcic.heartbeat'
 const hostname = process.env.HOSTNAME || os.hostname()
 const clientId = Math.round(1000 + Math.random() * 1000)
 
+nats.subscribe(topic, function (msg, reply, subject) {
+  console.log(`<<[${subject}]: ${msg}`)
+})
+
 setInterval(() => {
-  // TOTO(daneroo): new shape of heartbeat message
-  // const msg = {
-  //   stamp: new Date().toISOString(),
-  //   host: hostname,
-  //   clientId
-  // }
-  const msg = `heartbeat from ${hostname}-${clientId} @${new Date().toISOString()}`
-  nats.publish(subject, msg, function () {
-    console.log(`>>[${subject}]: ${msg}`)
-    //   process.exit()
+  const msg = {
+    stamp: new Date().toISOString(),
+    host: [hostname, clientId].join('-'),
+    text: clientId
+  }
+  const payload = JSON.stringify(msg)
+  nats.publish(topic, payload, function () {
+    console.log(`>>[${topic}]: ${payload}`)
   })
 }, interval)
 

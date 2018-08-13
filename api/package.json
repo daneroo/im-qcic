@@ -23,6 +23,7 @@
     "apollo-server-express": "^2.0.0",
     "cors": "^2.8.4",
     "graphql": "^0.13.2",
+    "nats": "^1.0.1",
     "ulid": "^2.3.0"
   }
 }
