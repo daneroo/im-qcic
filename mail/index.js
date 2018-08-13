@@ -31,6 +31,7 @@ transporter.sendMail(mailOptions, (error, info) => {
 function tmpl () {
   const colors = {orange: '#FF9F00', green: '#01A64F', red: '#ff0000'}
   const template = require('fs').readFileSync('./alert.tmpl.html', 'utf8')
+  //   const template = require('fs').readFileSync('./alert-mui.tmpl.html', 'utf8')
   let content = template
 
   content = content.replace(/#FF9F00/g, colors.red)
