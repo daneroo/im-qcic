@@ -73,7 +73,7 @@ const resolvers = {
       // refactor this...
       // publishInternal(message, true)
       if (natsPublish) {
-        natsPublish(message.text)
+        natsPublish(message)
       }
       return message
     }

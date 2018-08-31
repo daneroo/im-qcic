@@ -23,7 +23,8 @@ const values = {
   }
 }
 
-const lvl = 'critical'
+const lvl = 'info'
+
 let mailOptions = {
   from: '"QCIC" <daniel.lauzon@imetrical.com>', // sender address
   //   to: 'daniel.lauzon@imetrical.com', // list of receivers
@@ -51,5 +52,6 @@ function tmpl (values) {
   content = content.replace(/ACTIONTEXT/, 'Visit for more details')
   content = content.replace(/ACTIONURI/g, 'https://ui.qcic.n.imetrical.com/')
 
+  require('fs').writeFileSync('./alert.rendered.html', content, 'utf8')
   return content
 }

@@ -6,5 +6,5 @@ services:
     ports:
      - "4222:4222"  # for clients
      - "8222:8222"  # for monitoring/reporting
-    #  - "6222:6222"  # routing port for clustering
+     - "6222:6222"  # routing port for clustering
     
