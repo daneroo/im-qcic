@@ -49,6 +49,8 @@ server.applyMiddleware({ app }) // app is from an existing express app
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
+console.log(`QCIC Start config: ${JSON.stringify(config)}`)
+console.log(`QCIC versions: ${JSON.stringify(require('process').versions)}`)
 httpServer.listen({ port }, () => {
   console.log(`QCIC Graphql Server ready at http://0.0.0.0:${port}${server.graphqlPath}`)
   console.log(`QCIC Subscriptions  ready at ws://:${port}${server.subscriptionsPath}`)

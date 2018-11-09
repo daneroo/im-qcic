@@ -20,16 +20,22 @@ query {  messages { id stamp host text } }
 mutation AddMessage {  addMessage(message: { stamp:"1970-01-01T00:00:00.000Z"    host:"browser", text:"ping" }) { id stamp host text }}
 
 subscription OnNewMessage {  newMessage { id stamp host text }}
-
 ```
+
+## Operations
+
 ## local
 ```
 cd api
 npm install
 npm start
 ```
-
-## explicit now commands
+## Deploy
+```
+npm run deploy
+npm run logs
+```
+### explicit now commands
 ```
 now --public   # deploy
 now alias      # aliases latest deploymen ( to our custom domaint
