@@ -4,6 +4,13 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- Moving to lerna
+  - ensure operational continuity
+    - write ttab script
+    - nats/compose/natstop
+    - ui - move and republish to now
+    - local ui - local vs now ENVs
+
 - clean up and resync
   - docz - mdx docs / including this TODO
   - mdx-deck ?
