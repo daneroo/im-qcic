@@ -4,18 +4,24 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## TODO
 
+- clean up and resync
+  - docz - mdx docs / including this TODO
+  - mdx-deck ?
+  - instructions for operating/deploying
+  - lerna
+
 - [] Move `nats/` to `im-infra`, with `im-dd-client`.
 - add `env.json` support to `ui/lib/config`
 - add nats URL to `api/src/config`
 - nats basic experiment
 - [graphql-yoga to replace api - add express middleware](https://oss.prisma.io/content/GraphQL-Yoga/01-Overview.html)
 - [gatsby](https://next.gatsbyjs.org/docs/gatsby-starters/)
-  - https://gatsby-starter-personal-blog.greglobinski.com/
-  - https://gatsby-starter-hero-blog.greglobinski.com/
-  - https://github.com/Vagr9K/gatsby-material-starter
-  - https://material-ui.com/premium-themes/
-    - https://github.com/creativetimofficial/material-dashboard-react
-    - https://github.com/creativetimofficial/material-kit/
+  - <https://gatsby-starter-personal-blog.greglobinski.com/>
+  - <https://gatsby-starter-hero-blog.greglobinski.com/>
+  - <https://github.com/Vagr9K/gatsby-material-starter>
+  - <https://material-ui.com/premium-themes/>
+    - <https://github.com/creativetimofficial/material-dashboard-react>
+    - <https://github.com/creativetimofficial/material-kit/>
 
 - [Go/GraphQL](https://outcrawl.com/go-graphql-realtime-chat/)
 - [AppSync and GraphQL](https://andrewgriffithsonline.com/blog/serverless-websockets-on-aws/)
@@ -28,7 +34,7 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - ui About in markwon in material
 - ui [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
 - ui [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
-- logo with ω: ωωωω and http://snapsvg.io/
+- logo with ω: ωωωω and <http://snapsvg.io/>
   - also favicon
   - ωho ωill ωatch the ωatchers
 - npm outdated: ui: graphql, subscriptions-transport-ws
@@ -37,7 +43,8 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - Figure out how to use '.' in now.sh aliases || deploy to imetrical.(com|net)
 - cli: add yargs/commander --listen, --heartbeat,... options
 
-##  ~~DONE~~
+### ~~DONE~~
+
 - ~~name change to im-wwww: keeping im-qcic~~
 - ~~Header with Material, and remove global styles?)~~
 - ~~ui [icons](https://material-ui-next.com/getting-started/installation/) npm install material-ui-icons~~
@@ -59,28 +66,35 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 - ~~babel-preset-env now: please read babeljs.io/env to update~~
 - ~~add node cli client~~
 
-## components
+## Components
+
 ### nats
+
 See `./nats/README.md`
 
 Start the shared nats instance, as well as test client code
 
 ### pubnub
+
 See `./pubnub/README.md`
 
-## cli client
+### cli client
+
 See `./cli/README.md`
 
-## ui client
+### ui client
+
 See `./ui/README.md`
 
-## api server
+### api server
+
 See `./api/README.md`
 
-## k8s
+## K8S
+
 gcloud bring up cluster:
 
-```
+```bash
 gcloud auth login
 gcloud config set project im-infra
 gcloud components update
@@ -102,10 +116,9 @@ kubectl scale --replicas=3 deployment/hello-server
 gcloud container clusters delete k1
 ```
 
-
 ## References
-- [https://dev-blog.apollodata.com/tutorial-graphql-subscriptions-server-side-e51c32dc2951](GraphQL Tutorial w/Subscriptions)
-- [https://github.com/apollographql/graphql-subscriptions](graphql-subscriptions)
-- [http://dev.apollodata.com/tools/](Apollo Tools Guide)
-- Borrowed from [https://github.com/bmsantos/apollo-graphql-subscriptions-example](github.com/bmsantos/apollo-graphql-subscriptions-example)
 
+- [GraphQL Tutorial w/Subscriptions](https://dev-blog.apollodata.com/tutorial-graphql-subscriptions-server-side-e51c32dc2951)
+- [graphql-subscriptions](https://github.com/apollographql/graphql-subscriptions)
+- [Apollo Tools Guide](http://dev.apollodata.com/tools/)
+- Borrowed from [github.com/bmsantos/apollo-graphql-subscriptions-example](https://github.com/bmsantos/apollo-graphql-subscriptions-example)
