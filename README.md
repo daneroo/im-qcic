@@ -2,6 +2,17 @@
 
 Quis custodiet ipsos custodes - Who will watch the watchers
 
+## Operating
+
+```bash
+lerna bootstrap --hoist
+npm test
+lerna run test  # terse
+lerna run test --concurrency 1 --stream
+# just unit tests - no audit or lint
+lerna run unit --concurrency 1 --stream
+```
+
 ## TODO
 
 - Moving to lerna

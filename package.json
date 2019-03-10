@@ -10,7 +10,8 @@
   "scripts": {
     "clean": "lerna clean --yes && echo now you can: rm -rf $(find packages -name coverage)",
     "unit": "lerna run unit --concurrency 1 --stream",
-    "test": "lerna run test"
+    "test": "lerna run test --concurrency 1 --stream",
+    "test:terse": "lerna run test"
   },
   "standard": {
     "env": {
