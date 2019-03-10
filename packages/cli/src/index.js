@@ -1,5 +1,5 @@
 require('isomorphic-fetch') // should I use node-fetch?
-const {decodeTime} = require('ulid')
+const { decodeTime } = require('ulid')
 
 const {
   GET_MESSAGES_QUERY,
@@ -61,7 +61,7 @@ function query () {
   }).then(result => {
     const msgs = result.data.messages
     let last = msgs.length > 0 ? msgs.slice(-1)[0] : {}
-    last = {...last} // can't delete if I don;t clone
+    last = { ...last } // can't delete if I don;t clone
     delete last.__typename
     console.log('query.last', JSON.stringify(last))
   })

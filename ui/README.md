@@ -56,4 +56,3 @@ brew install netlifyctl
 ## netlify.toml contains site-id, --base-directory is not stored there yet
 netlifyctl deploy -b out
 ```
-
