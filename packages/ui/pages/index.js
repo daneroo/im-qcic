@@ -6,7 +6,7 @@ import { withRouter } from 'next/router'
 
 class Index extends React.Component {
   render () {
-    const {router} = this.props
+    const { router } = this.props
     return <Page>
       <Header pathname={router.pathname} />
       <MessageList />

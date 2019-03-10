@@ -48,7 +48,7 @@ const Header = props => {
       </Head>
       <Logo />
       {menuItems.map(m => <Link key={m.path} prefetch href={m.path}>
-        <a className={classNames(a, {[aactive]: (pathname === m.path)})}>{m.name}</a>
+        <a className={classNames(a, { [aactive]: (pathname === m.path) })}>{m.name}</a>
       </Link>)}
     </header>
   )

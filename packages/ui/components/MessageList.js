@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow'
 import TextField from '@material-ui/core/TextField'
 import { withStyles } from '@material-ui/core/styles'
 
-import {decodeTime} from 'ulid'
+import { decodeTime } from 'ulid'
 import { graphql, withApollo } from 'react-apollo'
 import {
   GET_MESSAGES_QUERY,

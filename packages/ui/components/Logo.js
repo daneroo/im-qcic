@@ -27,4 +27,4 @@ const Logo = props => {
     </div>
   )
 }
-export default withStyles(styles, {withTheme: true})(Logo)
+export default withStyles(styles, { withTheme: true })(Logo)

@@ -7,10 +7,13 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ```bash
 lerna bootstrap --hoist
 npm test
-lerna run test  # terse
-lerna run test --concurrency 1 --stream
-# just unit tests - no audit or lint
-lerna run unit --concurrency 1 --stream
+npm run unit  # no audit or lint
+
+# new package
+lerna create @daneroo/qcic-thing # then rename to packages/thing
+lerna add jest --dev
+lerna add standard --dev
+
 ```
 
 ## TODO

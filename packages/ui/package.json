@@ -1,15 +1,31 @@
 {
-  "name": "ui-qcic",
+  "name": "@daneroo/qcic-ui",
   "version": "1.0.0",
+  "description": "Static front end (next.js) for qcic",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "ISC",
+  "//publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
   "scripts": {
     "dev": "next",
     "build": "next build",
     "netlify": "next build && next export && netlifyctl deploy -b out",
     "start": "next start",
-    "lint": "standard",
-    "test": "npm run lint && npm audit",
     "deploy": "now --public && now alias  && now rm --safe --yes ui-qcic",
-    "logs": "now logs -f $(now ls ui-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')"
+    "logs": "now logs -f $(now ls ui-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')",
+    "test": "npm run lint && npm audit && npm run unit",
+    "lint": "standard",
+    "unit": "echo '*****' && echo 'Problem with babel? No jest' && echo '*****'",
+    "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "dependencies": {
     "@material-ui/core": "^1.2.0",
@@ -32,13 +48,15 @@
     "subscriptions-transport-ws": "^0.9.13",
     "ulid": "^2.3.0"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "babel-eslint": "^8.2.6",
-    "standard": "^11.0.1"
+    "jest": "^24.3.1",
+    "standard": "^12.0.1"
   },
   "standard": {
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "env": {
+      "jest": true
+    }
   }
 }
