@@ -29,7 +29,7 @@ app.get('/health', function (req, res) {
   const hour = new Date().getHours()
   const randomFailure = (minute < 20) && (hour === 0)
   // chose 503, 4xx are client errors, and 503 is implicitly temporary
-  console.log({stamp, randomFailure})
+  console.log({ stamp, randomFailure })
   if (randomFailure) {
     res.status(503).json({ error: 'randomly not healthy', status: 'ERROR', stamp })
   } else {

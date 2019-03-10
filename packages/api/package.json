@@ -1,0 +1,46 @@
+{
+  "name": "@daneroo/qcic-api",
+  "version": "2.0.0",
+  "description": "QCIC GraphQL Server Subscriptions example",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "ISC",
+  "//publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
+  "main": "src/index.js",
+  "// engines moved to now.json": {},
+  "scripts": {
+    "start": "node src/index.js",
+    "deploy": "now --public && now alias  && now rm --safe --yes api-qcic",
+    "logs": "now logs -f $(now ls api-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')",
+    "test": "npm run lint && npm audit && npm run unit",
+    "lint": "standard",
+    "unit": "jest",
+    "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
+  },
+  "devDependencies": {
+    "jest": "^24.3.1",
+    "standard": "^12.0.1"
+  },
+  "dependencies": {
+    "apollo-server": "^2.0.0",
+    "apollo-server-express": "^2.0.0",
+    "cors": "^2.8.4",
+    "graphql": "^0.13.2",
+    "nats": "^1.0.1",
+    "ulid": "^2.3.0"
+  },
+  "standard": {
+    "env": {
+      "jest": true
+    }
+  }
+}

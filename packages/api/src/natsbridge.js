@@ -24,7 +24,7 @@ function start (publishToGQL) {
     try {
       message = JSON.parse(payload)
     } catch (e) {
-      message = {text: e, message}
+      message = { text: e, message }
     }
     publishToGQL({
       id: ulid(),
