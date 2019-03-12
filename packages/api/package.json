@@ -16,7 +16,6 @@
     "url": "https://github.com/daneroo/im-qcic/issues"
   },
   "main": "src/index.js",
-  "// engines moved to now.json": {},
   "scripts": {
     "start": "node src/index.js",
     "deploy": "now --public && now alias  && now rm --safe --yes api-qcic",

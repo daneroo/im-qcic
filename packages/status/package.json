@@ -1,0 +1,54 @@
+{
+  "name": "@daneroo/qcic-status",
+  "version": "1.0.0",
+  "description": "Static front end (docz) for qcic, with status of scrobblecast and im-ted1k",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "ISC",
+  "//publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
+  "main": "lib/qcic-status.js",
+  "scripts": {
+    "start": "npm run scrape && npm run docz:build",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
+    "scrape": "node src/index.js",
+    "deploy": "now --public && now alias  && now rm --safe --yes status-qcic",
+    "logs": "now logs -f $(now ls status-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')",
+    "testWithAuditLater": "npm run lint && npm audit && npm run unit",
+    "test": "npm run lint && npm run unit",
+    "lint": "standard",
+    "unit": "jest",
+    "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
+  },
+  "//webpack not necessary but pinned, waitingfor docz:v0.14": "https://github.com/pedronauck/docz/issues/596",
+  "devDependencies": {
+    "docz": "^0.13.7",
+    "docz-theme-default": "^0.13.7",
+    "jest": "^24.3.1",
+    "loggly": "^1.1.1",
+    "standard": "^12.0.1",
+    "webpack": "^4.28.4"
+  },
+  "dependencies": {},
+  "standard": {
+    "//parser": "babel-eslint",
+    "env": {
+      "jest": true
+    },
+    "ignore": [
+      "**/*.jsx"
+    ]  
+  },
+  "//jest": {
+    "testRegex": "/__tests__/.*|(\\.|/)(test|spec)\\.jsx?$"
+  }
+}

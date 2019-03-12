@@ -1,6 +1,10 @@
 # QCIC - Graphql subscription server and clients
 
-Quis custodiet ipsos custodes - Who will watch the watchers
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
+
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+> Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## Operating
 
