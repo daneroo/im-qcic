@@ -4,10 +4,14 @@ const config = require('./config')
 const fs = require('fs')
 const path = require('path')
 const logcheck = require('./logcheck')
+const tedcheck = require('./tedcheck')
 const log = console
 
 const dataDir = './data'
 const logheckFileName = path.join(`${dataDir}`, 'logcheck.json')
+const tedcheckFileName = path.join(`${dataDir}`, 'tedcheck.json')
+
+const verbose = false
 
 main()
 
@@ -25,20 +29,47 @@ async function main () {
       type: 'logcheck'
     }
     const data = await logcheck.asTable()
-    // for (const row of data.slice(0, 5)) {
-    //   console.log(row.join(' | '))
-    // }
+    showTable(data.slice(0, 3), 'Log Check')
     await writeJSON(logheckFileName, { meta, data })
+  }
+  {
+    const meta = {
+      ...metaBase,
+      type: 'tedcheck'
+    }
+    const data = {}
+    for (const qyName in tedcheck.queries) {
+      log.info(JSON.stringify({ message: 'Fetching', qyName }))
+      const qy = tedcheck.queries[qyName]
+      data[qyName] = tedcheck.asTable(await tedcheck.exec(qy))
+      showTable(data[qyName], qyName)
+    }
+    await writeJSON(tedcheckFileName, { meta, data })
+    tedcheck.endConnection()
   }
 
   log.debug(JSON.stringify({ message: 'Scraping for docz::done', stamp }))
 }
 
+// for sql results
+function showTable (data, title) {
+  if (!verbose) return
+  log.info('-=', title)
+  if (data) {
+    for (const row of data) {
+      log.info(row.join(' | '))
+    }
+  }
+  if (!data || data.length < 2) {
+    log.warn('No data')
+  }
+}
+
 async function writeJSON (fileName, data) {
-  log.debug(JSON.stringify({ message: 'Writing', fileName }))
+  // log.debug(JSON.stringify({ message: 'Writing', fileName }))
   const dirName = path.dirname(fileName)
   try {
-    log.debug(JSON.stringify({ message: 'mkdiur', dirName }))
+    // log.debug(JSON.stringify({ message: 'mkdir', dirName }))
     await fs.promises.mkdir(dirName)
   } catch (error) {
     if (error.code !== 'EEXIST') {
@@ -47,7 +78,8 @@ async function writeJSON (fileName, data) {
     }
   }
   try {
-    return await fs.promises.writeFile(fileName, JSON.stringify(data))
+    await fs.promises.writeFile(fileName, JSON.stringify(data))
+    log.info(JSON.stringify({ message: 'Writing', fileName }))
   } catch (error) {
     log.error(error)
   }

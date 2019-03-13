@@ -30,15 +30,17 @@
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "//webpack not necessary but pinned, waitingfor docz:v0.14": "https://github.com/pedronauck/docz/issues/596",
+  "//webpack": "^4.28.4",
   "devDependencies": {
     "docz": "^0.13.7",
     "docz-theme-default": "^0.13.7",
     "jest": "^24.3.1",
-    "loggly": "^1.1.1",
-    "standard": "^12.0.1",
-    "webpack": "^4.28.4"
+    "standard": "^12.0.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "loggly": "^1.1.1",
+    "mysql": "^2.16.0"
+  },
   "standard": {
     "//parser": "babel-eslint",
     "env": {
@@ -46,7 +48,7 @@
     },
     "ignore": [
       "**/*.jsx"
-    ]  
+    ]
   },
   "//jest": {
     "testRegex": "/__tests__/.*|(\\.|/)(test|spec)\\.jsx?$"

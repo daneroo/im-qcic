@@ -2,6 +2,12 @@
 
 The idea is to publish a site, on a cron schedule, or on some other trigger.
 
+## docz and webpack
+
+- Until fix use yarn to `install`
+- To convert `yarn.lock` to `package-lock.json``npx synp --source-file yarn.lock`
+- Move mdx to seperate deck and docz
+
 1. Scrape data to local json/mdx
 2. Docz to get data out
 3. Dockerize scrape&build for cron

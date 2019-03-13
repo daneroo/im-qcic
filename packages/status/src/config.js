@@ -11,10 +11,11 @@ module.exports = {
     version: require('../package').version,
     node: process.version
   },
-  loggly: getConfig('credentials.loggly.json', null)
+  loggly: getConfig('credentials.loggly.json', null),
+  mysql: getConfig('credentials.mysql.json', null)
 }
 
-// used for loggly credentials
+// used for loggly/mysql credentials
 function getConfig (path, defaultValue) {
   try {
     // fs.accessSync(path, fs.constants.R_OK)
