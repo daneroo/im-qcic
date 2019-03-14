@@ -31,7 +31,6 @@ function asTable (data) {
     for (const row of data) {
       const tableRow = []
       for (const col of headers) {
-        log.debug(col, row[col], typeof row[col])
         tableRow.push(row[col])
       }
       table.push(tableRow)
