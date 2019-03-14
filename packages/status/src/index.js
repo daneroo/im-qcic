@@ -41,7 +41,7 @@ async function main () {
     for (const qyName in tedcheck.queries) {
       log.info(JSON.stringify({ message: 'Fetching', qyName }))
       const qy = tedcheck.queries[qyName]
-      data[qyName] = tedcheck.asTable(await tedcheck.exec(qy))
+      data[qyName] = tedcheck.iso8601ify(tedcheck.asTable(await tedcheck.exec(qy)))
       showTable(data[qyName], qyName)
     }
     await writeJSON(tedcheckFileName, { meta, data })

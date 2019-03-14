@@ -21,7 +21,7 @@
     "docz:dev": "docz dev",
     "docz:build": "docz build",
     "scrape": "node src/index.js",
-    "deploy": "now --public && now alias  && now rm --safe --yes status-qcic",
+    "deploy": "cp now.json dist/ && cd dist && now --public && now alias  && now rm --safe --yes status-qcic",
     "logs": "now logs -f $(now ls status-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
     "test": "npm run lint && npm run unit",
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "loggly": "^1.1.1",
+    "moment": "^2.24.0",
     "mysql": "^2.16.0"
   },
   "standard": {

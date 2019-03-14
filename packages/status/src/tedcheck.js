@@ -2,7 +2,7 @@
 
 // dependencies - core-public-internal
 const mysql = require('mysql')
-// const log = console
+const log = console
 const config = require('./config')
 
 const queries = {
@@ -17,12 +17,12 @@ exports = module.exports = {
   queries,
   asTable,
   exec,
-  endConnection
+  endConnection,
+  iso8601ify
 }
 
 const connection = mysql.createConnection(config.mysql)
 
-const log = console
 function asTable (data) {
   const table = []
   if (data.length) {
@@ -31,6 +31,7 @@ function asTable (data) {
     for (const row of data) {
       const tableRow = []
       for (const col of headers) {
+        log.debug(col, row[col], typeof row[col])
         tableRow.push(row[col])
       }
       table.push(tableRow)
@@ -41,6 +42,19 @@ function asTable (data) {
   return table
 }
 
+// all first column are dates - skip header
+function iso8601ify (data) {
+  return data.map((row, i) => {
+    if (i === 0) { // skip header
+      return row
+    }
+    return row.map((col, j) => {
+      // iso-ify first column
+      if (j == 0) return col.replace(' ', 'T') + 'Z' // date (no day, no seconds)
+      return col
+    })
+  })
+}
 async function exec (qy) {
   return new Promise((resolve, reject) => {
     // connection.connect()

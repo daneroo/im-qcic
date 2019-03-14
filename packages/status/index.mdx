@@ -5,13 +5,20 @@ route: /
 # fullpage: true
 ---
 
+import {df,dfn} from './src/components/df'
+import moment from 'moment'
 import Welcome from './src/components/Welcome.jsx'
 import Logcheck from './src/components/Logcheck.jsx'
 import Tedcheck from './src/components/Tedcheck.jsx'
+import {meta} from './data/logcheck.json'
 
-# Status
+## Status
 
-  <Welcome name="Dan-o-rama" />
+<table><tr>
+  <td>It is now  </td><td>{df()}</td>
+</tr><tr>
+    <td>Published at</td><td>{df(meta.stamp)} - {dfn(meta.stamp)}</td>
+</tr></table>
 
 ## Logcheck
 

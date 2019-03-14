@@ -22,6 +22,8 @@ npm start
 ## equivalent
 npm run scrape
 npm run docz:build
+
+while true; do npm start; npm run deploy; echo; echo done $(date); sleep 600; done
 ```
 
 
