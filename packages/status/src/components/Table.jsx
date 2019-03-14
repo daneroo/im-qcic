@@ -16,7 +16,7 @@ export function Table({meta,data,mapper}){
     <table style={{textAlign:'Zcenter',fontSize:'100%'}}>
       <Header row={data[0]} />
       <tbody>
-      {data.slice(1,8).map((row,i) => {   
+      {data.slice(1).map((row,i) => {   
         return(<Body key={i} row={row} />)
       })}
       </tbody>

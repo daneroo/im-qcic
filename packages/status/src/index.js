@@ -54,14 +54,14 @@ async function main () {
 // for sql results
 function showTable (data, title) {
   if (!verbose) return
-  log.info('-=', title)
   if (data) {
+    log.info(`-= ${title} (${data.length})`)
     for (const row of data) {
       log.info(row.join(' | '))
     }
   }
   if (!data || data.length < 2) {
-    log.warn('No data')
+    log.warn(`-= ${title} No data`)
   }
 }
 
@@ -79,7 +79,7 @@ async function writeJSON (fileName, data) {
   }
   try {
     await fs.promises.writeFile(fileName, JSON.stringify(data))
-    log.info(JSON.stringify({ message: 'Writing', fileName }))
+    log.info(JSON.stringify({ message: 'Wrote', fileName }))
   } catch (error) {
     log.error(error)
   }

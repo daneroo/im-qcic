@@ -15,6 +15,6 @@ function shorten(i,j,v){
 
 export default function Logcheck(){
   return (
-    <Table meta={meta} data={data} mapper={shorten} />
+    <Table meta={meta} data={data.slice(0,7)} mapper={shorten} />
   )
 }

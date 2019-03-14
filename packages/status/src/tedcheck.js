@@ -7,9 +7,9 @@ const config = require('./config')
 
 const queries = {
   // concat(date,'') makes iso8601 like
-  missingLastDay: 'select concat(DATE_SUB(NOW(), INTERVAL 24 HOUR),"") as since, count(*) as samples, 86400-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 24 HOUR)',
-  missingWeekByDay: 'select concat(substring(stamp,1,11),"00:00:00") as day, round(avg(watt),0) as watt, count(*) as samples,86400-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 7 DAY) group by day having missing>0',
-  missingDayByHour: 'select concat(substring(stamp,1,14),"00:00") as hour, round(avg(watt),0) as watt, count(*) as samples,3600-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 24 HOUR) group by hour having missing>0'
+  missingLastDay: 'select concat(DATE_SUB(NOW(), INTERVAL 24 HOUR),"") as since, round(avg(watt),0) as watt, count(*) as samples, 86400-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 24 HOUR)',
+  missingWeekByDay: 'select concat(substring(stamp,1,11),"00:00:00") as day, round(avg(watt),0) as watt, count(*) as samples,86400-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 32 DAY) group by day having missing>-1',
+  missingDayByHour: 'select concat(substring(stamp,1,14),"00:00") as hour, round(avg(watt),0) as watt, count(*) as samples,3600-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 24 HOUR) group by hour having missing>-1'
   // missingDayByMinute: 'select concat(substring(stamp,1,17),"00") as minute, round(avg(watt),0) as watt, count(*) as samples,60-count(*) as missing from watt where stamp>DATE_SUB(NOW(), INTERVAL 24 HOUR) group by minute having missing>0'
 }
 
