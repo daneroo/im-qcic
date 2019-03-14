@@ -18,7 +18,7 @@
   "scripts": {
     "fix": "rm -rf package-lock.json node_modules && yarn install",
     "start": "npm run docz:dev",
-    "deploy": "npm run build && npm run deploy:now",
+    "deploy": "npm run docz:build && npm run deploy:now",
     "deploy:now": "cp now.json dist/ && cd dist && now --public && now alias  && now rm --safe --yes docz-qcic",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
@@ -40,10 +40,7 @@
     "//parser": "babel-eslint",
     "env": {
       "jest": true
-    },
-    "ignore": [
-      "**/*.jsx"
-    ]
+    }
   },
   "//jest": {
     "testRegex": "/__tests__/.*|(\\.|/)(test|spec)\\.jsx?$"
