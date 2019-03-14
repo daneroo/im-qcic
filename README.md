@@ -9,7 +9,9 @@
 ## Operating
 
 ```bash
-lerna bootstrap --hoist
+lerna bootstrap  # no --hoist for now
+# yarn fix for docz: 
+(cd packeages/docz; npm run fix)
 npm test
 npm run unit  # no audit or lint
 
