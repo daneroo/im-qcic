@@ -1,5 +1,6 @@
 
 import React from 'react'
+import { df, dfn } from './df'
 
 // map data[i][j] => f(i,j,data[i][j])
 export function map2d (data, f) { //
@@ -12,8 +13,12 @@ export function map2d (data, f) { //
 
 export function Table ({ meta, data, mapper }) {
   if (mapper) data = map2d(data, mapper)
+  if (!meta || !data) {
+    return <div >No meta or data</div>
+  }
   return (
-    <table style={{ textAlign: 'Zcenter', fontSize: '100%' }}>
+    <table style={{ textAlign: 'center', fontSize: '100%' }}>
+      <caption>Published on {df(meta.stamp, 'YYYY-MM-DD')} - {dfn(meta.stamp)}</caption>
       <Header row={data[0]} />
       <tbody>
         {data.slice(1).map((row, i) => {

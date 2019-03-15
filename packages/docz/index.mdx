@@ -10,23 +10,19 @@ import moment from 'moment'
 import Welcome from './src/components/Welcome.jsx'
 import Logcheck from './src/components/Logcheck.jsx'
 import Tedcheck from './src/components/Tedcheck.jsx'
-import { Poll } from './src/components/Counter.jsx'
+import Summary from './src/components/Summary.jsx'
+import { Poll, Fetch, Stringify } from './src/components/Fetch.jsx'
 import {meta} from './src/data/logcheck.json'
 
 
 ## Status
 
-<table><tbody><tr>
-  <td>It is now  </td><td>{df()}</td>
-</tr><tr>
-    <td>Published at</td><td>{df(meta.stamp)} - {dfn(meta.stamp)}</td>
-</tr></tbody></table>
-<Poll />
+  <Summary />
 
-## Logcheck
+## ScrobbleCast Sync
 
   <Logcheck />
 
-## Tedcheck
+## Ted1K 
 
   <Tedcheck />

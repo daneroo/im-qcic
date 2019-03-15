@@ -1,7 +1,8 @@
 
 import React from 'react'
+import { Fetch } from './Fetch'
 import { Table } from './Table'
-import { meta, data } from '../data/logcheck.json'
+import { meta as meta0, data as data0 } from '../data/logcheck.json'
 import { df } from './df'
 
 function shorten (i, j, v) {
@@ -15,6 +16,15 @@ function shorten (i, j, v) {
 
 export default function Logcheck () {
   return (
-    <Table meta={meta} data={data.slice(0, 7)} mapper={shorten} />
+    <Fetch url='https://status.qcic.n.imetrical.com/logcheck.json'
+      poll={false}
+      delay={1000}>
+      <Injecter />
+    </Fetch>
   )
+}
+function Injecter ({ meta, data }) {
+  meta = meta || meta0
+  data = data || data0
+  return <Table meta={meta} data={data.slice(0, 7)} mapper={shorten} />
 }
