@@ -6,6 +6,7 @@ This repo simply publishes scraped `.json` files for status of components.
 
 - Dockerize scrape&build for cron
 - expose as a service / resolver, for inclusion in api?
+- add <https://im-weight.herokuapp.com/backup>
 
 ## Usage
 
