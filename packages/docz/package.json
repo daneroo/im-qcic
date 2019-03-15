@@ -28,8 +28,6 @@
     "unit": "jest",
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
-  "//webpack not necessary but pinned, waitingfor docz:v0.14": "https://github.com/pedronauck/docz/issues/596",
-  "//webpack": "^4.28.4",
   "devDependencies": {
     "docz": "^0.13.7",
     "docz-theme-default": "^0.13.7",
@@ -37,12 +35,8 @@
     "standard": "^12.0.1"
   },
   "standard": {
-    "//parser": "babel-eslint",
     "env": {
       "jest": true
     }
-  },
-  "//jest": {
-    "testRegex": "/__tests__/.*|(\\.|/)(test|spec)\\.jsx?$"
   }
 }

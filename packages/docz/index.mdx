@@ -10,7 +10,9 @@ import moment from 'moment'
 import Welcome from './src/components/Welcome.jsx'
 import Logcheck from './src/components/Logcheck.jsx'
 import Tedcheck from './src/components/Tedcheck.jsx'
-import {meta} from './data/logcheck.json'
+import { Poll } from './src/components/Counter.jsx'
+import {meta} from './src/data/logcheck.json'
+
 
 ## Status
 
@@ -19,6 +21,7 @@ import {meta} from './data/logcheck.json'
 </tr><tr>
     <td>Published at</td><td>{df(meta.stamp)} - {dfn(meta.stamp)}</td>
 </tr></tbody></table>
+<Poll />
 
 ## Logcheck
 

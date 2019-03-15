@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { Table } from './Table'
-import { meta, data } from '../../data/tedcheck.json'
+import { meta, data } from '../data/tedcheck.json'
 import { df } from './df'
 
 function shorten (i, j, v) {

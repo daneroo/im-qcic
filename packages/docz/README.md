@@ -2,6 +2,12 @@
 
 The idea is to publish a site, on a cron schedule, or on some other trigger.
 
+## TODO
+
+- cronpublish ?
+- use fetch instead of import
+- tests
+
 ## docz and webpack - dependancy problem (fixed in )
 
 tl;dr  `npm run fix`
