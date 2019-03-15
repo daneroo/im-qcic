@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "stamp": "1970-01-01T00:00:00.000Z",
+    "hostname": "dirac.imetrical.com",
+    "version": {
+      "name": "@daneroo/qcic-status",
+      "version": "1.0.0",
+      "node": "v11.11.0"
+    },
+    "type": "logcheck"
+  },
+  "data": [
+    [
+      "checkpoint",
+      "darwin",
+      "dirac.imetrical.com",
+      "euler",
+      "newton"
+    ],
+    [
+      "1970-01-01T00:40:00.000Z",
+      "6aca8695058cb29d82acf7276a1c45d2db2cc193ca2aaa063fbd2172ee4cc1ae",
+      "6aca8695058cb29d82acf7276a1c45d2db2cc193ca2aaa063fbd2172ee4cc1ae",
+      "6aca8695058cb29d82acf7276a1c45d2db2cc193ca2aaa063fbd2172ee4cc1ae",
+      "6aca8695058cb29d82acf7276a1c45d2db2cc193ca2aaa063fbd2172ee4cc1ae"
+    ],
+    [
+      "1970-01-01T00:30:00.000Z",
+      "3372fa23913ba6ef879d79a63cb8ec351cadf90fece7e7e35e8af45f40175fd7",
+      "3372fa23913ba6ef879d79a63cb8ec351cadf90fece7e7e35e8af45f40175fd7",
+      "3372fa23913ba6ef879d79a63cb8ec351cadf90fece7e7e35e8af45f40175fd7",
+      "3372fa23913ba6ef879d79a63cb8ec351cadf90fece7e7e35e8af45f40175fd7"
+    ],
+    [
+      "1970-01-01T00:20:00.000Z",
+      "ef54a3128811908630c85c0ef40fed01d70ba635c84e64b831a7a73ee217ccb4",
+      "ef54a3128811908630c85c0ef40fed01d70ba635c84e64b831a7a73ee217ccb4",
+      "ef54a3128811908630c85c0ef40fed01d70ba635c84e64b831a7a73ee217ccb4",
+      "ef54a3128811908630c85c0ef40fed01d70ba635c84e64b831a7a73ee217ccb4"
+    ],
+    [
+      "1970-01-01T00:10:00.000Z",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3"
+    ],
+    [
+      "1970-01-01T00:00:00.000Z",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3",
+      "fad49b11b9e13ce5b718091fbbc494fe46a479d17dbb3c234ff0cf90776e13b3"
+    ]
+  ]
+}
