@@ -1,36 +1,29 @@
 # `@daneroo/qcic-status`
 
-The idea is to publish a site, on a cron schedule, or on some other trigger.
+This repo simply publishes scraped `.json` files for status of components.
 
-## docz and webpack
+## TODO
 
-- Until fix use yarn to `install`
-- To convert `yarn.lock` to `package-lock.json``npx synp --source-file yarn.lock`
-- Move mdx to seperate deck and docz
-
-1. Scrape data to local json/mdx
-2. Docz to get data out
-3. Dockerize scrape&build for cron
-4. Use gatsby and some external GraphQL sources instead
+- Dockerize scrape&build for cron
+- expose as a service / resolver, for inclusion in api?
 
 ## Usage
 
-To Publish:
-
 ```bash
-npm start
-## equivalent
-npm run scrape
-npm run docz:build
+npm start      # scrape: get the .json files
+npm run deploy # deploy: to now
 
+npm run cron   # scrape, deploy every 10 minutes
+# equivalent to
 while true; do npm start; npm run deploy; echo; echo done $(date); sleep 600; done
 ```
 
+## Publish statis
 
-For dev:
+Thought I might have to add to: `now.json`, but seems to work without.
 
-```bash
-npm run docz:dev
-# rinse repeat
-npm run scrape
+```json
+  "builds": [
+    { "src": "*", "use": "@now/static" }
+  ]
 ```

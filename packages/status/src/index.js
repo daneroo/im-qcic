@@ -7,7 +7,7 @@ const logcheck = require('./logcheck')
 const tedcheck = require('./tedcheck')
 const log = console
 
-const dataDir = './data'
+const dataDir = './dist'
 const logheckFileName = path.join(`${dataDir}`, 'logcheck.json')
 const tedcheckFileName = path.join(`${dataDir}`, 'tedcheck.json')
 

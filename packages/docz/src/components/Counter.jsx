@@ -33,7 +33,7 @@ export function Fetch ({ url, once = true }) {
   )
 }
 
-export function Poll ({ initialUrl = 'public/logcheck.json' }) {
+export function Poll ({ initialUrl = 'https://status.qcic.n.imetrical.com/public/logcheck.json' }) {
   const [url, setUrl] = useState(initialUrl)
   const [polling, setPolling] = useState(false)
   const toggle = () => setPolling(!polling)

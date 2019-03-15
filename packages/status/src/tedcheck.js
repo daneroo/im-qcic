@@ -49,7 +49,7 @@ function iso8601ify (data) {
     }
     return row.map((col, j) => {
       // iso-ify first column
-      if (j == 0) return col.replace(' ', 'T') + 'Z' // date (no day, no seconds)
+      if (j === 0) return col.replace(' ', 'T') + 'Z' // date (no day, no seconds)
       return col
     })
   })
