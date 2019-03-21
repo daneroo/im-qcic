@@ -4,7 +4,7 @@ Static site (mdx-deck) to publish qcic status
 
 ## TODO
 
-- add omponents from docz
+- Fix `ReferenceError: regeneratorRuntime is not defined`
 
 ## Usage
 
