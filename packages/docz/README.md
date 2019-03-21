@@ -1,10 +1,14 @@
-# `@daneroo/qcic-status`
+# `@daneroo/qcic-docz`
 
-The idea is to publish a site, on a cron schedule, or on some other trigger.
+Static site  (docz) to publish qcic status
 
 ## TODO
 
-- Better Injecter
+- Better Injecter (propagating [props with control])
+- kWh/d
+- Add im-weight, backblaze, CCC, gmvault,
+- Summary with top metrics, and reuse data in multiple places
+- Theming
 - tests
 
 ## Usage

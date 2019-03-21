@@ -1,0 +1,33 @@
+{
+  "name": "@daneroo/qcic-deck",
+  "version": "1.0.0",
+  "description": "Static front end (mdx-deck) for qcic",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx",
+    "deploy": "npm run build && npm run deploy:now",
+    "deploy:now": "cp now.json dist/ && cd dist && now --public && now alias  && now rm --safe --yes docz-qcic",
+    "testWithAuditLater": "npm run lint && npm audit && npm run unit",
+    "test": "npm run lint && npm run unit",
+    "lint": "standard",
+    "unit": "jest",
+    "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
+  },
+  "devDependencies": {
+    "mdx-deck": "^2.0.0",
+    "standard": "^12.0.1"
+  }
+}
