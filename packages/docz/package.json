@@ -19,7 +19,7 @@
     "fix": "rm -rf package-lock.json node_modules && yarn install",
     "start": "npm run docz:dev",
     "deploy": "npm run docz:build && npm run deploy:now",
-    "deploy:now": "cp now.json dist/ && cd dist && now --public && now alias  && now rm --safe --yes docz-qcic",
+    "deploy:now": "cp now.json dist/ && cd dist && now --public --target production",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
