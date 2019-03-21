@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "stamp": "1970-01-01T00:00:00.000Z",
+    "hostname": "dirac.imetrical.com",
+    "version": {
+      "name": "@daneroo/qcic-status",
+      "version": "1.0.0",
+      "node": "v11.11.0"
+    },
+    "type": "tedcheck"
+  },
+  "data": {
+    "missingLastDay": [
+      [
+        "since",
+        "watt",
+        "samples",
+        "missing"
+      ],
+      [
+        "1970-01-01T00:00:00.000Z",
+        1441,
+        86351,
+        49
+      ]
+    ],
+    "missingWeekByDay": [
+      [
+        "day",
+        "watt",
+        "samples",
+        "missing"
+      ],
+      [
+        "1970-01-01T00:00:00.000Z",
+        1846,
+        83630,
+        2770
+      ],
+      [
+        "1970-01-02T00:00:00.000Z",
+        2123,
+        86366,
+        34
+      ]
+    ],
+    "missingDayByHour": [
+      [
+        "hour",
+        "watt",
+        "samples",
+        "missing"
+      ],
+      [
+        "1970-01-01T00:00:00.000Z",
+        1202,
+        825,
+        2775
+      ],
+      [
+        "1970-01-01T01:00:00.000Z",
+        2037,
+        3600,
+        0
+      ]
+    ]
+  }
+}
