@@ -19,7 +19,14 @@ npm run cron   # scrape, deploy every 10 minutes
 while true; do npm start; npm run deploy; echo; echo done $(date); sleep 600; done
 ```
 
-## Publish statis
+## Hasura as a caching proxy with subscriptions
+
+```bash
+docker-compose up -d
+while true; do time node src/store.js ; sleep 5; done
+```
+
+## Publish static
 
 Thought I might have to add to: `now.json`, but seems to work without.
 

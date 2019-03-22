@@ -1,0 +1,28 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres
+    ports:
+    - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_DB: "qcic"
+      POSTGRES_USER: "qcic"
+      POSTGRES_PASSWORD: "sekret"
+    # volumes:
+    # - db_data:/var/lib/postgresql/data
+  graphql-engine:
+    image: hasura/graphql-engine:v1.0.0-alpha40
+    ports:
+    - "8080:8080"
+    depends_on:
+    - "postgres"
+    restart: always
+    environment:
+      # HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://qcic:sekret@postgres:5432/qcic
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      ## uncomment next line to set an admin secret
+      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+# volumes:
+#   db_data:

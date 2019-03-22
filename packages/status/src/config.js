@@ -12,7 +12,8 @@ module.exports = {
     node: process.version
   },
   loggly: getConfig('credentials.loggly.json', null),
-  mysql: getConfig('credentials.mysql.json', null)
+  mysql: getConfig('credentials.mysql.json', null),
+  postgres: getConfig('credentials.postgres.json', null)
 }
 
 // used for loggly/mysql credentials

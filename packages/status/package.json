@@ -19,7 +19,7 @@
   "scripts": {
     "cron": "while true; do npm start; npm run deploy; echo; echo done $(date); sleep 600; done",
     "start": "node src/index.js",
-    "deploy": "cp now.json dist/ && cd dist && now --public --target production",
+    "deploy": "cp now.json dist/ && cd dist && time now --public --target production",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
     "test": "npm run lint && npm run unit && echo '***' && echo Run npm audit yourself... && echo '***'",
     "lint": "standard",
@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "loggly": "^1.1.1",
-    "mysql": "^2.16.0"
+    "mysql": "^2.16.0",
+    "pg": "^7.9.0"
   },
   "standard": {
     "env": {

@@ -47,8 +47,12 @@ async function main () {
     await writeJSON(tedcheckFileName, { meta, data })
     tedcheck.endConnection()
   }
-
-  log.debug(JSON.stringify({ message: 'Scraping for docz::done', stamp }))
+  const elapsed = ((+new Date() - new Date(stamp)) / 1000).toFixed(1)
+  log.debug(JSON.stringify({
+    message: 'Scraping for docz::done',
+    stamp: new Date().toDateString(),
+    elapsed
+  }))
 }
 
 // for sql results
