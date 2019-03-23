@@ -42,32 +42,3 @@ export function Fetch ({
     })
   })
 }
-
-export function Poll ({ initialUrl = 'https://time.qcic.n.imetrical.com' }) {
-  const [url, setUrl] = useState(initialUrl)
-  const [polling, setPolling] = useState(false)
-  const toggle = () => setPolling(!polling)
-  return (
-    <div>
-      <input
-        type='text'
-        value={url}
-        onChange={event => setUrl(event.target.value)}
-      />
-      <button onClick={toggle}>
-        {polling ? 'Stop Polling' : 'Start Polling'}
-      </button>
-      { polling && <Fetch url={url} />}
-    </div>
-  )
-}
-
-export function Stringify ({ data }) {
-  return (
-    <div>
-      <pre style={{ textAlign: 'left', fontSize: '70%' }}>
-        {JSON.stringify(data, null, 2)}
-      </pre>
-    </div>
-  )
-}
