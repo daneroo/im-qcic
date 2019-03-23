@@ -5,6 +5,7 @@ This repo simply publishes scraped `.json` files for status of components.
 ## TODO
 
 - Dockerize scrape&build for cron
+- [Autoapply migrations/metadata](https://docs.hasura.io/1.0/graphql/manual/migrations/auto-apply-migrations.html)
 - expose as a service / resolver, for inclusion in api?
 - add <https://im-weight.herokuapp.com/backup>
 

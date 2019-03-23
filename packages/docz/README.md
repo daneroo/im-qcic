@@ -4,6 +4,11 @@ Static site  (docz) to publish qcic status
 
 ## TODO
 
+- Dynamic GraphQL content
+  - see gatsby-trials, and also
+  - <https://github.com/hasura/demo-apps>
+  - which includes a nice Caddy proxy
+  - pulls in <https://github.com/hasura/graphql-engine>/community/*
 - Better Injecter (propagating [props with control])
 - kWh/d
 - Add im-weight, backblaze, CCC, gmvault,

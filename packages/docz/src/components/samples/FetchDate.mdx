@@ -1,0 +1,23 @@
+---
+name: FetchDate
+route: /fetchdate
+menu: Components
+# fullpage: true
+---
+
+import { Playground } from 'docz'
+import FetchDate from './FetchDate.jsx'
+
+## FetchDate
+
+This demonstrates the effect of a delayed render.
+
+  <FetchDate />
+
+On initial render the current time is shown.
+Then a fetch to <http://worldclockapi.com/api/json/utc/now>, and a second render.
+
+In gatsby the original render time is kept, 
+in docz each page load produces a new _Initial Render time_
+
+
