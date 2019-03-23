@@ -8,16 +8,27 @@ menu: Components
 import { Playground, Props } from 'docz'
 import { Fetch, Stringify } from './Fetch.jsx'
 
-## Fetch
+# Fetch
 
 Data provider component, injects data into children
 
+## Todo
+
+- copy `({error,loading,data})` interface, like graphql `<Query />` and `<Subscription />`
 
 ## Polling
 
-  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
-      <Stringify />
-  </Fetch>
+```jsx
+<Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+    <Stringify />
+</Fetch>
+```
+
+Output:
+
+<Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+    <Stringify />
+</Fetch>
 
 ## Explicit url
 
@@ -37,7 +48,7 @@ Data provider component, injects data into children
 ## Playground
 
 <Playground>
-  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={false} delay={2000}>
       <Stringify />
   </Fetch>
 </Playground>
