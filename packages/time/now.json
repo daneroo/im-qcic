@@ -1,0 +1,8 @@
+{
+    "version": 2,
+    "name": "time-qcic",
+    "alias": "time.qcic.n.imetrical.com",
+    "builds": [
+        { "src": "*.js", "use": "@now/node" }
+    ]
+}
