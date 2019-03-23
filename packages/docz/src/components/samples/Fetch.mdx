@@ -1,0 +1,43 @@
+---
+name: Fetch
+route: /fetch
+menu: Components
+# fullpage: true
+---
+
+import { Playground, Props } from 'docz'
+import { Fetch, Stringify } from './Fetch.jsx'
+
+## Fetch
+
+Data provider component, injects data into children
+
+
+## Polling
+
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+      <Stringify />
+  </Fetch>
+
+## Explicit url
+
+  <Fetch url="https://time.qcic.n.imetrical.com">
+      <Stringify />
+  </Fetch>
+
+## Default url
+
+  <Fetch>
+      <Stringify />
+  </Fetch>
+
+## Empty
+  <Fetch />
+
+## Playground
+
+<Playground>
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+      <Stringify />
+  </Fetch>
+</Playground>

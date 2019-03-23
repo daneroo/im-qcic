@@ -1,7 +1,7 @@
 
 import React from 'react'
-import { Fetch } from './Fetch'
-import { meta as meta0, data as data0 } from '../data/logcheck.json'
+import { Fetch } from './samples/Fetch.jsx'
+import data0 from '../data/logcheck.json'
 import { df, dfn } from './df'
 
 export default function Summary () {
@@ -14,14 +14,13 @@ export default function Summary () {
   )
 }
 
-function Injecter ({ meta, data }) {
-  meta = meta || meta0
+function Injecter ({ data }) {
   data = data || data0
   return (
     <table><tbody><tr>
       <td>It is now  </td><td>{df()}</td>
     </tr><tr>
-      <td>Published at</td><td>{df(meta.stamp)} - {dfn(meta.stamp)}</td>
+      <td>Published at</td><td>{df(data.meta.stamp)} - {dfn(data.meta.stamp)}</td>
     </tr></tbody></table>
   )
 }

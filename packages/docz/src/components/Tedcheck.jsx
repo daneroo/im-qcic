@@ -1,8 +1,8 @@
 
 import React from 'react'
-import { Fetch } from './Fetch'
+import { Fetch } from './samples/Fetch.jsx'
 import { Table } from './Table'
-import { meta as meta0, data as data0 } from '../data/tedcheck.json'
+import data0 from '../data/tedcheck.json'
 import { df } from './df'
 
 function shorten (i, j, v) {
@@ -20,14 +20,13 @@ export default function Tedcheck () {
   )
 }
 
-function Injecter ({ meta, data }) {
-  meta = meta || meta0
+function Injecter ({ data }) {
   data = data || data0
   return (
     <div>
-      <Table meta={meta} data={data.missingLastDay} mapper={shorten} />
-      <Table meta={meta} data={data.missingWeekByDay} mapper={shorten} />
-      <Table meta={meta} data={data.missingDayByHour} mapper={shorten} />
+      <Table meta={data.meta} data={data.data.missingLastDay} mapper={shorten} />
+      <Table meta={data.meta} data={data.data.missingWeekByDay} mapper={shorten} />
+      <Table meta={data.meta} data={data.data.missingDayByHour} mapper={shorten} />
     </div>
   )
 }

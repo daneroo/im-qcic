@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import useInterval from './useInterval'
+import useInterval from './useInterval.js'
 
 export function Fetch ({
-  url = 'https://status.qcic.n.imetrical.com/logcheck.json',
+  url = 'https://time.qcic.n.imetrical.com',
   poll = false,
   delay = 1000,
   children
 }) {
-  const [data, setData] = useState('...')
+  const [data, setData] = useState()
 
   const fetchData = async () => {
     // console.log('Fetch', { url })
@@ -32,16 +32,18 @@ export function Fetch ({
     }, delay)
   }
 
-  // return <Stringify data={data} />
+  if (!React.Children.count(children)) {
+    return <div />
+  }
+
   return React.Children.map(children, child => {
     return React.cloneElement(child, {
-      data: data.data,
-      meta: data.meta
+      data: data
     })
   })
 }
 
-export function Poll ({ initialUrl = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+export function Poll ({ initialUrl = 'https://time.qcic.n.imetrical.com' }) {
   const [url, setUrl] = useState(initialUrl)
   const [polling, setPolling] = useState(false)
   const toggle = () => setPolling(!polling)

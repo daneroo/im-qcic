@@ -1,8 +1,8 @@
 
 import React from 'react'
-import { Fetch } from './Fetch'
+import { Fetch } from './samples/Fetch.jsx'
 import { Table } from './Table'
-import { meta as meta0, data as data0 } from '../data/logcheck.json'
+import data0 from '../data/logcheck.json'
 import { df } from './df'
 
 function shorten (i, j, v) {
@@ -23,8 +23,7 @@ export default function Logcheck () {
     </Fetch>
   )
 }
-function Injecter ({ meta, data }) {
-  meta = meta || meta0
+function Injecter ({ data }) {
   data = data || data0
-  return <Table meta={meta} data={data.slice(0, 7)} mapper={shorten} />
+  return <Table meta={data.meta} data={data.data.slice(0, 7)} mapper={shorten} />
 }
