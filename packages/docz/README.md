@@ -4,6 +4,8 @@ Static site  (docz) to publish qcic status
 
 ## TODO
 
+- Move components to own lerna sibling package
+  - <https://parastudios.de/create-a-react-component-as-npm-module/>
 - Dynamic GraphQL content
   - see gatsby-trials, and also
   - <https://github.com/hasura/demo-apps>
@@ -18,7 +20,13 @@ Static site  (docz) to publish qcic status
 
 ## Usage
 
-To Publish:
+To develop:
+
+```bash
+npm start
+```
+
+To publish:
 
 ```bash
 npm run deploy
@@ -31,5 +39,5 @@ Redo install with yarn
 tl;dr  `npm run fix`  
 
 - `webpack` bug with `npm install`  
-- Waiting for docz:v0.14 
+- Waiting for docz:v0.14
 - <https://github.com/pedronauck/docz/issues/596">

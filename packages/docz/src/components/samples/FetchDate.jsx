@@ -2,6 +2,9 @@
 
 import React from 'react'
 
+// This is my own api
+const timeAPI = 'https://time.qcic.n.imetrical.com/'
+
 function delay (millis) {
   return function (value) {
     return new Promise(resolve =>
@@ -23,14 +26,15 @@ class FetchDate extends React.Component {
   }
 
   componentDidMount () {
-    fetch('http://worldclockapi.com/api/json/utc/now')
+    Promise.resolve(42)
       // artificial delay to show Loading...
       .then(delay(1000))
+      .then(() => fetch(timeAPI))
       .then(resp => resp.json())
       .then(result => {
         this.setState({
           isLoaded: true,
-          liveStamp: result.currentDateTime
+          liveStamp: result.time
         })
       })
       .catch(error => {
@@ -52,7 +56,7 @@ class FetchDate extends React.Component {
     } else {
       live = (
         <div>
-          Rendered after fetch and delay
+          Rendered after delay and fetch
           : <span style={{ color: 'green' }}>{liveStamp}</span>
         </div>
       )
