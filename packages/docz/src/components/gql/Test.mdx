@@ -9,4 +9,20 @@ import Test from './Test.jsx'
 
 # Test
 
-<Test />
+This shows a Query, as well as a subscription:
+
+<Test httpurl="https://fizzbuzzclock.n.imetrical.com/graphql" />
+
+```js
+query {
+  hello
+}
+
+subscription {
+  newMessage {
+    id
+    stamp
+    text
+  }
+}
+```

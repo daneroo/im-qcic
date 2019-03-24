@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 function Welcome ({ name = 'Dan-eroo' }) {
-  return (<h1>Hello, {name}</h1>)
+  return (<h4>Hello, {name}</h4>)
 }
 
 Welcome.propTypes = {
