@@ -1,0 +1,51 @@
+---
+name: Overview
+route: /graphql
+menu: GraphQL
+# fullpage: true
+---
+
+import { Stringify } from '../samples/Stringify.jsx'
+
+# Overview
+
+These are components to setup `apollo-client`'s `<Query />` and `<Subscription />` tags
+
+- apollo-client
+- `<Query />` example
+- `<Subscription />` example
+
+## Requirements
+
+From the [apollo-boost migration doc](https://www.apollographql.com/docs/react/advanced/boost-migration.html),
+we have the minimal apollo requirements:
+
+```bash
+npm install react-apollo graphql
+npm install apollo-client apollo-cache-inmemory apollo-link-http apollo-link-error apollo-link
+```
+
+To add subscription capabilities, we add:
+
+```bash
+npm install --save apollo-link-ws subscriptions-transport-ws
+```
+
+## My components
+
+### apollo.js
+
+This module exports a single (default) method `newApolloClient(httpurl,wsurl)`
+
+## References & Prior Art
+
+The other source for this setup was the [Hasura sample-apps](https://github.com/hasura/graphql-engine/tree/master/community/sample-apps).
+Specifically the `react-apollo-todo`, `realtime-poll` and `realtime-chat` apps.
+
+- realtime-poll: is the simplest, `apollo.js` exports a `client = new ApolloCLient(..)`.
+- realtime-chat: uses `<ApolloConsumer />`, by wrapping the entire app in an `<ApolloProvider client={client}/>` whic is defind in it's top `index.js`
+- react-apollo-todo: uses `apollo.js` which exports a `makeApolloClient` function which is invoked in the top level `routes` and conditionally invokes `makeApolloClient` when the user is logged in. It is more complex because of Auth0 authentaction, which is linked in to the `makeApolloClient` call which in turns initializez the client with headers containg the bearer token from Auth0.
+
+- ApolloClient
+- ApolloProvider
+- Query/Subscription
