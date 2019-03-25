@@ -24,6 +24,7 @@ lerna add standard --dev
 
 ## TODO
 
+- npx create-react-library for qcic-react
 - Moving to lerna
   - ensure operational continuity
     - write ttab script

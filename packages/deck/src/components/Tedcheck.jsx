@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Fetch } from './Fetch'
+import { Fetch } from '@daneroo/qcic-react'
 import { Table } from './Table'
 import { meta as meta0, data as data0 } from '../data/tedcheck.json'
 import { df } from './df'

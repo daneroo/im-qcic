@@ -26,8 +26,11 @@
     "unit": "jest",
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
+  "dependencies": {
+    "@daneroo/qcic-react": "^1.0.0"
+  },
   "devDependencies": {
-    "mdx-deck": "^2.0.0",
+    "mdx-deck": "^2.0.5",
     "standard": "^12.0.1"
   }
 }
