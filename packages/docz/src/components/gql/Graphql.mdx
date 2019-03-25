@@ -9,17 +9,55 @@ import { Stringify } from '../samples/Stringify.jsx'
 
 # Overview
 
-These are components to setup `apollo-client`'s `<Query />` and `<Subscription />` tags
+The only required component is `<RegisterApolloProvider />`
 
-- 'ApolloCLient' factory/singleton, and how to put it in Context
-- `<Query />` example
-- `<Subscription />` example
+These are convienience components to facilitate the use 
+of `react-apollo`'s `<Query />` and `<Subscription />` components.
+
+They do not require global setup which is useful for mdx-deck and docz.
+
+This allows us to use (and re-use) multiple client for multiple graphql endpoints.
+
+```jsx
+<RegisterApolloProvider httpurl='https://your.graphql/endpoint'>
+  <Query query={your query} >
+    <Your Markup />
+  </Query>
+  -- same for a subscription
+  <Subscription subscription={your subscription query} >
+    <Your Other Markup />
+  </Subscription>
+</RegisterApolloProvider>
+```
+
+## Modules/Components
+
+
+This module exports a single (default) method `newApolloClient(httpurl,wsurl): ApolloCLient`
+
+
+### &lt;RegisterApolloProvider httpurl={} /&gt;
+
+This react component is equivalent to 
+```jsx
+<ApolloProvider client={registerApolloClient(httpurl)} />
+```
+
+- Creates the apollo client
+- Registers it with a global registry
+- wraps it children in an `<ApolloProvider />`
+
+### apollo-client.js (internals)
+
+This module contains:
+
+  - `registerApolloClient(httpurl)` holds a global registry for ApolloClient objects created with it
+  - `newApolloClient(httpurl)` is a factory for 'ApolloCLient' object
+  - `closeAll()` closes all connections in the registry, active subscriptions will go stale. WIP. But it does actually close the connection to the server (confirmed on server)
 
 ## TODO
 
-- Patterns of injection ApolloProvider/ApolloConsumer
 - Close/Reuse Websocket
-- Multiple Endpoints (nats+hasura)
 
 ## Requirements
 
@@ -38,18 +76,6 @@ To add subscription capabilities, we add:
 ```bash
 npm install apollo-link-ws subscriptions-transport-ws
 ```
-
-## Modules/Components
-
-### apollo.js
-
-This module exports a single (default) method `newApolloClient(httpurl,wsurl): ApolloCLient`
-
-### Rest...
-
-- ApolloClient
-- ApolloProvider/ApolloConsumer
-- Query/Subscription
 
 ## References & Prior Art
 

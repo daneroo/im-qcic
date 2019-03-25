@@ -1,8 +1,8 @@
 
-import React from 'react'
+import React, { useState } from 'react'
 import gql from 'graphql-tag'
-import { ApolloProvider, Query, Subscription } from 'react-apollo'
-import newApolloClient from './apollo'
+import { Query, Subscription } from 'react-apollo'
+import { RegisterApolloProvider } from './RegisterApolloProvider'
 
 const helloQy = gql`
   query {
@@ -19,19 +19,29 @@ const fizzBuzzSubscription = gql`
   }
 `
 
-function Test ({ httpurl = 'https://fizzbuzzclock.n.imetrical.com/graphql' }) {
-  const client = newApolloClient(httpurl)
-
+function Demo ({ httpurl = 'https://fizzbuzzclock.n.imetrical.com/graphql', initialVisible }) {
   return <div>
     <h4>GraphQL Endpoint => {httpurl}</h4>
-    <ApolloProvider client={client}>
+    <ShowHide httpurl={httpurl} initialVisible={initialVisible}>
       <Hello />
       <FizzBuzzClock />
-    </ApolloProvider>
+    </ShowHide>
   </div>
 }
-export default Test
+export default Demo
 
+function ShowHide ({ httpurl, children, initialVisible = false }) {
+  const [visible, setVisible] = useState(initialVisible)
+
+  return (
+    <div>
+      <button onClick={() => setVisible(!visible)}>
+        {visible ? 'Hide' : 'Show'}
+      </button>
+      { visible && <RegisterApolloProvider httpurl={httpurl}>{children}</RegisterApolloProvider> }
+    </div>
+  )
+}
 function Hello () {
   return <Query
     query={helloQy}

@@ -6,14 +6,40 @@ import { onError } from 'apollo-link-error'
 import { getMainDefinition } from 'apollo-utilities'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
+const registry = {} // map httpurl => client
+
+// acts as a blobal registry, so we can create multiple Providers using the same client
+export function registerApolloClient (httpurl) {
+  if (httpurl in registry) {
+    console.log('ReUse ApolloCLient', { httpurl })
+    return registry[httpurl]
+  }
+  console.log('New ApolloCLient', { httpurl })
+  const client = newApolloClient(httpurl)
+  registry[httpurl] = client
+  return client
+}
+
+// Not When we will/would do this...
+// But it does actually close the connection to the server (confirmed on server)
+export function closeAll (isForced = true, closedByUser = true) {
+  const httpurls = Object.keys(registry)
+  for (const httpurl of httpurls) {
+    console.log('Closing', { httpurl })
+    registry[httpurl].close(isForced, closedByUser)
+    delete registry[httpurl]
+  }
+}
+
 // If I kept a reference to wsLink, I could invoke this close method
 // wsLink.subscriptionClient.close(false, false);
+// The client also exposes a cleanup method (advisory for now): client.cleanup()
 
 // In the Hasura demo apps, the graphql endpoints are behind a Caddy proxy
 // Where we can use the folowwing as a default for httpurl
 // const httpurl = `${window.location.protocol}://${window.location.host}/v1alpha1/graphql`
 
-const newApolloClient = (httpurl, wsurl = httpurl.replace(/^http/, 'ws')) => {
+export function newApolloClient (httpurl, wsurl = httpurl.replace(/^http/, 'ws')) {
   // Create an http link:
   const httpLink = new HttpLink({
     uri: httpurl
@@ -58,7 +84,11 @@ const newApolloClient = (httpurl, wsurl = httpurl.replace(/^http/, 'ws')) => {
     ]),
     cache: new InMemoryCache()
   })
+  client.close = (isForced = true, closedByUser = true) => {
+    // Check the behavior of (isForced,closedByUser), and when we'd wan to
+    console.log('AppolloClient::Cleanup (advisory)', { wsLink })
+    // wsLink.subscriptionClient.close(false, false)
+    // wsLink.subscriptionClient.close(true, true)
+  }
   return client
 }
-
-export default newApolloClient
