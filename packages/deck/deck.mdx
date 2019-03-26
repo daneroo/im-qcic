@@ -4,24 +4,93 @@ import Welcome from './src/components/Welcome.jsx'
 import Logcheck from './src/components/Logcheck.jsx'
 import Tedcheck from './src/components/Tedcheck.jsx'
 import Summary from './src/components/Summary.jsx'
+import Counter from './src/components/Counter.jsx'
+import Fetch from './src/components/Fetch.jsx'
+import { Simple, /* Counter,*/ FetchDate, Stringify /*, Fetch */ } from '@daneroo/qcic-react'
 
-# Status
+## Status
 
   <Welcome name="Dan-o-rama"/>
 
+---
+
+## Simple
+
+  <Simple text="Dan-eroo"/>
+
+---
+
+## FetchDate
+
+  <FetchDate text="Dan-eroo"/>
+
+---
+
+## Counter
+
+  _Currently breaks from module (@daneroo/qcic_react)_
+
+  <Counter initialCount={42} />
+
+---
+
+## Stringify
+
+  <Stringify data={[1,{middle:'thing'},3]} />
+
+---
+
+## Fetch
+
+  _Currently breaks from module (@daneroo/qcic_react)_
+
+  _And also on build, even when included in mdx-deck directly_
+
+
+```jsx
+<Fetch url="https://time.qcic.n.imetrical.com" 
+       poll={false} delay={2000}>
+    <Stringify />
+</Fetch>
+```
+---
+
+## Fetch
+
+
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={false} delay={2000}>
+      <Stringify />
+  </Fetch>
+
+With 2s polling
+
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+      <Stringify />
+  </Fetch>
+
+---
+
+## Status
+
+```jsx
   <Summary />
+```
 
 ---
 
 ## ScrobbleCast
-
-  <Logcheck />
+ 
+```jsx
+   <Logcheck />
+```
 
 ---
 
 ## Ted1K 
 
+```jsx
   <Tedcheck />
+```
 
 ---
 
