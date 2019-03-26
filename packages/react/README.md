@@ -24,7 +24,7 @@ From mdx-deck, `Counter` and `Fetch` are broken. Because of hooks?
 ```jsx
 import React, { Component } from 'react'
 
-import { Simple, Counter, FetchDate, Stringify, Fetch } from '@daneroo/qcic-react'
+import { Counter, Fetch, FetchDate, Simple, Stringify, Welcome  } from '@daneroo/qcic-react'
 
 export default function Combined () {
   return (<div>
