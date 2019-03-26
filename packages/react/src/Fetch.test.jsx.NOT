@@ -1,0 +1,32 @@
+import React from 'react'
+import {
+  render,
+  fireEvent,
+  cleanup,
+  waitForElement,
+} from 'react-testing-library'
+import 'jest-dom/extend-expect'
+import axiosMock from 'axios'
+import Fetch from '..'
+
+afterEach(cleanup)
+
+test('loads and displays greeting', async () => {
+  const url = '/greeting'
+  const { getByText, getByTestId } = render(<Fetch url={url} />)
+
+  axiosMock.get.mockResolvedValueOnce({
+    data: { greeting: 'hello there' },
+  })
+
+  fireEvent.click(getByText('Load Greeting'))
+
+  const greetingTextNode = await waitForElement(() =>
+    getByTestId('greeting-text')
+  )
+
+  expect(axiosMock.get).toHaveBeenCalledTimes(1)
+  expect(axiosMock.get).toHaveBeenCalledWith(url)
+  expect(getByTestId('greeting-text')).toHaveTextContent('hello there')
+  expect(getByTestId('ok-button')).toHaveAttribute('disabled')
+})
