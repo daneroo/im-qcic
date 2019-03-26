@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import useInterval from './useInterval.js'
+import useInterval from './useInterval'
 
-export function Fetch ({
+export default function Fetch ({
   url = 'https://time.qcic.n.imetrical.com',
   poll = false,
   delay = 1000,
@@ -31,9 +31,9 @@ export function Fetch ({
     }, delay)
   }
 
-  // if (!React.Children.count(children)) {
-  //   return (<div />)
-  // }
+  if (!React.Children.count(children)) {
+    return (<div />)
+  }
 
   return React.Children.map(children, child => {
     return React.cloneElement(child, {

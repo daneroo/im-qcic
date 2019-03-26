@@ -21,10 +21,6 @@ export default function Fetch ({
     }
   }
 
-  // useEffect(() => {
-  //   fetchData()
-  // }, [])
-
   if (!poll) {
     useEffect(() => {
       fetchData()
@@ -35,9 +31,9 @@ export default function Fetch ({
     }, delay)
   }
 
-  // if (!React.Children.count(children)) {
-  //   return (<div />)
-  // }
+  if (!React.Children.count(children)) {
+    return (<div />)
+  }
 
   return React.Children.map(children, child => {
     return React.cloneElement(child, {
