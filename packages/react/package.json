@@ -1,5 +1,5 @@
 {
-  "name": "@daneroo/qcic-react2",
+  "name": "@daneroo/qcic-react",
   "version": "1.0.0",
   "description": "QCIC Reusable components",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
@@ -15,9 +15,9 @@
   "bugs": {
     "url": "https://github.com/daneroo/im-qcic/issues"
   },
-  "main": "dist/qcic-react2.js",
-  "umd:main": "dist/qcic-react2.umd.js",
-  "module": "dist/qcic-react2.m.js",
+  "main": "dist/qcic-react.js",
+  "umd:main": "dist/qcic-react.umd.js",
+  "module": "dist/qcic-react.m.js",
   "source": "src/index.js",
   "scripts": {
     "prepublishOnly": "npm run build",

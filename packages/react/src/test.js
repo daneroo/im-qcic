@@ -1,4 +1,4 @@
-import Welcome from './'
+import { Welcome } from './'
 
 describe('Welcome', () => {
   it('is truthy', () => {

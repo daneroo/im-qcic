@@ -1,9 +1,9 @@
 import 'jest-dom/extend-expect'
 
-import qcicReact from '../src'
+import { Welcome } from '../src'
 
-describe('qcicReact', () => {
-  test('import qcicReact from "qcic-react"', () => {
-    expect(typeof qcicReact).toBe('object')
+describe('Welcome', () => {
+  test('import Welcome from "qcic-react"', () => {
+    expect(typeof Welcome).toBe('function')
   })
 })
