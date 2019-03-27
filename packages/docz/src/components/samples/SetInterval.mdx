@@ -13,20 +13,37 @@ import SetInterval from './SetInterval.jsx'
 Data provider component, injects data into children
 
 ## SetInterval
+Uses RenderProps
 
 ```jsx
-<SetInterval delay={2000} iterations={4} render={
-  ({counter})=><div>counter: {counter}</div>
+<SetInterval delay={1500} render={
+  ({stamp})=><div>stamp: {stamp.substr(0,21)}</div>
 } />
 ```
 
-## With a RenderProp
+<SetInterval delay={1500} render={
+  ({stamp})=><div>stamp: {stamp.substr(0,21)}</div>
+} />
+
 
 
 ## Only once, and immediately
 
-<SetInterval delay={2000} iterations={-1} Zrender={
-  ({counter})=><div>once: {counter}</div>
-} />
+```jsx
+<SetInterval once={true}/>
+```
+
+<SetInterval once={true}/>
+
+
+## Default 
+
+delay:1s, iterations:forever, render JSON
+
+```jsx
+<SetInterval />
+```
+
+<SetInterval />
 
 
