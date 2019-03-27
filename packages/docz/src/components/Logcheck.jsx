@@ -17,8 +17,8 @@ function shorten (i, j, v) {
 export default function Logcheck () {
   return (
     <Fetch url='https://status.qcic.n.imetrical.com/logcheck.json'
-      poll={false}
-      delay={1000}>
+      poll
+      delay={60000}>
       <Injecter />
     </Fetch>
   )

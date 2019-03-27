@@ -1,0 +1,43 @@
+---
+name: External
+route: /external
+menu: External
+# fullpage: true
+---
+
+import { Counter, Fetch, FetchDate, Simple, Stringify, Welcome  } from '@daneroo/qcic-react'
+
+
+# External
+
+Compnents imported from `qcic-react`.
+
+## Counter
+
+<Counter />
+
+## Fetch
+
+
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={false} delay={2000}>
+      <Stringify />
+  </Fetch>
+
+With 2s polling
+
+  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
+      <Stringify />
+  </Fetch>
+
+## FetchDate
+
+<FetchDate />
+
+## Simple
+
+<Simple />
+
+## Stringify
+
+<Stringify data={[1,{middle:'thing'},3]} />
+

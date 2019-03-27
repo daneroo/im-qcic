@@ -16,7 +16,7 @@
     "url": "https://github.com/daneroo/im-qcic/issues"
   },
   "scripts": {
-    "fix": "rm -rf package-lock.json node_modules && yarn install",
+    "fix": "rm -rf package-lock.json node_modules && yarn install && npm i --package-lock-only",
     "start": "npm run docz:dev",
     "deploy": "npm run docz:build && npm run deploy:now",
     "deploy:now": "cp now.json dist/ && cd dist && now --public --target production && now rm --safe --yes docz-qcic",

@@ -7,8 +7,8 @@ import { df, dfn } from './df'
 export default function Summary () {
   return (
     <Fetch url='https://status.qcic.n.imetrical.com/logcheck.json'
-      poll={false}
-      delay={1000}>
+      poll
+      delay={10000}>
       <Injecter />
     </Fetch>
   )

@@ -26,6 +26,7 @@ export function Fetch ({
       fetchData()
     }, [])
   } else {
+    fetchData() // now - once before setInterval
     useInterval(() => {
       // setCount(count + 1);
       fetchData()

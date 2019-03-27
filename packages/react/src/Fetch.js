@@ -26,6 +26,7 @@ export default function Fetch ({
       fetchData()
     }, [])
   } else {
+    fetchData() // now - once before setInterval
     useInterval(() => {
       fetchData()
     }, delay)

@@ -38,6 +38,14 @@ Redo install with yarn
 
 tl;dr  `npm run fix`  
 
+Note: _need to use qcic_react..._
+
+```bash
+rm -rf package-lock.json node_modules && \
+yarn install && \
+npm i --package-lock-only
+```
+
 - `webpack` bug with `npm install`  
 - Waiting for docz:v0.14
 - <https://github.com/pedronauck/docz/issues/596">
