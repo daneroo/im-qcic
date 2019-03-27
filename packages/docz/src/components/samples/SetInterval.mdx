@@ -1,0 +1,32 @@
+---
+name: SetInterval
+route: /setinterval
+menu: Components
+# fullpage: true
+---
+
+import SetInterval from './SetInterval.jsx'
+//import { Stringify } from './Stringify.jsx'
+
+# SetInterval
+
+Data provider component, injects data into children
+
+## SetInterval
+
+```jsx
+<SetInterval delay={2000} iterations={4} render={
+  ({counter})=><div>counter: {counter}</div>
+} />
+```
+
+## With a RenderProp
+
+
+## Only once, and immediately
+
+<SetInterval delay={2000} iterations={-1} Zrender={
+  ({counter})=><div>once: {counter}</div>
+} />
+
+
