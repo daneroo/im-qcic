@@ -34,16 +34,19 @@ npm run deploy
 
 ## docz and webpack - dependancy problem (fixed in )
 
-Redo install with yarn
+This is not working yet.
+WIP: Redo install with yarn
 
 tl;dr  `npm run fix`  
 
 Note: _need to use qcic_react..._
 
+`mkdir -p node_modules/@daneroo; ln -sf ../react/ node_modules/@daneroo/qcic-react`
+
 ```bash
 rm -rf package-lock.json node_modules && \
 yarn install && \
-npm i --package-lock-only
+npm i --package-lock-only # recreates package-lock.json
 ```
 
 - `webpack` bug with `npm install`  
