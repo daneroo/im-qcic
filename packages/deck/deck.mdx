@@ -1,35 +1,10 @@
 export { dark as theme } from 'mdx-deck/themes'
 
-import Logcheck from './src/components/Logcheck.jsx'
-import Tedcheck from './src/components/Tedcheck.jsx'
-import Summary from './src/components/Summary.jsx'
-import Counter from './src/components/Counter.jsx'
-import Fetch from './src/components/Fetch.jsx'
-import { /*Counter, Fetch,*/ FetchDate, Simple, Stringify, Welcome  } from '@daneroo/qcic-react'
+import { Fetch, FetchInterval, SetInterval, Stringify, Welcome } from '@daneroo/qcic-react'
 
 ## Welcome
 
   <Welcome name="Dan-o-rama"/>
-
----
-
-## Simple
-
-  <Simple text="Dan-eroo"/>
-
----
-
-## FetchDate
-
-  <FetchDate text="Dan-eroo"/>
-
----
-
-## Counter
-
-  _Currently breaks from module (@daneroo/qcic_react)_
-
-  <Counter initialCount={42} />
 
 ---
 
@@ -41,31 +16,71 @@ import { /*Counter, Fetch,*/ FetchDate, Simple, Stringify, Welcome  } from '@dan
 
 ## Fetch
 
-  _Currently breaks from module (@daneroo/qcic_react)_
-
-  _And also on build, even when included in mdx-deck directly_
-
-
 ```jsx
-<Fetch url="https://time.qcic.n.imetrical.com" 
-       poll={false} delay={2000}>
-    <Stringify />
-</Fetch>
+<Fetch url="https://time.qcic.n.imetrical.com/" 
+  render={
+  ({ loading, error, data })=>{
+    if (loading) return <pre>Loading...</pre>
+    if (error) return <pre>{error.name}: {error.message}</pre>
+    return (<pre>
+      {JSON.stringify(data)}
+    </pre>)
+  }
+} />
 ```
+
 ---
 
 ## Fetch
 
+<Fetch url="https://time.qcic.n.imetrical.com/" 
+  render={
+  ({ loading, error, data })=>{
+    if (loading) return <pre>Loading...</pre>
+    if (error) return <pre>{error.name}: {error.message}</pre>
+    return (<pre>
+      {JSON.stringify(data)}
+    </pre>)
+  }
+} />
 
-  <Fetch url="https://time.qcic.n.imetrical.com" poll={false} delay={2000}>
-      <Stringify />
-  </Fetch>
+---
+
+## FetchInterval
+
+```jsx
+<FetchInterval url="https://time.qcic.n.imetrical.com/" 
+  delay={1000}
+  once={false}
+  render={
+  ({ loading, error, data })=>{
+    return (<pre>{JSON.stringify(data)}</pre>)
+  }
+} />
+```
+
+---
+
+## FetchInterval
+
+
+<FetchInterval url="https://time.qcic.n.imetrical.com/" 
+  once={true}
+  render={
+  ({ loading, error, data })=>{
+    return (<pre>{JSON.stringify(data)}</pre>)
+  }
+} />
 
 With 2s polling
 
-  <Fetch url="https://time.qcic.n.imetrical.com" poll={true} delay={2000}>
-      <Stringify />
-  </Fetch>
+<FetchInterval url="https://time.qcic.n.imetrical.com/" 
+  delay={2000}
+  render={
+  ({ loading, error, data })=>{
+    return (<pre>{JSON.stringify(data)}</pre>)
+  }
+} />
 
 ---
 
