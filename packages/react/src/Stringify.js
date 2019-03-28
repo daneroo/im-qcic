@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function Stringify ({ data }) {
+export default function Stringify ({ data }) {
   return (
     <div>
       <pre style={{ textAlign: 'left', fontSize: '70%' }}>
