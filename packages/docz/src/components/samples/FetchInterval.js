@@ -1,6 +1,7 @@
 /* global fetch */
+
 import React from 'react'
-export default class FetchDate extends React.Component {
+export default class FetchInterval extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -10,9 +11,9 @@ export default class FetchDate extends React.Component {
     }
   }
 
-  componentDidMount () {
+  fetcData () {
     Promise.resolve(42)
-      .then(() => this.setState({ loading: true }))
+      .then(() => this.setState({ loading: true, error: null }))
       .then(() => fetch(this.props.url))
       .then(resp => resp.json())
       .then(data => {
@@ -23,19 +24,38 @@ export default class FetchDate extends React.Component {
       })
   }
 
+  componentDidMount () {
+    this.fetcData()
+    if (!this.props.once) {
+      this.interval = setInterval(() => {
+        this.fetcData()
+      }, this.props.delay)
+    }
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.interval)
+  }
+
   render () {
     // const { loading, error, data } = this.state
     return this.props.render(this.state)
   }
 }
 
-FetchDate.defaultProps = {
-  delay: 5000,
+FetchInterval.defaultProps = {
+  delay: 10000,
+  once: false,
   url: 'https://time.qcic.n.imetrical.com/',
   render: ({ loading, error, data }) => {
     // console.log('render', { loading, error, data })
-    if (loading) return <p>Loading...</p>
-    if (error) return <p>{error.name}: {error.message}</p>
-    return (<pre>default-o-rama:{JSON.stringify(data)}</pre>)
+    const heading = (loading)
+      ? <span>Loading...</span>
+      : (error)
+        ? <span>{error.name}: {error.message}</span>
+        : <span>Fetched</span>
+
+    return (<pre>data: {JSON.stringify(data)} status: {heading} </pre>
+    )
   }
 }
