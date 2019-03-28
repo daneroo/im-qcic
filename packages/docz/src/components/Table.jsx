@@ -11,7 +11,7 @@ export function map2d (data, f) { //
   })
 }
 
-export function Table ({ meta, data, mapper }) {
+export default function Table ({ meta, data, mapper }) {
   if (mapper) data = map2d(data, mapper)
   if (!meta || !data) {
     return <div >No meta or data</div>
