@@ -1,0 +1,48 @@
+---
+name: Stringify
+route: /stringify
+menu: Components
+# fullpage: true
+---
+
+import { Playground, Props } from 'docz'
+import { Stringify } from './Stringify'
+
+# Stringify
+
+Show `({data})` as JSON.stringify in a `<pre />`
+
+## With Array
+
+```jsx
+<Stringify data={[1,2,3]}/>
+```
+
+Output:
+
+<Stringify data={[1,2,3]}/>
+
+## With Object
+
+```jsx
+<Stringify data={{this:'one',that:'other',those:['extra','things']}}/>
+```
+
+Output:
+
+<Stringify data={{this:'one',that:'other',those:['extra','things']}}/>
+
+## With no data
+
+```jsx
+<Stringify />
+```
+
+Output:
+
+<Stringify />
+
+## Playground 
+<Playground>
+<Stringify data={[1,2,3]}/>
+</Playground>

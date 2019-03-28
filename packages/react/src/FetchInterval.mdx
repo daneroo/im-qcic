@@ -1,0 +1,52 @@
+---
+name: FetchInterval
+route: /fetcinterval
+menu: Components
+# fullpage: true
+---
+
+import FetchInterval from './FetchInterval'
+
+# FetchInterval
+
+```jsx
+<FetchInterval url="https://time.qcic.n.imetrical.com/" delay={1000} />
+```
+
+<FetchInterval url="https://time.qcic.n.imetrical.com/" delay={1000} />
+
+Uses RenderProps
+
+```jsx
+<FetchInterval url="https://time.qcic.n.imetrical.com/" delay={2000} render={
+  ({ loading, error, data })=>{
+    if (loading) return <pre>Loading...</pre>
+    if (error) return <pre>{error.name}: {error.message}</pre>
+    return (<pre>Tada: {JSON.stringify(data)}</pre>)
+  }
+} />
+```
+
+<FetchInterval url="https://time.qcic.n.imetrical.com/" delay={2000} render={
+  ({ loading, error, data })=>{
+    if (loading) return <pre>Loading...</pre>
+    if (error) return <pre>{error.name}: {error.message}</pre>
+    return (<pre>Tada: {JSON.stringify(data)}</pre>)
+  }
+} />
+
+## Only once
+
+```jsx
+<FetchInterval url="https://time.qcic.n.imetrical.com/" once={true} />
+```
+
+<FetchInterval url="https://time.qcic.n.imetrical.com/" once={true} />
+
+## With Error
+
+```jsx
+<FetchInterval url="https://NOTEXIST.time.qcic.n.imetrical.com/" delay={3000} />
+```
+
+<FetchInterval url="https://NOTEXIST.time.qcic.n.imetrical.com/" delay={3000} />

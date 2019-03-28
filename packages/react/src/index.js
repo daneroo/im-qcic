@@ -1,12 +1,10 @@
-import Counter from './Counter'
 import Fetch from './Fetch'
-import FetchDate from './FetchDate'
-import Simple from './Simple'
+import FetchInterval from './FetchInterval'
+import SetInterval from './SetInterval'
 import Stringify from './Stringify'
 import Welcome from './Welcome'
-import useInterval from './useInterval'
 
-export { Counter, Fetch, FetchDate, Simple, Stringify, Welcome, useInterval }
+export { Fetch, FetchInterval, SetInterval, Stringify, Welcome }
 
 // alternative, more concise syntax for named exports
 // export { default as Foo } from './Foo'
