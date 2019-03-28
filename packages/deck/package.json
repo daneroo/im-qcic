@@ -5,7 +5,8 @@
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
   "license": "ISC",
-  "publishConfig": {
+  "private": true,
+  "//publishConfig": {
     "access": "public"
   },
   "repository": {
