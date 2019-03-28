@@ -1,6 +1,6 @@
 /* global fetch */
 import React from 'react'
-export default class FetchDate extends React.Component {
+export default class Fetch extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -29,7 +29,7 @@ export default class FetchDate extends React.Component {
   }
 }
 
-FetchDate.defaultProps = {
+Fetch.defaultProps = {
   delay: 5000,
   url: 'https://time.qcic.n.imetrical.com/',
   render: ({ loading, error, data }) => {

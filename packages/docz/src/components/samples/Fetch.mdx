@@ -1,20 +1,20 @@
 ---
-name: FetchDate
-route: /fetchdate
+name: Fetch
+route: /fetch
 menu: Components
 # fullpage: true
 ---
 
-import FetchDate from './FetchDate'
+import Fetch from './Fetch'
 import SetInterval from './SetInterval'
 import FetchInterval from './FetchInterval'
 
-# FetchDate
+# Fetch
 
 Uses RenderProps
 
 ```jsx
-<FetchDate url="https://time.qcic.n.imetrical.com/" render={
+<Fetch url="https://time.qcic.n.imetrical.com/" render={
   ({ loading, error, data })=>{
     if (loading) return <p>Loading...</p>
     if (error) return <p>{error.name}: {error.message}</p>
@@ -23,7 +23,7 @@ Uses RenderProps
 } />
 ```
 
-<FetchDate url="https://time.qcic.n.imetrical.com/" render={
+<Fetch url="https://time.qcic.n.imetrical.com/" render={
   ({ loading, error, data })=>{
     if (loading) return <p>Loading...</p>
     if (error) return <p>{error.name}: {error.message}</p>
@@ -34,7 +34,7 @@ Uses RenderProps
 ## With Error
 
 ```jsx
-<FetchDate url="https://NOTEXIST.time.qcic.n.imetrical.com/" render={
+<Fetch url="https://NOTEXIST.time.qcic.n.imetrical.com/" render={
   ({ loading, error, data })=>{
     if (loading) return <p>Loading...</p>
     if (error) return <p>{error.name}: {error.message}</p>
@@ -43,7 +43,7 @@ Uses RenderProps
 } />
 ```
 
-<FetchDate url="https://NOTEXIST.time.qcic.n.imetrical.com/" render={
+<Fetch url="https://NOTEXIST.time.qcic.n.imetrical.com/" render={
   ({ loading, error, data })=>{
     if (loading) return <p>Loading...</p>
     if (error) return <p>{error.name}: {error.message}</p>
