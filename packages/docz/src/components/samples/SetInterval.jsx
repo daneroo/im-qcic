@@ -1,10 +1,8 @@
 import React from 'react'
 
-// TODO(daneroo): make tick async
-//  The original idea was just to re-render on each tick
+// Just call renderProps, once or in a loop
 // - easy way to re-render on delay forever
 // - easy way to render only once
-// tick: only setState if !done
 export default class SetInterval extends React.Component {
   constructor (props) {
     super(props)

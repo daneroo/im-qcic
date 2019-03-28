@@ -5,21 +5,48 @@ menu: Components
 # fullpage: true
 ---
 
-import FetchDate from './FetchDate.jsx'
+import FetchDate from './FetchDate'
+import SetInterval from './SetInterval'
+import FetchInterval from './FetchInterval'
 
 # FetchDate
 
-_Deprecated in favor of mor general `Fetch` component, but kept to test if it works in gatsby/mdx-deck/docz_
+Uses RenderProps
 
-This demonstrates the effect of a delayed render.
+```jsx
+<FetchDate url="https://time.qcic.n.imetrical.com/" render={
+  ({ loading, error, data })=>{
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>{error.name}: {error.message}</p>
+    return (<pre>Tada:{JSON.stringify(data)}</pre>)
+  }
+} />
+```
 
+<FetchDate url="https://time.qcic.n.imetrical.com/" render={
+  ({ loading, error, data })=>{
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>{error.name}: {error.message}</p>
+    return (<pre>Tada:{JSON.stringify(data)}</pre>)
+  }
+} />
 
-  <FetchDate />
+## With Error
 
-On initial render the current time is shown.
-Then a fetch to <https://time.qcic.n.imetrical.com/>, and a second render.
+```jsx
+<FetchDate url="https://NOTEXIST.time.qcic.n.imetrical.com/" render={
+  ({ loading, error, data })=>{
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>{error.name}: {error.message}</p>
+    return (<pre>Tada:{JSON.stringify(data)}</pre>)
+  }
+} />
+```
 
-In gatsby the original render time is kept, 
-in docz each page load produces a new _Initial Render time_
-
-
+<FetchDate url="https://NOTEXIST.time.qcic.n.imetrical.com/" render={
+  ({ loading, error, data })=>{
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>{error.name}: {error.message}</p>
+    return (<pre>Tada:{JSON.stringify(data)}</pre>)
+  }
+} />

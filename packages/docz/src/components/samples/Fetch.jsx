@@ -34,7 +34,7 @@ export function Fetch ({
   }
 
   if (!React.Children.count(children)) {
-    return <div />
+    return (null)
   }
 
   return React.Children.map(children, child => {
