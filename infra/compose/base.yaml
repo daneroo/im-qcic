@@ -1,0 +1,13 @@
+version: '3'
+
+# services: None
+
+# decalred up front for sharing?    
+# networks:
+#   frontend:
+#   backend:
+
+# These should go in the service file unless shared...
+# options: https://docs.docker.com/compose/compose-file/#volumes
+# volumes:
+#   db-data:
