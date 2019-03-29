@@ -1,7 +1,7 @@
 #/bin/bash
 
 
-(cd compose; ./dc.sh start)
+(cd compose; ./dc.sh up -d)
 
 ## Start logs, etc
 npx ttab -t nats-top -d "$(pwd)" nats-top
@@ -12,5 +12,9 @@ npx ttab -t ddclient -d "$(pwd)/compose" ./dc.sh logs -f ddclient
 
 # show components and status
 (cd compose; ./dc.sh ps)
+
+echo
+echo "More commands:"
+echo "(cd compose; ./dc.sh command)"
 
 

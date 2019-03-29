@@ -1,0 +1,12 @@
+version: '3'
+services:
+  api:
+    # build will replaced by image when pushed to registry
+    build: ../../packages/api/
+    # image: qcic-api:vx.y.z
+    restart: unless-stopped
+    environment:
+      # no value inherits from host (but not docker-machine host...)
+      - HOSTNAME
+    ports:
+     - "5000:5000"  # for http & ws

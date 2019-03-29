@@ -3,7 +3,7 @@
 const os = require('os')
 
 const PORT = 5000
-const hostname = process.env.HOSTALIAS || os.hostname()
+const hostname = process.env.HOSTALIAS || process.env.HOSTNAME || os.hostname()
 const topic = 'im.qcic.heartbeat'
 
 // export default {
