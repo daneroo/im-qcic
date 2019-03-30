@@ -40,5 +40,5 @@ export default function NatsBridge ({ httpurl = 'https://api.qcic.n.imetrical.co
 }
 
 function Rows ({ rows }) {
-  return rows.map((row) => <pre style={{ margin: '0px' }}>{row.join('  ')}  </pre>)
+  return rows.map((row) => <pre key={row[0]} style={{ margin: '0px' }}>{row.join('  ')}  </pre>)
 }
