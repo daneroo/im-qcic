@@ -1,7 +1,7 @@
 
 import React from 'react'
 import gql from 'graphql-tag'
-import { df, dfn } from './df'
+import { df } from './df'
 import { Subscription } from 'react-apollo'
 import { RegisterApolloProvider } from './gql/RegisterApolloProvider'
 
@@ -29,7 +29,7 @@ export default function NatsBridge ({ httpurl = 'https://api.qcic.n.imetrical.co
           if (!data || !data.newMessage) return <p>---</p>
 
           const { id, stamp, host, text } = data.newMessage
-          const row = [ id.slice(-5), df(stamp, 'HH:mm:ss'), host, text, dfn(stamp) ]
+          const row = [ id.slice(-5), df(stamp, 'HH:mm:ss'), host, text ]
           rows.push(row)
           rows = rows.slice(-4)
           return <Rows rows={rows} />
