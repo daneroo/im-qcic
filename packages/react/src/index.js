@@ -4,7 +4,12 @@ import SetInterval from './SetInterval'
 import Stringify from './Stringify'
 import Welcome from './Welcome'
 
-export { Fetch, FetchInterval, SetInterval, Stringify, Welcome }
+import { registerApolloClient, RegisterApolloProvider } from './gql'
+
+export {
+  Fetch, FetchInterval, SetInterval, Stringify, Welcome,
+  registerApolloClient, RegisterApolloProvider
+}
 
 // alternative, more concise syntax for named exports
 // export { default as Foo } from './Foo'

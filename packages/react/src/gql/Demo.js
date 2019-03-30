@@ -42,7 +42,6 @@ function ShowHide ({ httpurl, children, initialVisible = false }) {
     </div>
   )
 }
-
 function Hello () {
   return <Query
     query={helloQy}
