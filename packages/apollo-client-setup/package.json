@@ -1,5 +1,5 @@
 {
-  "name": "@daneroo/qcic-gql-client",
+  "name": "@daneroo/qcic-apollo-client-setup",
   "version": "1.0.1",
   "description": "Reusable setup components for apollo-client setup",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
