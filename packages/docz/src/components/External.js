@@ -4,7 +4,7 @@ import React from 'react'
 // import { df } from './df'
 // import { Subscription } from 'react-apollo'
 // import { RegisterApolloProvider } from './gql/RegisterApolloProvider'
-import { Greeter, Welcome, Wilkomen } from '@daneroo/pika-lib-simple'
+import { Greeter, Welcome, Wilkomen } from '@daneroo/qcic-apollo-client-setup'
 
 // const natsSubscription = gql`
 // subscription OnNewMessage {

@@ -44,7 +44,7 @@
     "test:watch": "jest --watch --runInBand --silent",
     "prebuild": "npm run lint && npm t && rimraf pkg",
     "build": "pack build",
-    "publish": "pack publish"
+    "//publish": "pack publish"
   },
   "peerDependencies": {
     "react": "^16.8.0"
