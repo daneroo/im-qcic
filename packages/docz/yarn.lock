@@ -908,10 +908,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daneroo/qcic-apollo-client-setup@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@daneroo/qcic-apollo-client-setup/-/qcic-apollo-client-setup-1.0.4.tgz#826d3da4d371a7fb81b3c2bda9d888490020281b"
-  integrity sha512-YYB+5oFlTdum7ZW48ROGYXxKyWjjLW3Iq24Vj19BAyB2LVmY/jOc6vEIFD/7bUHU91CrJ0E9f+V62waR1Emf7w==
+"@daneroo/qcic-apollo-client-setup@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@daneroo/qcic-apollo-client-setup/-/qcic-apollo-client-setup-1.0.5.tgz#69f4d862ac02b7dfb5bb3f6f4f4c113386e21998"
+  integrity sha512-dWTz0ggS6JFkPF43f/udcS/9a78saLF9cACrU2EqlIIQKZWEqth5lInfqd8yhrtAzpHJmp3fSJpLZttWJmSetA==
 
 "@emotion/is-prop-valid@^0.7.3":
   version "0.7.3"
