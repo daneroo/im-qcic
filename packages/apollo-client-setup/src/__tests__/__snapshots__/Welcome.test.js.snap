@@ -11,7 +11,7 @@ exports[`Welcome Welcome renders 1`] = `
 exports[`Welcome Welcome renders with a param 1`] = `
 <h4>
   Hello, 
-  Dude
+  Daniel
    from a component in a library
 </h4>
 `;

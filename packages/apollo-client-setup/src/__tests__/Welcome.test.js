@@ -16,7 +16,7 @@ describe('Welcome', () => {
   })
   test('Welcome renders with a param', () => {
     const component = renderer.create(
-      <Welcome name={'Dude'} />
+      <Welcome name={'Daniel'} />
     )
     const tree = component.toJSON()
     expect(tree).toMatchSnapshot()
