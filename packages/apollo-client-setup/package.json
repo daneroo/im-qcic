@@ -67,5 +67,6 @@
     "env": {
       "jest": true
     }
-  }
+  },
+  "gitHead": "6fb98e5307a29511317cdc05d2fe6d7e2b6bdb82"
 }
