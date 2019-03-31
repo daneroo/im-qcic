@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-deck",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Static front end (mdx-deck) for qcic",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
@@ -28,7 +28,7 @@
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "dependencies": {
-    "@daneroo/qcic-react": "^1.0.3",
+    "@daneroo/qcic-react": "^1.0.4",
     "moment": "^2.24.0"
   },
   "devDependencies": {
