@@ -4,7 +4,7 @@ import React from 'react'
 // import { df } from './df'
 // import { Subscription } from 'react-apollo'
 // import { RegisterApolloProvider } from './gql/RegisterApolloProvider'
-import { Greeter, Welcome } from '@daneroo/pika-lib-simple'
+import { Greeter, Welcome, Wilkomen } from '@daneroo/pika-lib-simple'
 
 // const natsSubscription = gql`
 // subscription OnNewMessage {
@@ -18,11 +18,8 @@ import { Greeter, Welcome } from '@daneroo/pika-lib-simple'
 
 export default function External () {
   return <div>
-    <h4>Greeter: {Greeter('IUHASD')}</h4>
+    <h4>Greeter: {Greeter('Dan-da-man')}</h4>
     <Welcome />
+    <Wilkomen />
   </div>
-}
-
-function Rows ({ rows }) {
-  return rows.map((row) => <pre key={row[0]} style={{ margin: '0px' }}>{row.join('  ')}  </pre>)
 }

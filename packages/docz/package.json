@@ -42,7 +42,7 @@
   },
   "//@daneroo/qcic-react": "^1.0.0",
   "dependencies": {
-    "@daneroo/pika-lib-simple": "^1.0.3",
+    "@daneroo/pika-lib-simple": "^1.0.11",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link": "^1.2.11",
