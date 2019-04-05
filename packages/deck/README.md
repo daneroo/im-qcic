@@ -12,6 +12,19 @@ To Publish:
 npm run deploy
 ```
 
+## Zeit/now redirect
+
+To have [proper redirects](https://zeit.co/docs/v2/deployments/routes/) 
+for non `/` routes, in your `now.json`:
+
+```json
+"routes": [
+  { "src": "/index.html" },
+  { "src": "/main.js" },
+  { "src": "/(.*)", "dest": "/" }
+]
+```
+
 ## Webpack and apollo client w/subscription
 
 When importing apollo client modules, I had to add a custom webpack config:

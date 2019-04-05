@@ -32,6 +32,21 @@ To publish:
 npm run deploy
 ```
 
+## Zeit/now redirect
+
+To have [proper redirects](https://zeit.co/docs/v2/deployments/routes/) 
+for non `/` routes, in your `now.json`:
+
+```json
+"routes": [
+  { "src": "/index.html" },
+  { "src": "/assets.json" },
+  { "src": "/public/(.*)" },
+  { "src": "/static/(.*)" },
+  { "src": "/(.*)", "dest": "/" }
+]
+```
+
 ## docz and webpack - dependancy problem (fixed in )
 
 This is not working yet.
