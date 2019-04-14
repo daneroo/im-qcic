@@ -1,7 +1,7 @@
 {
-  "name": "knative-serving-helloworld",
+  "name": "qcic-cloudrun-myip",
   "version": "1.0.0",
-  "description": "Simple hello world sample in Node",
+  "description": "simple cloud run service, reporting remoteAddress(ip)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

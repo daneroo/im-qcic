@@ -6,30 +6,34 @@ Using `imetrical.com` projectId `cloudrun-237421`
 
 - Only runs in `us-central1` for now.
 
+Because cloud run containers are running in gVisor, and seem to be checkpointed/restored, it seems like I can't get anything unique out of the container instance:
+
+- `const hostuid = require('ulid').ulid()`: is noly evaluated once???
+- `hostname` is always localhost
+- `require('os').networkInterfaces()` is useless (gVisor isolation)
+
 ## TODO
 
-- Rename to myip
-- deploy with name
-- clean repo's and versions of services
+- clean services revisions
+- [clean registry images](https://cloud.google.com/container-registry/docs/managing)
 
 ## Cloud Build & deploy
+
+See `Makefile` for settings for memory, concurrency,..
+Concurrency is set to 80, which is the default and maximum
 
 ```bash
 make build
 make deploy
+make smoke
 ```
 
-tl;dr
+## Setup
 
 ```bash
-# set region
+# set region and project
+gcloud config set project qcic-237620
 gcloud config set run/region us-central1
-
-#build
-gcloud builds submit --tag gcr.io/cloudrun-237421/helloworld
-
-#deploy
-gcloud beta run deploy --image gcr.io/cloudrun-237421/helloworld
 ```
 
 ## References
