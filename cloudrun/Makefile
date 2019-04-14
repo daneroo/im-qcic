@@ -2,7 +2,9 @@
 PROJECTID=qcic-237620
 SERVICE=myip
 # gcloud beta run services describe myip --format json | jq .status.address.hostname
-ENDPOINT=https://myip-6vdzfoe7cq-uc.a.run.app
+ENDPOINT=https://myip.g.imetrical.com
+# Before custome domain mapping
+#ENDPOINT=https://myip-6vdzfoe7cq-uc.a.run.app
 
 build:
 	gcloud builds submit --tag gcr.io/${PROJECTID}/${SERVICE}

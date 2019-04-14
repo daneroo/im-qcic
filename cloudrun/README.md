@@ -1,6 +1,8 @@
-# Cloud Run example (node)
+# Cloud Run example (node.js)
 
 Deploying a serverless container with Cloud Run.
+
+- registered `myip.g.imetrical.com`
 
 Using `imetrical.com` projectId `cloudrun-237421`
 
