@@ -4,14 +4,7 @@ Static site  (docz) to publish qcic status
 
 ## TODO
 
-- Move components to own lerna sibling package
-  - <https://parastudios.de/create-a-react-component-as-npm-module/>
-- Dynamic GraphQL content
-  - see gatsby-trials, and also
-  - <https://github.com/hasura/demo-apps>
-  - which includes a nice Caddy proxy
-  - pulls in <https://github.com/hasura/graphql-engine>/community/*
-- Better Injecter (propagating [props with control])
+- Fix the logo (static assets in /public for docz:dev)
 - kWh/d
 - Add im-weight, backblaze, CCC, gmvault,
 - Summary with top metrics, and reuse data in multiple places
@@ -49,10 +42,13 @@ for non `/` routes, in your `now.json`:
 
 ## docz and webpack - dependancy problem (fixed in )
 
-This is not working yet.
-WIP: Redo install with yarn
+Fixed in dockz v1.0.1
 
-tl;dr  `npm run fix`  
+tl;dr  
+
+`npm run fix`  was my solution
+
+<https://github.com/pedronauck/docz/issues/704>
 
 Note: _need to use qcic_react..._
 
