@@ -4,6 +4,7 @@ Static site  (docz) to publish qcic status
 
 ## TODO
 
+- [Compare fonts](http://classic.typetester.org/) - Roboto,Tondo,Ubuntu,
 - Fix the logo (static assets in /public for docz:dev)
 - kWh/d
 - Add im-weight, backblaze, CCC, gmvault,

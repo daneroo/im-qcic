@@ -18,7 +18,7 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "cron": "while true; do npm start; npm run deploy; echo; echo done $(date); sleep 600; done",
+    "cron": "while true; do npm start; npm run deploy; echo; echo done $(date); sleep 3600; done",
     "start": "node src/index.js",
     "deploy": "mkdir -p dist && cp now.json dist/ && cd dist && now --public --target production && now rm --safe --yes status-qcic",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
