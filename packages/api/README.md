@@ -2,6 +2,13 @@
 
 This api is deployed on zeit/now using our custom (externam domain).
 
+## Restart
+
+```bash
+now scale api-qcic-xwvecdyfxu.now.sh sfo1 0
+now scale api-qcic-xwvecdyfxu.now.sh sfo1 1 1
+```
+
 Deployed:
 - [query](https://api.qcic.n.imetrical.com/graphql?query=query%20%7B%0A%20%20messages%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A)
 - [subscription](https://api.qcic.n.imetrical.com/graphql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%0A%20%20newMessage%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A)
