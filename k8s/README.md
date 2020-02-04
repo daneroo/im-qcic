@@ -7,6 +7,7 @@ TODO:
 - Get kubeconfig out of multipass uk8s/microk8s
 - Get kubeconfig out of galois/microk8s
 - Pulumi to talk to any microk8s
+  - <https://github.com/ubuntu/microk8s/issues/421>
 - Mount Drobo inside a container
   - <https://community.spiceworks.com/topic/1896820-mounting-a-drobo-share-in-linux>
   - <https://stackoverflow.com/questions/27989751/mount-smb-cifs-share-within-a-docker-container>
@@ -44,7 +45,7 @@ multipass purge
 
 ## Microk8s
 
-Use the setup script from canonical repo.
+Use the setup script from the canonical repo.
 
 *There is something wrong with the dashboard option...*
 
@@ -57,7 +58,40 @@ export CHANNEL=stable # select version from: `snap info microk8s`
 ./expose-dashboard.sh
 ```
 
-Clean uninstall:
+### Remote Access
+
+Get the `kubeconfig` file out of the remote.
+
+```bash
+multipass shell uk8s
+microk8s.config >${HOSTNAME}.kubeconfig
+
+multipass copy-files uk8s:uk8s.kubeconfig .
+
+kubectl --kubeconfig uk8s.kubeconfig get nodes
+KUBECONFIG=uk8s.kubeconfig kubectl get nodes
+
+stern '.' --all-namespaces --kubeconfig uk8s.kubeconfig
+KUBECONFIG=uk8s.kubeconfig stern '.' --all-namespaces
+```
+
+This might be a hint as to how to merge multiple configs, or just use many config files; just set `KUBECONFIG` to a colon separates list of kubeconfig files.
+Also may have to edit names, or generate new credentials for new users, and avoid conflict in naming in multiple clusters:
+
+```bash
+export KUBECONFIG=uk8s.kubeconfig:~/.kube/config
+kubectl config view --raw # prevent DATA+OMITTED, show raw certificate data.
+kubectl get nodes
+
+# this will set the `current-context` attribute in whichever file it got it from
+# This depends on the merge rule when you have multiple config files.
+kubectl config use-context minikube
+kubectl config use-context microk8s
+```
+
+To configure the nodes individually, see <https://microk8s.io/docs/configuring-services>, microk8s uses templates (`/snap/microk8s/current`) to derive these config files:`/var/snap/microk8s/current`
+
+### Clean uninstall
 
 ```bash
 sudo snap unalias kubectl
