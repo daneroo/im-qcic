@@ -2,6 +2,18 @@
 
 - [Homelab k8s (Evernote)](https://www.evernote.com/shard/s60/nl/6925909/0f1ce0c5-d777-4b44-9273-cf4f14b496d2/) 
 
+TODO:
+
+- Get kubeconfig out of multipass uk8s/microk8s
+- Get kubeconfig out of galois/microk8s
+- Pulumi to talk to any microk8s
+- Mount Drobo inside a container
+  - <https://community.spiceworks.com/topic/1896820-mounting-a-drobo-share-in-linux>
+  - <https://stackoverflow.com/questions/27989751/mount-smb-cifs-share-within-a-docker-container>
+  - <https://k8scifsvol.juliohm.com.br/>
+    - or <https://github.com/Azure/kubernetes-volume-drivers>
+    - or <https://github.com/fstab/cifs>
+
 TODO (Reading):
 
 - [Brad's Homelab](https://github.com/bradfitz/homelab/)
@@ -11,11 +23,6 @@ TODO (Reading):
 - [MetalB addon](https://metallb.universe.tf/)
 - [k3sup](https://blog.alexellis.io/raspberry-pi-homelab-with-k3sup/)
 - [inlets operator](https://github.com/inlets/inlets-operator)
-
-TODO:
-
-- Get kubeconfig out of multipass uk8s/microk8s
-- Get kubeconfig out of galois/microk8s
 
 ## Overview
 
@@ -28,10 +35,7 @@ New work for `microk8s` is on `multipass` (instead of Vagrant), although that se
 ```bash
 multipass launch lts -n uk8s -m 8G -d 40G -c 4
 multipass shell uk8s
-git clone https://github.com/canonical-labs/kubernetes-tools
-sudo kubernetes-tools/setup-microk8s.sh
-# Dashboard doesn't work yet
-# sudo kubernetes-tools/expose-dashboard.sh
+# see Microk8s section below
 multipass stop uk8s
 multipass delete uk8s
 multipass list
@@ -47,7 +51,7 @@ Use the setup script from canonical repo.
 ```bash
 git clone https://github.com/canonical-labs/kubernetes-tools
 cd kubernetes-tools
-export CHANNEL=stable
+export CHANNEL=stable # select version from: `snap info microk8s`
 ./setup-microk8s.sh
 # If you'd like to expose the kubernetes dashboard, you can run the following:
 ./expose-dashboard.sh
@@ -59,6 +63,55 @@ Clean uninstall:
 sudo snap unalias kubectl
 sudo snap remove microk8s
 ```
+
+## Drobo Over Samba
+
+This objective here is to capitalize on the Drobo 5N as a large storage pool.
+
+### Talk to Drobo with `smbclient` - from `docker`
+
+```bash
+docker run --rm -it ubuntu:18.04
+apt update
+apt install smbclient openssl -y
+# make a iGB file
+openssl rand -out random.bin -base64 $(( 2**30 * 3/4 ))
+smbclient --user kubernaut //drobo.imetrical.com/KubeVol
+smb: \> put random.bin
+putting file random.bin as \random.bin (31709.9 kb/s) (average 31709.9 kb/s)
+smb: \> ls
+  random.bin                          A 1015625000  Tue Feb  4 02:19:56 2020
+  README.md                           N       61  Tue Feb  4 02:05:58 2020
+smb: \> get random.bin
+getting file \random.bin of size 1015625000 as random.bin (24064.0 KiloBytes/sec) (average 23185.6 KiloBytes/sec)
+```
+
+### Mount from within docker
+
+Normally mounting a CIFS from docker would require `--privileged` *(or at least `--cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH`)
+
+smbclient --user kubernaut //drobo.imetrical.com/KubeVol
+
+```bash
+docker run --rm  -it --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH ubuntu:18.04
+apt update
+apt install cifs-utils openssl rsync -y
+mkdir -p /KubeVol
+mount -t cifs //drobo.imetrical.com/KubeVol /KubeVol -o user=kubernaut,password=XXXX
+
+# 1GB file
+openssl rand -out random.bin -base64 $(( 2**30 * 3/4 ))
+
+time rsync -av --progress  ./random.bin /KubeVol/
+random.bin  1,015,625,000 100%   20.00MB/s    0:00:48 (xfr#1, to-chk=0/1)
+
+time rsync -av --progress  /KubeVol/random.bin .
+random.bin  1,015,625,000 100%   21.09MB/s    0:00:45 (xfr#1, to-chk=0/1)
+```
+
+### K8S Storage Driver
+
+- Try this first in multipass
 
 ## References
 
