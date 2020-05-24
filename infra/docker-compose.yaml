@@ -7,11 +7,21 @@ services:
     volumes:
       - ./config/ddclient:/config
 
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    volumes:
+      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy/Caddyfile:/data
+    ports:
+      - "80:80" # local only
+      - "443:443" # port-forwarded from wifi-router
+
   nats:
     image: nats:1.2.0
     restart: unless-stopped
     ports:
-      - "4222:4222" # for clients
+      - "4222:4222" # for clients - port forwarded from router
       - "8222:8222" # for monitoring/reporting
       - "6222:6222" # routing port for clustering
 
