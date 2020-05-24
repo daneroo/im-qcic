@@ -4,7 +4,7 @@
   "alias": "api.qcic.n.imetrical.com",
   "type": "npm",
   "env": {
-    "NATSURL": "nats://dl.imetrical.com:4222",
+    "NATSURL": "nats://nats.dl.imetrical.com:4222",
     "HOSTALIAS": "api.qcic.n.imetrical.com"
   },
   "scale": {

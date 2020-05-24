@@ -7,7 +7,7 @@ Manage the config and deployment of `qcic` related resources
 Use the makefile to properly expose HOSTNAME (just for api server)
 
 ```bash
-make # default target is satus
+make # default target is status:= docker-compose ps
 make status
 make start
 make web # open web pages for clients
@@ -16,19 +16,24 @@ make tabs
 
 ## TODO
 
+- Point site(docz) to <https://qcic.n.imetrical.com> -> natsql.dl.imetrical.com
+  - also qcic.dl.imetrical.com for local?dev?
+  - Netlify for static instead of zeit/now/vercel
+- Rename api->natsql - and add topic(\*)
 - Better proxy for scrobblecast (than dirac.imetrical.com:8000)
 - Move nested infra/README.md into mdx; make docs (published or not)
+  - Include all names natsql.dl.imetrical.com, nats.dl.imetrical.com,...
 
-## Worldping - graphana.com
+## Worldping - grafana.com
 
 We check DNS and https for each of these from three probes (London/NY,Silicon-Valley)
 and have enable e-mail alerts for them.
 For \*.dl.imetrical, this implies caddy is properly terminating ssl, and also assumes spdyn (ddclient) is up to date.
 
 - [Dashboard](https://imetrical.grafana.net/)
-- https://api.qcic.n.imetrical.com/health
-- https://natsql.dl.imetrical.com/health
-- https://scrobblecast.dl.imetrical.com/api/status
+- <https://api.qcic.n.imetrical.com/health> (going away zeit/now/v1)
+- <https://natsql.dl.imetrical.com/health>
+- <https://scrobblecast.dl.imetrical.com/api/status>
 
 ## Parts
 

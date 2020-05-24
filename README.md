@@ -10,7 +10,7 @@
 
 ```bash
 lerna bootstrap  # no --hoist for now
-# yarn fix for docz: 
+# yarn fix for docz:
 (cd packages/docz; npm run fix)
 npm test
 npm run unit  # no audit or lint
@@ -26,24 +26,20 @@ lerna add standard --dev
 
 - npx create-react-library for qcic-react
 - Moving to lerna
-  - ensure operational continuity
-    - write ttab script
-    - nats/compose/natstop
-    - ui - move and republish to now
-    - local ui - local vs now ENVs
 
 - clean up and resync
+
   - docz - mdx docs / including this TODO
   - mdx-deck ?
   - instructions for operating/deploying
   - lerna
 
-- [] Move `nats/` to `im-infra`, with `im-dd-client`.
 - add `env.json` support to `ui/lib/config`
 - add nats URL to `api/src/config`
 - nats basic experiment
 - [graphql-yoga to replace api - add express middleware](https://oss.prisma.io/content/GraphQL-Yoga/01-Overview.html)
 - [gatsby](https://next.gatsbyjs.org/docs/gatsby-starters/)
+
   - <https://gatsby-starter-personal-blog.greglobinski.com/>
   - <https://gatsby-starter-hero-blog.greglobinski.com/>
   - <https://github.com/Vagr9K/gatsby-material-starter>
@@ -54,17 +50,18 @@ lerna add standard --dev
 - [Go/GraphQL](https://outcrawl.com/go-graphql-realtime-chat/)
 - [AppSync and GraphQL](https://andrewgriffithsonline.com/blog/serverless-websockets-on-aws/)
 - add topic to Message, for filtering
-- Refactor MessageList Grapql HOC: withMessages
+- Refactor MessageList Graphql HOC: withMessages
 - ui styled jsx
-  -Compare stock (git clone next.js/server/document.js) with our custom _document.js
-  - _document.js:? [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
+  -Compare stock (git clone next.js/server/document.js) with our custom \_document.js
 
-- ui About in markwon in material
+  - \_document.js:? [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
+
+- ui About in markdown in material
 - ui [About with Collapsible Cards](https://material-ui-next.com/demos/cards/)
-- ui [devextreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
+- ui [Dev Extreme Grid](https://devexpress.github.io/devextreme-reactive/react/grid/)
 - logo with ω: ωωωω and <http://snapsvg.io/>
   - also favicon
-  - ωho ωill ωatch the ωatchers
+  - who will watch the watchers
 - npm outdated: ui: graphql, subscriptions-transport-ws
 - npm outdated: server: graphql-tools
 - scope packages to @imetrical/qcic...
@@ -80,18 +77,18 @@ lerna add standard --dev
 - ~~Rename components/withRoot -> lib/withMaterialRoot (only used in Page)~~
 - ~~remove BasicTable/Dialog~~
 - ~~ui with material~~
-  - ~~reafactor getContext:styles from theme/palette~~
+  - ~~refactor getContext:styles from theme/palette~~
   - ~~with next.js/apollo - stale / refetch componentWillMount~~
   - ~~[move message to props](http://dev.apollodata.com/react/subscriptions.html#subscribe-to-more)~~
   - ~~with material-ui~~
 - ~~remove client-app~~
-- ~~add structure to Message (server/cli/withAppolo)~~
+- ~~add structure to Message (server/cli/withApollo)~~
 - ~~publish to zeit/now~~
-- ~~remo babel from cli and server~~
+- ~~remove babel from cli and server~~
 - ~~cli client without babel~~
-- ~~checkin package-lock.json~~
+- ~~check in package-lock.json~~
 - ~~update npm version (client and server)~~
-- ~~babel-preset-env now: please read babeljs.io/env to update~~
+- ~~babel-preset-env now: please read <https://babeljs.io/env> to update~~
 - ~~add node cli client~~
 
 ## Components
@@ -149,4 +146,4 @@ gcloud container clusters delete k1
 - [GraphQL Tutorial w/Subscriptions](https://dev-blog.apollodata.com/tutorial-graphql-subscriptions-server-side-e51c32dc2951)
 - [graphql-subscriptions](https://github.com/apollographql/graphql-subscriptions)
 - [Apollo Tools Guide](http://dev.apollodata.com/tools/)
-- Borrowed from [github.com/bmsantos/apollo-graphql-subscriptions-example](https://github.com/bmsantos/apollo-graphql-subscriptions-example)
+- Borrowed from <https://github.com/bmsantos/apollo-graphql-subscriptions-example>
