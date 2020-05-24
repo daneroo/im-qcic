@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  ddclient:
+    image: linuxserver/ddclient
+    restart: unless-stopped
+    volumes:
+      - ./config/ddclient:/config
+
+  nats:
+    image: nats:1.2.0
+    restart: unless-stopped
+    ports:
+      - "4222:4222" # for clients
+      - "8222:8222" # for monitoring/reporting
+      - "6222:6222" # routing port for clustering
+
+  api:
+    # build will replaced by image when pushed to registry
+    build: ../packages/api/
+    # image: qcic-api:vx.y.z
+    restart: unless-stopped
+    environment:
+      # no value inherits from host (but not docker-machine host...)
+      - HOSTNAME
+    ports:
+      - "5000:5000" # for http & ws
+
+  status:
+    # build will replaced by image when pushed to registry
+    build: ../packages/status/
+    # image: qcic-status:vx.y.z
+    restart: unless-stopped
+    # ports:
+    #  - "8000:8000"  # forweb
+    volumes:
+      - ../packages/status/dist:/usr/src/app/dist
+      - ${HOME}/.now:/root/.now
+      - ../packages/status/credentials.loggly.json:/usr/src/app/credentials.loggly.json
+      - ../packages/status/credentials.mysql.json:/usr/src/app/credentials.mysql.json
+      - ../packages/status/credentials.postgres.json:/usr/src/app/credentials.postgres.json

@@ -1,8 +1,0 @@
-version: '3'
-services:
-  ddclient:
-    image: linuxserver/ddclient
-    restart: unless-stopped
-    volumes:
-     - ../config/ddclient:/config
-    
