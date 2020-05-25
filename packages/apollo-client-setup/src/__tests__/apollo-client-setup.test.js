@@ -1,7 +1,9 @@
 
-import { registerApolloClient,
+import {
+  registerApolloClient,
   newApolloClient,
-  closeAll } from '../index'
+  closeAll
+} from '../index'
 
 describe('apollo-client-setup', () => {
   test('import registerApolloCLient', () => {

@@ -5,5 +5,6 @@ export { Greeter } from './Greeter'
 export {
   registerApolloClient,
   newApolloClient,
-  closeAll } from './apollo-client-setup'
+  closeAll
+} from './apollo-client-setup'
 export { RegisterApolloProvider } from './RegisterApolloProvider'

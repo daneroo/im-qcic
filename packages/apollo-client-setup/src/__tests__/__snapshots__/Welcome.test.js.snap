@@ -3,7 +3,7 @@
 exports[`Welcome Welcome renders 1`] = `
 <h4>
   Hello, 
-  Dan-eroo
+  Daneroo
    from a component in a library
 </h4>
 `;

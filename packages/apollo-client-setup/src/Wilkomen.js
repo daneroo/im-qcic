@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 export function Wilkomen () {
-  let [count, setCount] = useState(0)
+  const [count, setCount] = useState(0)
 
   useInterval(() => {
     // Your custom logic here
@@ -26,7 +26,7 @@ function useInterval (callback, delay) {
       savedCallback.current()
     }
     if (delay !== null) {
-      let id = setInterval(tick, delay)
+      const id = setInterval(tick, delay)
       return () => clearInterval(id)
     }
   }, [delay])
