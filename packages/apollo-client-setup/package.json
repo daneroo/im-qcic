@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-apollo-client-setup",
-  "version": "1.0.7",
+  "version": "1.0.10",
   "description": "Reusable setup components for apollo-client setup",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
