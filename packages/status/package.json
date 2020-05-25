@@ -28,13 +28,13 @@
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "devDependencies": {
-    "jest": "^24.3.1",
-    "standard": "^12.0.1"
+    "jest": "^26.0.1",
+    "standard": "^14.3.4"
   },
   "dependencies": {
     "loggly": "^1.1.1",
-    "mysql": "^2.16.0",
-    "pg": "^7.9.0"
+    "mysql": "^2.18.1",
+    "pg": "^8.2.1"
   },
   "standard": {
     "env": {
