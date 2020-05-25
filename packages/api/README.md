@@ -5,8 +5,8 @@ This api is deployed on zeit/now using our custom (external domain).
 ## Restart
 
 ```bash
-now scale api-qcic-xwvecdyfxu.now.sh sfo1 0
-now scale api-qcic-xwvecdyfxu.now.sh sfo1 1 1
+now scale api-qcic-zsndvpnxnm.now.sh sfo1 0
+now scale api-qcic-zsndvpnxnm.now.sh sfo1 1 1
 ```
 
 Deployed:

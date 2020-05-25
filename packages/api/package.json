@@ -19,6 +19,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "//deploy.0": "this is zeit/now/vercel v1 stuff - will go away",
+    "//deploy.1": "You must ALIAS by hand!!! Then run now rm --safe...",
+    "//deploy.2": "e.g.> now alias api-qcic-zsndvpnxnm.now.sh api.qcic.n.imetrical.com",
     "deploy": "now --public && now alias  && now rm --safe --yes api-qcic",
     "logs": "now logs -f $(now ls api-qcic 2>/dev/null | tail +2 | head -1 |  awk '{print $2}')",
     "test": "npm run lint && npm audit && npm run unit",
