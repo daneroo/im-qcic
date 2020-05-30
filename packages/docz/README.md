@@ -20,7 +20,7 @@ npm start  # npx docz dev
 
 ### Publish
 
-The site is now build on vercel. using the `now-build` target,
+The site is now built on vercel. using the `build` target,
 which produces the `/public` folder as indicated in `doczrc.js:dest`
 
 ```bash

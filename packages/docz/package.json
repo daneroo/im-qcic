@@ -19,7 +19,7 @@
   "scripts": {
     "fix": "rm -rf package-lock.json node_modules && yarn install && npm i --package-lock-only",
     "start": "docz dev",
-    "now-build": "docz build",
+    "build": "docz build",
     "deploy:now": "now --prod && now rm --safe --yes docz-qcic",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
     "test": "npm run lint && npm run unit",
