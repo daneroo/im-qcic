@@ -8,7 +8,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 
 const registry = {} // map httpurl => client
 
-// acts as a blobal registry, so we can create multiple Providers using the same client
+// acts as a global registry, so we can create multiple Providers using the same client
 export function registerApolloClient (httpurl) {
   if (httpurl in registry) {
     console.log('ReUse ApolloCLient', { httpurl })
@@ -20,7 +20,7 @@ export function registerApolloClient (httpurl) {
   return client
 }
 
-// Not When we will/would do this...
+// Not sure when we should call this..
 // But it does actually close the connection to the server (confirmed on server)
 export function closeAll (isForced = true, closedByUser = true) {
   const httpurls = Object.keys(registry)
@@ -36,14 +36,14 @@ export function closeAll (isForced = true, closedByUser = true) {
 // The client also exposes a cleanup method (advisory for now): client.cleanup()
 
 // In the Hasura demo apps, the graphql endpoints are behind a Caddy proxy
-// Where we can use the folowwing as a default for httpurl
+// Where we can use the following as a default for httpurl
 // const httpurl = `${window.location.protocol}://${window.location.host}/v1alpha1/graphql`
 
 export function newApolloClient (httpurl, wsurl = httpurl.replace(/^http/, 'ws')) {
   // Create an http link:
   const httpLink = new HttpLink({
     uri: httpurl
-    // headers: getHeadersFromAuthConextIfWeHaveAuth0()
+    // headers: getHeadersFromAuthContextIfWeHaveAuth0()
   })
 
   // Create a websocket link:
