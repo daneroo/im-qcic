@@ -20,10 +20,10 @@ function render ({ loading, error, data }) {
     <table>
       <tbody>
         <tr>
-          <td>It is now  </td><td>{df(undefined, 'HH:mm:ss')}</td>
+          <td>It is now  </td><td>{df(new Date().toISOString(), 'HH:mm:ss')}</td>
         </tr>
         <tr>
-          <td>Published at</td><td>{df(data.meta.stamp)} - {dfn(data.meta.stamp)}</td>
+          <td>Published at</td><td>{df(data.meta.stamp, 'HH:mm:ss')} - {dfn(data.meta.stamp)}</td>
         </tr>
       </tbody>
     </table>
