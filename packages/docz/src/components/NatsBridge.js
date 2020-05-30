@@ -22,7 +22,7 @@ export default function NatsBridge({
 
   return (
     <div>
-      <span style={{ color: "#CCC" }}>nats/gql bridge => {httpurl}</span>
+      <span style={{ color: "#777" }}>nats/gql bridge => {httpurl}</span>
       <RegisterApolloProvider httpurl={httpurl}>
         <Subscription subscription={natsSubscription}>
           {({ data, loading, error }) => {

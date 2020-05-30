@@ -18,11 +18,9 @@
   },
   "scripts": {
     "fix": "rm -rf package-lock.json node_modules && yarn install && npm i --package-lock-only",
-    "start": "npm run docz:dev",
-    "deploy": "npm run docz:build && npm run deploy:now",
-    "deploy:now": "cp now.json dist/ && cd dist && now --public --target production && now rm --safe --yes docz-qcic",
-    "docz:dev": "docz dev",
-    "docz:build": "docz build",
+    "start": "docz dev",
+    "now-build": "docz build",
+    "deploy:now": "now --prod && now rm --safe --yes docz-qcic",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
     "test": "npm run lint && npm run unit",
     "lint": "standard",
@@ -30,10 +28,10 @@
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "devDependencies": {
-    "docz": "^1.0.1",
-    "docz-theme-default": "^1.0.1",
-    "jest": "^24.7.1",
-    "standard": "^12.0.1"
+    "docz": "^2.3.1",
+    "docz-theme-default": "^1.2.0",
+    "jest": "^26.0.1",
+    "standard": "^14.3.4"
   },
   "standard": {
     "env": {
@@ -43,16 +41,16 @@
   "//@daneroo/qcic-react": "^1.0.0",
   "dependencies": {
     "@daneroo/qcic-apollo-client-setup": "^1.0.11",
-    "apollo-cache-inmemory": "^1.5.1",
-    "apollo-client": "^2.5.1",
-    "apollo-link": "^1.2.11",
-    "apollo-link-error": "^1.1.10",
-    "apollo-link-http": "^1.5.14",
-    "apollo-link-ws": "^1.0.17",
-    "graphql": "^14.2.1",
-    "graphql-tag": "^2.10.1",
-    "moment": "^2.24.0",
-    "react-apollo": "^2.5.4",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link": "^1.2.14",
+    "apollo-link-error": "^1.1.13",
+    "apollo-link-http": "^1.5.17",
+    "apollo-link-ws": "^1.0.20",
+    "graphql": "^14.6.0",
+    "graphql-tag": "^2.10.3",
+    "moment": "^2.26.0",
+    "react-apollo": "^3.1.5",
     "subscriptions-transport-ws": "^0.9.16"
   }
 }

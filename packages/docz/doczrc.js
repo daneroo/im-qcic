@@ -1,20 +1,13 @@
 
 export default {
   title: 'qcic',
-  dest: '/dist',
-  // https://github.com/pedronauck/docz/tree/master/packages/docz-theme-default
-  themeConfig: {
-    mode: 'dark',
-    logo: {
-      src: 'public/qcic-512x256.png',
-      width: 128
-    }
-  },
-  menu: [ {
-    name: 'Status', menu: [ ]
+  dest: '/public',
+  menu: [{
+    name: 'Status', menu: []
   }, {
-    name: 'Components', menu: [ ]
+    name: 'Components', menu: []
   }, {
-    name: 'GraphQL', menu: [ ]
-  } ]
+    name: 'GraphQL', menu: []
+  }],
+  files: '**/*.mdx' // default '**/*.{md,markdown,mdx}'
 }
