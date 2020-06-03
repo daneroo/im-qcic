@@ -12,7 +12,8 @@ function shorten (i, j, v) {
 
 export default function Tedcheck () {
   return (
-    <FetchInterval url='https://status.qcic.n.imetrical.com/tedcheck.json'
+    <FetchInterval
+      url='https://status.qcic.n.imetrical.com/tedcheck.json'
       delay={60000}
       render={render}
     />

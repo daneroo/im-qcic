@@ -16,7 +16,8 @@ function shorten (i, j, v) {
 
 export default function Logcheck () {
   return (
-    <FetchInterval url='https://status.qcic.n.imetrical.com/logcheck.json'
+    <FetchInterval
+      url='https://status.qcic.n.imetrical.com/logcheck.json'
       delay={60000}
       render={render}
     />

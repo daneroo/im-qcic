@@ -14,7 +14,7 @@ export function map2d (data, f) { //
 export default function Table ({ meta, data, mapper }) {
   if (mapper) data = map2d(data, mapper)
   if (!meta || !data) {
-    return <div >No meta or data</div>
+    return <div>No meta or data</div>
   }
   return (
     <table style={{ textAlign: 'center', fontSize: '100%' }}>
@@ -30,13 +30,20 @@ export default function Table ({ meta, data, mapper }) {
 }
 
 export function Header ({ row }) {
-  return <thead><tr>{
-    row.map((col, i) => <th key={i}>{col}</th>)
-  }</tr></thead>
+  return (
+    <thead>
+      <tr>{
+        row.map((col, i) => <th key={i}>{col}</th>)
+      }
+      </tr>
+    </thead>)
 }
 
 export function Body ({ row }) {
-  return <tr>{
-    row.map((col, i) => <td style={{ padding: '0 .5em' }} key={i}>{col}</td>)
-  }</tr>
+  return (
+    <tr>{
+      row.map((col, i) => <td style={{ padding: '0 .5em' }} key={i}>{col}</td>)
+    }
+    </tr>
+  )
 }
