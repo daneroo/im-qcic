@@ -1,8 +1,8 @@
-import React from "react";
-import gql from "graphql-tag";
-import { df } from "./df";
-import { Subscription } from "react-apollo";
-import { RegisterApolloProvider } from "./gql/RegisterApolloProvider";
+import React from 'react'
+import gql from 'graphql-tag'
+import { df } from './df'
+import { Subscription } from 'react-apollo'
+import { RegisterApolloProvider } from '@daneroo/qcic-apollo-client-setup'
 
 const natsSubscription = gql`
   subscription OnNewMessage {
@@ -13,40 +13,40 @@ const natsSubscription = gql`
       text
     }
   }
-`;
+`
 
-export default function NatsBridge({
-  httpurl = "https://natsql.dl.imetrical.com/graphql",
+export default function NatsBridge ({
+  httpurl = 'https://natsql.dl.imetrical.com/graphql'
 }) {
-  let rows = [];
+  let rows = []
 
   return (
     <div>
-      <span style={{ color: "#777" }}>nats/gql bridge => {httpurl}</span>
+      <span style={{ color: '#777' }}>nats/gql bridge {'=>'} {httpurl}</span>
       <RegisterApolloProvider httpurl={httpurl}>
         <Subscription subscription={natsSubscription}>
           {({ data, loading, error }) => {
             // {!error && !loading && JSON.stringify(data)}
-            if (loading) return <p>Loading...</p>;
-            if (error) return <p>Error :(</p>;
-            if (!data || !data.newMessage) return <p>---</p>;
+            if (loading) return <p>Loading...</p>
+            if (error) return <p>Error :(</p>
+            if (!data || !data.newMessage) return <p>---</p>
 
-            const { id, stamp, host, text } = data.newMessage;
-            const row = [id.slice(-5), df(stamp, "HH:mm:ss"), host, text];
-            rows.push(row);
-            rows = rows.slice(-4);
-            return <Rows rows={rows} />;
+            const { id, stamp, host, text } = data.newMessage
+            const row = [id.slice(-5), df(stamp, 'HH:mm:ss'), host, text]
+            rows.push(row)
+            rows = rows.slice(-4)
+            return <Rows rows={rows} />
           }}
         </Subscription>
       </RegisterApolloProvider>
     </div>
-  );
+  )
 }
 
-function Rows({ rows }) {
+function Rows ({ rows }) {
   return rows.map((row) => (
-    <pre key={row[0]} style={{ margin: "0px" }}>
-      {row.join("  ")}{" "}
+    <pre key={row[0]} style={{ margin: '0px' }}>
+      {row.join('  ')}{' '}
     </pre>
-  ));
+  ))
 }

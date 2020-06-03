@@ -5,7 +5,7 @@ menu: GraphQL
 # fullpage: true
 ---
 
-import Demo from './Demo'
+import { GQLDemo } from '../../src/components/GQLDemo'
 
 # Demo
 
@@ -25,11 +25,15 @@ This shows is how you would use `<RegisterApolloProvider />` with a query. Simil
 
 ## Live
 
-<Demo httpurl="https://fizzbuzzclock.n.imetrical.com/graphql" initialVisible={true} />
+<GQLDemo httpurl="https://fizzbuzzclock.n.imetrical.com/graphql" initialVisible={true} />
 
-<Demo httpurl="https://fizzbuzzclock.n.imetrical.com/graphql" />
+<GQLDemo httpurl="https://fizzbuzzclock.n.imetrical.com/graphql" />
 
-<Demo httpurl="http://localhost:7070/graphql" />
+<GQLDemo httpurl="http://localhost:7070/graphql" />
+
+## Expressions
+
+These are the grapQL `query` and `subcription` expressions used above:
 
 ```js
 query {
