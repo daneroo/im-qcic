@@ -14,8 +14,9 @@ npm install --save @daneroo/qcic-react
 
 ## TODO
 
-- use .jsx suffix
-- testing
+- remove babel nonsense
+- move docs to docz
+- testing/replace fetch
 
 ## Usage
 
