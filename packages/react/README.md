@@ -1,8 +1,10 @@
 # `@daneroo/qcic-react`
 
-> QCIC Reusable React Components
+QCIC Reusable React Components
 
 [![NPM](https://img.shields.io/npm/v/@daneroo/qcic-react.svg)](https://www.npmjs.com/package/@daneroo/qcic-react) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+- These are packed with [@pika/pack]
 
 ## Install
 

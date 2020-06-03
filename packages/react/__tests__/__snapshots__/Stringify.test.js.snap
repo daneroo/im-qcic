@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Stringify Stringify renders 1`] = `
+<div>
+  <pre
+    style={
+      Object {
+        "fontSize": "70%",
+        "textAlign": "left",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`Stringify Stringify renders array 1`] = `
+<div>
+  <pre
+    style={
+      Object {
+        "fontSize": "70%",
+        "textAlign": "left",
+      }
+    }
+  >
+    [
+  1,
+  2,
+  3
+]
+  </pre>
+</div>
+`;
+
+exports[`Stringify Stringify renders nested Object 1`] = `
+<div>
+  <pre
+    style={
+      Object {
+        "fontSize": "70%",
+        "textAlign": "left",
+      }
+    }
+  >
+    {
+  "this": "one",
+  "that": "other",
+  "those": [
+    "extra",
+    "things"
+  ]
+}
+  </pre>
+</div>
+`;

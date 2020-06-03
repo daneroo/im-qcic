@@ -1,11 +1,6 @@
 
 import React from 'react'
-import PropTypes from 'prop-types'
 
-export default function Welcome ({ name = 'Dan-eroo' }) {
-  return (<h4 style={{ border: '2px solid red' }}>Hello, {name}</h4>)
-}
-
-Welcome.propTypes = {
-  name: PropTypes.string
+export function Welcome ({ name = 'Daneroo' }) {
+  return (<h4>Hello, {name} from a component in a library</h4>)
 }

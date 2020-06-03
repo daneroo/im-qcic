@@ -47,15 +47,15 @@
     "//publish": "pika-pack publish"
   },
   "peerDependencies": {
-    "apollo-cache-inmemory": "^1.5.1",
-    "apollo-client": "^2.5.1",
-    "apollo-link": "^1.2.11",
-    "apollo-link-error": "^1.1.10",
-    "apollo-link-http": "^1.5.14",
-    "apollo-link-ws": "^1.0.17",
-    "graphql": "^14.2.1",
-    "graphql-tag": "^2.10.1",
-    "react": "^16.8.0",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link": "^1.2.14",
+    "apollo-link-error": "^1.1.13",
+    "apollo-link-http": "^1.5.17",
+    "apollo-link-ws": "^1.0.20",
+    "graphql": "^14.6.0",
+    "graphql-tag": "^2.10.3",
+    "react": "^16.13.1",
     "react-apollo": "^2.5.3"
   },
   "devDependencies": {
