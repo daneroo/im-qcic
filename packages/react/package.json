@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-react",
-  "version": "1.0.7",
+  "version": "1.0.15",
   "description": "QCIC Reusable components",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
@@ -84,6 +84,5 @@
       "jest": true
     }
   },
-  "gitHead": "585f6a6516041d0900886e23a7dae1ce1e0d8575",
-  "dependencies": {}
+  "gitHead": "585f6a6516041d0900886e23a7dae1ce1e0d8575"
 }
