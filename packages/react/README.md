@@ -1,10 +1,11 @@
 # `@daneroo/qcic-react`
 
-QCIC Reusable React Components
+QCIC Reusable React Components and Hooks
 
 [![NPM](https://img.shields.io/npm/v/@daneroo/qcic-react.svg)](https://www.npmjs.com/package/@daneroo/qcic-react) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 - These are packed with [@pika/pack]
+- `.babelrc` is still required along with: `npm i -D @babel/preset-env @babel/preset-react`
 
 ## Install
 
@@ -14,9 +15,9 @@ npm install --save @daneroo/qcic-react
 
 ## TODO
 
-- remove babel nonsense
-- move docs to docz
-- testing/replace fetch
+- testing/replace fetch (hook?)
+  - <https://medium.com/@doppelmutzi/testing-of-a-custom-react-hook-for-fetching-data-with-axios-26f012948a8f>
+  - <https://github.com/stevenpersia/captain-hook/blob/master/useFetch.js>
 
 ## Usage
 
