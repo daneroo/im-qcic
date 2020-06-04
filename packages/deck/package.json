@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-deck",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Static front end (mdx-deck) for qcic",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@daneroo/qcic-apollo-client-setup": "^1.0.15",
-    "@daneroo/qcic-react": "^1.0.18",
+    "@daneroo/qcic-react": "^1.0.19",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link": "^1.2.11",
