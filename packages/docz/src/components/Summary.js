@@ -1,6 +1,6 @@
 
 import React from 'react'
-import FetchInterval from './samples/FetchInterval'
+import { FetchInterval } from '@daneroo/qcic-react'
 import data0 from '../data/logcheck.json'
 import { df, dfn } from './df'
 

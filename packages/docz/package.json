@@ -38,9 +38,9 @@
       "jest": true
     }
   },
-  "//@daneroo/qcic-react": "^1.0.0",
   "dependencies": {
     "@daneroo/qcic-apollo-client-setup": "^1.0.15",
+    "@daneroo/qcic-react": "^1.0.16",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",

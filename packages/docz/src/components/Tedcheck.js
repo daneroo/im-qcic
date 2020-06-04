@@ -1,6 +1,6 @@
 
 import React from 'react'
-import FetchInterval from './samples/FetchInterval'
+import { FetchInterval } from '@daneroo/qcic-react'
 import Table from './Table'
 import data0 from '../data/tedcheck.json'
 import { df } from './df'
