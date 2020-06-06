@@ -2,9 +2,14 @@
 
 Main static site for QCIC
 
+- [Deployed on vercel](https://qcic.n.imetrical.com)
+
 ## TODO
 
-- stole package-lock.json from site-fresh, and uninstalled things
+- Fix upstream gatsby-theme-document
+  - stole package-lock.json from site-fresh, and uninstalled things
+- qcic-react
+- qcic-gql
 
 ## Usage
 

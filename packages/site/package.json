@@ -23,11 +23,13 @@
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
     "test": "npm run lint && npm run unit",
     "lint": "standard",
-    "unit": "jest",
+    "unit": "echo jest when appropriate",
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "devDependencies": {
     "gatsby": "^2.22.13",
-    "gatsby-theme-document": "^1.0.9"
+    "gatsby-theme-document": "^1.0.9",
+    "jest": "^26.0.1",
+    "standard": "^14.3.4"
   }
 }
