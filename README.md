@@ -14,12 +14,26 @@ lerna bootstrap  # no --hoist for now
 (cd packages/docz; npm run fix)
 npm test
 npm run unit  # no audit or lint
+```
 
-# new package
+## Adding New Package
+
+```bash
 lerna create @daneroo/qcic-thing # then rename to packages/thing
 lerna add jest --dev
 lerna add standard --dev
+```
 
+- Copy `scripts`,`standard,`jest` sections from appropriate template package
+- Adjust package.json if not published to npm
+
+```js
+...
+  "private": true,
+  "//publishConfig": {
+    "access": "public"
+  },
+...
 ```
 
 ## TODO
