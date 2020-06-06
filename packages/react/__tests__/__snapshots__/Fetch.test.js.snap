@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fetch Fetch renders 1`] = `
+<pre>
+  {"time":"2020-06-06T17:19:47.338Z"}
+</pre>
+`;

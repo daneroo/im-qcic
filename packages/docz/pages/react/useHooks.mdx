@@ -1,4 +1,17 @@
+---
+name: useHooks
+route: /useintervalhooks
+menu: React
+# fullpage: true
+---
 
+import { ClockFetchInterval } from '../../src/components/HooksDemo'
+
+# Using Hooks
+
+This is how I apply the `useInterval` with `useFetch` hooks.
+
+```jsx
 import React from 'react'
 import { useInterval, useFetch } from '@daneroo/qcic-react'
 
@@ -11,9 +24,16 @@ export function ClockFetchInterval ({ url = 'https://time.qcic.n.imetrical.com/'
 
   return (
     <div>
-      <div>useInterval({JSON.stringify({ delay })})</div>
-      <div>useFetch({JSON.stringify({ url })})</div>
+      <div>useInterval: ({delay})</div>
+      <div>useFetch: ({url})</div>
       <pre>{JSON.stringify({ error, loading, data }, null, 2)}</pre>
     </div>
   )
 }
+```
+
+Output:
+
+  <ClockFetchInterval url="https://time.qcic.n.imetrical.com/" delay={1000} />
+
+

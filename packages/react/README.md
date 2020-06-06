@@ -15,10 +15,11 @@ npm install --save @daneroo/qcic-react
 
 ## TODO
 
+- remove axios from peerDeps and implementation
 - testing/replace fetch (hook?)
   - <https://medium.com/@doppelmutzi/testing-of-a-custom-react-hook-for-fetching-data-with-axios-26f012948a8f>
   - <https://github.com/stevenpersia/captain-hook/blob/master/useFetch.js>
-  - https://www.npmjs.com/package/jest-fetch-mock
+  - <https://www.npmjs.com/package/jest-fetch-mock>
 - see <https://www.npmjs.com/package/axios-hooks> for something better?
 
 ## Usage
