@@ -1,0 +1,33 @@
+{
+  "name": "@daneroo/qcic-site",
+  "version": "1.0.23",
+  "description": "Main QCIC static site (gatsby with theme)",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "ISC",
+  "private": true,
+  "//publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
+  "scripts": {
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "deploy:now": "now --prod && now rm --safe --yes site-qcic",
+    "testWithAuditLater": "npm run lint && npm audit && npm run unit",
+    "test": "npm run lint && npm run unit",
+    "lint": "standard",
+    "unit": "jest",
+    "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
+  },
+  "devDependencies": {
+    "gatsby": "^2.22.13",
+    "gatsby-theme-document": "^1.0.9"
+  }
+}
