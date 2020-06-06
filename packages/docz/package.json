@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-docz",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Static front end (docz) for qcic, with status of scrobblecast and im-ted1k",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
