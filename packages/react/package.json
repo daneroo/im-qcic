@@ -64,6 +64,7 @@
     "standard": "^14.3.4"
   },
   "peerDependencies": {
+    "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
@@ -83,5 +84,8 @@
       "jest": true
     }
   },
-  "gitHead": "585f6a6516041d0900886e23a7dae1ce1e0d8575"
+  "gitHead": "585f6a6516041d0900886e23a7dae1ce1e0d8575",
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
 }

@@ -48,8 +48,7 @@ export default function Combined () {
 
 This was inspired by the build from <https://github.com/donavon/use-persisted-state>
 
-- I replaced `eslint` with `standard`
-- Also we had to add `--jsx React.createElement` to microbundle.
+- I replaced `eslint` with `standard`, and `microbundle` with `@pika/pack`
 
 ## License
 
