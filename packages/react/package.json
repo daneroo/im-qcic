@@ -84,7 +84,7 @@
       "jest": true
     }
   },
-  "gitHead": "585f6a6516041d0900886e23a7dae1ce1e0d8575",
+  "gitHead": "c8286d8aac2cd62554144921056ac7f9d2e3c7d0",
   "dependencies": {
     "axios": "^0.19.2"
   }
