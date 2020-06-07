@@ -27,7 +27,7 @@
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "devDependencies": {
-    "gatsby": "^2.22.13",
+    "gatsby": "^2.23.1",
     "gatsby-theme-document": "^1.0.9",
     "jest": "^26.0.1",
     "standard": "^14.3.4"

@@ -6,10 +6,10 @@ Main static site for QCIC
 
 ## TODO
 
-- Fix upstream gatsby-theme-document
-  - stole package-lock.json from site-fresh, and uninstalled things
-- qcic-react
-- qcic-gql
+- Re-integrate
+  - `qcic-react`
+  - `qcic-gql`
+- `logo.mdx`, `site-icon.png`, `site-image.png`
 
 ## Usage
 
@@ -21,17 +21,30 @@ npm start
 gatsby develop
 ```
 
-
 ### Publish (deploy)
+
+This executes a build on vercel, and publishes the production site:
+
+```bash
+npm run deploy:now
+```
 
 ## Setup
 
 This is a gatsby site using  the Document theme  by [Code Bushi](https://codebushi.com/gatsby-starters-and-themes/).
 
-Now add dependencies
+Now add dependencies:
+
 ```bash
-npm i -D gatsby gatsby-theme-document 
+npm i -D gatsby gatsby-theme-document
 ```
 
-- Adjust `ghatsby-config`
-  - 
+- Adjust `gatsby-config`
+
+To override styling, just clone and edit
+`node_modules/gatsby-theme-document/src/gatsby-plugin-theme-ui/`
+into `./src/gatsby-plugin-theme-ui/`
+
+## References
+
+- [gatsby-theme-document by Code Bushi](https://codebushi.com/gatsby-starters-and-themes/)
