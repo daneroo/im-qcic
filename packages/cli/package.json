@@ -2,6 +2,7 @@
   "name": "@daneroo/qcic-cli",
   "version": "1.0.24",
   "description": "Apollo Subscriptions Command Line Client",
+  "license": "MIT",
   "private": true,
   "//publishConfig": {
     "access": "public"

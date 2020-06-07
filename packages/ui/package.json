@@ -4,7 +4,7 @@
   "description": "Static front end (next.js) for qcic",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
-  "license": "ISC",
+  "license": "MIT",
   "private": true,
   "//publishConfig": {
     "access": "public"

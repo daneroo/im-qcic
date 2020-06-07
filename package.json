@@ -1,5 +1,16 @@
 {
   "name": "@daneroo/qcic",
+  "description": "QCIC - Monitoring components",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
   "private": true,
   "//publishConfig": {
     "access": "public"

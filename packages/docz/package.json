@@ -4,7 +4,7 @@
   "description": "Static front end (docz) for qcic, with status of scrobblecast and im-ted1k",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
-  "license": "ISC",
+  "license": "MIT",
   "private": true,
   "//publishConfig": {
     "access": "public"
