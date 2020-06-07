@@ -65,7 +65,3 @@ And instrument a single test file with:
 import { enableFetchMocks } from 'jest-fetch-mock'
 enableFetchMocks()
 ```
-
-## License
-
-MIT © [daneroo](https://github.com/daneroo)
