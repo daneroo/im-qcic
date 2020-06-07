@@ -10,6 +10,7 @@ Main static site for QCIC
   - `qcic-react`
   - `qcic-gql`
 - `logo.mdx`, `site-icon.png`, `site-image.png`
+- Unstable dependencies: If i remove `package-lock.json` this blows up. 8-(
 
 ## Usage
 
