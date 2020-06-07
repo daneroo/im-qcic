@@ -1,0 +1,43 @@
+---
+title: SetInterval
+desciption: SetInterval Component
+---
+
+import { SetInterval } from '@daneroo/qcic-react'
+
+# SetInterval
+
+Uses RenderProps
+
+```jsx
+<SetInterval delay={1500} render={
+  ({stamp})=><div>stamp: {stamp.substr(0,21)}</div>
+} />
+```
+
+<SetInterval delay={1500} render={
+  ({stamp})=><div>stamp: {stamp.substr(0,21)}</div>
+} />
+
+
+
+## Only once, and immediately
+
+```jsx
+<SetInterval once={true}/>
+```
+
+<SetInterval once={true}/>
+
+
+## Default 
+
+delay:1s, iterations:forever, render JSON
+
+```jsx
+<SetInterval />
+```
+
+<SetInterval />
+
+

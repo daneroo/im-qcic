@@ -6,9 +6,9 @@ Main static site for QCIC
 
 ## TODO
 
-- Re-integrate
-  - `qcic-react`
-  - `qcic-gql`
+- remove axios from react
+- Test old gql, but don't commit.
+- Re-integrate (new) `qcic-gql` (apollo v3...)
 - `logo.mdx`, `site-icon.png`, `site-image.png`
 - Unstable dependencies: If i remove `package-lock.json` this blows up. 8-(
 

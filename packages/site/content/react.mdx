@@ -1,0 +1,21 @@
+---
+title: 'React Components'
+description: 'A collection of components for QCIC'
+---
+
+React components for QCIC.
+
+## `@daneroo/qcic-react`
+
+This library has peer dependencies on `react`,`react-dom`,
+which I did not add as direct dependencies
+since gatsby itself already satisfies these.
+
+It also has a (direct) dependency on `axios`, 
+which I will remove in favor of `fetch`; after I mock it in the tests,
+or use an isomorphic fetch dependency.
+
+```bash
+npm i @daneroo/qcic-react
+```
+

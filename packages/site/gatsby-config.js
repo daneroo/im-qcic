@@ -15,7 +15,7 @@ module.exports = {
       }
     ],
     sidebarConfig: {
-      forcedNavOrder: ['/introduction'],
+      forcedNavOrder: ['/react', '/styling'],
       ignoreIndex: true
     }
   },
