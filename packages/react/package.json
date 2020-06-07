@@ -58,6 +58,7 @@
     "@testing-library/jest-dom": "^5.9.0",
     "@testing-library/react-hooks": "^3.2.1",
     "jest": "^26.0.1",
+    "jest-fetch-mock": "^3.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-test-renderer": "^16.13.1",
@@ -85,7 +86,4 @@
     }
   },
   "gitHead": "c8286d8aac2cd62554144921056ac7f9d2e3c7d0",
-  "dependencies": {
-    "axios": "^0.19.2"
-  }
 }

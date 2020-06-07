@@ -55,6 +55,17 @@ This was inspired by the build from <https://github.com/donavon/use-persisted-st
 
 Some of these tests are fetching external resources (e.g. <https://time.qcic.n.imetrical.com>), so we are now mocking the global `fecth` for jest tests. (This replaces a runtime dependency on axios)
 
+```bash
+npm install --save-dev jest-fetch-mock
+```
+
+And instrument a single test file with:
+
+```js
+import { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks()
+```
+
 ## License
 
 MIT © [daneroo](https://github.com/daneroo)

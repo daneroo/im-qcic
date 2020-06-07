@@ -1,5 +1,5 @@
+/* global fetch */
 import React from 'react'
-import axios from 'axios'
 
 export default class Fetch extends React.Component {
   constructor (props) {
@@ -14,8 +14,8 @@ export default class Fetch extends React.Component {
   componentDidMount () {
     Promise.resolve(42)
       .then(() => this.setState({ loading: true }))
-      .then(() => axios.get(this.props.url))
-      .then(resp => resp.data)
+      .then(() => fetch(this.props.url))
+      .then(resp => resp.json())
       .then(data => {
         this.setState({ loading: false, data })
       })
