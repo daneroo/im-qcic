@@ -51,6 +51,10 @@ This was inspired by the build from <https://github.com/donavon/use-persisted-st
 
 - I replaced `eslint` with `standard`, and `microbundle` with `@pika/pack`
 
+## Mocking
+
+Some of these tests are fetching external resources (e.g. <https://time.qcic.n.imetrical.com>), so we are now mocking the global `fecth` for jest tests. (This replaces a runtime dependency on axios)
+
 ## License
 
 MIT © [daneroo](https://github.com/daneroo)
