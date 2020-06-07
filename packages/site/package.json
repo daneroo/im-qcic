@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-site",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "Main QCIC static site (gatsby with theme)",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
@@ -33,6 +33,6 @@
     "standard": "^14.3.4"
   },
   "dependencies": {
-    "@daneroo/qcic-react": "^1.0.29"
+    "@daneroo/qcic-react": "^1.0.30"
   }
 }

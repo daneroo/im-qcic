@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-docz",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "Static front end (docz) for qcic, with status of scrobblecast and im-ted1k",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
@@ -39,8 +39,8 @@
     }
   },
   "dependencies": {
-    "@daneroo/qcic-apollo-client-setup": "^1.0.15",
-    "@daneroo/qcic-react": "^1.0.29",
+    "@daneroo/qcic-apollo-client-setup": "^1.0.30",
+    "@daneroo/qcic-react": "^1.0.30",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",

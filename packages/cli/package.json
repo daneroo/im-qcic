@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-cli",
-  "version": "1.0.24",
+  "version": "1.0.30",
   "description": "Apollo Subscriptions Command Line Client",
   "license": "MIT",
   "private": true,

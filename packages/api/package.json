@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-api",
-  "version": "1.0.10",
+  "version": "1.0.30",
   "description": "QCIC GraphQL Server Subscriptions example",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
