@@ -4,7 +4,7 @@
   "description": "QCIC Reusable components",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
