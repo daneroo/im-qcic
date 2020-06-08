@@ -3,14 +3,20 @@ title: "QCIC"
 description: "Quis custodiet ipsos custodes - Who will watch the watchers"
 ---
 
+import { Summary, Tedcheck, ScrobbleCheck } from '../src/components/FetchedStatuses'
+
 Quis custodiet ipsos custodes - Who will watch the watchers
 
 
-## Left Sidebar
+## Summary
 
-The left sidebar navigation is automatically populated by the pages in the content folder. To sort the top level navigation, edit the `forcedNavOrder` option in the `gatsby-config.js` file.
+  <Summary />
 
-The logo will link to the `index.mdx` page. To make the `index.mdx` page visible in the left navigation, set `ignoreIndex` to `false`.
+## ScrobbleCast
 
-Sub navigation items are created by making a folder with the same name as the top level `.mdx` file. The sub navigation is ordered alphabetically.
+  <ScrobbleCheck />
+
+## Ted1K 
+
+  <Tedcheck />
 

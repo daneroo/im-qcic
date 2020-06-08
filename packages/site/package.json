@@ -33,6 +33,7 @@
     "standard": "^14.3.4"
   },
   "dependencies": {
-    "@daneroo/qcic-react": "^1.0.30"
+    "@daneroo/qcic-react": "^1.0.30",
+    "moment": "^2.26.0"
   }
 }
