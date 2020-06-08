@@ -6,7 +6,7 @@ import tedcheck0 from '../data/tedcheck.json'
 import Table from './Table'
 import { df, dfn } from './df'
 
-export function Summary ({ delay = 1000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+export function Summary ({ delay = 10000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
   const { data: dataLive, refetch } = useFetch(url)
   useInterval(refetch, delay)
 
@@ -25,7 +25,7 @@ export function Summary ({ delay = 1000, url = 'https://status.qcic.n.imetrical.
   )
 }
 
-export function Tedcheck ({ delay = 1000, url = 'https://status.qcic.n.imetrical.com/tedcheck.json' }) {
+export function Tedcheck ({ delay = 60000, url = 'https://status.qcic.n.imetrical.com/tedcheck.json' }) {
   const { data: dataLive, refetch } = useFetch(url)
   useInterval(refetch, delay)
 
@@ -44,7 +44,7 @@ export function Tedcheck ({ delay = 1000, url = 'https://status.qcic.n.imetrical
   )
 }
 
-export function ScrobbleCheck ({ delay = 1000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+export function ScrobbleCheck ({ delay = 60000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
   const { data: dataLive, refetch } = useFetch(url)
   useInterval(refetch, delay)
 
