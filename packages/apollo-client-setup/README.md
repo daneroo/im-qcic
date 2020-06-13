@@ -2,6 +2,8 @@
 
 ## TODO
 
+- deprecate npm package `@daneroo/qcic-apollo-client-setup`
+- rename to `@daneroo/qcic-gql-client`
 - Update to <https://www.apollographql.com/docs/react/v3.0-beta/migrating/apollo-client-3-migration/>
 - try babelrc on ../react
 - convert react to use pika (unify publishing)

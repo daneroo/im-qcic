@@ -4,6 +4,7 @@ description: "Quis custodiet ipsos custodes - Who will watch the watchers"
 ---
 
 import { Summary, Tedcheck, ScrobbleCheck } from '../src/components/FetchedStatuses'
+import { Messages } from '../src/components/GQLStuff'
 
 Quis custodiet ipsos custodes - Who will watch the watchers
 
@@ -11,6 +12,10 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 ## Summary
 
   <Summary />
+
+## NatsBridge
+
+  <Messages pollInterval={5000} maxRows={4}/>
 
 ## ScrobbleCast
 

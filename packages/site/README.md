@@ -6,7 +6,6 @@ Main static site for QCIC
 
 ## TODO
 
-- remove axios from react
 - Test old gql, but don't commit
 - 404 handler (dev and prod)
 - Re-integrate (new) `qcic-gql` (apollo v3...)

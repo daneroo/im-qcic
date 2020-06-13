@@ -33,6 +33,7 @@
     "standard": "^14.3.4"
   },
   "dependencies": {
+    "@apollo/client": "^3.0.0-rc.2",
     "@daneroo/qcic-react": "^1.0.30",
     "moment": "^2.26.0"
   }
