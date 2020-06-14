@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Wilkomen Wilkomen renders 1`] = `
-<h4>
-  Counting: 
-  0
-   from a component in a library with a hook
-</h4>
-`;

@@ -1,8 +1,5 @@
 # `@daneroo/qcic-gql-client`
 
-Depcreated `@daneroo/qcic-apollo-client-setup`
-in favor of `@daneroo/qcic-gql-client`
-
 ## TODO
 
 - rename to `@daneroo/qcic-gql-client`
@@ -10,6 +7,8 @@ in favor of `@daneroo/qcic-gql-client`
 
 ## Usage
 
+Install this library and peer dependencies (assuming you already have react!)
+
 ```bash
-// TODO: DEMONSTRATE API
+npm i @daneroo/qcic-gql-client @apollo/client @apollo/link-ws subscriptions-transport-ws
 ```
