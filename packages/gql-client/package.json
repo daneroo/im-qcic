@@ -1,6 +1,6 @@
 {
   "name": "@daneroo/qcic-gql-client",
-  "version": "1.0.38",
+  "version": "1.0.39",
   "description": "Reusable setup components for apollo3 client",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
   "homepage": "https://github.com/daneroo/im-qcic#readme",
