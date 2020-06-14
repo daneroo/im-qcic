@@ -15,7 +15,7 @@ module.exports = {
       }
     ],
     sidebarConfig: {
-      forcedNavOrder: ['/react', '/styling'],
+      forcedNavOrder: ['/gql', '/react', '/styling'],
       ignoreIndex: true
     }
   },

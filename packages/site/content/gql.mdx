@@ -1,0 +1,28 @@
+---
+title: "GraphQL"
+description: "Using gql-client"
+---
+
+import { RegisterApolloProvider } from '@daneroo/qcic-gql-client'
+import { defaultHttpurl, MessagesSub, MessagesQyPoll } from '../src/components/gql/GQLDemo'
+
+GraphQL queries against FizzBuzzClock: <https://fizzbuzzclock.n.imetrical.com/graphql>
+
+## Subscription
+
+  <RegisterApolloProvider httpurl={defaultHttpurl}>
+    <MessagesSub maxRows={4}/>
+  </RegisterApolloProvider>
+
+## Entangled Polling Queries
+
+These two GraphQL queries specify an independant `polling parameter`,
+But since they share the same cache, if *either* of them is polling,
+They both get updated.
+
+  <RegisterApolloProvider httpurl={defaultNatsHttpurl}>
+    <MessagesQyPoll pollInterval={2000} maxRows={4}/>
+    <MessagesQyPoll pollInterval={3000} maxRows={4}/>
+  </RegisterApolloProvider>
+
+

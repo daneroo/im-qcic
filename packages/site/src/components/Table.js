@@ -1,5 +1,6 @@
 
-import React from 'react'
+/** @jsx jsx */
+import { jsx } from 'theme-ui'
 import { df, dfn } from './df'
 
 // map data[i][j] => f(i,j,data[i][j])
@@ -33,16 +34,19 @@ export function Header ({ row }) {
   return (
     <thead>
       <tr>{
-        row.map((col, i) => <th key={i}>{col}</th>)
+        row.map((col, i) => <th sx={{ color: 'primary' }} key={i}>{col}</th>)
       }
       </tr>
     </thead>)
 }
 
 export function Body ({ row }) {
+  const sx = {
+
+  }
   return (
     <tr>{
-      row.map((col, i) => <td style={{ padding: '0 .5em' }} key={i}>{col}</td>)
+      row.map((col, i) => <td sx={{ fontFamily: 'monospace', px: '1em' }} styleZ={{ padding: '0 .5em' }} key={i}>{col}</td>)
     }
     </tr>
   )

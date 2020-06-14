@@ -25,7 +25,6 @@ export function registerApolloClient (httpurl) {
     console.log('ReUse ApolloClient', { httpurl })
     return registry[httpurl]
   }
-  console.log('New ApolloClient', { httpurl })
   const client = newApolloClient(httpurl)
   registry[httpurl] = client
   return client
@@ -33,6 +32,7 @@ export function registerApolloClient (httpurl) {
 
 // This is the meat of the ApolloClient Constructor
 export function newApolloClient (httpurl, wsurl = httpurl.replace(/^http/, 'ws')) {
+  console.log('New ApolloClient', { httpurl })
   // Create an http link:
   const httpLink = new HttpLink({
     uri: httpurl

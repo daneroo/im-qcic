@@ -4,7 +4,8 @@ description: "Quis custodiet ipsos custodes - Who will watch the watchers"
 ---
 
 import { Summary, Tedcheck, ScrobbleCheck } from '../src/components/FetchedStatuses'
-import { Messages } from '../src/components/GQLStuff'
+import { RegisterApolloProvider } from '@daneroo/qcic-gql-client'
+import { defaultNatsHttpurl, NatsBridge } from '../src/components/NatsBridge'
 
 Quis custodiet ipsos custodes - Who will watch the watchers
 
@@ -15,7 +16,9 @@ Quis custodiet ipsos custodes - Who will watch the watchers
 
 ## NatsBridge
 
-  <Messages pollInterval={5000} maxRows={4}/>
+  <RegisterApolloProvider httpurl={defaultNatsHttpurl}>
+    <NatsBridge maxRows={4}/>
+  </RegisterApolloProvider>
 
 ## ScrobbleCast
 
