@@ -42,11 +42,12 @@ export function Header ({ row }) {
 
 export function Body ({ row }) {
   const sx = {
-
+    fontFamily: 'monospace',
+    px: '1em'
   }
   return (
     <tr>{
-      row.map((col, i) => <td sx={{ fontFamily: 'monospace', px: '1em' }} styleZ={{ padding: '0 .5em' }} key={i}>{col}</td>)
+      row.map((col, i) => <td sx={sx} key={i}>{col}</td>)
     }
     </tr>
   )
