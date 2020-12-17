@@ -52,8 +52,8 @@ FetchInterval.defaultProps = {
     const heading = (loading)
       ? <span>Loading...</span>
       : (error)
-        ? <span>{error.name}: {error.message}</span>
-        : <span>Fetched</span>
+          ? <span>{error.name}: {error.message}</span>
+          : <span>Fetched</span>
 
     return (<pre>data: {JSON.stringify(data)} status: {heading} </pre>
     )
