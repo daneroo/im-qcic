@@ -16,6 +16,8 @@ make tabs
 
 ## TODO
 
+- Add nats ( ws at port 9222) - test with Caddy - expose in qcic
+- add ipfs, [graphana,hasura] (->timescale.ted)
 - Point site(docz) to <https://qcic.n.imetrical.com> -> natsql.dl.imetrical.com
   - also qcic.dl.imetrical.com for local?dev?
   - Netlify for static instead of zeit/now/vercel
@@ -24,7 +26,15 @@ make tabs
 - Move nested infra/README.md into mdx; make docs (published or not)
   - Include all names natsql.dl.imetrical.com, nats.dl.imetrical.com,...
 
-## Worldping - grafana.com
+## External monitoring
+
+### EasyCron
+
+- [EasyCron Dashboard](https://www.easycron.com/user)
+- <https://natsql.dl.imetrical.com/health>
+- <https://scrobblecast.dl.imetrical.com/api/status>
+
+### Worldping - grafana.com
 
 We check DNS and https for each of these from three probes (London/NY,Silicon-Valley)
 and have enable e-mail alerts for them.

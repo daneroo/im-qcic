@@ -25,6 +25,7 @@ services:
       - "8222:8222" # for monitoring/reporting
       - "6222:6222" # routing port for clustering
 
+  # rename to natsql
   api:
     # build will replaced by image when pushed to registry
     build: ../packages/api/
@@ -37,6 +38,7 @@ services:
       - "5000:5000" # for http & ws
 
   status:
+    # This entire source should disappear with live services (hasura/ipfs)
     # build will replaced by image when pushed to registry
     build: ../packages/status/
     # image: qcic-status:vx.y.z
@@ -45,7 +47,7 @@ services:
     #  - "8000:8000"  # forweb
     volumes:
       - ../packages/status/dist:/usr/src/app/dist
-      - ${HOME}/.now:/root/.now
+      - "${HOME}/Library/Application Support/com.vercel.cli/:/root/.now"
       - ../packages/status/credentials.loggly.json:/usr/src/app/credentials.loggly.json
       - ../packages/status/credentials.mysql.json:/usr/src/app/credentials.mysql.json
       - ../packages/status/credentials.postgres.json:/usr/src/app/credentials.postgres.json
