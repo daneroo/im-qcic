@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./data/caddy/Caddyfile:/data
+      - ./data/caddy:/data
     ports:
       - "80:80" # local only
       - "443:443" # port-forwarded from wifi-router
