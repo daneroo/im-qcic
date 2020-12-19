@@ -18,12 +18,17 @@ services:
       - "443:443" # port-forwarded from wifi-router
 
   nats:
-    image: nats:1.2.0
+    # image: nats:1.2.0
+    # Replaced this with nightly to get websockets, pin to version as soon as websokckets are GA
+    image: synadia/nats-server:nightly
     restart: unless-stopped
+    volumes: 
+      -  ./config/nats/nats-server.conf:/nats/conf/nats-server.conf
     ports:
       - "4222:4222" # for clients - port forwarded from router
-      - "8222:8222" # for monitoring/reporting
       - "6222:6222" # routing port for clustering
+      - "8222:8222" # for monitoring/reporting
+      - "9222:9222" # for websockets
 
   # rename to natsql
   api:

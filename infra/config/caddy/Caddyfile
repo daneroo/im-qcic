@@ -10,6 +10,11 @@ dl.imetrical.com {
   respond "Hello, iMetrical world!"
 }
 
+# Make nats over websockets available at wss://nats.dl.imetrical.com:443
+nats.dl.imetrical.com {
+  reverse_proxy nats:9222
+}
+
 natsql.dl.imetrical.com {
   # reverse_proxy dirac.imetrical.com:5000
   # also available at api:5000 because we are in the same compose file (network)
