@@ -1,14 +1,17 @@
 
 import React from 'react'
-import { useInterval, useFetch } from '@daneroo/qcic-react'
+import useSWR from 'swr'
+import fetch from 'unfetch'
+
 import logcheck0 from '../data/logcheck.json'
 import tedcheck0 from '../data/tedcheck.json'
 import Table from './Table'
 import { df, dfn } from './df'
 
-export function Summary ({ delay = 10000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
-  const { data: dataLive, refetch } = useFetch(url)
-  useInterval(refetch, delay)
+const fetcher = url => fetch(url).then(r => r.json())
+
+export function Summary ({ refreshInterval = 10000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+  const { data: dataLive, error } = useSWR(url, fetcher, { refreshInterval })
 
   const data = dataLive || logcheck0
   return (
@@ -17,17 +20,19 @@ export function Summary ({ delay = 10000, url = 'https://status.qcic.n.imetrical
         <tr>
           <td>It is now  </td><td>{df(new Date().toISOString(), 'HH:mm:ss')}</td>
         </tr>
-        <tr>
-          <td>Published at</td><td>{df(data.meta.stamp, 'HH:mm:ss')} - {dfn(data.meta.stamp)}</td>
-        </tr>
+        {data ? <tr><td>Published at</td><td>{df(data.meta.stamp, 'HH:mm:ss')} - {dfn(data.meta.stamp)}</td></tr> : <></>}
+        {error ? <tr><td>Error</td><td>{error.message}</td></tr> : <></>}
       </tbody>
     </table>
   )
 }
 
-export function Tedcheck ({ delay = 60000, url = 'https://status.qcic.n.imetrical.com/tedcheck.json' }) {
-  const { data: dataLive, refetch } = useFetch(url)
-  useInterval(refetch, delay)
+export function Tedcheck ({ refreshInterval = 60000, url = 'https://status.qcic.n.imetrical.com/tedcheck.json' }) {
+  const { data: dataLive, error } = useSWR(url, fetcher, { refreshInterval })
+
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
 
   function mapper (i, j, v) {
     if (i > 0 && j === 0) return df(v, 'YYYY-MM-DD HH:mm') // date (no day, no seconds)
@@ -44,9 +49,11 @@ export function Tedcheck ({ delay = 60000, url = 'https://status.qcic.n.imetrica
   )
 }
 
-export function ScrobbleCheck ({ delay = 60000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
-  const { data: dataLive, refetch } = useFetch(url)
-  useInterval(refetch, delay)
+export function ScrobbleCheck ({ refreshInterval = 60000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+  const { data: dataLive, error } = useSWR(url, fetcher, { refreshInterval })
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
 
   function mapper (i, j, v) {
     if (i === 0) { // header remove domain names
