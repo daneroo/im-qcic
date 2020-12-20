@@ -30,10 +30,10 @@ export function NatsBridge ({ maxRows = 4 }) {
   if (error) return <p>Error {error.message}</p>
   if (!data || !data.newMessage) return <p>---</p>
 
-  return <MessagesInternal messages={messages} maxRows={maxRows} />
+  return <MessagesLayout messages={messages} maxRows={maxRows} />
 }
 
-function MessagesInternal ({ messages, maxRows = 0 }) {
+function MessagesLayout ({ messages, maxRows = 0 }) {
   if (!messages) return <p>---</p>
 
   const rows = [

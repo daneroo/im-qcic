@@ -40,6 +40,7 @@
     "@apollo/link-ws": "^2.0.0-beta.3",
     "@daneroo/qcic-gql-client": "^1.0.41",
     "moment": "^2.29.1",
+    "nats.ws": "^1.0.0-114",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "subscriptions-transport-ws": "^0.9.18",
