@@ -38,6 +38,7 @@ lerna add standard --dev
 
 ## TODO
 
+- Use [macdriver for MacOS Toolbar status](https://github.com/progrium/macdriver)
 - npx create-react-library for qcic-react
 - Using Chakra-ui with [Shared Nav Header](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/chakra-ui-header-sbsh5?fontsize=14&hidenavigation=1&theme=dark)
 - clean up and resync
