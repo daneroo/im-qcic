@@ -7,20 +7,45 @@ Investigating backup solutions
 
 See benchmarking (from duplicacy - compare with restic)
 
+## TODO
+
+- compare speeds (current)
+- baseline restic (pick a dataset like /ebooks, or /audiobooks)
+- baseline duplicacy
+- lifecycles
+  - incremental backup
+  - restore
+  - list, compare 2
+  - multiple origins
+  
 ## Transports
 
 - SMB/CIFS (samba)
 - [restic](https://restic.net/)
 - [duplicacy](https://github.com/gilbertchen/duplicacy)
 
+Speeds:
+
+
 ## Drobo Over Samba
 
 This objective here is to capitalize on the Drobo 5N as a large storage pool.
 
+### Host mounted samba (MacOS)
+
+```bash
+# mount: //kubernaut@drobo/KubeVol on /Volumes/KubeVol (smbfs, nodev, nosuid, mounted by daniel)
+time rsync -av --progress  /Volumes/KubeVol/random.bin  .
+random.bin  1015625000 100%   51.23MB/s    0:00:18
+
+time rsync -av --progress random.bin  /Volumes/KubeVol/
+random.bin  1015625000 100%   47.48MB/s    0:00:20 
+```
+
 ### Talk to Drobo with `smbclient` - from `docker`
 
 ```bash
-docker run --rm -it ubuntu:18.04
+docker run --rm -it ubuntu:20.04
 apt update
 apt install smbclient openssl -y
 # make a iGB file
@@ -42,7 +67,7 @@ Normally mounting a CIFS from docker would require `--privileged` *(or at least 
 smbclient --user kubernaut //drobo.imetrical.com/KubeVol
 
 ```bash
-docker run --rm  -it --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH ubuntu:18.04
+docker run --rm  -it --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH ubuntu:20.04
 apt update
 apt install cifs-utils openssl rsync -y
 mkdir -p /KubeVol
@@ -58,6 +83,16 @@ time rsync -av --progress  /KubeVol/random.bin .
 random.bin  1,015,625,000 100%   21.09MB/s    0:00:45 (xfr#1, to-chk=0/1)
 ```
 
-### K8S Storage Driver
+## Docker Volume
 
-- Try this first in multipass
+USAGE:
+
+```bash
+make up
+make exec
+# apt update && apt install -y rsync
+# time rsync -av --progress  /drobo/random.bin .
+# random.bin 1,015,625,000 100%   22.16MB/s    0:00:43
+make down
+make clean
+```

@@ -1,0 +1,17 @@
+version: "3.4"
+
+services:
+  ubuntu:
+    image: ubuntu:20.04
+    restart: unless-stopped
+    command: bash -c 'while true; do echo `date -Is` I am alive...; sleep 1; done'
+    volumes:
+      - drobo:/drobo:rw
+
+volumes:
+  drobo:
+    driver_opts:
+      type: cifs
+      o: addr=drobo.imetrical.com,username=${CIFS_USER},password=${CIFS_PASSWORD},file_mode=0777,dir_mode=0777
+      device: //drobo.imetrical.com/KubeVol
+    
