@@ -9,6 +9,7 @@ See benchmarking (from duplicacy - compare with restic)
 
 ## TODO
 
+- redo mount/user : /dockerlan/docker
 - compare speeds (current)
 - baseline restic (pick a dataset like /ebooks, or /audiobooks)
 - baseline duplicacy
@@ -95,4 +96,78 @@ make exec
 # random.bin 1,015,625,000 100%   22.16MB/s    0:00:43
 make down
 make clean
+```
+
+## Restic - docker - drobo
+
+```bash
+# make up
+# make exec
+apt update && apt install -y restic rsync jq wget
+mkdir -p data && rsync -av --progress /drobo/random.bin data
+
+export RESTIC_PASSWORD=zzz
+restic init --repo /drobo/restic
+
+# backup twice
+restic -r /drobo/restic backup -v ./data
+restic -r /drobo/restic backup -v ./data
+# and backup with a forced Host name
+restic -r /drobo/restic backup -v -H dockerbuntu ./data
+
+
+# list , then compare (the last 2 snapshots)
+restic -r /drobo/restic/ snapshots
+# restic -r /srv/restic-repo diff 5845b002 2ab627a6
+echo $(restic -r /drobo/restic/ snapshots --json | jq -r .[].id | tail -d)
+restic -r /drobo/restic/ diff  $(restic -r /drobo/restic/ snapshots --json | jq -r .[].id | tail -2)
+
+# now other sets
+restic -r /drobo/restic  backup -v  /archive/media/ebooks/
+restic -r /drobo/restic  backup -v  /archive/media/audiobooks
+restic -r /drobo/restic  backup -v  /archive/media/audiobooks/Frank\ Herbert\ -\ Dune\ Collection/
+
+# restore to ./coco
+mkdir -p coco
+restic -r /drobo/restic/ restore -v -v --verify --target ./coco/ latest
+# latest for given root directory
+restic -r /drobo/restic/ restore --verify --path /archive/media/audiobooks --target ./coco/  latest
+
+# mount
+# inside docker may require privileges: https://stackoverflow.com/questions/48402218/fuse-inside-docker
+apt install -y fuse modprobe
+modprobe fuse
+mkdir /mnt/restic
+restic -r /drobo/restic/ mount /mnt/restic/
+```
+
+## Duplicacy
+
+We need a fake root: <https://github.com/gilbertchen/duplicacy/wiki/Move-.duplicacy-folder>
+
+Programmatic way to download latest release: <https://www.starkandwayne.com/blog/how-to-download-the-latest-release-from-github/>
+
+```bash
+wget https://github.com/gilbertchen/duplicacy/releases/download/v2.7.2/duplicacy_linux_x64_2.7.2
+mv ./duplicacy_linux_x64_2.7.2 /usr/local/bin/duplicacy
+chmod +x /usr/local/bin/duplicacy
+
+mkdir -p duplicacyFakeRoot && cd duplicacyFakeRoot
+ln -sf /archive/media/ebooks ebooks
+ln -sf /archive/media/audiobooks audiobooks
+duplicacy init archive-media /drobo/duplicacy
+
+duplicacy backup
+duplicacy backup -hash
+
+duplicacy check -files -stats
+
+duplicacy benchmark
+```
+
+## compare with restic and duplicay on MacOS native
+
+```bash
+brew install restic
+brew instal duplicacy
 ```

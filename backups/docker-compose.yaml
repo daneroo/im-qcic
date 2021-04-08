@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     command: bash -c 'while true; do echo `date -Is` I am alive...; sleep 1; done'
     volumes:
+      - /Volumes/Space/archive:/archive:ro
       - drobo:/drobo:rw
 
 volumes:
