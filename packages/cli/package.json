@@ -28,7 +28,7 @@
     "isomorphic-fetch": "^2.2.1",
     "subscriptions-transport-ws": "^0.9.15",
     "ulid": "^2.3.0",
-    "ws": "^6.2.0"
+    "ws": "^7.4.6"
   },
   "standard": {
     "env": {
