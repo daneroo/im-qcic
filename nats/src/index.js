@@ -1,55 +1,83 @@
+const { connect, JSONCodec } = require('nats')
 const os = require('os')
 
-const nats = require('nats').connect({
+const opts = {
+  name: 'test-client-server',
   maxReconnectAttempts: -1,
-  reconnectTimeWait: 1000 // 250
-})
+  // waitOnFirstConnect: true, // not sure if this is a good idea
+  verbose: true
+}
 
 const interval = 3000
-setupHandlers(nats)
-
-const topic = 'im.test.heartbeat'
+const count = 10
+const subject = 'im.test.heartbeat'
 const hostname = process.env.HOSTNAME || os.hostname()
 const clientId = Math.round(1000 + Math.random() * 1000)
 
-nats.subscribe(topic, function (msg, reply, subject) {
-  console.log(`<<[${subject}]: ${msg}`)
-})
-
-setInterval(() => {
-  const msg = {
-    stamp: new Date().toISOString(),
-    host: [hostname, clientId].join('-'),
-    text: clientId
+doit()
+async function doit () {
+  let nc
+  try {
+    nc = await connect(opts)
+  } catch (err) {
+    console.log(`error connecting to nats: ${err.message}`)
+    return
   }
-  const payload = JSON.stringify(msg)
-  nats.publish(topic, payload, function () {
-    console.log(`>>[${topic}]: ${payload}`)
-  })
-}, interval)
+  console.info(`connected ${nc.getServer()}`)
+  const done = nc.closed()
 
-function setupHandlers (nats) {
-  nats.on('error', function (e) {
-    console.log('Error [' + nats.options.url + ']: ' + e)
-  })
+  // Don't await, the returned promise will not resolve..
+  subscribeLoop(nc)
 
-  nats.on('connect', function (nc) {
-    console.log('connected')
-  })
+  // publish a few messages (finite count), so we can clean up and close
+  await publishLoop(nc)
 
-  nats.on('disconnect', function () {
-    console.log('disconnect')
-  })
+  // Now clean things up
+  await nc.flush()
+  await nc.close()
+  // check if the close was OK
+  const err = await done
+  if (err) {
+    console.log('error closing:', err)
+  } else {
+    console.log('connection closed')
+  }
+}
 
-  nats.on('reconnecting', function () {
-    console.log('reconnecting')
-  })
+// this should never return
+async function subscribeLoop (nc) {
+  const jc = JSONCodec()
+  const sub = nc.subscribe(subject)
+  for await (const m of sub) {
+    const payload = jc.decode(m.data)
+    console.log(`<< [${m.subject}]: ${JSON.stringify(payload)}`)
+  }
+}
 
-  nats.on('reconnect', function (nc) {
-    console.log('reconnect')
-  })
+// Will resolve after `count` published events
+async function publishLoop (nc) {
+  const jc = JSONCodec()
 
-  nats.on('close', function () {
-    console.log('close')
+  // This is the publish loop
+  for (let i = 1; i <= count; i++) {
+    const payload = {
+      stamp: new Date().toISOString(),
+      host: [hostname, clientId].join('-'),
+      text: clientId
+    }
+    nc.publish(subject, jc.encode(payload))
+    console.log(`>> [${subject}]: ${JSON.stringify(payload)}`)
+
+    if (interval) {
+      await delay(interval)
+    }
+  }
+}
+
+function delay (ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
   })
 }

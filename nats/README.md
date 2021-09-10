@@ -18,6 +18,8 @@ make stop # if required
 make test # both smoke and speed
 make smoke-test
 make speed-test
+
+npm start # start the node client (publish and subscribe)
 ```
 
 ## Starting a local server
