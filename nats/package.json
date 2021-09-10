@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "standard": "^14.3.4"
+    "standard": "^16.0.3"
   },
   "dependencies": {
     "nats": "^1.4.9"

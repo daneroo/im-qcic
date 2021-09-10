@@ -5,10 +5,10 @@ const nats = require('nats').connect({
   reconnectTimeWait: 1000 // 250
 })
 
-const interval = 10000
+const interval = 3000
 setupHandlers(nats)
 
-const topic = 'im.qcic.heartbeat'
+const topic = 'im.test.heartbeat'
 const hostname = process.env.HOSTNAME || os.hostname()
 const clientId = Math.round(1000 + Math.random() * 1000)
 
