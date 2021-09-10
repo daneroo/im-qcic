@@ -18,7 +18,9 @@ See benchmarking (from duplicacy - compare with restic)
   - restore
   - list, compare 2
   - multiple origins
-  
+- [docker/NFS](https://lefthandbrain.com/mounting-nfs-volumes-with-docker-compose/)
+- [restic-server post](https://itnext.io/backup-storage-for-thousands-of-virtual-machines-using-free-tools-b3909004bef2)
+
 ## Transports
 
 - SMB/CIFS (samba)
@@ -118,7 +120,7 @@ restic -r /drobo/restic backup -v -H dockerbuntu ./data
 
 # list , then compare (the last 2 snapshots)
 restic -r /drobo/restic/ snapshots
-# restic -r /srv/restic-repo diff 5845b002 2ab627a6
+# restic -r /drobo/restic/ diff 5845b002 2ab627a6
 echo $(restic -r /drobo/restic/ snapshots --json | jq -r .[].id | tail -d)
 restic -r /drobo/restic/ diff  $(restic -r /drobo/restic/ snapshots --json | jq -r .[].id | tail -2)
 

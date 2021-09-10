@@ -16,6 +16,12 @@ make tabs
 
 ## TODO
 
+- Move to Kubernetes
+  - [Talos docs/proxmox](https://www.talos.dev/docs/v0.11/virtualized-platforms/proxmox/)
+  - [Talos on Proxmox](https://www.youtube.com/watch?v=MyxigW4_QFM&t=1s)
+  - [OpenEBS on Talos hack sesh](https://www.youtube.com/watch?v=q86Kidk81xE)
+  - k0s/k3s/microk8s
+- backups: restic/duplicacy/litestream
 - Add nats ( ws at port 9222) - test with Caddy - expose in qcic
 - add ipfs, [graphana,hasura] (->timescale.ted)
 - Point site(docz) to <https://qcic.n.imetrical.com> -> natsql.dl.imetrical.com
