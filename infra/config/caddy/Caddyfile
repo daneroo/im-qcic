@@ -17,9 +17,8 @@ nats.dl.imetrical.com {
 
 natsql.dl.imetrical.com {
   # reverse_proxy dirac.imetrical.com:5000
-  # also available at api:5000 because we are in the same compose file (network)
-  # should rename to natsql:5000
-  reverse_proxy api:5000
+  # also available at natsql:5000 because we are in the same compose file (network)
+  reverse_proxy natsql:5000
 }
 
 # because deployed with different docker-compose (not visible)

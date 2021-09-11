@@ -30,15 +30,17 @@ services:
       - "8222:8222" # for monitoring/reporting
       - "9222:9222" # for websockets
 
-  # rename to natsql
-  api:
+  # TODO: rename to natsql
+  natsql:
     # build will replaced by image when pushed to registry
-    build: ../packages/api/
+    build: ../packages/natsql/
     # image: qcic-api:vx.y.z
     restart: unless-stopped
     environment:
       # no value inherits from host (but not docker-machine host...)
-      - HOSTNAME
+      # HOSTNAME should not be overwritten - use HOSTALIAS instead
+      HOSTALIAS: "natsql.dl.imetrical.com"
+      NATSURL: "nats://nats.dl.imetrical.com:4222"
     ports:
       - "5000:5000" # for http & ws
 
