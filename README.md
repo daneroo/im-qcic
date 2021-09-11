@@ -14,6 +14,9 @@ lerna bootstrap  # no --hoist for now
 (cd packages/docz; npm run fix)
 npm test
 npm run unit  # no audit or lint
+
+# bump the version
+lerna version patch
 ```
 
 ## Adding New Package
@@ -40,7 +43,7 @@ lerna add standard --dev
 
 - Use [macdriver for MacOS Toolbar status](https://github.com/progrium/macdriver)
 - npx create-react-library for qcic-react
-- Using Chakra-ui with [Shared Nav Header](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/chakra-ui-header-sbsh5?fontsize=14&hidenavigation=1&theme=dark)
+- Using Chakra-ui with Shared Nav Header
 - clean up and resync
 
   - docz - mdx docs / including this TODO
