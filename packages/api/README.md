@@ -1,27 +1,23 @@
-# GraphQL api server (with subscription)
+# Nats GraphQL Bridge api server (with subscription)
 
-This api is deployed on zeit/now using our custom (external domain).
+[ ] Rename to natsql
 
-## Restart
+This server is deployed at <https://natsql.dl.imetrical.com/>
 
-```bash
-now scale api-qcic-zsndvpnxnm.now.sh sfo1 0
-now scale api-qcic-zsndvpnxnm.now.sh sfo1 1 1
-```
+It bridges GraphQL to NATS. For the moment, it bridges to a single (configurable) NATS subject: `im.qcic.heartbeat`. It is exposed as a Query, Mutation and Subscription.
+
+It also serves REST routes for:
+
+- `/`
+- `/version`
+- `/health`
+
+This was once served from zeit, but it is no longer possible to run containers with persistent connection.
 
 Deployed:
 
 - [query](https://natsql.dl.imetrical.com/graphql?query=query%20%7B%0A%20%20messages%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A)
 - [subscription](https://natsql.dl.imetrical.com/graphql?operationName=OnNewMessage&query=subscription%20OnNewMessage%20%7B%0A%20%20newMessage%20%7B%0A%20%20%20%20id%0A%20%20%20%20stamp%0A%20%20%20%20host%0A%20%20%20%20text%0A%20%20%7D%0A%7D%0A)
-
-## Deploy (zeit/now)
-
-Deployment is configured with `now.json`
-
-```bash
-npm run deploy
-npm run logs
-```
 
 ## Example query, mutation and subscription
 

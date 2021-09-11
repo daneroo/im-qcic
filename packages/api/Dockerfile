@@ -10,7 +10,7 @@ COPY . /usr/src/app
 
 # TODO(daneroo): run as non root user
 
-# Default port
+# Default port - should be a build arg or pick a better value
 EXPOSE 5000
 
 CMD [ "npm", "start" ]
