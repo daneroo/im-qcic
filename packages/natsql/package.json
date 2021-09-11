@@ -1,5 +1,5 @@
 {
-  "name": "@daneroo/qcic-api",
+  "name": "@daneroo/qcic-natsql",
   "version": "1.0.43",
   "description": "QCIC GraphQL Server Subscriptions example",
   "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
