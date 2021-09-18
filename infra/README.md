@@ -69,9 +69,15 @@ For \*.dl.imetrical, this implies caddy is properly terminating ssl, and also as
 
 Caddy now uses HTTP challenge to obtain LetsEncrypt certificates for external facing domains (_.dl.imetrical.com), but also DNS challenge (_.imetrical.net) whose DNS is controlled by AWS Route53, but we will soon try cloudflare and GCP.
 
-We also need to build our own image of caddy with the caddy:v2-builder image, to include the proper custoim modules (for DNS provider adapters).
+We also need to build our own image of caddy with the caddy:v2-builder image, to include the proper custom modules (for DNS provider adapters).
 
 See `./Dockerfile-caddy` which was made from [these docs](https://hub.docker.com/_/caddy?tab=description)
+
+Credentials are provided in the `docker-compose.yaml` and depend on each DNS provider.
+
+- For AWS/Route53, we mount a ~/.aws/{credentials|config} profile.
+- For Cloudflare, we mount a ~/.cloudflare/credentials.json file (not done)
+- For Google DNS, we mount a ~/.config/gcloud/credentials.json file (not done)
 
 ```bash
 # equivalent to our docker-compoose build for caddy
