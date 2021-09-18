@@ -41,6 +41,16 @@ lerna add standard --dev
 
 ## TODO
 
+- imetrical.net: LetsEncrypt: Using Caddy/Traefik
+  - Pricing AWS:R53:0.50/mo GCP:CloudDNS:0.20/mo Cloudflare: free?
+  - History: myip.taurus.k.xrobots.dev
+  - [Caddy docker](https://hub.docker.com/_/caddy)
+  - Both Caddy and Traefik use [lego](https://github.com/go-acme/lego)
+  - [Caddy DNS Challenge](https://caddyserver.com/docs/automatic-https#dns-challenge)
+    - [caddy-dns/route53](https://github.com/caddy-dns/route53)
+    - [caddy-dns/googleclouddns](https://github.com/caddy-dns/googleclouddns)
+    - [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
+  - [Traefik DNS Challenge](https://doc.traefik.io/traefik/v1.7/configuration/acme/#dnschallenge)
 - Use [macdriver for MacOS Toolbar status](https://github.com/progrium/macdriver)
 - npx create-react-library for qcic-react
 - Using Chakra-ui with Shared Nav Header

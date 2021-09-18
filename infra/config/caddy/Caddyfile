@@ -1,27 +1,64 @@
 localhost {
-  respond "Hello, local world!"
+	respond "Hello, local world!"
 }
 
 dl-imetrical.spdns.org {
-  respond "Hello, spdyn world!"
+	respond "Hello, spdyn world!"
 }
 
 dl.imetrical.com {
-  respond "Hello, iMetrical world!"
+	respond "Hello, iMetrical world!"
 }
 
 # Make nats over websockets available at wss://nats.dl.imetrical.com:443
 nats.dl.imetrical.com {
-  reverse_proxy nats:9222
+	reverse_proxy nats:9222
 }
 
 natsql.dl.imetrical.com {
-  # reverse_proxy dirac.imetrical.com:5000
-  # also available at natsql:5000 because we are in the same compose file (network)
-  reverse_proxy natsql:5000
+	# reverse_proxy dirac.imetrical.com:5000
+	# also available at natsql:5000 because we are in the same compose file (network)
+	reverse_proxy natsql:5000
 }
 
 # because deployed with different docker-compose (not visible)
 scrobblecast.dl.imetrical.com {
-  reverse_proxy dirac.imetrical.com:8000
+	reverse_proxy dirac.imetrical.com:8000
 }
+
+# Trying to use a wildcard which requires DNS Challenge
+# DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
+
+dirac.imetrical.net {
+	tls {
+		dns route53 {
+			max_retries 10
+		}
+	}
+	respond "Hello, dirac.imetrical.com! (DNS Challenge)"
+}
+
+dirac.ts.imetrical.net {
+	tls {
+		dns route53 {
+			max_retries 10
+		}
+	}
+	respond "Hello, dirac.ts.imetrical.com! (DNS Challenge)"
+}
+
+# # Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
+# *.ts.imetrical.net {
+#   tls {
+# 		dns <provider_name> [<params...>]
+# 	}
+
+#   @foo host dirac.ts.imetrical.com
+# 	handle @foo {
+# 		respond "Hello from dirac.ts.imetrical.net"
+# 	}
+#   # Fallback for otherwise unhandled domains
+#   handle {
+#     respond "Hello, ts fallback for wildcard"
+# 	}
+# }

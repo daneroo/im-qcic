@@ -8,11 +8,17 @@ services:
       - ./config/ddclient:/config
 
   caddy:
-    image: caddy:2
+    # image: caddy:2
+    # this is our own caddy image with dns challenge support for our providers
+    # image: ghcr.io/daneroo/caddy:2-dns
+    build:
+      context: .
+      dockerfile: Dockerfile-caddy
     restart: unless-stopped
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./data/caddy:/data
+      - ./data/dotaws-im-dan:/root/.aws
     ports:
       - "80:80" # local only
       - "443:443" # port-forwarded from wifi-router
@@ -22,8 +28,8 @@ services:
     # Replaced this with nightly to get websockets, pin to version as soon as websokckets are GA
     image: synadia/nats-server:nightly
     restart: unless-stopped
-    volumes: 
-      -  ./config/nats/nats-server.conf:/nats/conf/nats-server.conf
+    volumes:
+      - ./config/nats/nats-server.conf:/nats/conf/nats-server.conf
     ports:
       - "4222:4222" # for clients - port forwarded from router
       - "6222:6222" # routing port for clustering
