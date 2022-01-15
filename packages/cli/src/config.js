@@ -1,8 +1,8 @@
 const os = require('os')
 // For now the ws baseURI is derived from BASEURI
 // BASEURI Has to be explicit, until we fix the server
-const BASEURI = process.env['BASEURI'] || 'http://localhost:5000'
-const WSBASEURI = process.env['WSBASEURI'] || BASEURI.replace(/^http/, 'ws')
+const BASEURI = process.env.BASEURI || 'http://localhost:5000'
+const WSBASEURI = process.env.WSBASEURI || BASEURI.replace(/^http/, 'ws')
 
 // export default {
 module.exports = {
