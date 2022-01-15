@@ -1,10 +1,10 @@
-
 /** @jsx jsx */
 import { jsx } from 'theme-ui'
 import { df, dfn } from './df'
 
 // map data[i][j] => f(i,j,data[i][j])
-export function map2d (data, f) { //
+export function map2d (data, f) {
+  //
   return data.map((row, i) => {
     return row.map((col, j) => {
       return f(i, j, col)
@@ -19,25 +19,31 @@ export default function Table ({ meta, data, mapper }) {
   }
   return (
     <table style={{ textAlign: 'center', fontSize: '100%' }}>
-      <caption>Published on {df(meta.stamp, 'YYYY-MM-DD')} - {dfn(meta.stamp)}</caption>
+      <caption>
+        Published on {df(meta.stamp, 'YYYY-MM-DD')} - {dfn(meta.stamp)}
+      </caption>
       <Header row={data[0]} />
       <tbody>
         {data.slice(1).map((row, i) => {
-          return (<Body key={i} row={row} />)
+          return <Body key={i} row={row} />
         })}
       </tbody>
-
-    </table>)
+    </table>
+  )
 }
 
 export function Header ({ row }) {
   return (
     <thead>
-      <tr>{
-        row.map((col, i) => <th sx={{ color: 'primary' }} key={i}>{col}</th>)
-      }
+      <tr>
+        {row.map((col, i) => (
+          <th sx={{ color: 'primary' }} key={i}>
+            {col}
+          </th>
+        ))}
       </tr>
-    </thead>)
+    </thead>
+  )
 }
 
 export function Body ({ row }) {
@@ -46,9 +52,12 @@ export function Body ({ row }) {
     px: '1em'
   }
   return (
-    <tr>{
-      row.map((col, i) => <td sx={sx} key={i}>{col}</td>)
-    }
+    <tr>
+      {row.map((col, i) => (
+        <td sx={sx} key={i}>
+          {col}
+        </td>
+      ))}
     </tr>
   )
 }

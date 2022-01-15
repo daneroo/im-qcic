@@ -9,6 +9,7 @@ See benchmarking (from duplicacy - compare with restic)
 
 ## TODO
 
+- Move KubeVol experiment to Synology NAS (from Drobo)
 - redo mount/user : /dockerlan/docker
 - compare speeds (current)
 - baseline restic (pick a dataset like /ebooks, or /audiobooks)
@@ -167,7 +168,7 @@ duplicacy check -files -stats
 duplicacy benchmark
 ```
 
-## compare with restic and duplicay on MacOS native
+## compare with restic and duplicacy on MacOS native
 
 ```bash
 brew install restic
