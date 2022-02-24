@@ -35,7 +35,7 @@ dirac.imetrical.net {
 			max_retries 10
 		}
 	}
-	respond "Hello, dirac.imetrical.com! (DNS Challenge)"
+	respond "Hello, dirac.imetrical.net! (DNS Challenge - route53)"
 }
 
 dirac.ts.imetrical.net {
@@ -44,7 +44,7 @@ dirac.ts.imetrical.net {
 			max_retries 10
 		}
 	}
-	respond "Hello, dirac.ts.imetrical.com! (DNS Challenge)"
+	respond "Hello, dirac.ts.imetrical.net! (DNS Challenge - route53)"
 }
 
 # # Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
