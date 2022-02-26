@@ -15,7 +15,7 @@ lerna bootstrap  # no --hoist for now
 npm test
 npm run unit  # no audit or lint
 
-# bump the version
+# bump the version of affected packages (commits and tags repo - asks for confirmation)
 lerna version patch
 ```
 
