@@ -16,11 +16,10 @@
   "bugs": {
     "url": "https://github.com/daneroo/im-qcic/issues"
   },
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
-    "cron": "while true; do npm start; npm run deploy; echo; echo done $(date); sleep 3600; done",
-    "start": "node src/index.js",
-    "deploy": "mkdir -p dist && cp now.json dist/ && cd dist && now --public --prod && now rm --safe --yes status-qcic",
+    "start": "node src/server.js",
+    "smoke": "node src/index.js | pino-pretty -S -t SYS:standard",
     "testWithAuditLater": "npm run lint && npm audit && npm run unit",
     "test": "npm run lint && npm run unit && echo '***' && echo Run npm audit yourself... && echo '***'",
     "lint": "standard",
@@ -28,13 +27,15 @@
     "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
   },
   "devDependencies": {
-    "jest": "^26.0.1",
-    "standard": "^14.3.4"
+    "jest": "^27.5.1",
+    "pino-pretty": "^7.5.1",
+    "standard": "^16.0.4"
   },
   "dependencies": {
-    "loggly": "^1.1.1",
-    "mysql": "^2.18.1",
-    "pg": "^8.2.1"
+    "close-with-grace": "^1.1.0",
+    "fastify": "^3.27.2",
+    "fastify-mysql": "^2.1.0",
+    "loggly": "^1.1.1"
   },
   "standard": {
     "env": {

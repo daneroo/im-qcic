@@ -1,4 +1,4 @@
-// Shared configrations
+// Shared configurations
 const os = require('os')
 const fs = require('fs')
 
@@ -11,9 +11,11 @@ module.exports = {
     version: require('../package').version,
     node: process.version
   },
+  fastify: {
+    port: process.env.PORT || 8001
+  },
   loggly: getConfig('credentials.loggly.json', null),
-  mysql: getConfig('credentials.mysql.json', null),
-  postgres: getConfig('credentials.postgres.json', null)
+  mysql: getConfig('credentials.mysql.json', null)
 }
 
 // used for loggly/mysql credentials

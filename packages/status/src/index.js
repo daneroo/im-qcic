@@ -4,21 +4,23 @@ const config = require('./config')
 const fs = require('fs')
 const path = require('path')
 const logcheck = require('./logcheck')
+const mysql = require('mysql2/promise')
 const tedcheck = require('./tedcheck')
-const log = console
+const log = require('./log')
 
 const dataDir = './dist'
-const logheckFileName = path.join(`${dataDir}`, 'logcheck.json')
+const logcheckFileName = path.join(`${dataDir}`, 'logcheck.json')
 const tedcheckFileName = path.join(`${dataDir}`, 'tedcheck.json')
 
-const verbose = false
+const verbose = true
+log.level = 'debug' // default is info
 
 main()
 
 async function main () {
   const stamp = new Date().toISOString()
 
-  log.debug(JSON.stringify({ message: 'Scraping for docz::start', stamp }))
+  log.info({ stamp }, `Scraping::start for ${config.version.name}`)
 
   const { hostname, version } = config
   const metaBase = { stamp, hostname, version }
@@ -30,34 +32,31 @@ async function main () {
     }
     const data = await logcheck.asTable()
     showTable(data.slice(0, 3), 'Log Check')
-    await writeJSON(logheckFileName, { meta, data })
+    await writeJSON(logcheckFileName, { meta, data })
   }
   {
     const meta = {
       ...metaBase,
       type: 'tedcheck'
     }
+    const connection = await mysql.createConnection(config.mysql)
+
     const data = {}
     for (const qyName in tedcheck.queries) {
-      log.info(JSON.stringify({ message: 'Fetching', qyName }))
+      log.info({ qyName }, 'Fetching')
       const qy = tedcheck.queries[qyName]
-      data[qyName] = tedcheck.iso8601ify(tedcheck.asTable(await tedcheck.exec(qy)))
+      data[qyName] = tedcheck.iso8601ify(tedcheck.asTable(await tedcheck.query(connection, qy)))
       showTable(data[qyName], qyName)
     }
     await writeJSON(tedcheckFileName, { meta, data })
-    tedcheck.endConnection()
+    connection.end()
   }
   const elapsed = ((+new Date() - new Date(stamp)) / 1000).toFixed(1)
-  log.debug(JSON.stringify({
-    message: 'Scraping for docz::done',
-    stamp: new Date().toDateString(),
-    elapsed
-  }))
+  log.info({ stamp, elapsed }, `Scraping::done for ${config.version.name}`)
 }
 
 // for sql results
 function showTable (data, title) {
-  if (!verbose) return
   if (data) {
     log.info(`-= ${title} (${data.length})`)
     for (const row of data) {
@@ -70,10 +69,8 @@ function showTable (data, title) {
 }
 
 async function writeJSON (fileName, data) {
-  // log.debug(JSON.stringify({ message: 'Writing', fileName }))
   const dirName = path.dirname(fileName)
   try {
-    // log.debug(JSON.stringify({ message: 'mkdir', dirName }))
     await fs.promises.mkdir(dirName)
   } catch (error) {
     if (error.code !== 'EEXIST') {

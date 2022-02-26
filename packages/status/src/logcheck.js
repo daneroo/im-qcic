@@ -11,7 +11,7 @@
 
 // dependencies - core-public-internal
 const loggly = require('loggly')
-const log = console
+const log = require('./log')
 const config = require('./config')
 
 exports = module.exports = {
@@ -36,7 +36,7 @@ async function asTable () {
 //  return an array of {}
 async function getCheckpointRecords () {
   // The search options can be parametrized later (hours,runs...)
-  var searchOptions = {
+  const searchOptions = {
     query: 'tag:pocketscrape AND json.message:checkpoint AND json.scope:item AND json.digest:*',
     from: '-24h',
     until: 'now',
@@ -54,7 +54,7 @@ async function getCheckpointRecords () {
 // depends on events having {timestamp,tags:['host-,..],event.json.digest}
 // and returns an array of {stamp,host,digest}
 function parseCheckpointEvents (events) {
-  var records = []
+  const records = []
 
   events.forEach(function (event) {
     // log.debug('event', event)
@@ -71,7 +71,7 @@ function parseCheckpointEvents (events) {
     if (event.event && event.event.json && event.event.json.digest) {
       const digest = event.event.json.digest
 
-      var record = {
+      const record = {
         stamp: stamp,
         host: host,
         digest: digest
@@ -84,7 +84,7 @@ function parseCheckpointEvents (events) {
 }
 
 // This function uses the node-loggly module directly, instead of winston-loggly
-// This makes this module more independant.
+// This makes this module more independent.
 async function queryLoggly (searchOptions) {
   return new Promise(function (resolve, reject) {
     const client = loggly.createClient(config.loggly)
@@ -95,10 +95,10 @@ async function queryLoggly (searchOptions) {
           log.error('logcheck.query: %s', err)
           reject(err)
         } else {
-          log.debug('logcheck.query', {
+          log.debug({
             fetched: results.events.length,
             total_events: results.total_events
-          })
+          }, 'logcheck.query')
           resolve(results.events)
         }
       })

@@ -1,9 +1,7 @@
 'use strict'
 
 // dependencies - core-public-internal
-const mysql = require('mysql')
 const log = console
-const config = require('./config')
 
 const queries = {
   // concat(date,'') makes iso8601 like
@@ -16,12 +14,9 @@ const queries = {
 exports = module.exports = {
   queries,
   asTable,
-  exec,
-  endConnection,
+  query,
   iso8601ify
 }
-
-const connection = mysql.createConnection(config.mysql)
 
 function asTable (data) {
   const table = []
@@ -54,21 +49,7 @@ function iso8601ify (data) {
     })
   })
 }
-async function exec (qy) {
-  return new Promise((resolve, reject) => {
-    // connection.connect()
-    connection.query(qy, function (error, results, fields) {
-      if (error) {
-        // connection.end()
-        reject(error)
-        return
-      }
-      // connection.end()
-      resolve(results)
-    })
-  })
-}
-
-function endConnection () {
-  connection.end()
+async function query (connection, qy) {
+  const [results, fields] = await connection.query(qy)
+  return results
 }
