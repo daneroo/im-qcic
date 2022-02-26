@@ -15,6 +15,12 @@ nats.dl.imetrical.com {
 	reverse_proxy nats:9222
 }
 
+status.dl.imetrical.com {
+	# reverse_proxy dirac.imetrical.com:8001
+	# also available at status:8001 because we are in the same compose file (network)
+	reverse_proxy status:8001
+}
+
 natsql.dl.imetrical.com {
 	# reverse_proxy dirac.imetrical.com:5000
 	# also available at natsql:5000 because we are in the same compose file (network)

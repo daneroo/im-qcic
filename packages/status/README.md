@@ -10,6 +10,9 @@ Implemented with [fastify](https://www.fastify.io/docs/latest/Guides/Getting-Sta
 ## TODO
 
 - broadcast logs to nats topic (im.logs.???)
+- refactor routes
+  - add schema to routes
+  - proxy to nats responders instead?
 - add status to caddy (status.dl.imetrical.com)
 - add weight ?
 

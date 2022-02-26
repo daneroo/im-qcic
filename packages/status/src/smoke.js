@@ -20,7 +20,7 @@ main()
 async function main () {
   const stamp = new Date().toISOString()
 
-  log.info({ stamp }, `Scraping::start for ${config.version.name}`)
+  log.info({ stamp }, `Smoke::start for ${config.version.name}`)
 
   const { hostname, version } = config
   const metaBase = { stamp, hostname, version }
@@ -52,7 +52,7 @@ async function main () {
     connection.end()
   }
   const elapsed = ((+new Date() - new Date(stamp)) / 1000).toFixed(1)
-  log.info({ stamp, elapsed }, `Scraping::done for ${config.version.name}`)
+  log.info({ stamp, elapsed }, `Smoke::done for ${config.version.name}`)
 }
 
 // for sql results
