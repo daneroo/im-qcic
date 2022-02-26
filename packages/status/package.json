@@ -34,6 +34,7 @@
   "dependencies": {
     "close-with-grace": "^1.1.0",
     "fastify": "^3.27.2",
+    "fastify-cors": "^6.0.3",
     "fastify-mysql": "^2.1.0",
     "loggly": "^1.1.1"
   },

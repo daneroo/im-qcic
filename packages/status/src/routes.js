@@ -6,12 +6,20 @@ module.exports = routes
 
 // Declare some routes
 async function routes (fastify, options) {
+  const { hostname, version } = config
+  const metaBase = { hostname, version }
+
   fastify.get('/', async (request, reply) => {
     return config.version
   })
 
-  const { hostname, version } = config
-  const metaBase = { hostname, version }
+  fastify.get('/api/version', async (request, reply) => {
+    return {
+      stamp: new Date().toISOString(),
+      ...metaBase,
+      type: 'version'
+    }
+  })
 
   fastify.get('/api/logcheck', async (request, reply) => {
     const meta = {

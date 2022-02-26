@@ -12,7 +12,6 @@ const dataDir = './dist'
 const logcheckFileName = path.join(`${dataDir}`, 'logcheck.json')
 const tedcheckFileName = path.join(`${dataDir}`, 'tedcheck.json')
 
-const verbose = true
 log.level = 'debug' // default is info
 
 main()

@@ -50,6 +50,6 @@ function iso8601ify (data) {
   })
 }
 async function query (connection, qy) {
-  const [results, fields] = await connection.query(qy)
+  const [results] = await connection.query(qy)
   return results
 }

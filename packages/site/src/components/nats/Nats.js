@@ -68,6 +68,7 @@ function useSubscribe ({ wsurl, subject, maxRows, messages, setMessages }) {
   }, [wsurl, subject, maxRows]) // Make sure the effect runs only once
 }
 
+// eslint-disable-next-line no-unused-vars
 function MessagesLayout ({ messages, maxRows = 0 }) {
   if (!messages) return <p>---</p>
   const headers = (messages.length) ? Object.keys(messages[0]) : ['stamp', 'host', 'text']

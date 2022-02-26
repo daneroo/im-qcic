@@ -15,9 +15,9 @@ Main static site for QCIC
 ### Develop
 
 ```bash
-npm start
+npm start # gatsby build && gatsby serve
 # - or -
-gatsby develop
+npm run dev # gatsby develop
 ```
 
 ### Publish (deploy)

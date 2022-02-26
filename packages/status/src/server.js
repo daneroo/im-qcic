@@ -12,6 +12,11 @@ const fastify = Fastify({
   logger: log
 })
 
+fastify.register(require('fastify-cors'), {
+  // put your options here
+  origin: true,
+  methods: ['GET']
+})
 fastify.register(require('fastify-mysql'), {
   promise: true,
   // connectionString: 'mysql://root@localhost/mysql'

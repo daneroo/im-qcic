@@ -10,7 +10,7 @@ import { df, dfn } from './df'
 
 const fetcher = url => fetch(url).then(r => r.json())
 
-export function Summary ({ refreshInterval = 10000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+export function Summary ({ refreshInterval = 10000, url = 'https://status.dl.imetrical.com/api/version' }) {
   const { data: dataLive, error } = useSWR(url, fetcher, { refreshInterval })
 
   const data = dataLive || logcheck0
@@ -20,14 +20,14 @@ export function Summary ({ refreshInterval = 10000, url = 'https://status.qcic.n
         <tr>
           <td>It is now  </td><td>{df(new Date().toISOString(), 'HH:mm:ss')}</td>
         </tr>
-        {data ? <tr><td>Published at</td><td>{df(data.meta.stamp, 'HH:mm:ss')} - {dfn(data.meta.stamp)}</td></tr> : <></>}
+        {data ? <tr><td>Last Fetched at</td><td>{df(data.stamp, 'HH:mm:ss')} - {dfn(data.stamp)}</td></tr> : <></>}
         {error ? <tr><td>Error</td><td>{error.message}</td></tr> : <></>}
       </tbody>
     </table>
   )
 }
 
-export function Tedcheck ({ refreshInterval = 60000, url = 'https://status.qcic.n.imetrical.com/tedcheck.json' }) {
+export function Tedcheck ({ refreshInterval = 60000, url = 'https://status.dl.imetrical.com/api/tedcheck' }) {
   const { data: dataLive, error } = useSWR(url, fetcher, { refreshInterval })
 
   if (error) {
@@ -49,7 +49,7 @@ export function Tedcheck ({ refreshInterval = 60000, url = 'https://status.qcic.
   )
 }
 
-export function ScrobbleCheck ({ refreshInterval = 60000, url = 'https://status.qcic.n.imetrical.com/logcheck.json' }) {
+export function ScrobbleCheck ({ refreshInterval = 60000, url = 'https://status.dl.imetrical.com/api/logcheck' }) {
   const { data: dataLive, error } = useSWR(url, fetcher, { refreshInterval })
   if (error) {
     return <div>Error: {error.message}</div>

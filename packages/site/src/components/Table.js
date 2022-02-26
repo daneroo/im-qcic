@@ -20,7 +20,7 @@ export default function Table ({ meta, data, mapper }) {
   return (
     <table style={{ textAlign: 'center', fontSize: '100%' }}>
       <caption>
-        Published on {df(meta.stamp, 'YYYY-MM-DD')} - {dfn(meta.stamp)}
+        Last fetched at {df(meta.stamp, 'YYYY-MM-DD')} - {dfn(meta.stamp)}
       </caption>
       <Header row={data[0]} />
       <tbody>
