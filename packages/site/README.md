@@ -25,7 +25,8 @@ npm run dev # gatsby develop
 This executes a build on vercel, and publishes the production site:
 
 ```bash
-npm run deploy:now
+npm run vercel:preview  # preview deployment
+npm run vercel:deploy  # production deployment
 ```
 
 ## Setup
