@@ -6,6 +6,10 @@ dl-imetrical.spdns.org {
 	respond "Hello, spdyn world!"
 }
 
+syno-im.synology.me {
+	respond "Hello, synology world!"
+}
+
 dl.imetrical.com {
 	respond "Hello, iMetrical world!"
 }
