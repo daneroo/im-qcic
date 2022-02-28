@@ -3,10 +3,13 @@
 export HOSTNAME=$(shell hostname)
 
 usage: status
-	@echo "Make all the things: status, start, web, tabs, tab-*"
+	@echo "Make all the things: status, build, start, web, nats"
 
 status:
 	docker-compose ps
+
+build:
+	docker-compose build --pull
 
 start:
 	docker-compose up -d

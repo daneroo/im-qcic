@@ -4,7 +4,10 @@ Manage the config and deployment of `qcic` related resources
 
 This includes:
 
-- nats: accessed as nats.ts.imetrical.com (or nats.dl.imetrical.com externally)
+- nats: 
+  - nats.ts.imetrical.com (for port 4222)
+  - also as nats.dl.imetrical.com externally on port 9222 wss://
+  - no longer exposed externally on port 4222 (should use tailscale)
 - status
 
 ## Usage
