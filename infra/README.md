@@ -2,6 +2,11 @@
 
 Manage the config and deployment of `qcic` related resources
 
+This includes:
+
+- nats: accessed as nats.ts.imetrical.com (or nats.dl.imetrical.com externally)
+- status
+
 ## Usage
 
 Use the makefile to properly expose HOSTNAME (just for api server)
@@ -11,7 +16,8 @@ make # default target is status:= docker-compose ps
 make status
 make start
 make web # open web pages for clients
-make tabs
+make nats
+make nats-top
 ```
 
 ## TODO

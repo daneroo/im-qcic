@@ -47,7 +47,8 @@ services:
       # no value inherits from host (but not docker-machine host...)
       # HOSTNAME should not be overwritten - use HOSTALIAS instead
       HOSTALIAS: "natsql.dl.imetrical.com"
-      NATSURL: "nats://nats.dl.imetrical.com:4222"
+      # This could also be nats:nats:4222 as we are cohosted in this docker-compose network
+      NATSURL: "nats://nats.ts.imetrical.com:4222"
     ports:
       - "5000:5000" # for http & ws
 

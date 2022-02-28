@@ -19,7 +19,7 @@ module.exports = {
     port: PORT
   },
   nats: {
-    servers: [process.env.NATSURL || 'nats://nats.dl.imetrical.com:4222'],
+    servers: [process.env.NATSURL || 'nats://nats.ts.imetrical.com:4222'],
     topic // used as a single topic/subject for pub and sub, may turn into a base/prefix
   }
 }

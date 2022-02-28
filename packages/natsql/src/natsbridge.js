@@ -6,7 +6,7 @@ const config = require('./config')
 const { topic } = config.nats
 
 const nats = require('nats').connect({
-  // json:true,
+  name: 'natsql',
   servers: config.nats.servers,
   maxReconnectAttempts: -1,
   reconnectTimeWait: 1000 // 250
