@@ -12,7 +12,7 @@ This includes:
 
 ## Usage
 
-Use the makefile to properly expose HOSTNAME (just for api server)
+Use the makefile to properly expose HOSTALIAS (just for api natsql)
 
 ```bash
 make # default target is status:= docker-compose ps

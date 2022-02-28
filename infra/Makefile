@@ -1,6 +1,6 @@
 
 # important for api (for now)
-export HOSTNAME=$(shell hostname)
+export HOSTNAME=$(shell hostname -s)
 
 usage: status
 	@echo "Make all the things: status, build, start, web, nats"
