@@ -41,8 +41,9 @@ function useSubscribe ({ wsurl, subject, maxRows, messages, setMessages }) {
         console.log(`Connecting to: ${wsurl}`)
         const nc = await connect({
           name: 'react-nats.ws',
-          servers: wsurl
+          servers: wsurl,
           // pendingLimit: 8192
+          maxReconnectAttempts: -1
         })
         console.log(`Connected to: ${wsurl}`)
         ncRef.current = nc
@@ -59,17 +60,25 @@ function useSubscribe ({ wsurl, subject, maxRows, messages, setMessages }) {
           }
         }, 0)
       } catch (err) {
-        console.error(err)
+        console.error('Nats connection error', err)
       }
     }
     connectToNats()
 
     return () => {
-      console.log(`Unsubscribe from: ${subject}`)
-      subRef.current.unsubscribe(0)
+      if (subRef.current) {
+        console.log(`Unsubscribe from: ${subject}`)
+        subRef.current.unsubscribe(0)
+      } else {
+        console.log(`Skip unsubscribe from: ${subject} (not subscribed)`)
+      }
 
-      console.log(`Disconnect from: ${wsurl}`)
-      ncRef.current.close()
+      if (ncRef.current) {
+        console.log(`Disconnect from: ${wsurl}`)
+        ncRef.current.close()
+      } else {
+        console.log(`Skip disconnect from: ${wsurl} (not connected)`)
+      }
     }
   }, [wsurl, subject, maxRows]) // Make sure the effect runs only once
 }
