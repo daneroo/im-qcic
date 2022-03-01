@@ -56,4 +56,3 @@ gateway.ts.imetrical.net {
 	}
 	respond "Hello, gateway.ts.imetrical.net! (DNS Challenge - route53)"
 }
-
