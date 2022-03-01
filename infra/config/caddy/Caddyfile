@@ -14,30 +14,33 @@ dl.imetrical.com {
 	respond "Hello, iMetrical world!"
 }
 
-# Make nats over websockets available at wss://nats.dl.imetrical.com:443
+# Make nats over websockets available at wss://nats.dl.imetrical.com
+# The request matcher was not required previously, but it is now required
 nats.dl.imetrical.com {
 	@websockets {
 		header Connection *Upgrade*
 		header Upgrade websocket
 	}
-	reverse_proxy @websockets nats.ts.imetrical.com:9222
+	// reverse_proxy @websockets nats.ts.imetrical.com:9222
+	# also available at nats:9222 because we are in the same compose file (network)
+	reverse_proxy @websockets nats:9222
 }
 
 status.dl.imetrical.com {
-	# reverse_proxy dirac.imetrical.com:8001
+	# reverse_proxy gateway.ts.imetrical.com:8001
 	# also available at status:8001 because we are in the same compose file (network)
 	reverse_proxy status:8001
 }
 
 natsql.dl.imetrical.com {
-	# reverse_proxy dirac.imetrical.com:5000
+	# reverse_proxy gateway.ts.imetrical.com:5000
 	# also available at natsql:5000 because we are in the same compose file (network)
 	reverse_proxy natsql:5000
 }
 
 # because deployed with different docker-compose (not visible)
 scrobblecast.dl.imetrical.com {
-	reverse_proxy dirac.imetrical.com:8000
+	reverse_proxy dirac.ts.imetrical.com:8000
 }
 
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
