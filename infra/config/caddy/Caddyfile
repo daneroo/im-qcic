@@ -36,39 +36,24 @@ scrobblecast.dl.imetrical.com {
 	reverse_proxy dirac.imetrical.com:8000
 }
 
-# Trying to use a wildcard which requires DNS Challenge
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
+# Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
 
-dirac.imetrical.net {
+gateway.imetrical.net {
 	tls {
 		dns route53 {
 			max_retries 10
 		}
 	}
-	respond "Hello, dirac.imetrical.net! (DNS Challenge - route53)"
+	respond "Hello, gateway.imetrical.net! (DNS Challenge - route53)"
 }
 
-dirac.ts.imetrical.net {
+gateway.ts.imetrical.net {
 	tls {
 		dns route53 {
 			max_retries 10
 		}
 	}
-	respond "Hello, dirac.ts.imetrical.net! (DNS Challenge - route53)"
+	respond "Hello, gateway.ts.imetrical.net! (DNS Challenge - route53)"
 }
 
-# # Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
-# *.ts.imetrical.net {
-#   tls {
-# 		dns <provider_name> [<params...>]
-# 	}
-
-#   @foo host dirac.ts.imetrical.com
-# 	handle @foo {
-# 		respond "Hello from dirac.ts.imetrical.net"
-# 	}
-#   # Fallback for otherwise unhandled domains
-#   handle {
-#     respond "Hello, ts fallback for wildcard"
-# 	}
-# }
