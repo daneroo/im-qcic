@@ -26,8 +26,9 @@ services:
   nats:
     # image: nats:1.2.0
     # Replaced this with synadia nightly to get websockets, pinned to known working version
-    # image: nats:2.7.2
-    image: synadia/nats-server:nightly-20220224 # This is v2.7.3-beta.3
+    # image: synadia/nats-server:nightly-20220224 # This is v2.7.3-beta.3
+    # Official image is now working, but kept synadia nightly in comment as reference
+    image: nats:2.7.2
     restart: unless-stopped
     volumes:
       - ./config/nats/nats-server.conf:/nats/conf/nats-server.conf
