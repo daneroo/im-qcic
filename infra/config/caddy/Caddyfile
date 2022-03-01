@@ -15,8 +15,12 @@ dl.imetrical.com {
 }
 
 # Make nats over websockets available at wss://nats.dl.imetrical.com:443
+@websockets {
+	header Connection *Upgrade*
+	header Upgrade websocket
+}
 nats.dl.imetrical.com {
-	reverse_proxy nats.ts.imetrical.com:9222
+	reverse_proxy @websockets nats.ts.imetrical.com:9222
 }
 
 status.dl.imetrical.com {
