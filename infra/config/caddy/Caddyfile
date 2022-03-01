@@ -21,7 +21,7 @@ nats.dl.imetrical.com {
 		header Connection *Upgrade*
 		header Upgrade websocket
 	}
-	// reverse_proxy @websockets nats.ts.imetrical.com:9222
+	# reverse_proxy @websockets nats.ts.imetrical.com:9222
 	# also available at nats:9222 because we are in the same compose file (network)
 	reverse_proxy @websockets nats:9222
 }
