@@ -16,7 +16,7 @@ RUN npm ci --only=production
 # 16.14.0-alpine3.15 == lts-alpine @ 2022-02-24
 FROM node:16.14.0-alpine3.15@sha256:2c6c59cf4d34d4f937ddfcf33bab9d8bbad8658d1b9de7b97622566a52167f2b
 
-RUN apk add dumb-init
+RUN apk --no-cache add dumb-init
 ENV NODE_ENV production
 USER node
 WORKDIR /usr/src/app
