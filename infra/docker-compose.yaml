@@ -31,6 +31,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/nats/nats-server.conf:/nats/conf/nats-server.conf
+      - ./data/nats/jetstream:/data/jetstream
     ports:
       - "4222:4222" # for clients - port forwarded from router
       - "6222:6222" # routing port for clustering
