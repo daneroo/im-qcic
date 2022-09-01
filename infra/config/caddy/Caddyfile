@@ -14,9 +14,10 @@ dl.imetrical.com {
 	respond "Hello, iMetrical world!"
 }
 
-audiobooks.dl.imetrical.com {
-	# This VM is running on Synology
-	reverse_proxy 192.168.86.42:32400
+audiobook.dl.imetrical.com {
+	# This VM is running on hilbert
+	# reverse_proxy 192.168.86.34:32400
+	reverse_proxy plex-audiobook.imetrical.com:32400
 }
 
 # Make nats over websockets available at wss://nats.dl.imetrical.com
