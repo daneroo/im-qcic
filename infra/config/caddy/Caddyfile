@@ -14,7 +14,7 @@ dl.imetrical.com {
 	respond "Hello, iMetrical world!"
 }
 
-plex-audiobook.dl.imetrical.com {
+audiobook.dl.imetrical.com {
 	reverse_proxy 192.168.86.34:32400
 }
 
