@@ -40,7 +40,7 @@
   "dependencies": {
     "@slack/client": "^4.2.2",
     "aws-sdk": "^2.247.1",
-    "pubnub": "^4.20.3",
+    "pubnub": "^4.37.0",
     "s3-db": "^2.3.0"
   }
 }
