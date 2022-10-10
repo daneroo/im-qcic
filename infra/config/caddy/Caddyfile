@@ -44,8 +44,13 @@ natsql.dl.imetrical.com {
 	reverse_proxy natsql:5000
 }
 
-# because deployed with different docker-compose (not visible)
+grafana-ted.dl.imetrical.com {
+	# because deployed with different docker-compose (not visible) on the same machine for now (gateway)
+	reverse_proxy gateway.ts.imetrical.com:3000
+}
+
 scrobblecast.dl.imetrical.com {
+	# because deployed with different docker-compose (not visible) on a different host (dirac)
 	reverse_proxy dirac.ts.imetrical.com:8000
 }
 
