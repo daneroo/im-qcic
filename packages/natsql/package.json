@@ -34,7 +34,7 @@
     "standard": "^14.3.4"
   },
   "dependencies": {
-    "apollo-server": "^2.13.1",
+    "apollo-server": "^2.25.4",
     "apollo-server-express": "^2.13.1",
     "cors": "^2.8.5",
     "graphql": "^15.0.0",
