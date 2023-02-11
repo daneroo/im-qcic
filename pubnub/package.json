@@ -38,7 +38,7 @@
     "standard": "^11.0.1"
   },
   "dependencies": {
-    "@slack/client": "^4.2.2",
+    "@slack/client": "^4.12.0",
     "aws-sdk": "^2.247.1",
     "pubnub": "^4.20.3",
     "s3-db": "^2.3.0"
