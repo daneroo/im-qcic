@@ -6,8 +6,9 @@ FROM caddy:2-builder AS builder
 # they should be updated.
 RUN xcaddy build \
   --with github.com/caddy-dns/cloudflare \
-  --with github.com/caddy-dns/googleclouddns@v1.0.2 \
   --with github.com/caddy-dns/route53@v1.1.2
+# Removed for now
+#  --with github.com/caddy-dns/googleclouddns@v1.0.2 \
 
 # Also pinned to the major number only (and matches the -builder variant)
 FROM caddy:2
