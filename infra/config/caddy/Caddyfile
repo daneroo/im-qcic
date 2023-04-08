@@ -46,7 +46,8 @@ natsql.dl.imetrical.com {
 
 grafana-ted.dl.imetrical.com {
 	# because deployed with different docker-compose (not visible) on the same machine for now (gateway)
-	reverse_proxy gateway.ts.imetrical.com:3000
+	# 2023-04-08: deployed on d1-px1.ts.imetrical.com:3000
+	reverse_proxy d1-px1.ts.imetrical.com:3000
 }
 
 scrobblecast.dl.imetrical.com {
