@@ -6,6 +6,17 @@
 
 > Quis custodiet ipsos custodes - Who will watch the watchers
 
+## Infra
+
+In `./infra` we handle deployment of the `qcic` related resources.
+
+- Deployed to `gateway.imetrical.com`
+  - caddy (See `./infra/README.md` and `./infra/config/caddy/Caddyfile` for details)
+  - ddclient
+  - nats
+  - natsql
+  - status
+
 ## Operating
 
 ```bash

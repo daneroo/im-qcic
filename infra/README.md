@@ -2,9 +2,11 @@
 
 Manage the config and deployment of `qcic` related resources
 
+Note:*AWS IAM credential are injected into caddy container for Route53 DNS Challenge*
+
 This includes:
 
-- nats: 
+- nats:
   - nats.ts.imetrical.com (for port 4222)
   - also as nats.dl.imetrical.com externally on port 9222 wss://
   - no longer exposed externally on port 4222 (should use tailscale)
