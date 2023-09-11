@@ -2,12 +2,11 @@ localhost {
 	respond "Hello, local world!"
 }
 
-dl-imetrical.spdns.org {
-	respond "Hello, spdyn world!"
-}
+# Deprecated https://www.spdyn.de/
+#  No longer have ddclient running for dl-imetrical.spdns.org
 
 syno-im.synology.me {
-	respond "Hello, synology world!"
+	respond "Hello, Synology world!"
 }
 
 dl.imetrical.com {
