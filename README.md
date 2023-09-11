@@ -12,10 +12,10 @@ In `./infra` we handle deployment of the `qcic` related resources.
 
 - Deployed to `gateway.imetrical.com`
   - caddy (See `./infra/README.md` and `./infra/config/caddy/Caddyfile` for details)
-  - ddclient
   - nats
   - natsql
   - status
+  - ddclient (REMOVED 2023-09-11)
 
 ## Operating
 

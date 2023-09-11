@@ -1,12 +1,7 @@
 version: "3"
 
 services:
-  ddclient:
-    image: linuxserver/ddclient
-    restart: unless-stopped
-    volumes:
-      - ./config/ddclient:/config
-
+  # ddlcient removed as of 2023-09-11
   caddy:
     # image: caddy:2
     # this is our own caddy image with dns challenge support for our providers
@@ -22,6 +17,11 @@ services:
     ports:
       - "80:80" # local only
       - "443:443" # port-forwarded from wifi-router
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   nats:
     # Official image is not working, so keeping synadia nightly
@@ -37,6 +37,11 @@ services:
       - "6222:6222" # routing port for clustering
       - "8222:8222" # for monitoring/reporting
       - "9222:9222" # for websockets
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   # TODO: rename to natsql
   natsql:
@@ -52,6 +57,11 @@ services:
       NATSURL: "nats://nats.ts.imetrical.com:4222"
     ports:
       - "5000:5000" # for http & ws
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   status:
     # This entire source should disappear with live services (hasura/ipfs)
@@ -64,3 +74,8 @@ services:
     volumes:
       - ../packages/status/credentials.loggly.json:/usr/src/app/credentials.loggly.json
       - ../packages/status/credentials.mysql.json:/usr/src/app/credentials.mysql.json
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
