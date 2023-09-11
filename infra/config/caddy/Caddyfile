@@ -16,6 +16,7 @@ dl.imetrical.com {
 
 audiobook.dl.imetrical.com {
 	# This VM is running on hilbert
+	# plex is also running (deprecated) on port 32400
 	# reverse_proxy 192.168.2.112:13378
 	reverse_proxy plex-audiobook.imetrical.com:13378
 }
