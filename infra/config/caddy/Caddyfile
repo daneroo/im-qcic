@@ -16,8 +16,8 @@ dl.imetrical.com {
 
 audiobook.dl.imetrical.com {
 	# This VM is running on hilbert
-	# reverse_proxy 192.168.86.34:32400
-	reverse_proxy plex-audiobook.imetrical.com:32400
+	# reverse_proxy 192.168.2.112:13378
+	reverse_proxy plex-audiobook.imetrical.com:13378
 }
 
 # Make nats over websockets available at wss://nats.dl.imetrical.com
