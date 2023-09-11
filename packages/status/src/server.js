@@ -1,4 +1,3 @@
-
 // Require the framework
 const Fastify = require('fastify')
 // Require library to exit fastify process, gracefully (if possible)
@@ -9,7 +8,8 @@ const routes = require('./routes.js')
 
 // Instantiate Fastify with some config
 const fastify = Fastify({
-  logger: log
+  logger: log,
+  trustProxy: true
 })
 
 fastify.register(require('fastify-cors'), {
@@ -30,7 +30,11 @@ fastify.register(routes)
 // app.register(appService)
 
 // delay is the number of milliseconds for the graceful close to finish
-const closeListeners = closeWithGrace({ delay: 500 }, async function ({ signal, err, manual }) {
+const closeListeners = closeWithGrace({ delay: 500 }, async function ({
+  signal,
+  err,
+  manual
+}) {
   fastify.log.info('Graceful shutdown initiated')
   if (err) {
     fastify.log.error(err)

@@ -11,10 +11,10 @@ RUN npm ci --only=production
 # --------------------------------------------------
 # Production image
 # To refresh the image
-# - Find the latest lts alpine tag (like 16.14.0-alpine3.15)
+# - Find the latest lts alpine tag (like 18.17.1-alpine3.18)
 # - Find the SHA: docker pull node:lts-alpine|grep Digest
-# 16.14.0-alpine3.15 == lts-alpine @ 2022-02-24
-FROM node:16.14.0-alpine3.15@sha256:2c6c59cf4d34d4f937ddfcf33bab9d8bbad8658d1b9de7b97622566a52167f2b
+# node:18.17.1-alpine3.18 == lts-alpine @ 2023-09-11
+FROM node:18.17.1-alpine3.18@sha256:982b5b6f07cd9241c9ebb163829067deac8eaefc57cfa8f31927f4b18943d971
 
 RUN apk --no-cache add dumb-init
 ENV NODE_ENV production
