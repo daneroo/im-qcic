@@ -5,9 +5,9 @@ FROM caddy:2-builder AS builder
 # These are the go module versions.
 # they should be updated.
 RUN xcaddy build \
-  --with github.com/caddy-dns/cloudflare \
-  --with github.com/caddy-dns/route53@v1.1.2
+  --with github.com/caddy-dns/cloudflare
 # Removed for now
+# --with github.com/caddy-dns/route53@v1.1.2 \
 #  --with github.com/caddy-dns/googleclouddns@v1.0.2 \
 
 # Also pinned to the major number only (and matches the -builder variant)
@@ -15,5 +15,5 @@ FROM caddy:2
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 
-# TODO, I could also copy in my configuraion...
+# TODO, I could also copy in my configuraion...NOT!
 #  ./config/caddy/Caddyfile:/etc/caddy/Caddyfile

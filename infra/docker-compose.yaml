@@ -10,6 +10,9 @@ services:
       context: .
       dockerfile: Dockerfile-caddy
     restart: unless-stopped
+    env_file:
+      # SHOULD contain CF_API_TOKEN
+      - credentials/caddy/CREDS.env
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./data/caddy:/data

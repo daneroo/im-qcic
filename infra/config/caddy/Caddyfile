@@ -57,14 +57,15 @@ scrobblecast.dl.imetrical.com {
 
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
 # Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
+# Cloudlfare specific: https://github.com/caddy-dns/cloudflare
+# Cloudflare API Token: https://github.com/libdns/cloudflare
+# Using token: imetrical-net-gateway-caddy-dns01-challenge: imetrical.net - Zone:Read, DNS:Edit
 
 gateway.imetrical.net {
 	tls {
-		dns route53 {
-			max_retries 10
-		}
+		dns cloudflare {env.CF_API_TOKEN}
 	}
-	respond "Hello, gateway.imetrical.net! (DNS Challenge - route53)"
+	respond "Hello, gateway.imetrical.net! (DNS Challenge - cloudflare)"
 }
 
 gateway.ts.imetrical.net {
@@ -73,5 +74,5 @@ gateway.ts.imetrical.net {
 			max_retries 10
 		}
 	}
-	respond "Hello, gateway.ts.imetrical.net! (DNS Challenge - route53)"
+	respond "Hello, gateway.ts.imetrical.net! (DNS Challenge - cloudflare)"
 }

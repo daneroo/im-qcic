@@ -2,10 +2,11 @@
 
 Manage the config and deployment of `qcic` related resources
 
-Note:*AWS IAM credential are injected into caddy container for Route53 DNS Challenge*
+Note:_Cloudflare scoped API token is injected into caddy container for DNS Challenge_
 
 This includes:
 
+- caddy
 - nats:
   - nats.ts.imetrical.com (for port 4222)
   - also as nats.dl.imetrical.com externally on port 9222 wss://
@@ -78,7 +79,7 @@ For \*.dl.imetrical, this implies caddy is properly terminating ssl, and also as
 
 ### Caddy v2
 
-Caddy now uses HTTP challenge to obtain LetsEncrypt certificates for external facing domains (_.dl.imetrical.com), but also DNS challenge (_.imetrical.net) whose DNS is controlled by AWS Route53, but we will soon try cloudflare and GCP.
+Caddy now uses HTTP challenge to obtain LetsEncrypt certificates for external facing domains (_.dl.imetrical.com), but also DNS challenge (_.imetrical.net) whose DNS is controlled by Cloudflare DNS.
 
 We also need to build our own image of caddy with the caddy:v2-builder image, to include the proper custom modules (for DNS provider adapters).
 
@@ -86,9 +87,7 @@ See `./Dockerfile-caddy` which was made from [these docs](https://hub.docker.com
 
 Credentials are provided in the `docker-compose.yaml` and depend on each DNS provider.
 
-- For AWS/Route53, we mount a ~/.aws/{credentials|config} profile.
-- For Cloudflare, we mount a ~/.cloudflare/credentials.json file (not done)
-- For Google DNS, we mount a ~/.config/gcloud/credentials.json file (not done)
+- For Cloudflare, we expose gitignored `./credentials/caddy/CREDS.env` file with the CF_API_TOKEN environment variable.
 
 ```bash
 # equivalent to our docker-compoose build for caddy
@@ -102,12 +101,10 @@ Proxy server and tls endpoint for:
 - <https://scrobblecast.dl.imetrical.com> → dirac.imetrical.com:8000
 - <https://natsql.dl.imetrical.com> → dirac.imetrical.com:5000
 - <https://localhost/> → Hello
-- <https://dl-imetrical.spdns.org> → Hello
+- <https://syno-im.synology.me> → Hello
 - <https://dl.imetrical.com> → Hello
-
-### ddclient (moved from im-ddclient)
-
-See README in `./config/ddclient` including restart directives
+- <https://gateway.imetrical.net> → Hello (internal IP uses cloudflare DNS challenge for cert)
+- <https://gateway.ts.imetrical.net> → Hello (tailscale IP uses cloudflare DNS challenge for cert)
 
 ### status (cron)
 
