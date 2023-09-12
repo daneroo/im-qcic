@@ -70,9 +70,7 @@ gateway.imetrical.net {
 
 gateway.ts.imetrical.net {
 	tls {
-		dns route53 {
-			max_retries 10
-		}
+		dns cloudflare {env.CF_API_TOKEN}
 	}
 	respond "Hello, gateway.ts.imetrical.net! (DNS Challenge - cloudflare)"
 }
