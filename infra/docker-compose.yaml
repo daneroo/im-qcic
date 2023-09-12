@@ -16,7 +16,6 @@ services:
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./data/caddy:/data
-      - ./data/dotaws-im-dan:/root/.aws
     ports:
       - "80:80" # local only
       - "443:443" # port-forwarded from wifi-router
