@@ -1,6 +1,8 @@
 # Pubnub experiment for qcic
 
 **2024-02-15** pubnub key deleted (disabled in their parlance)
+**2024-02-15** slack token has been revoked
+**2024-02-15** S3 buckets (im-dan account / qcic-s3-rw user with access key ): qcic-dev-alarms, qcic-production-alarms still present
 
 ## Deploy
 
