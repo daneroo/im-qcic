@@ -50,6 +50,14 @@ Note: _I deprecated and removed my account with EasyCron on 2021-09-04, and repl
 
 Idea: monitor my own sites, from serverless functions (cloudflare/vercel) _pinger-lambda™_, and propagate results to my own data-source/prometheus/grafana, and also trigger heartbeats for BetterUptime, which would approximate Grafana WorldPing
 
+### ./pubnub
+
+This is not in a functional state
+
+- pubnub should just be removed
+- slack was using incoming webhooks, which are deprecated
+- s3 was used for db, but is that really useful??
+
 ### BetterUptime
 
 BetterUptime does periodic http checks, as well as monitor _heartbeats_.

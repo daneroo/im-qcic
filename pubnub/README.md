@@ -1,8 +1,19 @@
 # Pubnub experiment for qcic
 
-**2024-02-15** pubnub key deleted (disabled in their parlance)
-**2024-02-15** slack token has been revoked
-**2024-02-15** S3 buckets (im-dan account / qcic-s3-rw user with access key ): qcic-dev-alarms, qcic-production-alarms still present
+THIS IS NOT IN A FUNCTIONAL STATE
+
+- pubnub should just be removed
+- slack was using incoming webhooks, which are deprecated
+- s3 was used for db, but is that really useful??
+
+**2024-02-15** : reviewed credentials
+
+- pubnub key deleted (disabled in their parlance)
+- Slack - Incoming WebHooks (deprecated) - was removed from imetrical.slack.com
+- S3 buckets (im-dan account / qcic-s3-rw user with access key ):
+  - access key was rotated and new key added to `credentials.saas.json`
+  - buckets qcic-dev-alarms, qcic-production-alarms still present
+  - cannot confirm working save
 
 ## Deploy
 
