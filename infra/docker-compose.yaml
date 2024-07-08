@@ -10,6 +10,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-caddy
+    image: qcic-caddy:latest
     restart: unless-stopped
     env_file:
       # SHOULD contain CF_API_TOKEN
@@ -46,11 +47,10 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  # TODO: rename to natsql
   natsql:
     # build will replaced by image when pushed to registry
     build: ../packages/natsql/
-    # image: qcic-api:vx.y.z
+    image: qcic-natsql:latest
     restart: unless-stopped
     environment:
       # no value inherits from host (but not docker-machine host...)
@@ -70,7 +70,7 @@ services:
     # This entire source should disappear with live services (hasura/ipfs)
     # build will replaced by image when pushed to registry
     build: ../packages/status/
-    # image: qcic-status:vx.y.z
+    image: qcic-status:latest
     restart: unless-stopped
     ports:
       - "8001:8001" # for http
