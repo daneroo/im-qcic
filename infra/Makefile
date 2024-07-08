@@ -2,15 +2,17 @@
 # important for api (for now)
 export HOSTNAME=$(shell hostname -s)
 
+# add a build timeout for synology: unbeleivably slow
+export COMPOSE_HTTP_TIMEOUT=3600
+
 usage: status
 	@echo "Make all the things: status, build, start, web, nats"
 
 status:
 	docker compose ps
 
-# add a timeout for synology: unbeleivably slow
 build:
-	COMPOSE_HTTP_TIMEOUT=3600 docker compose build --pull
+	docker compose build --pull
 
 start:
 	docker compose up -d
