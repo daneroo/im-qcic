@@ -6,6 +6,39 @@
 
 > Quis custodiet ipsos custodes - Who will watch the watchers
 
+This monorepo gathers concerns about the declarative and observed state of my homelab.
+
+## TODO
+
+- Repo cleanup
+  - deprecate top level - (after replacing or moving if necessary)
+    - [ ] `cloudrun/`: Google Cloud Run deployment of <https://myip.g.imetrical.com/>
+      - Better version in
+    - [ ] `events/`: Severless(.com) Event Gateway
+    - [ ] `fio/`: Fio Tests, should move to `scripts/`
+    - [ ] `k8s/`: Kubernetes experiments, should move to `experiments/` or legacy?
+    - [ ] `mail/`: Mailgun experiments, alternative notification, move to `scripts/`?
+      - validated api_key, domain, and stored in 1Password
+    - [ ] `nats/`: move to scripts, nats-top -s nats.ts.imetrical.com
+    - [ ] `s3/`: move to docs/scripts - was a key rotation experiment for s3-db/pubnub
+    - [ ] `pubnub/`: delete
+      - Delete AWS S3 buckets (im-dan account / qcic-s3-rw user with access key ):
+  - `packages`
+    - [ ] `ui`: delete: garbage ancient next.js app with nats/gql-apollo
+    - [ ] `react`: delete: reusable pika-pack components useFetch, FetchInterval,...
+    - [ ] `myip`: bless, update deps, and publish to gcloud run
+    - [ ] complete reviewing other packages
+- See TODO legacy and done below
+
+## Scripts
+
+This is the beginning of the revamping of the mono repo.
+
+- Start with bash for planning
+- Upgrade to `go` and or `nix`
+
+- qcic.sh
+
 ## Infra
 
 In `./infra` we handle deployment of the `qcic` related resources.
@@ -50,7 +83,7 @@ lerna add standard --dev
 ...
 ```
 
-## TODO
+## TODO Legacy
 
 - lerna + tsdx|microbundle
 
