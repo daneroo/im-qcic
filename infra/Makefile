@@ -8,8 +8,9 @@ usage: status
 status:
 	docker compose ps
 
+# add a timeout for synology: unbeleivably slow
 build:
-	docker compose build --pull
+	COMPOSE_HTTP_TIMEOUT=3600 docker compose build --pull
 
 start:
 	docker compose up -d
