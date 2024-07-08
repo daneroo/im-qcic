@@ -35,8 +35,7 @@ This monorepo gathers concerns about the declarative and observed state of my ho
 This is the beginning of the revamping of the mono repo.
 
 - Start with bash for planning
-- Upgrade to `go` and or `nix`
-
+- Upgrade to `dax` | `zx` | `go` | `nix`
 - qcic.sh
 
 ## Infra
