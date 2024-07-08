@@ -1,0 +1,45 @@
+{
+  "name": "@daneroo/qcic-myip",
+  "version": "1.0.46",
+  "description": "Report caller's IP address",
+  "author": "Daniel Lauzon <daniel.lauzon@gmail.com>",
+  "homepage": "https://github.com/daneroo/im-qcic#readme",
+  "license": "ISC",
+  "private": true,
+  "//publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneroo/im-qcic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daneroo/im-qcic/issues"
+  },
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "testWithAuditLater": "npm run lint && npm audit && npm run unit",
+    "test": "npm run lint && npm run unit && echo '***' && echo Run npm audit yourself... && echo '***'",
+    "lint": "standard",
+    "unit": "jest",
+    "coverage": "jest --collectCoverageFrom=lib/**.js --coverage ."
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "pino-pretty": "^7.5.3",
+    "standard": "^16.0.4"
+  },
+  "dependencies": {
+    "@fastify/forwarded": "^1.0.0",
+    "close-with-grace": "^1.1.0",
+    "fastify": "^3.27.2",
+    "fastify-cors": "^6.0.3",
+    "ulid": "^2.3.0"
+  },
+  "standard": {
+    "env": {
+      "jest": true
+    }
+  }
+}
