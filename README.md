@@ -10,6 +10,8 @@ This monorepo gathers concerns about the declarative and observed state of my ho
 
 ## TODO
 
+- move `gateway` to d1-px1 (already cloned),
+  - or it's own vm; DNS update?
 - Repo cleanup
   - deprecate top level - (after replacing or moving if necessary)
     - [ ] `cloudrun/`: Google Cloud Run deployment of <https://myip.g.imetrical.com/>
