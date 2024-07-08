@@ -1,4 +1,5 @@
-version: "3"
+# Version attribute is deprecated
+# version: "3"
 
 services:
   # ddlcient removed as of 2023-09-11
