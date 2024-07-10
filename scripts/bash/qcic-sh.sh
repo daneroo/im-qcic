@@ -133,10 +133,11 @@ echo "## Tailscale Identity" | $gum_fmt_cmd
 ## Tailscale Status (Peers)
 EOF
 
+  # TODO run_with_spinner is broken with this JSON output (on gateway)
+  # local statusJSON=$(run_with_spinner "$tailscaleCmd status --json" "Tailscale Status with Peers...")
+  local statusJSON=$($tailscaleCmd status --json)
   # HostName is bad for ipad-4 -> localhost could use DNSName, 
   # but that looks like: ipad-4.tail62209.ts.net. (trailing tailnet and dot)
-  # local peers=$($tailscaleCmd status --json | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
-  local statusJSON=$(run_with_spinner "$tailscaleCmd status --json" "Tailscale Status with Peers...")
   local peers=$(echo "${statusJSON}" | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
 
   $gum_fmt_cmd << EOF
@@ -144,29 +145,38 @@ EOF
 | -------------------- | --------------- | ------ |
 $(echo "$peers" | while IFS=$'\t' read -r host online active ip; do
   # ignore active field for now 
-  # echo "- **$host** $ip Online: $online"
-  # echo "| $host | $ip | $online |"
   printf "| %-20s | %-15s | %-6s |\n" "$host" "$ip" "$online"
 done)
 EOF
 
-echo
-echo "## Tailscale Ping Results" | $gum_fmt_cmd
-echo
+  echo
+  echo "## Tailscale Ping Results" | $gum_fmt_cmd
+  echo
 
-echo "$peers" | while IFS=$'\t' read -r host online active ip; do
-  if [ "$online" = "true" ]; then
-    # run with spinner, and capture output
-    ping_output=$(run_with_spinner "$tailscaleCmd ping -c 1 --timeout 5s --until-direct=false $ip" "Tailscale Pinging $host...")
+  # To accumulate the results in a local variable, we avoid running the while loop in a subshell.
+  # Using process substitution (< <(command)) allows the loop to run in the current shell, 
+  # preserving changes to the results variable.
+  local results=""
+  while IFS=$'\t' read -r host online active ip; do
+    if [ "$online" = "true" ]; then
+      # run with spinner, and capture output
+      ping_output=$(run_with_spinner "$tailscaleCmd ping -c 1 --timeout 5s --until-direct=false $ip" "Tailscale Pinging $host...")
 
-    # Extract the "via" and "delay" values using awk
-    via=$(echo "$ping_output" | awk -F ' via | in ' '{print $2}')
-    delay=$(echo "$ping_output" | awk -F ' in ' '{print $2}')
-    
-    # Print the extracted values
-    echo "$host ($ip) via $via with delay $delay"
-  fi
-done
+      # Extract the "via" and "delay" values using awk
+      via=$(echo "$ping_output" | awk -F ' via | in ' '{print $2}')
+      delay=$(echo "$ping_output" | awk -F ' in ' '{print $2}')
+      
+      # Accumulate the results (note: the $() eats the newline, so we add it back with $'\n')
+      results+=$(printf "| %-20s | %-15s | %-6s | %-20s | %-7s |" "$host" "$ip" "$online" "$via" "$delay")
+      results+=$'\n'
+    fi
+  done < <(echo "$peers")
+  # Output all accumulated results as a table
+  $gum_fmt_cmd << EOF
+| Host                 | IP Address      | Online | Via                  | Delay   |
+| -------------------- | --------------- | ------ | -------------------- | ------- |
+$results
+EOF
 }
 
 showIdentity
