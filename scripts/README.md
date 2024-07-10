@@ -37,12 +37,12 @@ There will be different language experiments:
 ## Notifications
 
 We are using the public <https://ntfy.sh/> for now.
-See [./ntfy-sh](./ntfy-sh.md)
+See [./NOTIFY](./NOTIFY.md)
 
 ## Monitoring (uptime-kuma)
 
 We are using a local docker container for now.
-See [./uptime-kuma](./uptime-kuma.md)
+See [./UPTIME-KUMA](./UPTIME-KUMA.md)
 
 ## tailscale status
 
@@ -50,32 +50,6 @@ See [./uptime-kuma](./uptime-kuma.md)
   - `tailscale ping shannon` - `pong from shannon (100.100.25.28) via DERP(tor) in 25ms <-- DERP!`
 - [ ] get status as json and parse
 - [ ] compare with API call to tailscale.com
-
-```bash
-# binary on MacOS ()
-#   alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
-# binary on Synology
-#   alias tailscale=/volume1/@appstore/Tailscale/bin/tailscale
-
-tailscale status --json | jq
-
-tailscale status --json | jq '.Peer[] | {HostName, Online, Active, TailscaleIPV4: .TailscaleIPs[0]}'
-
-
-peers=$(tailscale status --json | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
-
-echo "$peers" | while IFS=$'\t' read -r host online active ip; do
-  echo "# Host: $host,  IPV4: $ip"
-  echo " -  Online: $online, Active: $active, "
-  if [ "$online" = "true" ]; then
-    loca
-    tailscale ping $ip
-    echo "---------------------------------"
-  else
-    echo "Skipping ping for $host as it is not online."
-  fi
-done
-```
 
 ## iperf3
 
@@ -85,5 +59,5 @@ Speed test:
 - [ ] add '-R' for reverse in basic test(st)
 
 ```bash
-./speedTest.sh #  --tests basic | all <target-short-name> (.imetrical.com .ts.imetrical.com)
+./iperf-speed-test.sh #  --tests basic | all <target-short-name> (.imetrical.com .ts.imetrical.com)
 ```
