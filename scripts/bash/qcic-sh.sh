@@ -179,5 +179,90 @@ $results
 EOF
 }
 
+# NATS section
+showNats() {
+  local nats_server="nats.ts.imetrical.com"
+  local nats_subject="im.>"
+  echo "## NATS  Section" | $gum_fmt_cmd
+
+  # Find the NATS cli binary
+  if ! command -v nats &> /dev/null; then
+    echo "- ${red_xmark} nats cli binary not found." | $gum_fmt_cmd
+    return
+  fi
+  # Find the NATS-top binary
+  if ! command -v nats-top &> /dev/null; then
+    echo "- ${red_xmark} nats-top binary not found." | $gum_fmt_cmd
+    return
+  fi
+  echo "- connecting to ``${nats_server}``" | $gum_fmt_cmd
+
+  local nats_sub_output=$(run_with_spinner "nats -s ${nats_server}  sub --timeout=10s --count 1 ${nats_subject}" "Connecting to Nats (sub)...")
+  # local nats_sub_output=$(nats -s ${nats_server}  sub --timeout=10s --count 1 ${nats_subject})
+
+  echo
+  $gum_fmt_cmd << EOF
+### NATS subscription (${nat_subject})
+\`\`\`
+${nats_sub_output}
+\`\`\`
+EOF
+
+  local nats_top_output=$(run_with_spinner "nats-top -s ${nats_server}  -o -" "Connecting to Nats (top)...")
+  # local nats_top_output=$(nats-top -s nats.ts.imetrical.com  -o -)
+
+  echo
+  $gum_fmt_cmd << EOF
+### NATS top 
+\`\`\`
+${nats_top_output}
+\`\`\`
+EOF
+
+
+}
+
+showHTTPServices() {
+  echo
+  echo "## HTTP Services" | $gum_fmt_cmd
+
+  # Find the curl binary
+  if ! command -v curl &> /dev/null; then
+    echo "- ${red_xmark} curl binary not found." | $gum_fmt_cmd
+    return
+  fi
+
+  # Define peers as an array
+  local scrobble_peers=("dirac" "darwin" "d1-px1")
+  # Initialize an initial array for services
+  local services=(
+    "https://status.dl.imetrical.com/"
+    "https://status.dl.imetrical.com/api/logcheck"
+  )
+  # Iterate over peers to create service URLs
+  for peer in "${scrobble_peers[@]}"; do
+      services+=("http://${peer}.imetrical.com:8000/api/status")
+  done
+
+  local results=""
+  for service in "${services[@]}"; do
+    # run with spinner, and capture output
+    http_output=$(run_with_spinner "curl -s -o /dev/null -w '%{http_code}' $service" "Checking $service...")
+    # Convert HTTP status code to a number for comparison
+    http_code_num=$(echo $http_output | tr -d -c 0-9)
+
+    # Check the HTTP status code
+    if [ "$http_code_num" -ge 200 ] && [ "$http_code_num" -le 299 ]; then
+      results+="- ${green_check} $service is up. (${http_code_num})\n"
+    else
+      results+="- ${red_xmark} $service is down. (${http_code_num})\n"
+    fi
+  done
+  echo -e "$results" | $gum_fmt_cmd
+}
+
+
 showIdentity
 showTailscale
+showNats
+showHTTPServices
