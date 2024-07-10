@@ -19,6 +19,10 @@ green_check="${green}✔${reset}"
 red_xmark="${red}✗${reset}"
 
 # Function to show a smoother spinner
+# Parameters:
+# - pid: The process ID of the background command to monitor.
+# - label: The text label to display alongside the spinner.
+# Note: The spinner output is written to stderr to avoid mixing with command output.
 show_spinner() {
   local pid=$1
   local label=$2
@@ -27,30 +31,44 @@ show_spinner() {
   tput civis  # hide cursor
   while ps -p $pid > /dev/null; do
     for (( i=0; i<${#spinstr}; i++ )); do
-      printf " %s %s" "${spinstr:$i:1}" "$label"
+      printf " %s %s" "${spinstr:$i:1}" "$label" >&2
       sleep $delay
-      printf "\r"  # carriage return to overwrite the line
+      printf "\r" >&2  # carriage return to overwrite the line
     done
   done
-  printf "    \r"  # clear the spinner
   tput cnorm  # show cursor
 }
 
 # Function to run a command with a custom spinner and capture its output
+# Parameters:
+# - command: The command to run in the background.
+# - label: The text label to display alongside the spinner.
+# The command's stdout and stderr are captured to a temporary file.
 run_with_spinner() {
   local command=$1
   local label=$2
   local output
+  local tmpfile=$(mktemp)
 
-  # Run the command in the background and get the output
-  output=$({ $command & pid=$!; show_spinner $pid "$label"; wait $pid; } 2>&1)
+  if [ "$gum_available" = true ]; then
+    # Use gum spinner
+    output=$(gum spin --spinner minidot --title "$label" --show-output -- $command)
+  else
+    # Run the command in the background and capture both stdout and stderr
+    $command >"$tmpfile" 2>&1 & pid=$!
+    show_spinner $pid "$label"
+    wait $pid
+
+    # Clear spinner
+    printf "\r\033[K" >&2
+
+    # Read output from temporary file
+    output=$(cat "$tmpfile")
+    rm -f "$tmpfile"
+  fi
+
   echo "$output"
 }
-
-gum spin --spinner minidot --title "I see this..." --show-output -- sleep 5
-run_with_spinner "sleep 5" "Why can I not see this"
-exit
-
 
 echo "# QCIC - Host report" | $gum_fmt_cmd
 
@@ -83,7 +101,9 @@ EOF
 # Tailscale section
 showTailscale() {
   local tailscaleCmd
-  
+
+echo "## Tailscale Identity" | $gum_fmt_cmd
+
   # Find the Tailscale binary
   if command -v tailscale &> /dev/null; then
     tailscaleCmd=$(command -v tailscale)
@@ -92,25 +112,34 @@ showTailscale() {
   elif [ -x "/volume1/@appstore/Tailscale/bin/tailscale" ]; then
     tailscaleCmd="/volume1/@appstore/Tailscale/bin/tailscale"
   else
-    $gum_fmt_cmd << EOF
-## Tailscale Identity
-- ${red_xmark} Tailscale binary not found.
-EOF
+    echo "- ${red_xmark} Tailscale binary not found." | $gum_fmt_cmd
+    return
+  fi
+
+  local statusText=$(run_with_spinner "$tailscaleCmd status --peers=false" "Tailscale Status...")
+  # status : Tailscale is stopped.
+  if [[ "$statusText" == "Tailscale is stopped." ]]; then
+    echo "- ${red_xmark} Tailscale is stopped." | $gum_fmt_cmd
     return
   fi
 
   local myTailscaleIPV4=$($tailscaleCmd ip --4)
   local tailscaleHostname=$($tailscaleCmd whois $myTailscaleIPV4 | grep -m 1 "Name:" | awk '{print $2}')
-  
-  local peers=$($tailscaleCmd status --json | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
 
   $gum_fmt_cmd << EOF
-## Tailscale Identity
 - Tailscale IP: $myTailscaleIPV4
 - Tailscale Hostname: $tailscaleHostname
 
-## Tailscale Peers
+## Tailscale Status (Peers)
+EOF
 
+  # HostName is bad for ipad-4 -> localhost could use DNSName, 
+  # but that looks like: ipad-4.tail62209.ts.net. (trailing tailnet and dot)
+  # local peers=$($tailscaleCmd status --json | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
+  local statusJSON=$(run_with_spinner "$tailscaleCmd status --json" "Tailscale Status with Peers...")
+  local peers=$(echo "${statusJSON}" | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
+
+  $gum_fmt_cmd << EOF
 | Host                 | IP Address      | Online |
 | -------------------- | --------------- | ------ |
 $(echo "$peers" | while IFS=$'\t' read -r host online active ip; do
@@ -121,15 +150,14 @@ $(echo "$peers" | while IFS=$'\t' read -r host online active ip; do
 done)
 EOF
 
+echo
+echo "## Tailscale Ping Results" | $gum_fmt_cmd
+echo
+
 echo "$peers" | while IFS=$'\t' read -r host online active ip; do
   if [ "$online" = "true" ]; then
-    if [ "$gum_available" = true ]; then
-      # Use gum spinner
-      ping_output=$(gum spin --spinner minidot --title "Tailscale Pinging $host..." --show-output -- $tailscaleCmd ping -c 1 --timeout 5s --until-direct=false $ip)
-    else
-      # Use custom spinner
-      ping_output=$(run_with_spinner "$tailscaleCmd ping -c 1 --timeout 5s --until-direct=false $ip" "Tailscale Pinging $host...")
-    fi
+    # run with spinner, and capture output
+    ping_output=$(run_with_spinner "$tailscaleCmd ping -c 1 --timeout 5s --until-direct=false $ip" "Tailscale Pinging $host...")
 
     # Extract the "via" and "delay" values using awk
     via=$(echo "$ping_output" | awk -F ' via | in ' '{print $2}')
