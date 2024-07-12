@@ -1,4 +1,4 @@
-# qcic-scritps
+# qcic-scripts
 
 Start of script snippets for establishing qcic health and status.
 
@@ -20,9 +20,8 @@ Concerns:
 There will be different language experiments:
 
 - qcic-sh - bash
+- qcic-zx-node - zx with node.js - removed [dax](https://github.com/dsherret/dax)
 - qcic-go - go
-- qcic-dax - dax
-- qcic-zx - zx
 - qcic-elixir - elixir
   - livebook
 - qcic-gleam - gleam
@@ -30,14 +29,18 @@ There will be different language experiments:
 
 ## TODO
 
-- [ ] move this to im-qcic/scripts/(qcic.sh|network.sh|tailscale.sh)
+- [ ] Livebook
+- [ ] Normalize output spacing (Block/Chunk, Table, Code/Quote)
+  - [ ] Start with zx-node
+- [ ] run from synk/syno ?
 - [ ] Finally explain the rsync problem from syno (galois | shannon )
-- [ ] run from synk ?
 
 ## Notifications
 
 We are using the public <https://ntfy.sh/> for now.
 See [./NOTIFY](./NOTIFY.md)
+
+Slack or self hosted ntfy.sh may be options
 
 ## Monitoring (uptime-kuma)
 
