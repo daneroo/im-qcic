@@ -140,7 +140,10 @@ EOF
   # but that looks like: ipad-4.tail62209.ts.net. (trailing tailnet and dot)
   local peers=$(echo "${statusJSON}" | jq -r '.Peer[] | "\(.HostName)\t\(.Online)\t\(.Active)\t\(.TailscaleIPs[0])"')
 
+  echo
   $gum_fmt_cmd << EOF
+### All peers
+
 | Host                 | IP Address      | Online |
 | -------------------- | --------------- | ------ |
 $(echo "$peers" | while IFS=$'\t' read -r host online active ip; do
@@ -148,10 +151,6 @@ $(echo "$peers" | while IFS=$'\t' read -r host online active ip; do
   printf "| %-20s | %-15s | %-6s |\n" "$host" "$ip" "$online"
 done)
 EOF
-
-  echo
-  echo "## Tailscale Ping Results" | $gum_fmt_cmd
-  echo
 
   # To accumulate the results in a local variable, we avoid running the while loop in a subshell.
   # Using process substitution (< <(command)) allows the loop to run in the current shell, 
@@ -172,7 +171,10 @@ EOF
     fi
   done < <(echo "$peers")
   # Output all accumulated results as a table
+  echo
   $gum_fmt_cmd << EOF
+### Active peers
+
 | Host                 | IP Address      | Online | Via                  | Delay   |
 | -------------------- | --------------- | ------ | -------------------- | ------- |
 $results
