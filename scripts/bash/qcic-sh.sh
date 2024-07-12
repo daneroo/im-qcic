@@ -204,7 +204,7 @@ showNats() {
 
   echo
   $gum_fmt_cmd << EOF
-### NATS subscription (${nat_subject})
+### NATS subscription (${nats_subject})
 \`\`\`
 ${nats_sub_output}
 \`\`\`
