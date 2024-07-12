@@ -1,5 +1,9 @@
-import "zx/globals";
+import 'zx/globals';
 
+// Decisions we have made:
+//  gum is required - not options as in bash version
+// We need to refactor, perhaps an interface around headers/blocks/ spinners
+// perhaps a dependency of parts ( ts status - ts peers -> [] ts ping)
 await main();
 async function main() {
   try {
