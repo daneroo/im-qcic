@@ -19,11 +19,12 @@ Concerns:
 
 There will be different language experiments:
 
-- qcic-sh - bash
-- qcic-zx-node - zx with node.js - removed [dax](https://github.com/dsherret/dax)
-- qcic-go - go
+- [x] qcic-sh - bash
+- [x] qcic-zx-node - [zx with node.js](https://google.github.io/zx/)
+  - removed [dax](https://github.com/dsherret/dax)
 - qcic-elixir - elixir
-  - livebook
+  - [ ] livebook
+- qcic-go - go
 - qcic-gleam - gleam
 - nixify the right one!
 
