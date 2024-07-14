@@ -1,37 +1,21 @@
 # QCIC script
 
 ```elixir
+livebook_dir = Path.dirname(__ENV__.file)
+
 Mix.install([
   {:kino_vega_lite, "~> 0.1.11"},
-  {:jason, "~> 1.4"}
+  {:qcic, path: Path.join(livebook_dir, "qcic")}
 ])
 ```
 
 ## Code
 
-```elixir
-# Determine the Livebook file directory
-
-defmodule Loader do
-  def load_file(file) do
-    livebook_dir = Path.dirname(__ENV__.file)
-    path = Path.join(livebook_dir, file)
-    Code.compile_file(path)
-  end
-end
-
-# Load your modules
-Loader.load_file("qcic_id.ex")
-Loader.load_file("qcic_ts.ex")
-"OK"
-```
+The code has been moved to a `mix` project, in the same directory as this livebook
 
 ## QCIC - Host Report
 
 ```elixir
-header = """
-# QCIC - Host Report
-"""
-Kino.Markdown.new(header <> QCIC_ID.show_identity() <> QCIC_TS.show_tailscale())
 
+Kino.Markdown.new(Qcic.show())
 ```

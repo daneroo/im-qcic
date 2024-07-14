@@ -1,4 +1,8 @@
-defmodule QCIC_ID do
+defmodule Qcic.Identity do
+  @moduledoc """
+  Host Identity Module
+  """
+
   def show_identity do
     {hostname_fqdn, 0} = System.cmd("hostname", ["-f"])
     {hostname_short, 0} = System.cmd("hostname", ["-s"])

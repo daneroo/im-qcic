@@ -1,0 +1,21 @@
+# List available commands
+default:
+    just -l
+
+alias run := start
+# Status (docker compose)
+start:
+    mix run_qcic
+
+# Run and format the output as Markdown
+markdown:
+    @# GUM THEME pink (default), light, notty, dracula
+    mix run_qcic | gum format --theme=pink 
+
+# Mix Tests
+test:
+    mix test
+
+# Credo Linter
+lint:
+    mix credo --strict    

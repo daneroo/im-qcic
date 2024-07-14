@@ -1,4 +1,7 @@
-defmodule QCIC_TS do
+defmodule Qcic.TailScale do
+  @moduledoc """
+  Tailscale Module
+  """
   def find_tailscale_command do
     case System.find_executable("tailscale") do
       nil ->
