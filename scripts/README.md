@@ -22,8 +22,8 @@ There will be different language experiments:
 - [x] qcic-sh - bash
 - [x] qcic-zx-node - [zx with node.js](https://google.github.io/zx/)
   - removed [dax](https://github.com/dsherret/dax)
-- qcic-elixir - elixir
-  - [ ] livebook
+- [x] qcic-elixir - elixir
+  - [x] livebook
 - qcic-go - go
 - qcic-gleam - gleam
 - nixify the right one!
