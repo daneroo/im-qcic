@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # GUM THEME pink (default), light, notty, dracula
-export GUM_FORMAT_THEME="pink"
+export GUM_FORMAT_THEME="light"
 # Check if gum is available
 if command -v gum &> /dev/null; then
   gum_fmt_cmd="gum format"
