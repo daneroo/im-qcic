@@ -2,6 +2,10 @@
 
 # GUM THEME pink (default), light, notty, dracula
 export GUM_FORMAT_THEME="light"
+if [[ "${TERM_PROGRAM}" == "ghostty" ]]; then
+  export GUM_FORMAT_THEME="dark"
+fi
+
 # Check if gum is available
 if command -v gum &> /dev/null; then
   gum_fmt_cmd="gum format"
