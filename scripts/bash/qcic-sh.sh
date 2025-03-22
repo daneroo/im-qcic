@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
-# GUM THEME pink (default), light, notty, dracula
-export GUM_FORMAT_THEME="light"
-if [[ "${TERM_PROGRAM}" == "ghostty" ]]; then
+# Set default theme to dark if not already set
+# GUM THEMES pink (default), light, notty, dracula
+if [[ -z "${GUM_FORMAT_THEME}" ]]; then
   export GUM_FORMAT_THEME="dark"
+  # Override for Apple Terminal if no theme was set
+  if [[ "${TERM_PROGRAM}" == "Apple_Terminal" ]]; then
+    export GUM_FORMAT_THEME="light"
+  fi
 fi
 
 # Check if gum is available
@@ -75,6 +79,7 @@ run_with_spinner() {
 }
 
 echo "# QCIC - Host report" | $gum_fmt_cmd
+echo "-  Using ${GUM_FORMAT_THEME} theme" | $gum_fmt_cmd
 
 # Identity section
 # - identity - hostname, user, ip, tailscale ip

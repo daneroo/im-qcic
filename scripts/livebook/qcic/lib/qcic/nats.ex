@@ -6,6 +6,9 @@ defmodule(Qcic.Nats) do
     nats_url_host = "nats.ts.imetrical.com"
     nats_subject = "im.>"
 
+    # Start telemetry explicitly
+    Application.ensure_all_started(:telemetry)
+
     {:ok, gnat} = Gnat.start_link(%{host: nats_url_host, port: 4222})
 
     # Get the first message, any message

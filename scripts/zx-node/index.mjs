@@ -1,4 +1,4 @@
-import 'zx/globals';
+import "zx/globals";
 
 // Decisions we have made:
 //  gum is required - not options as in bash version
@@ -244,9 +244,16 @@ async function requiredCommands(commands) {
   }
 }
 // Utilities below
+// Return GUM_FORMAT_THEME if set, otherwise light for Apple Terminal, dark for others
+async function getGumTheme() {
+  return (
+    process.env.GUM_FORMAT_THEME ||
+    (process.env.TERM_PROGRAM === "Apple_Terminal" ? "light" : "dark")
+  );
+}
+
 async function gumFormat(str, trim = true) {
-  // GUM THEME pink (default), light, notty, dracula
-  const gumTheme = "pink";
+  const gumTheme = await getGumTheme();
   const p = $`gum format --theme ${gumTheme}`;
   p.stdin.write(str);
   p.stdin.end();
