@@ -1,0 +1,14 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports:
+      - 8096:8096
+    volumes:
+      - ${PWD}/data/config:/config
+      - ${PWD}/data/cache:/cache
+      - /Volumes/Space/Watching:/media/Watching
+      - /Volumes/Space/Volatile:/media/Volatile
+    restart: "unless-stopped"
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://galois.imetrical.com:8096

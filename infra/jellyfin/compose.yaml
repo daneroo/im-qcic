@@ -1,0 +1,16 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports:
+      - 8096:8096
+    volumes:
+      - /volume1/docker/jellyfin/config:/config
+      - /volume1/docker/jellyfin/cache:/cache
+      - /volume1/Watching:/media/Watching:ro
+      - /volume1/Volatile:/media/Volatile:ro
+    restart: "unless-stopped"
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://jellyfin.imetrical.com:8096
+      - PUID=1026
+      - PGID=100
