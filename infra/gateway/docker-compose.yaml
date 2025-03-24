@@ -49,7 +49,7 @@ services:
 
   natsql:
     # build will replaced by image when pushed to registry
-    build: ../packages/natsql/
+    build: ../../packages/natsql/
     image: qcic-natsql:latest
     restart: unless-stopped
     environment:
@@ -69,7 +69,7 @@ services:
   status:
     # This entire source should disappear with live services (hasura/ipfs)
     # build will replaced by image when pushed to registry
-    build: ../packages/status/
+    build: ../../packages/status/
     image: qcic-status:latest
     restart: unless-stopped
     ports:
