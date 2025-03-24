@@ -75,8 +75,8 @@ services:
     ports:
       - "8001:8001" # for http
     volumes:
-      - ../../../packages/status/credentials.loggly.json:/usr/src/app/credentials.loggly.json
-      - ../../../packages/status/credentials.mysql.json:/usr/src/app/credentials.mysql.json
+      - ../../packages/status/credentials.loggly.json:/usr/src/app/credentials.loggly.json
+      - ../../packages/status/credentials.mysql.json:/usr/src/app/credentials.mysql.json
     logging:
       driver: json-file
       options:
