@@ -9,6 +9,7 @@ services:
       - /volume1/docker/jellyfin/cache:/cache
       - /volume1/Watching:/media/Watching:ro
       - /volume1/Volatile:/media/Volatile:ro
+      - /volume1/Home-Movies/:/media/Home-Movies:ro
     restart: "unless-stopped"
     environment:
       - JELLYFIN_PublishedServerUrl=http://jellyfin.imetrical.com:8096
