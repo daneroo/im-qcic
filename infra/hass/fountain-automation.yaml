@@ -1,0 +1,29 @@
+alias: Fountain Schedule
+description: Turns fountain on at 08:00 and off at 23:59 daily
+triggers:
+  - at: "08:00:00"
+    id: turn_on
+    trigger: time
+  - at: "23:59:00"
+    id: turn_off
+    trigger: time
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: turn_on
+        sequence:
+          - target:
+              entity_id: switch.tp_link_smart_plug_2972_fountain
+            action: switch.turn_on
+            data: {}
+      - conditions:
+          - condition: trigger
+            id: turn_off
+        sequence:
+          - target:
+              entity_id: switch.tp_link_smart_plug_2972_fountain
+            action: switch.turn_off
+            data: {}
+mode: single

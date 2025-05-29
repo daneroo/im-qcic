@@ -94,7 +94,7 @@ Do I need to migrate those connection, or setup afresh?
 - [x] Establish connecting to Home-Assistant through mobile app(s)?
   - will that preserve current setup?
 - [x] Validate manual control of devices
-- [ ] Validate Fountain on schedule
+- [x] Validate Fountain on schedule
 - [ ] Backup-restore
   - [x] Proxmox VM id:120 backup nightly
   - [ ] Home Assistant native configuration backup
