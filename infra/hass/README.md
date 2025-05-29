@@ -2,6 +2,13 @@
 
 Exploring my options for a simplified home assistant deployment.
 
+## TODO
+
+- [x] assign a DNS Name / DHCP Reservation
+  - <http://hass.imetrical.com:8123>
+- [x] enable ssh
+- [x] lets'encrypt for https
+
 ## Requirements
 
 - I want a minimal setup
@@ -20,7 +27,7 @@ Exploring my options for a simplified home assistant deployment.
 
 - We chose not to use pure docker on synology - as KP125M device requires Matter- server second container setup.
 - Use official Home Assistant OS appliance as a Proxmox VM on “hibert” (i9-9900K)
- - Backups already in place: hibert’s Proxmox schedules & snapshots give full-VM roll-back
+  - Backups already in place: hibert’s Proxmox schedules & snapshots give full-VM roll-back
 
 - Download `haos_ova-15.2.qcow2.xz` image for proxmox
 
@@ -69,6 +76,9 @@ qm set 120 --delete ide2
 
 ## First Boot
 
+- [x] Login with daniel/1password
+- [x] import all TP-Link Kasa devices
+
 ## Current/Previous Device Setup
 
 - I am currently using these devices from my Pixel 6
@@ -79,9 +89,13 @@ Do I need to migrate those connection, or setup afresh?
 
 ## Validation Plan
 
-- Establish connecting to Home-Assistant through web?
-- Establish connecting to Home-Assistant through mobile app(s)?
-  - will tat preserve current setup
-- Validate manual control of devices
-- Validate Fountain on schedule
-- Backup-restore of configuration?
+- [x] Establish connecting to Home-Assistant through web?
+  - <http://192.168.2.137:8123/>
+- [x] Establish connecting to Home-Assistant through mobile app(s)?
+  - will that preserve current setup?
+- [x] Validate manual control of devices
+- [ ] Validate Fountain on schedule
+- [ ] Backup-restore
+  - [x] Proxmox VM id:120 backup nightly
+  - [ ] Home Assistant native configuration backup
+
