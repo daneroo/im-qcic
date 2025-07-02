@@ -54,9 +54,11 @@ grafana-ted.dl.imetrical.com {
 
 scrobblecast.dl.imetrical.com {
 	# because deployed with different docker-compose (not visible) on a different host (dirac)
+	# 2025-07-01: available hosts: d1-px1 (fermat-vm) darwin scast-hilbert
+	# chose d1-px1 - as most robust for now (power failure wise)
 	# 2023-07-08 removed .ts - unknown problem
 	# reverse_proxy dirac.ts.imetrical.com:8000
-	reverse_proxy dirac.imetrical.com:8000
+	reverse_proxy d1-px1.imetrical.com:8000
 }
 
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
