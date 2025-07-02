@@ -97,5 +97,6 @@ Do I need to migrate those connection, or setup afresh?
 - [x] Validate Fountain on schedule
 - [ ] Backup-restore
   - [x] Proxmox VM id:120 backup nightly
-  - [ ] Home Assistant native configuration backup
-
+  - [x] Home Assistant native configuration backup
+    - [x] Back up to SMB on Synology NAS - not locally as we have proxmox snapshots
+    - Emergency Kit in 1password
