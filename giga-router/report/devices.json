@@ -1,0 +1,562 @@
+[
+  {
+    "mac": "C4:2C:03:0A:E4:3C",
+    "hostname": "darwin",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.30",
+    "reserved_ip": "192.168.2.30"
+  },
+  {
+    "mac": "A8:20:66:11:4E:1F",
+    "hostname": "dirac",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.31",
+    "reserved_ip": "192.168.2.31"
+  },
+  {
+    "mac": "A2:C4:F4:D9:BF:82",
+    "hostname": "iMac",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.32",
+    "reserved_ip": null
+  },
+  {
+    "mac": "5C:E9:1E:E3:53:5C",
+    "hostname": "Galois",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.33",
+    "reserved_ip": "192.168.2.33"
+  },
+  {
+    "mac": "5C:E9:1E:E4:6B:2E",
+    "hostname": "Galois",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": "192.168.2.34"
+  },
+  {
+    "mac": "34:36:3B:85:BB:1E",
+    "hostname": "Goedel",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": "192.168.2.35"
+  },
+  {
+    "mac": "A8:20:66:1C:A1:BD",
+    "hostname": "shannon",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.36",
+    "reserved_ip": null
+  },
+  {
+    "mac": "10:08:B1:9C:4A:68",
+    "hostname": "BRW1008B19C4A68",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.37",
+    "reserved_ip": null
+  },
+  {
+    "mac": "80:5B:65:7F:72:78",
+    "hostname": "LGwebOSTV",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.38",
+    "reserved_ip": null
+  },
+  {
+    "mac": "48:D6:D5:CE:D2:31",
+    "hostname": "Google-Home-Mini",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.42",
+    "reserved_ip": null
+  },
+  {
+    "mac": "00:80:92:54:C7:71",
+    "hostname": null,
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": "192.168.2.51"
+  },
+  {
+    "mac": "7E:2F:D4:28:22:31",
+    "hostname": "iPhone",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.52",
+    "reserved_ip": null
+  },
+  {
+    "mac": "FC:B9:7E:07:44:EC",
+    "hostname": "\ufffd4\t0\ufffd\ufffd\u0001\u0010\u0003",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.70",
+    "reserved_ip": null
+  },
+  {
+    "mac": "48:E1:5C:AD:B6:55",
+    "hostname": "Foyer",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.95",
+    "reserved_ip": null
+  },
+  {
+    "mac": "98:25:4A:F7:EB:91",
+    "hostname": "HS300",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.99",
+    "reserved_ip": null
+  },
+  {
+    "mac": "00:11:32:FC:4A:33",
+    "hostname": "syno",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": "192.168.2.100"
+  },
+  {
+    "mac": "98:B7:85:21:E9:4A",
+    "hostname": "syno",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.100",
+    "reserved_ip": null
+  },
+  {
+    "mac": "02:11:32:2C:5D:18",
+    "hostname": "gateway",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.101",
+    "reserved_ip": "192.168.2.101"
+  },
+  {
+    "mac": "98:B7:85:21:EB:18",
+    "hostname": "hilbert",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.110",
+    "reserved_ip": null
+  },
+  {
+    "mac": "C6:41:3F:F4:0F:7F",
+    "hostname": "feynman",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": "192.168.2.111"
+  },
+  {
+    "mac": "82:A1:71:54:20:4C",
+    "hostname": "plex-audiobook",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.112",
+    "reserved_ip": "192.168.2.112"
+  },
+  {
+    "mac": "B2:F6:4D:B1:09:7F",
+    "hostname": "hass",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.113",
+    "reserved_ip": "192.168.2.113"
+  },
+  {
+    "mac": "26:92:DC:5F:BF:A0",
+    "hostname": "scast-hilbert",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.114",
+    "reserved_ip": "192.168.2.114"
+  },
+  {
+    "mac": "A8:20:66:28:C3:8A",
+    "hostname": "a8:20:66:28:c3:8a",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.120",
+    "reserved_ip": "192.168.2.120"
+  },
+  {
+    "mac": "7A:4C:F2:F3:B3:E8",
+    "hostname": "d1-px1",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.121",
+    "reserved_ip": "192.168.2.121"
+  },
+  {
+    "mac": "40:6C:8F:19:8D:4F",
+    "hostname": "euler",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": "192.168.2.130"
+  },
+  {
+    "mac": "DC:62:79:DB:A8:70",
+    "hostname": "KP125M",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.133",
+    "reserved_ip": null
+  },
+  {
+    "mac": "DC:62:79:DB:85:95",
+    "hostname": "KP125M",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.134",
+    "reserved_ip": null
+  },
+  {
+    "mac": "70:70:FC:06:ED:C4",
+    "hostname": "omarchy",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.140",
+    "reserved_ip": "192.168.2.140"
+  },
+  {
+    "mac": "44:B7:D0:D6:37:A7",
+    "hostname": "jetkvm-cfa8d86261863b91",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.144",
+    "reserved_ip": null
+  },
+  {
+    "mac": "24:5A:4C:8C:48:E5",
+    "hostname": "U6Test",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.145",
+    "reserved_ip": null
+  },
+  {
+    "mac": "CC:69:FA:61:D6:AF",
+    "hostname": "iPad-4",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.197",
+    "reserved_ip": null
+  },
+  {
+    "mac": "5A:4D:CB:5F:59:7F",
+    "hostname": "Mac",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.205",
+    "reserved_ip": null
+  },
+  {
+    "mac": "0A:F3:62:29:C7:E7",
+    "hostname": "Pixel-9",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.207",
+    "reserved_ip": null
+  },
+  {
+    "mac": "E2:C8:B4:DF:18:C7",
+    "hostname": "Mac",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.233",
+    "reserved_ip": null
+  },
+  {
+    "mac": "04:33:C2:82:09:7E",
+    "hostname": "hatch",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.234",
+    "reserved_ip": null
+  },
+  {
+    "mac": "EC:FA:BC:79:B4:7E",
+    "hostname": "ESP_79B47E",
+    "network": "guest",
+    "medium": "wifi",
+    "current_ip": "192.168.5.10",
+    "reserved_ip": null
+  },
+  {
+    "mac": "18:B4:30:CF:87:BA",
+    "hostname": "15AA01AC331700GU",
+    "network": "guest",
+    "medium": "wifi",
+    "current_ip": "192.168.5.11",
+    "reserved_ip": null
+  },
+  {
+    "mac": "76:C8:96:19:97:AB",
+    "hostname": "76:C8:96:19:97:AB",
+    "network": "guest",
+    "medium": "wifi",
+    "current_ip": "192.168.5.12",
+    "reserved_ip": null
+  },
+  {
+    "mac": "56:56:F9:CD:9C:75",
+    "hostname": "Mac",
+    "network": "guest",
+    "medium": "wifi",
+    "current_ip": "192.168.5.15",
+    "reserved_ip": null
+  },
+  {
+    "mac": "22:2D:3E:1E:B9:E4",
+    "hostname": "22:2d:3e:1e:b9:e4",
+    "network": "guest",
+    "medium": "wifi",
+    "current_ip": "192.168.5.32",
+    "reserved_ip": null
+  },
+  {
+    "mac": "06:DE:C9:14:70:2B",
+    "hostname": "06:de:c9:14:70:2b",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "12:E4:77:34:F5:DB",
+    "hostname": "12:e4:77:34:f5:db",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "2A:05:7C:4E:D2:60",
+    "hostname": "Shannon",
+    "network": null,
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "2A:74:A7:92:ED:70",
+    "hostname": "Mac",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "2E:43:8D:B5:2F:15",
+    "hostname": "2e:43:8d:b5:2f:15",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "34:79:16:ED:EA:00",
+    "hostname": "HUAWEI_P30-4f32761083deaa",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "36:3A:7C:0F:FE:CC",
+    "hostname": "Pixel-6",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "36:C4:04:3A:D3:09",
+    "hostname": "nixos",
+    "network": null,
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "3C:64:CF:C4:29:72",
+    "hostname": "KP400",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "3E:0E:63:8E:C9:98",
+    "hostname": "3e:0e:63:8e:c9:98",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "42:24:A9:F2:F6:39",
+    "hostname": "42:24:a9:f2:f6:39",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "4A:AD:00:F3:85:6B",
+    "hostname": "4a:ad:00:f3:85:6b",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "52:08:63:16:B2:27",
+    "hostname": "clan-one",
+    "network": null,
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "62:A4:4F:DC:58:22",
+    "hostname": "iPad",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "62:F9:7B:6B:D6:B2",
+    "hostname": "iMac",
+    "network": null,
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "76:30:28:86:66:AC",
+    "hostname": "76:30:28:86:66:ac",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "76:B4:E6:00:A5:C7",
+    "hostname": "76:b4:e6:00:a5:c7",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "76:B7:63:9F:C2:54",
+    "hostname": null,
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "8E:FE:93:BC:7A:FD",
+    "hostname": "bluefin",
+    "network": null,
+    "medium": "ethernet",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "A0:9A:8E:8C:D6:75",
+    "hostname": "galileo",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "A2:B8:56:5D:CA:F7",
+    "hostname": "a2:b8:56:5d:ca:f7",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "AA:AE:6E:5E:1C:EC",
+    "hostname": "iPhone",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "BE:7C:DF:57:52:20",
+    "hostname": "iPhone",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "C6:E9:07:32:F5:F7",
+    "hostname": "c6:e9:07:32:f5:f7",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "DE:7F:EB:D2:36:26",
+    "hostname": "de:7f:eb:d2:36:26",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "DE:AE:CA:7E:53:7D",
+    "hostname": "de:ae:ca:7e:53:7d",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "E2:5E:C8:E4:DB:70",
+    "hostname": "e2:5e:c8:e4:db:70",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "E6:39:99:40:28:D3",
+    "hostname": null,
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  },
+  {
+    "mac": "FE:A1:C6:84:EF:9B",
+    "hostname": "fe:a1:c6:84:ef:9b",
+    "network": null,
+    "medium": "wifi",
+    "current_ip": null,
+    "reserved_ip": null
+  }
+]

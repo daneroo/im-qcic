@@ -1,10 +1,5 @@
 {
-  "active_by_interface": {
-    "ethernet": 15,
-    "guest_wifi": 2,
-    "primary_wifi": 11
-  },
-  "generated_at": "2026-02-25T06:40:24.371854+00:00",
+  "generated_at": "2026-02-25T07:01:05.178216+00:00",
   "host": "192.168.2.1",
   "networks": {
     "1": {
@@ -25,15 +20,6 @@
       "min_address": "192.168.5.10",
       "uid": "2"
     }
-  },
-  "reserved_by_interface": {
-    "ethernet": 13,
-    "primary_wifi": 3
-  },
-  "totals": {
-    "active": 28,
-    "known": 70,
-    "reserved": 16
   },
   "xpaths": {
     "hosts": "Device/Hosts/Hosts",

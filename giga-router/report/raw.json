@@ -860,7 +860,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4891872,
-      "LeaseTimeRemaining": 223389,
+      "LeaseTimeRemaining": 222148,
       "Options": [
         {
           "Alias": "cpe-431",
@@ -994,7 +994,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4926087,
-      "LeaseTimeRemaining": 257604,
+      "LeaseTimeRemaining": 256363,
       "Options": [
         {
           "Alias": "cpe-1",
@@ -1128,7 +1128,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4884075,
-      "LeaseTimeRemaining": 215592,
+      "LeaseTimeRemaining": 214351,
       "Options": [
         {
           "Alias": "cpe-195",
@@ -1250,7 +1250,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4896695,
-      "LeaseTimeRemaining": 228212,
+      "LeaseTimeRemaining": 226971,
       "Options": [
         {
           "Alias": "cpe-205",
@@ -1372,7 +1372,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4802552,
-      "LeaseTimeRemaining": 134069,
+      "LeaseTimeRemaining": 132828,
       "Options": [
         {
           "Alias": "cpe-186",
@@ -1494,7 +1494,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4925400,
-      "LeaseTimeRemaining": 256917,
+      "LeaseTimeRemaining": 255676,
       "Options": [
         {
           "Alias": "cpe-200",
@@ -1631,7 +1631,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4894575,
-      "LeaseTimeRemaining": 226092,
+      "LeaseTimeRemaining": 224851,
       "Options": [
         {
           "Alias": "cpe-140",
@@ -1765,7 +1765,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4927102,
-      "LeaseTimeRemaining": 258619,
+      "LeaseTimeRemaining": 257378,
       "Options": [
         {
           "Alias": "cpe-186",
@@ -1881,7 +1881,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4877202,
-      "LeaseTimeRemaining": 208719,
+      "LeaseTimeRemaining": 207478,
       "Options": [
         {
           "Alias": "cpe-188",
@@ -2008,7 +2008,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4890073,
-      "LeaseTimeRemaining": 221590,
+      "LeaseTimeRemaining": 220349,
       "Options": [
         {
           "Alias": "cpe-44",
@@ -2141,7 +2141,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4810698,
-      "LeaseTimeRemaining": 142215,
+      "LeaseTimeRemaining": 140974,
       "Options": [
         {
           "Alias": "cpe-190",
@@ -2274,7 +2274,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4843084,
-      "LeaseTimeRemaining": 174601,
+      "LeaseTimeRemaining": 173360,
       "Options": [
         {
           "Alias": "cpe-238",
@@ -2407,7 +2407,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4842755,
-      "LeaseTimeRemaining": 174272,
+      "LeaseTimeRemaining": 173031,
       "Options": [
         {
           "Alias": "cpe-181",
@@ -2615,7 +2615,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4877631,
-      "LeaseTimeRemaining": 209148,
+      "LeaseTimeRemaining": 207907,
       "Options": [
         {
           "Alias": "cpe-202",
@@ -2828,7 +2828,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 233724,
       "LeaseStart": 4923445,
-      "LeaseTimeRemaining": 229486,
+      "LeaseTimeRemaining": 228245,
       "Options": [
         {
           "Alias": "cpe-3106",
@@ -2957,7 +2957,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_GUEST]",
       "LeaseDuration": 65535,
       "LeaseStart": 4926657,
-      "LeaseTimeRemaining": 64509,
+      "LeaseTimeRemaining": 63268,
       "Options": [
         {
           "Alias": "cpe-949",
@@ -3304,7 +3304,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_GUEST]",
       "LeaseDuration": 75238,
       "LeaseStart": 4898599,
-      "LeaseTimeRemaining": 46154,
+      "LeaseTimeRemaining": 44913,
       "Options": [
         {
           "Alias": "cpe-337",
@@ -3432,7 +3432,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_GUEST]",
       "LeaseDuration": 86400,
       "LeaseStart": 4925016,
-      "LeaseTimeRemaining": 83733,
+      "LeaseTimeRemaining": 82492,
       "Options": [
         {
           "Alias": "cpe-585",
@@ -4058,7 +4058,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_GUEST]",
       "LeaseDuration": 86400,
       "LeaseStart": 4924915,
-      "LeaseTimeRemaining": 83632,
+      "LeaseTimeRemaining": 82391,
       "Options": [
         {
           "Alias": "cpe-28",
@@ -4923,7 +4923,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_GUEST]",
       "LeaseDuration": 86400,
       "LeaseStart": 4925941,
-      "LeaseTimeRemaining": 84658,
+      "LeaseTimeRemaining": 83417,
       "Options": [
         {
           "Alias": "cpe-166",
@@ -5308,7 +5308,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4924958,
-      "LeaseTimeRemaining": 256475,
+      "LeaseTimeRemaining": 255234,
       "Options": [
         {
           "Alias": "cpe-155",
@@ -5419,7 +5419,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4924958,
-      "LeaseTimeRemaining": 256475,
+      "LeaseTimeRemaining": 255234,
       "Options": [
         {
           "Alias": "cpe-155",
@@ -5530,7 +5530,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4840805,
-      "LeaseTimeRemaining": 172322,
+      "LeaseTimeRemaining": 171081,
       "Options": [
         {
           "Alias": "cpe-159",
@@ -5646,7 +5646,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259197,
       "LeaseStart": 4887237,
-      "LeaseTimeRemaining": 218751,
+      "LeaseTimeRemaining": 217510,
       "Options": [
         {
           "Alias": "cpe-430",
@@ -5769,7 +5769,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4848987,
-      "LeaseTimeRemaining": 180504,
+      "LeaseTimeRemaining": 179263,
       "Options": [
         {
           "Alias": "cpe-1015",
@@ -6165,7 +6165,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4852199,
-      "LeaseTimeRemaining": 183716,
+      "LeaseTimeRemaining": 182475,
       "Options": [
         {
           "Alias": "cpe-14",
@@ -6394,7 +6394,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4890333,
-      "LeaseTimeRemaining": 221850,
+      "LeaseTimeRemaining": 220609,
       "Options": [
         {
           "Alias": "cpe-254",
@@ -6613,7 +6613,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 259200,
       "LeaseStart": 4744309,
-      "LeaseTimeRemaining": 75826,
+      "LeaseTimeRemaining": 74585,
       "Options": [
         {
           "Alias": "cpe-139",
@@ -6746,7 +6746,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 256523,
       "LeaseStart": 4848799,
-      "LeaseTimeRemaining": 177639,
+      "LeaseTimeRemaining": 176398,
       "Options": [
         {
           "Alias": "cpe-986",
@@ -6891,7 +6891,7 @@
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
       "LeaseDuration": 234079,
       "LeaseStart": 4898606,
-      "LeaseTimeRemaining": 205002,
+      "LeaseTimeRemaining": 203761,
       "Options": [
         {
           "Alias": "cpe-2486",
@@ -7118,51 +7118,51 @@
       "InterfaceType": "WiFi",
       "Layer1Interface": "Device/WiFi/Radios/Radio[RADIO5G]",
       "Layer3Interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
-      "LeaseDuration": 226067,
-      "LeaseStart": 4927663,
-      "LeaseTimeRemaining": 226047,
+      "LeaseDuration": 225152,
+      "LeaseStart": 4928578,
+      "LeaseTimeRemaining": 224806,
       "Options": [
         {
-          "Alias": "cpe-62497",
+          "Alias": "cpe-62511",
           "OptionTag": 53,
           "OptionValue": "03",
-          "uid": 62497
+          "uid": 62511
         },
         {
-          "Alias": "cpe-62498",
+          "Alias": "cpe-62512",
           "OptionTag": 55,
           "OptionValue": "01:79:03:06:0f:6c:72:77:fc:5f:2c:2e",
-          "uid": 62498
+          "uid": 62512
         },
         {
-          "Alias": "cpe-62499",
+          "Alias": "cpe-62513",
           "OptionTag": 57,
           "OptionValue": "05:dc",
-          "uid": 62499
+          "uid": 62513
         },
         {
-          "Alias": "cpe-62500",
+          "Alias": "cpe-62514",
           "OptionTag": 61,
           "OptionValue": "01:5a:4d:cb:5f:59:7f",
-          "uid": 62500
+          "uid": 62514
         },
         {
-          "Alias": "cpe-62501",
+          "Alias": "cpe-62515",
           "OptionTag": 50,
           "OptionValue": "c0:a8:02:cd",
-          "uid": 62501
+          "uid": 62515
         },
         {
-          "Alias": "cpe-62502",
+          "Alias": "cpe-62516",
           "OptionTag": 51,
           "OptionValue": "00:76:a7:00",
-          "uid": 62502
+          "uid": 62516
         },
         {
-          "Alias": "cpe-62503",
+          "Alias": "cpe-62517",
           "OptionTag": 12,
           "OptionValue": "4d:61:63",
-          "uid": 62503
+          "uid": 62517
         }
       ],
       "PhysAddress": "5a:4d:cb:5f:59:7f",
@@ -12014,37 +12014,37 @@
             {
               "Tag": 12,
               "Value": "4d6163",
-              "uid": 162941
+              "uid": 162955
             },
             {
               "Tag": 50,
               "Value": "c0a802cd",
-              "uid": 162939
+              "uid": 162953
             },
             {
               "Tag": 51,
               "Value": "0076a700",
-              "uid": 162940
+              "uid": 162954
             },
             {
               "Tag": 53,
               "Value": "03",
-              "uid": 162935
+              "uid": 162949
             },
             {
               "Tag": 55,
               "Value": "017903060f6c7277fc5f2c2e",
-              "uid": 162936
+              "uid": 162950
             },
             {
               "Tag": 57,
               "Value": "05dc",
-              "uid": 162937
+              "uid": 162951
             },
             {
               "Tag": 61,
               "Value": "015a4dcb5f597f",
-              "uid": 162938
+              "uid": 162952
             }
           ],
           "uid": 106

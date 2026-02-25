@@ -11,7 +11,7 @@ Giga Hub DHCP Extraction — Bell Sagemcom F@st 5690
 Usage:
   uv run gigahub2.py --scrape    # crawl router, write report/
   uv run gigahub2.py --summary   # re-render summary.md from existing JSON
-  uv run gigahub2.py --serve     # web UI at http://localhost:8080
+  uv run gigahub2.py --serve     # web UI at http://localhost:8765
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ LAN_SUBNET   = "192.168.2."
 GUEST_SUBNET = "192.168.5."
 API_PATH     = "/cgi/json-req"
 
-# XPaths queried. Keys become aliases in raw_xpath_values.json.
+# XPaths queried. Keys become aliases in raw.json.
 XPATHS: dict[str, str] = {
     "pool_1":        "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
     "pool_2":        "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
@@ -91,16 +91,21 @@ def normalize_mac(raw: str | None) -> str | None:
     return mac if MAC6_RE.match(mac) else None
 
 
-def classify_interface(raw_type: str, ip: str | None) -> str:
-    """Map InterfaceType + IP to interface_type label. Subnet is authoritative."""
-    if ip and ip.startswith(GUEST_SUBNET):
-        return "guest_wifi"
+def classify_network(ip: str | None, pool_uid: int | None = None) -> str | None:
+    if pool_uid == 2 or (ip and ip.startswith(GUEST_SUBNET)):
+        return "guest"
+    if pool_uid == 1 or (ip and ip.startswith(LAN_SUBNET)):
+        return "lan"
+    return None
+
+
+def classify_medium(raw_type: str) -> str | None:
     t = (raw_type or "").lower()
     if "ethernet" in t or t == "eth":
         return "ethernet"
     if "wifi" in t or "wireless" in t or "wlan" in t:
-        return "primary_wifi"
-    return "unknown"
+        return "wifi"
+    return None
 
 
 def canonicalize(data: Any) -> Any:
@@ -269,7 +274,7 @@ class RouterClient:
 
 async def get_networks(client: RouterClient) -> tuple[dict[str, Any], dict[str, Any]]:
     """
-    Query both DHCP pool configs to establish subnet → interface_type mapping.
+    Query both DHCP pool configs to establish subnet → network mapping.
     Returns (networks_by_uid, raw).
     """
     raw: dict[str, Any] = {}
@@ -301,7 +306,7 @@ async def get_networks(client: RouterClient) -> tuple[dict[str, Any], dict[str, 
 async def get_devices(client: RouterClient) -> tuple[list[dict[str, Any]], Any]:
     """
     Query Device/Hosts/Hosts for all known devices.
-    Fields used: PhysAddress → mac, Active, IPAddress, InterfaceType, HostName.
+    Fields used: PhysAddress → mac, IPAddress, InterfaceType, HostName.
     Returns (devices, raw_hosts).
     """
     raw = await client.get_value(XPATHS["hosts"])
@@ -328,14 +333,12 @@ async def get_devices(client: RouterClient) -> tuple[list[dict[str, Any]], Any]:
         )
 
         devices.append({
-            "mac":            mac,
-            "hostname":       hostname or None,
-            "is_active":      bool(host.get("Active")),
-            "current_ip":     current_ip,
-            "interface_type": classify_interface(host.get("InterfaceType", ""), current_ip),
-            "is_reserved":    False,
-            "reserved_ip":    None,
-            "source_paths":   [XPATHS["hosts"]],
+            "mac":         mac,
+            "hostname":    hostname or None,
+            "network":     classify_network(current_ip),
+            "medium":      classify_medium(host.get("InterfaceType", "")),
+            "current_ip":  current_ip,
+            "reserved_ip": None,
         })
 
     return devices, raw
@@ -378,39 +381,12 @@ async def get_reservations(
             reservations[mac] = {
                 "reserved_ip": yiaddr,
                 "pool":        pool_uid,
-                "source_path": XPATHS[alias],
             }
 
     return reservations, raw
 
 
 # ── Merge ──────────────────────────────────────────────────────────────────────
-
-def merge_reservations(
-    devices: list[dict[str, Any]],
-    reservations: dict[str, dict[str, Any]],
-) -> list[dict[str, Any]]:
-    """
-    Join reservation data onto device records by MAC.
-    Pool 2 or guest-subnet reserved_ip overrides interface_type to guest_wifi.
-    """
-    for device in devices:
-        res = reservations.get(device["mac"])
-        if res:
-            device["is_reserved"] = True
-            device["reserved_ip"] = res["reserved_ip"]
-            if res["source_path"] not in device["source_paths"]:
-                device["source_paths"].append(res["source_path"])
-            if res["pool"] == 2 or res["reserved_ip"].startswith(GUEST_SUBNET):
-                device["interface_type"] = "guest_wifi"
-        # Final authoritative check: active guest-subnet IP → guest_wifi
-        if (device.get("current_ip") or "").startswith(GUEST_SUBNET):
-            device["interface_type"] = "guest_wifi"
-
-    return devices
-
-
-# ── Reports ────────────────────────────────────────────────────────────────────
 
 def _ip_sort_key(device: dict[str, Any]) -> tuple:
     ip = device.get("current_ip") or device.get("reserved_ip") or ""
@@ -420,13 +396,35 @@ def _ip_sort_key(device: dict[str, Any]) -> tuple:
         return ((999, 999, 999, 999), device.get("mac", ""))
 
 
-def _count_by_interface(lst: list[dict[str, Any]]) -> dict[str, int]:
-    counts: dict[str, int] = {}
-    for d in lst:
-        k = d.get("interface_type") or "unknown"
-        counts[k] = counts.get(k, 0) + 1
-    return dict(sorted(counts.items()))
+def merge(
+    devices: list[dict[str, Any]],
+    reservations: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """
+    Join reservation data onto device records by MAC.
+    Pool UID is authoritative for network classification.
+    Reservation-only MACs (never seen in Hosts table) get a stub record.
+    """
+    by_mac = {d["mac"]: d for d in devices}
+    for mac, res in reservations.items():
+        if mac in by_mac:
+            by_mac[mac]["reserved_ip"] = res["reserved_ip"]
+            # Pool is authoritative for network classification
+            by_mac[mac]["network"] = "guest" if res["pool"] == 2 else "lan"
+        else:
+            # Reservation-only MAC: create stub
+            by_mac[mac] = {
+                "mac":         mac,
+                "hostname":    None,
+                "network":     "guest" if res["pool"] == 2 else "lan",
+                "medium":      None,
+                "current_ip":  None,
+                "reserved_ip": res["reserved_ip"],
+            }
+    return sorted(by_mac.values(), key=_ip_sort_key)
 
+
+# ── Reports ────────────────────────────────────────────────────────────────────
 
 def write_reports(
     devices: list[dict[str, Any]],
@@ -437,29 +435,16 @@ def write_reports(
 ) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    known    = sorted(devices, key=_ip_sort_key)
-    active   = [d for d in known if d.get("is_active")]
-    reserved = [d for d in known if d.get("is_reserved")]
-
-    entities = {
-        "generated_at":           datetime.now(timezone.utc).isoformat(),
-        "host":                   host,
-        "totals": {
-            "known":    len(known),
-            "active":   len(active),
-            "reserved": len(reserved),
-        },
-        "active_by_interface":   _count_by_interface(active),
-        "reserved_by_interface": _count_by_interface(reserved),
-        "networks":               networks,
-        "xpaths":                 XPATHS,
+    meta = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "host":         host,
+        "networks":     networks,
+        "xpaths":       XPATHS,
     }
 
-    write_json(out_dir / "raw_xpath_values.json", raw)
-    write_json(out_dir / "known_devices.json",    known)
-    write_json(out_dir / "active_devices.json",   active)
-    write_json(out_dir / "reserved_devices.json", reserved)
-    write_json(out_dir / "entities.json",          entities)
+    write_json(out_dir / "raw.json",     raw)
+    (out_dir / "devices.json").write_text(json.dumps(devices, indent=2) + "\n")
+    write_json(out_dir / "meta.json",    meta)
 
 
 # ── Summary ────────────────────────────────────────────────────────────────────
@@ -471,28 +456,33 @@ def build_summary_md(out_dir: Path) -> str:
         except Exception:
             return default
 
-    e        = load("entities.json", {})
-    reserved = load("reserved_devices.json", [])
-    totals   = e.get("totals", {})
-    by_iface = e.get("active_by_interface", {})
-    networks = e.get("networks", {})
+    devices  = load("devices.json", [])
+    meta     = load("meta.json", {})
+    networks = meta.get("networks", {})
+    active   = [d for d in devices if d.get("current_ip")]
+    reserved = [d for d in devices if d.get("reserved_ip")]
+
+    active_by_network: dict[str, int] = {}
+    for d in active:
+        k = d.get("network") or "unknown"
+        active_by_network[k] = active_by_network.get(k, 0) + 1
 
     lines = [
         "# Giga Hub Report",
         "",
-        f"- generated_at: `{e.get('generated_at', 'unknown')}`",
-        f"- host: `{e.get('host', 'unknown')}`",
+        f"- generated_at: `{meta.get('generated_at', 'unknown')}`",
+        f"- host: `{meta.get('host', 'unknown')}`",
         "",
         "## Totals",
         "",
         "| known | active | reserved |",
         "| ----- | ------ | -------- |",
-        f"| {totals.get('known','?')} | {totals.get('active','?')} | {totals.get('reserved','?')} |",
+        f"| {len(devices)} | {len(active)} | {len(reserved)} |",
         "",
-        "## Active by Interface",
+        "## Active by Network",
         "",
     ]
-    lines += [f"- `{k}`: {v}" for k, v in sorted(by_iface.items())]
+    lines += [f"- `{k}`: {v}" for k, v in sorted(active_by_network.items())]
     lines.append("")
 
     if networks:
@@ -508,14 +498,14 @@ def build_summary_md(out_dir: Path) -> str:
         lines += [
             "## Reserved Devices",
             "",
-            "| MAC | Hostname | Reserved IP | Interface | Active |",
-            "| --- | -------- | ----------- | --------- | ------ |",
+            "| MAC | Hostname | Reserved IP | Network | Online |",
+            "| --- | -------- | ----------- | ------- | ------ |",
         ]
         for d in reserved:
-            active_str = "yes" if d.get("is_active") else "no"
+            online_str = "yes" if d.get("current_ip") else "no"
             lines.append(
                 f"| `{d.get('mac')}` | {d.get('hostname') or '—'} "
-                f"| `{d.get('reserved_ip')}` | {d.get('interface_type')} | {active_str} |"
+                f"| `{d.get('reserved_ip')}` | {d.get('network') or '—'} | {online_str} |"
             )
         lines.append("")
 
@@ -564,21 +554,20 @@ def build_html() -> str:
       --t1:#e2e8f0; --t2:#94a3b8; --t3:#64748b; --t4:#475569;
     }
     *, *::before, *::after { transition: background-color .15s, border-color .15s, color .15s; }
-    /* ── Interface chips ── */
+    /* ── Chip base ── */
     .ci { display:inline-flex; padding:1px 6px; border-radius:4px; font-size:.7rem; font-weight:500; border:1px solid; }
-    .ci-eth  { background:#f0f9ff; color:#0369a1; border-color:#bae6fd; }
-    .ci-wifi { background:#f5f3ff; color:#6d28d9; border-color:#ddd6fe; }
-    .ci-guest{ background:#fff7ed; color:#c2410c; border-color:#fed7aa; }
-    .ci-unk  { background:var(--s3); color:var(--t3); border-color:var(--b); }
-    html.dark .ci-eth  { background:#0c1f29; color:#38bdf8; border-color:#0c4a6e; }
-    html.dark .ci-wifi { background:#1e1030; color:#a78bfa; border-color:#4c1d95; }
-    html.dark .ci-guest{ background:#1f1007; color:#fb923c; border-color:#7c2d12; }
-    /* ── Status chips ── */
-    .cs { display:inline-flex; align-items:center; gap:4px; padding:1px 7px; border-radius:999px; font-size:.7rem; border:1px solid; }
-    .cs-on  { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
-    .cs-off { background:var(--s2); color:var(--t3); border-color:var(--b); }
-    html.dark .cs-on  { background:#052e16; color:#4ade80; border-color:#14532d; }
-    html.dark .cs-off { background:var(--s2); color:var(--t3); border-color:var(--bm); }
+    /* ── Network chips ── */
+    .cn-lan   { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+    .cn-guest { background:#fff7ed; color:#c2410c; border-color:#fed7aa; }
+    html.dark .cn-lan   { background:#0d1f3e; color:#60a5fa; border-color:#1e3a5f; }
+    html.dark .cn-guest { background:#1f1007; color:#fb923c; border-color:#7c2d12; }
+    /* ── Medium chips ── */
+    .cm-eth  { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+    .cm-wifi { background:#f5f3ff; color:#6d28d9; border-color:#ddd6fe; }
+    html.dark .cm-eth  { background:#052e16; color:#4ade80; border-color:#14532d; }
+    html.dark .cm-wifi { background:#1e1030; color:#a78bfa; border-color:#4c1d95; }
+    /* ── Unknown chip ── */
+    .ci-unk { background:var(--s3); color:var(--t3); border-color:var(--b); }
     /* ── Toast types ── */
     #toast[data-type="working"]{ background:var(--s2); border-color:var(--b); }
     #toast[data-type="success"]{ background:#f0fdf4; border-color:#86efac; color:#166534; }
@@ -661,12 +650,15 @@ def build_html() -> str:
 
     <!-- Filters -->
     <div class="flex flex-wrap items-center gap-3">
-      <select id="filter-interface" class="input">
-        <option value="all">All interfaces</option>
+      <select id="filter-network" class="input">
+        <option value="all">All networks</option>
+        <option value="lan">lan</option>
+        <option value="guest">guest</option>
+      </select>
+      <select id="filter-medium" class="input">
+        <option value="all">All media</option>
         <option value="ethernet">ethernet</option>
-        <option value="primary_wifi">primary_wifi</option>
-        <option value="guest_wifi">guest_wifi</option>
-        <option value="unknown">unknown</option>
+        <option value="wifi">wifi</option>
       </select>
       <label class="flex items-center gap-2 text-xs text-tx-2 cursor-pointer hover:text-tx-1 transition-colors">
         <input type="checkbox" id="filter-reserved" class="accent-blue-500 w-3.5 h-3.5"> Reserved only
@@ -675,7 +667,7 @@ def build_html() -> str:
         <input type="checkbox" id="filter-active" class="accent-emerald-500 w-3.5 h-3.5"> Active only
       </label>
       <label class="flex items-center gap-2 text-xs text-tx-2 cursor-pointer hover:text-tx-1 transition-colors">
-        <input type="checkbox" id="filter-group" class="accent-blue-500 w-3.5 h-3.5" checked> Group by interface
+        <input type="checkbox" id="filter-group" class="accent-blue-500 w-3.5 h-3.5" checked> Group by network
       </label>
       <input id="filter-search" type="text" placeholder="Search MAC, hostname, IP…" class="input w-56 ml-auto">
     </div>
@@ -690,8 +682,8 @@ def build_html() -> str:
               <th class="th"      data-col="hostname">Hostname <span class="sort-arrow"></span></th>
               <th class="th"      data-col="current_ip">Current IP <span class="sort-arrow"></span></th>
               <th class="th"      data-col="reserved_ip">Reserved IP <span class="sort-arrow"></span></th>
-              <th class="th"      data-col="interface_type">Interface <span class="sort-arrow"></span></th>
-              <th class="th pr-5" data-col="is_active">Status</th>
+              <th class="th"      data-col="network">Network <span class="sort-arrow"></span></th>
+              <th class="th pr-5" data-col="medium">Medium</th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>
@@ -710,7 +702,7 @@ def build_html() -> str:
 let allDevices = [];
 let sortCol = 'current_ip';
 let sortAsc  = true;
-const filters = { interface: 'all', reservedOnly: false, activeOnly: false, group: true, search: '' };
+const filters = { network: 'all', medium: 'all', reservedOnly: false, activeOnly: false, group: true, search: '' };
 
 // ── Theme ──────────────────────────────────────────────────────────────────────
 function applyTheme(dark) {
@@ -724,12 +716,12 @@ document.getElementById('btn-theme').addEventListener('click', () =>
   applyTheme(!document.documentElement.classList.contains('dark')));
 
 // ── Chip helpers ───────────────────────────────────────────────────────────────
-const IFACE_CLASS = { ethernet:'ci-eth', primary_wifi:'ci-wifi', guest_wifi:'ci-guest' };
-const ifaceChip = (t) =>
-  `<span class="ci ${IFACE_CLASS[t] || 'ci-unk'}">${esc(t || 'unknown')}</span>`;
-const statusChip = (active) => active
-  ? `<span class="cs cs-on"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>active</span>`
-  : `<span class="cs cs-off"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>idle</span>`;
+const NET_CLASS = { lan: 'cn-lan', guest: 'cn-guest' };
+const MED_CLASS = { ethernet: 'cm-eth', wifi: 'cm-wifi' };
+const networkChip = (n) =>
+  `<span class="ci ${NET_CLASS[n] || 'ci-unk'}">${esc(n || '—')}</span>`;
+const mediumChip = (m) =>
+  `<span class="ci ${MED_CLASS[m] || 'ci-unk'}">${esc(m || '—')}</span>`;
 
 // ── Utils ──────────────────────────────────────────────────────────────────────
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c =>
@@ -743,24 +735,28 @@ async function fetchJSON(url) {
   return r.json();
 }
 async function loadData() {
-  const [devices, entities] = await Promise.all([
-    fetchJSON('/api/known'), fetchJSON('/api/entities'),
+  const [devices, meta] = await Promise.all([
+    fetchJSON('/api/devices'), fetchJSON('/api/meta'),
   ]);
   allDevices = devices;
-  updateMetrics(entities);
+  updateMetrics(devices, meta);
   renderTable();
 }
 
 // ── Metrics ────────────────────────────────────────────────────────────────────
-function updateMetrics(e) {
-  const t = e.totals || {}, ai = e.active_by_interface || {}, ri = e.reserved_by_interface || {};
-  document.getElementById('m-known').textContent    = t.known    ?? '—';
-  document.getElementById('m-active').textContent   = t.active   ?? '—';
-  document.getElementById('m-reserved').textContent = t.reserved ?? '—';
-  document.getElementById('m-active-detail').textContent   = Object.entries(ai).map(([k,v])=>`${k}: ${v}`).join(' · ') || '';
-  document.getElementById('m-reserved-detail').textContent = Object.entries(ri).map(([k,v])=>`${k}: ${v}`).join(' · ') || '';
-  document.getElementById('host-label').textContent = e.host ? `· ${e.host}` : '';
-  const gen = e.generated_at ? new Date(e.generated_at) : null;
+function updateMetrics(devices, meta) {
+  const active   = devices.filter(d => d.current_ip);
+  const reserved = devices.filter(d => d.reserved_ip);
+  const countBy  = (arr, key) => arr.reduce((acc, d) => {
+    const k = d[key] || 'unknown'; acc[k] = (acc[k] || 0) + 1; return acc;
+  }, {});
+  document.getElementById('m-known').textContent    = devices.length;
+  document.getElementById('m-active').textContent   = active.length;
+  document.getElementById('m-reserved').textContent = reserved.length;
+  document.getElementById('m-active-detail').textContent   = Object.entries(countBy(active,   'network')).map(([k,v])=>`${k}: ${v}`).join(' · ') || '';
+  document.getElementById('m-reserved-detail').textContent = Object.entries(countBy(reserved, 'network')).map(([k,v])=>`${k}: ${v}`).join(' · ') || '';
+  document.getElementById('host-label').textContent = meta.host ? `· ${meta.host}` : '';
+  const gen = meta.generated_at ? new Date(meta.generated_at) : null;
   document.getElementById('m-generated').textContent =
     gen ? gen.toLocaleString(undefined, {dateStyle:'medium', timeStyle:'short'}) : '—';
 }
@@ -770,15 +766,15 @@ function sortDevices(list) {
   return [...list].sort((a, b) => {
     let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
     if (sortCol === 'current_ip' || sortCol === 'reserved_ip') { va = ipToNum(va); vb = ipToNum(vb); }
-    else if (typeof va === 'boolean') { va = va?0:1; vb = vb?0:1; }
     return (va < vb ? -1 : va > vb ? 1 : 0) * (sortAsc ? 1 : -1);
   });
 }
 function applyFilters(list) {
   return list.filter(d => {
-    if (filters.interface !== 'all' && d.interface_type !== filters.interface) return false;
-    if (filters.reservedOnly && !d.is_reserved) return false;
-    if (filters.activeOnly   && !d.is_active)   return false;
+    if (filters.network !== 'all' && d.network !== filters.network) return false;
+    if (filters.medium  !== 'all' && d.medium  !== filters.medium)  return false;
+    if (filters.reservedOnly && !d.reserved_ip) return false;
+    if (filters.activeOnly   && !d.current_ip)  return false;
     if (filters.search) {
       const q = filters.search.toLowerCase();
       const hay = [d.mac,d.hostname,d.current_ip,d.reserved_ip].filter(Boolean).join(' ').toLowerCase();
@@ -789,7 +785,7 @@ function applyFilters(list) {
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────────
-const IFACE_ORDER = ['ethernet','primary_wifi','guest_wifi','unknown'];
+const NET_ORDER = ['lan', 'guest', ''];
 
 function renderTable() {
   const filtered = applyFilters(allDevices);
@@ -805,11 +801,11 @@ function renderTable() {
   let rows;
   if (filters.group) {
     const groups = {};
-    for (const d of filtered) { const k = d.interface_type||'unknown'; (groups[k]=groups[k]||[]).push(d); }
-    const keys = [...IFACE_ORDER.filter(k=>groups[k]), ...Object.keys(groups).filter(k=>!IFACE_ORDER.includes(k))];
-    rows = keys.flatMap(iface => {
-      const sorted = sortDevices(groups[iface]);
-      return [`<tr class="border-y border-border-muted bg-surface-2"><td colspan="6" class="pl-5 py-2 text-xs">${ifaceChip(iface)}<span class="ml-2 text-tx-4">${sorted.length} ${sorted.length===1?'device':'devices'}</span></td></tr>`,
+    for (const d of filtered) { const k = d.network || ''; (groups[k]=groups[k]||[]).push(d); }
+    const keys = [...NET_ORDER.filter(k=>groups[k]), ...Object.keys(groups).filter(k=>!NET_ORDER.includes(k))];
+    rows = keys.flatMap(net => {
+      const sorted = sortDevices(groups[net]);
+      return [`<tr class="border-y border-border-muted bg-surface-2"><td colspan="6" class="pl-5 py-2 text-xs">${networkChip(net||null)}<span class="ml-2 text-tx-4">${sorted.length} ${sorted.length===1?'device':'devices'}</span></td></tr>`,
               ...sorted.map(deviceRow)];
     });
   } else {
@@ -827,8 +823,8 @@ function deviceRow(d) {
     <td class="td text-tx-1 font-medium">${esc(d.hostname??'—')}</td>
     <td class="td text-tx-2 tabular-nums">${esc(d.current_ip??'')}</td>
     <td class="td text-tx-2 tabular-nums">${esc(d.reserved_ip??'')}</td>
-    <td class="td">${ifaceChip(d.interface_type)}</td>
-    <td class="td pr-5">${statusChip(d.is_active)}</td>
+    <td class="td">${networkChip(d.network)}</td>
+    <td class="td pr-5">${mediumChip(d.medium)}</td>
   </tr>`;
 }
 
@@ -886,13 +882,18 @@ document.getElementById('btn-crawl').addEventListener('click', async () => {
 
 document.getElementById('btn-summary').addEventListener('click', async () => {
   lockButtons(); showToast('Rebuilding summary…', {type:'working', spinner:true});
-  try { await fetch('/api/summary', {method:'POST'}); showToast('summary.md rebuilt', {type:'success', icon:'✓', autoDismiss:4000}); }
+  try {
+    const r = await fetch('/api/summary', {method:'POST'});
+    if (!r.ok) throw new Error(await r.text());
+    showToast('summary.md rebuilt', {type:'success', icon:'✓', autoDismiss:4000});
+  }
   catch (e) { showToast('Failed: '+e.message, {type:'error', icon:'✗', autoDismiss:8000}); }
   finally { unlockButtons(); }
 });
 
 // ── Filter wiring ──────────────────────────────────────────────────────────────
-document.getElementById('filter-interface').addEventListener('change', e => { filters.interface = e.target.value; renderTable(); });
+document.getElementById('filter-network').addEventListener('change',  e => { filters.network = e.target.value; renderTable(); });
+document.getElementById('filter-medium').addEventListener('change',   e => { filters.medium = e.target.value; renderTable(); });
 document.getElementById('filter-reserved').addEventListener('change', e => { filters.reservedOnly = e.target.checked; renderTable(); });
 document.getElementById('filter-active').addEventListener('change',   e => { filters.activeOnly = e.target.checked; renderTable(); });
 document.getElementById('filter-group').addEventListener('change',    e => { filters.group = e.target.checked; renderTable(); });
@@ -918,12 +919,12 @@ def build_web_app(config: dict, out_dir: Path) -> web.Application:
     async def handle_index(_: web.Request) -> web.Response:
         return web.Response(text=build_html(), content_type="text/html")
 
-    async def handle_known(_: web.Request) -> web.Response:
-        p = out_dir / "known_devices.json"
+    async def handle_devices(_: web.Request) -> web.Response:
+        p = out_dir / "devices.json"
         return web.json_response(json.loads(p.read_text()) if p.exists() else [])
 
-    async def handle_entities(_: web.Request) -> web.Response:
-        p = out_dir / "entities.json"
+    async def handle_meta(_: web.Request) -> web.Response:
+        p = out_dir / "meta.json"
         return web.json_response(json.loads(p.read_text()) if p.exists() else {})
 
     async def handle_summary_md(_: web.Request) -> web.Response:
@@ -948,13 +949,13 @@ def build_web_app(config: dict, out_dir: Path) -> web.Application:
         return web.FileResponse(path)
 
     app = web.Application()
-    app.router.add_get( "/",                   handle_index)
-    app.router.add_get( "/api/known",           handle_known)
-    app.router.add_get( "/api/entities",        handle_entities)
-    app.router.add_get( "/api/summary-md",      handle_summary_md)
-    app.router.add_post("/api/summary",         handle_summary_rebuild)
-    app.router.add_post("/api/scrape",          handle_scrape)
-    app.router.add_get( "/report/{filename}",   handle_report)
+    app.router.add_get( "/",                  handle_index)
+    app.router.add_get( "/api/devices",       handle_devices)
+    app.router.add_get( "/api/meta",          handle_meta)
+    app.router.add_get( "/api/summary-md",    handle_summary_md)
+    app.router.add_post("/api/summary",       handle_summary_rebuild)
+    app.router.add_post("/api/scrape",        handle_scrape)
+    app.router.add_get( "/report/{filename}", handle_report)
     return app
 
 
@@ -984,14 +985,14 @@ async def _do_scrape(config: dict, out_dir: Path) -> dict[str, Any]:
         reservations, res_raw = await get_reservations(client)
         raw.update(res_raw)
 
-    devices = merge_reservations(devices, reservations)
+    devices = merge(devices, reservations)
     write_reports(devices, networks, raw, config["host"], out_dir)
     write_summary(out_dir)
 
     stats = {
         "known":    len(devices),
-        "active":   sum(1 for d in devices if d.get("is_active")),
-        "reserved": sum(1 for d in devices if d.get("is_reserved")),
+        "active":   sum(1 for d in devices if d.get("current_ip")),
+        "reserved": sum(1 for d in devices if d.get("reserved_ip")),
     }
     elapsed = (datetime.now(timezone.utc) - t0).total_seconds()
     print(f"[{datetime.now(timezone.utc).isoformat()}] crawl done   known={stats['known']} active={stats['active']} reserved={stats['reserved']} elapsed={elapsed:.1f}s")
@@ -1013,8 +1014,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    args   = parse_args()
-    config = load_config()
+    args    = parse_args()
+    config  = load_config()
     out_dir = config["out_dir"]
 
     if args.summary:
