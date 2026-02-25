@@ -1,317 +1,45 @@
 {
   "active_by_interface": {
     "ethernet": 15,
-    "guest_wifi": 3,
+    "guest_wifi": 2,
     "primary_wifi": 11
   },
-  "classification_notes": {
-    "guest_wifi_inference": "Guest is inferred from guest subnet (e.g. 192.168.5.x) and DHCP Pool[@uid='2'] hints.",
-    "interface_type_values": [
-      "ethernet",
-      "guest_wifi",
-      "primary_wifi",
-      "unknown"
-    ],
-    "vlan_note": "These groups are UI/network classifications and may not exactly match underlying VLAN IDs."
-  },
-  "entities": {
-    "active_devices": 29,
-    "known_devices": 177,
-    "reserved_devices": 37
-  },
-  "generated_at": "2026-02-25T02:03:31.740889+00:00",
+  "generated_at": "2026-02-25T06:40:24.371854+00:00",
   "host": "192.168.2.1",
-  "output_files": {
-    "active_devices.json": "Currently active devices only.",
-    "entities.json": "Compact metadata and counts for automation and diffs.",
-    "known_devices.json": "All known devices merged by MAC (active + historical).",
-    "raw_xpath_values.json": "Raw router payloads used for debugging (can include sensitive values).",
-    "reserved_by_interface.json": "Reservation-focused view grouped by interface type.",
-    "reserved_devices.json": "Devices flagged as DHCP reserved/static by current heuristics.",
-    "summary.md": "Human-readable run summary."
+  "networks": {
+    "1": {
+      "alias": "DEFAULT_POOL",
+      "enabled": true,
+      "interface": "Device/IP/Interfaces/Interface[IP_BR_LAN]",
+      "ip_interface": "192.168.2.1",
+      "max_address": "192.168.2.254",
+      "min_address": "192.168.2.10",
+      "uid": "1"
+    },
+    "2": {
+      "alias": "GUEST_POOL",
+      "enabled": true,
+      "interface": "Device/IP/Interfaces/Interface[IP_BR_GUEST]",
+      "ip_interface": "192.168.5.1",
+      "max_address": "192.168.5.254",
+      "min_address": "192.168.5.10",
+      "uid": "2"
+    }
   },
   "reserved_by_interface": {
-    "ethernet": 17,
-    "primary_wifi": 20
+    "ethernet": 13,
+    "primary_wifi": 3
   },
-  "reserved_by_interface_entries": {
-    "ethernet": [
-      {
-        "current_ip": "192.168.2.100",
-        "hostname": "syno",
-        "is_active": true,
-        "mac": "98:B7:85:21:E9:4A",
-        "reserved_ip": "192.168.2.100"
-      },
-      {
-        "current_ip": "192.168.2.101",
-        "hostname": "gateway",
-        "is_active": true,
-        "mac": "02:11:32:2C:5D:18",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.105",
-        "hostname": "bluefin",
-        "is_active": false,
-        "mac": "8E:FE:93:BC:7A:FD",
-        "reserved_ip": "192.168.2.105"
-      },
-      {
-        "current_ip": "192.168.2.109",
-        "hostname": "syno",
-        "is_active": false,
-        "mac": "00:11:32:FC:4A:33",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.110",
-        "hostname": "hilbert",
-        "is_active": false,
-        "mac": "98:B7:85:21:EB:18",
-        "reserved_ip": "192.168.2.110"
-      },
-      {
-        "current_ip": "192.168.2.111",
-        "hostname": "feynman",
-        "is_active": false,
-        "mac": "C6:41:3F:F4:0F:7F",
-        "reserved_ip": "192.168.2.111"
-      },
-      {
-        "current_ip": "192.168.2.112",
-        "hostname": "plex-audiobook",
-        "is_active": true,
-        "mac": "82:A1:71:54:20:4C",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.113",
-        "hostname": "hass",
-        "is_active": true,
-        "mac": "B2:F6:4D:B1:09:7F",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.114",
-        "hostname": "scast-hilbert",
-        "is_active": true,
-        "mac": "26:92:DC:5F:BF:A0",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.120",
-        "hostname": "a8:20:66:28:c3:8a",
-        "is_active": true,
-        "mac": "A8:20:66:28:C3:8A",
-        "reserved_ip": "192.168.2.120"
-      },
-      {
-        "current_ip": "192.168.2.121",
-        "hostname": "d1-px1",
-        "is_active": true,
-        "mac": "7A:4C:F2:F3:B3:E8",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.130",
-        "hostname": "euler",
-        "is_active": false,
-        "mac": "40:6C:8F:19:8D:4F",
-        "reserved_ip": "192.168.2.130"
-      },
-      {
-        "current_ip": "192.168.2.140",
-        "hostname": "omarchy",
-        "is_active": true,
-        "mac": "70:70:FC:06:ED:C4",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.30",
-        "hostname": "darwin",
-        "is_active": true,
-        "mac": "C4:2C:03:0A:E4:3C",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.31",
-        "hostname": "dirac",
-        "is_active": true,
-        "mac": "A8:20:66:11:4E:1F",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.32",
-        "hostname": "iMac",
-        "is_active": false,
-        "mac": "62:F9:7B:6B:D6:B2",
-        "reserved_ip": "192.168.2.32"
-      },
-      {
-        "current_ip": "192.168.2.33",
-        "hostname": "Galois",
-        "is_active": true,
-        "mac": "5C:E9:1E:E3:53:5C",
-        "reserved_ip": null
-      }
-    ],
-    "primary_wifi": [
-      {
-        "current_ip": "192.168.2.204",
-        "hostname": "galileo",
-        "is_active": false,
-        "mac": "A0:9A:8E:8C:D6:75",
-        "reserved_ip": "192.168.2.204"
-      },
-      {
-        "current_ip": "192.168.2.28",
-        "hostname": "iPad",
-        "is_active": false,
-        "mac": "62:A4:4F:DC:58:22",
-        "reserved_ip": "192.168.2.28"
-      },
-      {
-        "current_ip": "192.168.2.32",
-        "hostname": "iMac",
-        "is_active": true,
-        "mac": "A2:C4:F4:D9:BF:82",
-        "reserved_ip": "192.168.2.32"
-      },
-      {
-        "current_ip": "192.168.2.34",
-        "hostname": "Galois",
-        "is_active": false,
-        "mac": "5C:E9:1E:E4:6B:2E",
-        "reserved_ip": "192.168.2.34"
-      },
-      {
-        "current_ip": "192.168.2.35",
-        "hostname": "Goedel",
-        "is_active": false,
-        "mac": "34:36:3B:85:BB:1E",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.2.51",
-        "hostname": "cpe-139",
-        "is_active": false,
-        "mac": "00:80:92:54:C7:71",
-        "reserved_ip": null
-      },
-      {
-        "current_ip": "192.168.5.13",
-        "hostname": "iPhone",
-        "is_active": false,
-        "mac": "BE:7C:DF:57:52:20",
-        "reserved_ip": "192.168.5.13"
-      },
-      {
-        "current_ip": "192.168.5.17",
-        "hostname": "a2:b8:56:5d:ca:f7",
-        "is_active": false,
-        "mac": "A2:B8:56:5D:CA:F7",
-        "reserved_ip": "192.168.5.17"
-      },
-      {
-        "current_ip": "192.168.5.18",
-        "hostname": "de:7f:eb:d2:36:26",
-        "is_active": false,
-        "mac": "DE:7F:EB:D2:36:26",
-        "reserved_ip": "192.168.5.18"
-      },
-      {
-        "current_ip": "192.168.5.19",
-        "hostname": "3e:0e:63:8e:c9:98",
-        "is_active": false,
-        "mac": "3E:0E:63:8E:C9:98",
-        "reserved_ip": "192.168.5.19"
-      },
-      {
-        "current_ip": "192.168.5.20",
-        "hostname": "76:30:28:86:66:ac",
-        "is_active": false,
-        "mac": "76:30:28:86:66:AC",
-        "reserved_ip": "192.168.5.20"
-      },
-      {
-        "current_ip": "192.168.5.21",
-        "hostname": "c6:e9:07:32:f5:f7",
-        "is_active": false,
-        "mac": "C6:E9:07:32:F5:F7",
-        "reserved_ip": "192.168.5.21"
-      },
-      {
-        "current_ip": "192.168.5.22",
-        "hostname": "2e:43:8d:b5:2f:15",
-        "is_active": false,
-        "mac": "2E:43:8D:B5:2F:15",
-        "reserved_ip": "192.168.5.22"
-      },
-      {
-        "current_ip": "192.168.5.24",
-        "hostname": "76:b4:e6:00:a5:c7",
-        "is_active": false,
-        "mac": "76:B4:E6:00:A5:C7",
-        "reserved_ip": "192.168.5.24"
-      },
-      {
-        "current_ip": "192.168.5.25",
-        "hostname": "de:ae:ca:7e:53:7d",
-        "is_active": false,
-        "mac": "DE:AE:CA:7E:53:7D",
-        "reserved_ip": "192.168.5.25"
-      },
-      {
-        "current_ip": "192.168.5.27",
-        "hostname": "4a:ad:00:f3:85:6b",
-        "is_active": false,
-        "mac": "4A:AD:00:F3:85:6B",
-        "reserved_ip": "192.168.5.27"
-      },
-      {
-        "current_ip": "192.168.5.28",
-        "hostname": "06:de:c9:14:70:2b",
-        "is_active": false,
-        "mac": "06:DE:C9:14:70:2B",
-        "reserved_ip": "192.168.5.28"
-      },
-      {
-        "current_ip": "192.168.5.29",
-        "hostname": "e2:5e:c8:e4:db:70",
-        "is_active": false,
-        "mac": "E2:5E:C8:E4:DB:70",
-        "reserved_ip": "192.168.5.29"
-      },
-      {
-        "current_ip": "192.168.5.30",
-        "hostname": "42:24:a9:f2:f6:39",
-        "is_active": false,
-        "mac": "42:24:A9:F2:F6:39",
-        "reserved_ip": "192.168.5.30"
-      },
-      {
-        "current_ip": "192.168.5.31",
-        "hostname": "fe:a1:c6:84:ef:9b",
-        "is_active": false,
-        "mac": "FE:A1:C6:84:EF:9B",
-        "reserved_ip": "192.168.5.31"
-      }
-    ]
+  "totals": {
+    "active": 28,
+    "known": 70,
+    "reserved": 16
   },
-  "xpath_failure": {
-    "dhcp4_static_addresses": "unknown_path"
-  },
-  "xpath_success": {
-    "dhcp4_pool_1": "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-    "dhcp4_pool_1_static_addresses": "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-    "dhcp4_pool_2": "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-    "dhcp4_pool_2_static_addresses": "Device/DHCPv4/Server/Pools/Pool[@uid='2']/StaticAddresses",
-    "dhcp4_server": "Device/DHCPv4/Server",
-    "dhcp4_server_pools": "Device/DHCPv4/Server/Pools",
-    "hosts_hosts": "Device/Hosts/Hosts",
-    "hosts_root": "Device/Hosts",
-    "ip_interfaces": "Device/IP/Interfaces",
-    "wifi_access_points": "Device/WiFi/AccessPoints"
+  "xpaths": {
+    "hosts": "Device/Hosts/Hosts",
+    "pool_1": "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
+    "pool_1_static": "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
+    "pool_2": "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
+    "pool_2_static": "Device/DHCPv4/Server/Pools/Pool[@uid='2']/StaticAddresses"
   }
 }

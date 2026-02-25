@@ -1191,7 +1191,8 @@ def build_dashboard_html() -> str:
             <th>interface</th>
             <th>id</th>
             <th>hostname</th>
-            <th>ip</th>
+            <th>current_ip</th>
+            <th>reserved_ip</th>
             <th>status</th>
           </tr>
         </thead>
@@ -1283,25 +1284,11 @@ def build_dashboard_html() -> str:
       return `${s.slice(0, 12)}...${s.slice(-10)}`;
     }
 
-    function renderIpCell(row, type) {
-      const current = row.current_ip || "";
-      const reserved = row.reserved_ip || "";
-      const visible = current || reserved || "-";
-      if (type !== "display") {
-        return `${current} ${reserved}`.trim();
-      }
-      const hover = `current: ${current || "-"} | reserved: ${reserved || "-"}`;
-      return `<span class="mono" title="${escapeHtml(hover)}">${escapeHtml(visible)}</span>`;
-    }
-
     function renderStateCell(row, type) {
       if (type !== "display") {
-        return `${row.is_reserved ? 1 : 0}${row.is_active ? 1 : 0}`;
+        return row.is_active ? "active" : "idle";
       }
-      return [
-        `<span class="chip ${row.is_reserved ? "ok" : "off"}">R:${row.is_reserved ? "yes" : "no"}</span>`,
-        `<span class="chip ${row.is_active ? "ok" : "off"}">A:${row.is_active ? "yes" : "no"}</span>`,
-      ].join(" ");
+      return `<span class="chip ${row.is_active ? "ok" : "off"}">${row.is_active ? "active" : "idle"}</span>`;
     }
 
     function setGrouping(enabled) {
@@ -1368,7 +1355,8 @@ def build_dashboard_html() -> str:
             },
           },
           { data: "hostname", render: (data, type) => (type === "display" ? escapeHtml(data || "") : data || "") },
-          { data: null, render: (_data, type, row) => renderIpCell(row, type) },
+          { data: "current_ip", render: (data, type) => (type === "display" ? `<span class="mono">${escapeHtml(data || "")}</span>` : data || "") },
+          { data: "reserved_ip", render: (data, type) => (type === "display" ? `<span class="mono">${escapeHtml(data || "")}</span>` : data || "") },
           { data: null, render: (_data, type, row) => renderStateCell(row, type) },
         ],
       });

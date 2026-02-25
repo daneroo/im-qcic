@@ -4,27 +4,11 @@
     "hostname": "syno",
     "interface_type": "ethernet",
     "is_active": true,
-    "is_reserved": true,
-    "mac": "98:B7:85:21:E9:4A",
-    "reserved_ip": "192.168.2.100",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.101",
-    "hostname": "gateway",
-    "interface_type": "ethernet",
-    "is_active": null,
     "is_reserved": false,
-    "mac": "FF:B5:5E:67:FF:00:02:00:00:AB:11:42:27:77:17:FE:B2:3C:8C",
+    "mac": "98:B7:85:21:E9:4A",
     "reserved_ip": null,
     "source_paths": [
-      "Device/Hosts"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -34,46 +18,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "02:11:32:2C:5D:18",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.101",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.105",
-    "hostname": "bluefin",
-    "interface_type": "ethernet",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "8E:FE:93:BC:7A:FD",
-    "reserved_ip": "192.168.2.105",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.109",
-    "hostname": "syno",
-    "interface_type": "ethernet",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "00:11:32:FC:4A:33",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -82,44 +29,11 @@
     "hostname": "hilbert",
     "interface_type": "ethernet",
     "is_active": false,
-    "is_reserved": true,
-    "mac": "98:B7:85:21:EB:18",
-    "reserved_ip": "192.168.2.110",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.111",
-    "hostname": "feynman",
-    "interface_type": "ethernet",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "C6:41:3F:F4:0F:7F",
-    "reserved_ip": "192.168.2.111",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.112",
-    "hostname": "plex-audiobook",
-    "interface_type": "ethernet",
-    "is_active": null,
     "is_reserved": false,
-    "mac": "FF:CA:53:09:5A:00:02:00:00:AB:11:33:2D:35:C4:13:00:99:9E",
+    "mac": "98:B7:85:21:EB:18",
     "reserved_ip": null,
     "source_paths": [
-      "Device/Hosts"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -129,13 +43,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "82:A1:71:54:20:4C",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.112",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -146,26 +56,10 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "B2:F6:4D:B1:09:7F",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.113",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.114",
-    "hostname": "scast-hilbert",
-    "interface_type": "ethernet",
-    "is_active": null,
-    "is_reserved": false,
-    "mac": "FF:CA:53:09:5A:00:02:00:00:AB:11:01:2B:1C:EA:62:08:DC:FF",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts"
     ]
   },
   {
@@ -175,42 +69,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "26:92:DC:5F:BF:A0",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.114",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.115",
-    "hostname": "Shannon",
-    "interface_type": "ethernet",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "2A:05:7C:4E:D2:60",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.117",
-    "hostname": "iPhone",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "AA:AE:6E:5E:1C:EC",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -223,24 +84,8 @@
     "mac": "A8:20:66:28:C3:8A",
     "reserved_ip": "192.168.2.120",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.121",
-    "hostname": "d1-px1",
-    "interface_type": "ethernet",
-    "is_active": null,
-    "is_reserved": false,
-    "mac": "FF:CA:53:09:5A:00:02:00:00:AB:11:4C:45:69:87:EA:5F:7E:80",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts"
     ]
   },
   {
@@ -250,46 +95,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "7A:4C:F2:F3:B3:E8",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.121",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.130",
-    "hostname": "euler",
-    "interface_type": "ethernet",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "40:6C:8F:19:8D:4F",
-    "reserved_ip": "192.168.2.130",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.132",
-    "hostname": "Mac",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "2A:74:A7:92:ED:70",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -302,12 +110,7 @@
     "mac": "DC:62:79:DB:A8:70",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -319,24 +122,7 @@
     "mac": "DC:62:79:DB:85:95",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.140",
-    "hostname": "omarchy",
-    "interface_type": "ethernet",
-    "is_active": null,
-    "is_reserved": false,
-    "mac": "FF:56:50:4D:98:00:02:00:00:AB:11:A8:CD:BA:11:8E:FA:56:5B",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -346,13 +132,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "70:70:FC:06:ED:C4",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.140",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -365,10 +147,6 @@
     "mac": "44:B7:D0:D6:37:A7",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -381,23 +159,7 @@
     "mac": "24:5A:4C:8C:48:E5",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.191",
-    "hostname": "clan-one",
-    "interface_type": "ethernet",
-    "is_active": null,
-    "is_reserved": false,
-    "mac": "FF:CA:53:09:5A:00:02:00:00:AB:11:97:0F:E9:47:17:15:D5:B8",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts"
     ]
   },
   {
@@ -409,28 +171,7 @@
     "mac": "CC:69:FA:61:D6:AF",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.204",
-    "hostname": "galileo",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "A0:9A:8E:8C:D6:75",
-    "reserved_ip": "192.168.2.204",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
     ]
   },
   {
@@ -442,12 +183,7 @@
     "mac": "5A:4D:CB:5F:59:7F",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -459,39 +195,19 @@
     "mac": "0A:F3:62:29:C7:E7",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
   {
-    "current_ip": "192.168.2.208",
-    "hostname": "cpe-109",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "E6:40:A6:20:46:45",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
     "current_ip": "192.168.2.233",
-    "hostname": "cpe-123",
-    "interface_type": "unknown",
+    "hostname": "Mac",
+    "interface_type": "ethernet",
     "is_active": false,
     "is_reserved": false,
     "mac": "E2:C8:B4:DF:18:C7",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -503,52 +219,7 @@
     "mac": "04:33:C2:82:09:7E",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.234",
-    "hostname": "hatch",
-    "interface_type": "ethernet",
-    "is_active": null,
-    "is_reserved": false,
-    "mac": "FF:46:85:9A:DF:00:02:00:00:AB:11:B9:34:F2:45:B9:60:58:6F",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.28",
-    "hostname": "iPad",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "62:A4:4F:DC:58:22",
-    "reserved_ip": "192.168.2.28",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.30",
-    "hostname": "darwin",
-    "interface_type": "ethernet",
-    "is_active": null,
-    "is_reserved": false,
-    "mac": "FF:03:0A:E4:3C:00:01:00:01:30:56:36:79:C4:2C:03:0A:E4:3C",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/Hosts"
     ]
   },
   {
@@ -558,13 +229,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "C4:2C:03:0A:E4:3C",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.30",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -575,29 +242,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "A8:20:66:11:4E:1F",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.31",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.32",
-    "hostname": "iMac",
-    "interface_type": "ethernet",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "62:F9:7B:6B:D6:B2",
-    "reserved_ip": "192.168.2.32",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -606,16 +253,11 @@
     "hostname": "iMac",
     "interface_type": "primary_wifi",
     "is_active": true,
-    "is_reserved": true,
+    "is_reserved": false,
     "mac": "A2:C4:F4:D9:BF:82",
-    "reserved_ip": "192.168.2.32",
+    "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -625,48 +267,9 @@
     "is_active": true,
     "is_reserved": true,
     "mac": "5C:E9:1E:E3:53:5C",
-    "reserved_ip": null,
+    "reserved_ip": "192.168.2.33",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
       "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.34",
-    "hostname": "Galois",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "5C:E9:1E:E4:6B:2E",
-    "reserved_ip": "192.168.2.34",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
-      "Device/Hosts/Hosts"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.35",
-    "hostname": "Goedel",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "34:36:3B:85:BB:1E",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -679,10 +282,6 @@
     "mac": "A8:20:66:1C:A1:BD",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -695,12 +294,7 @@
     "mac": "10:08:B1:9C:4A:68",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -712,13 +306,7 @@
     "mac": "80:5B:65:7F:72:78",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -730,28 +318,6 @@
     "mac": "48:D6:D5:CE:D2:31",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.51",
-    "hostname": "cpe-139",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "00:80:92:54:C7:71",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -764,27 +330,6 @@
     "mac": "7E:2F:D4:28:22:31",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.2.69",
-    "hostname": "HUAWEI_P30-4f32761083deaa",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "34:79:16:ED:EA:00",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
@@ -797,12 +342,7 @@
     "mac": "FC:B9:7E:07:44:EC",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -814,12 +354,7 @@
     "mac": "48:E1:5C:AD:B6:55",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -831,12 +366,7 @@
     "mac": "98:25:4A:F7:EB:91",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -848,12 +378,7 @@
     "mac": "EC:FA:BC:79:B4:7E",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -865,12 +390,7 @@
     "mac": "18:B4:30:CF:87:BA",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -882,301 +402,19 @@
     "mac": "76:C8:96:19:97:AB",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.13",
-    "hostname": "iPhone",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "BE:7C:DF:57:52:20",
-    "reserved_ip": "192.168.5.13",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.14",
-    "hostname": "12:e4:77:34:f5:db",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "12:E4:77:34:F5:DB",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": "192.168.5.15",
     "hostname": "Mac",
     "interface_type": "guest_wifi",
-    "is_active": true,
+    "is_active": false,
     "is_reserved": false,
     "mac": "56:56:F9:CD:9C:75",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.16",
-    "hostname": "Pixel-6",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "36:3A:7C:0F:FE:CC",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.17",
-    "hostname": "a2:b8:56:5d:ca:f7",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "A2:B8:56:5D:CA:F7",
-    "reserved_ip": "192.168.5.17",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.18",
-    "hostname": "de:7f:eb:d2:36:26",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "DE:7F:EB:D2:36:26",
-    "reserved_ip": "192.168.5.18",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.19",
-    "hostname": "3e:0e:63:8e:c9:98",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "3E:0E:63:8E:C9:98",
-    "reserved_ip": "192.168.5.19",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.20",
-    "hostname": "76:30:28:86:66:ac",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "76:30:28:86:66:AC",
-    "reserved_ip": "192.168.5.20",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.21",
-    "hostname": "c6:e9:07:32:f5:f7",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "C6:E9:07:32:F5:F7",
-    "reserved_ip": "192.168.5.21",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.22",
-    "hostname": "2e:43:8d:b5:2f:15",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "2E:43:8D:B5:2F:15",
-    "reserved_ip": "192.168.5.22",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.24",
-    "hostname": "76:b4:e6:00:a5:c7",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "76:B4:E6:00:A5:C7",
-    "reserved_ip": "192.168.5.24",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.25",
-    "hostname": "de:ae:ca:7e:53:7d",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "DE:AE:CA:7E:53:7D",
-    "reserved_ip": "192.168.5.25",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.27",
-    "hostname": "4a:ad:00:f3:85:6b",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "4A:AD:00:F3:85:6B",
-    "reserved_ip": "192.168.5.27",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.28",
-    "hostname": "06:de:c9:14:70:2b",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "06:DE:C9:14:70:2B",
-    "reserved_ip": "192.168.5.28",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.29",
-    "hostname": "e2:5e:c8:e4:db:70",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "E2:5E:C8:E4:DB:70",
-    "reserved_ip": "192.168.5.29",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.30",
-    "hostname": "42:24:a9:f2:f6:39",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "42:24:A9:F2:F6:39",
-    "reserved_ip": "192.168.5.30",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
-    ]
-  },
-  {
-    "current_ip": "192.168.5.31",
-    "hostname": "fe:a1:c6:84:ef:9b",
-    "interface_type": "primary_wifi",
-    "is_active": false,
-    "is_reserved": true,
-    "mac": "FE:A1:C6:84:EF:9B",
-    "reserved_ip": "192.168.5.31",
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -1188,12 +426,141 @@
     "mac": "22:2D:3E:1E:B9:E4",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']",
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "06:de:c9:14:70:2b",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "06:DE:C9:14:70:2B",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "12:e4:77:34:f5:db",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "12:E4:77:34:F5:DB",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "2e:43:8d:b5:2f:15",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "2E:43:8D:B5:2F:15",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "3e:0e:63:8e:c9:98",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "3E:0E:63:8E:C9:98",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "42:24:a9:f2:f6:39",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "42:24:A9:F2:F6:39",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "4a:ad:00:f3:85:6b",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "4A:AD:00:F3:85:6B",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "76:30:28:86:66:ac",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "76:30:28:86:66:AC",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "76:b4:e6:00:a5:c7",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "76:B4:E6:00:A5:C7",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "Galois",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": true,
+    "mac": "5C:E9:1E:E4:6B:2E",
+    "reserved_ip": "192.168.2.34",
+    "source_paths": [
+      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "Goedel",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": true,
+    "mac": "34:36:3B:85:BB:1E",
+    "reserved_ip": "192.168.2.35",
+    "source_paths": [
+      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "HUAWEI_P30-4f32761083deaa",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "34:79:16:ED:EA:00",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -1205,10 +572,78 @@
     "mac": "3C:64:CF:C4:29:72",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "Mac",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "2A:74:A7:92:ED:70",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "Pixel-6",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "36:3A:7C:0F:FE:CC",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "Shannon",
+    "interface_type": "ethernet",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "2A:05:7C:4E:D2:60",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "a2:b8:56:5d:ca:f7",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "A2:B8:56:5D:CA:F7",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "bluefin",
+    "interface_type": "ethernet",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "8E:FE:93:BC:7A:FD",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "c6:e9:07:32:f5:f7",
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "C6:E9:07:32:F5:F7",
+    "reserved_ip": null,
+    "source_paths": [
       "Device/Hosts/Hosts"
     ]
   },
@@ -1221,1399 +656,141 @@
     "mac": "52:08:63:16:B2:27",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/Hosts",
       "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-1",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "1A:3C:82:B8:92:52",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-1",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8C:2D:AA:3A:D2:D5",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-10",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "62:85:FF:9A:0F:2D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-100",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "42:D0:ED:00:94:D7",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-101",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "C2:63:15:0A:38:C1",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-102",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "E6:7A:73:71:70:44",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-103",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8A:6E:21:51:C8:7E",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-104",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "6E:BF:41:35:A5:AA",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-107",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "6E:55:1B:63:72:72",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-11",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "14:10:9F:EB:81:7A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-110",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "5E:26:E3:10:A8:85",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-111",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "4A:0E:2C:71:5F:10",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-112",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "DA:49:6F:E0:3D:90",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-113",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "26:FD:FE:DD:AC:3D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-114",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "B6:53:6D:7E:58:7D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-115",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "1A:31:19:87:85:D3",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-116",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "00:1C:B3:72:A2:16",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-117",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "00:1B:63:97:B7:5F",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-118",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BC:24:11:16:C5:C9",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-119",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "26:DE:78:60:B5:5A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-12",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "F6:FB:37:3D:A4:86",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-121",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "B2:28:6C:EB:90:64",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-122",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "9A:2E:47:70:73:D6",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-13",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "06:CD:F3:92:EE:F9",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-15",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "70:AE:D5:3C:29:D5",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-16",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "AC:C9:06:1C:C9:18",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-17",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "AA:B5:B2:8A:E9:7D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-18",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8E:9F:B0:B3:DF:79",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-20",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "E8:C8:29:ED:8C:08",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-23",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "A6:9F:4B:94:27:53",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-23",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "D0:03:4B:24:8E:8A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-24",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "7A:04:C2:65:2F:27",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-25",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "76:16:91:8D:B0:43",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-25",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "B6:7C:9E:80:76:66",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-256",
+    "hostname": "de:7f:eb:d2:36:26",
     "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "E6:39:99:40:28:D3",
+    "mac": "DE:7F:EB:D2:36:26",
     "reserved_ip": null,
     "source_paths": [
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-259",
+    "hostname": "de:ae:ca:7e:53:7d",
     "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "76:B7:63:9F:C2:54",
+    "mac": "DE:AE:CA:7E:53:7D",
     "reserved_ip": null,
     "source_paths": [
-      "Device/Hosts",
-      "Device/Hosts/Hosts",
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-26",
-    "interface_type": "guest_wifi",
+    "hostname": "e2:5e:c8:e4:db:70",
+    "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "F0:9E:9E:AE:55:1C",
+    "mac": "E2:5E:C8:E4:DB:70",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-27",
-    "interface_type": "guest_wifi",
+    "hostname": "euler",
+    "interface_type": "ethernet",
     "is_active": false,
-    "is_reserved": false,
-    "mac": "FE:73:22:70:B2:E4",
-    "reserved_ip": null,
+    "is_reserved": true,
+    "mac": "40:6C:8F:19:8D:4F",
+    "reserved_ip": "192.168.2.130",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
+      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-27",
-    "interface_type": "unknown",
+    "hostname": "fe:a1:c6:84:ef:9b",
+    "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "70:3A:CB:5E:34:6E",
+    "mac": "FE:A1:C6:84:EF:9B",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-28",
-    "interface_type": "guest_wifi",
+    "hostname": "feynman",
+    "interface_type": "ethernet",
     "is_active": false,
-    "is_reserved": false,
-    "mac": "1E:07:3D:A2:9D:4C",
-    "reserved_ip": null,
+    "is_reserved": true,
+    "mac": "C6:41:3F:F4:0F:7F",
+    "reserved_ip": "192.168.2.111",
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
+      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-28",
-    "interface_type": "unknown",
+    "hostname": "galileo",
+    "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "D0:77:14:C7:FE:84",
+    "mac": "A0:9A:8E:8C:D6:75",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-29",
-    "interface_type": "guest_wifi",
+    "hostname": "iMac",
+    "interface_type": "ethernet",
     "is_active": false,
     "is_reserved": false,
-    "mac": "0E:62:43:AE:F7:AB",
+    "mac": "62:F9:7B:6B:D6:B2",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-29",
-    "interface_type": "unknown",
+    "hostname": "iPad",
+    "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "70:3A:CB:5E:34:74",
+    "mac": "62:A4:4F:DC:58:22",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-3",
-    "interface_type": "guest_wifi",
+    "hostname": "iPhone",
+    "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "F8:E4:E3:15:42:7B",
+    "mac": "AA:AE:6E:5E:1C:EC",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
     "current_ip": null,
-    "hostname": "cpe-3",
-    "interface_type": "unknown",
+    "hostname": "iPhone",
+    "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "D6:9C:33:DB:C2:F2",
+    "mac": "BE:7C:DF:57:52:20",
     "reserved_ip": null,
     "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-30",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "70:5A:B6:43:3C:A5",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-31",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "C0:3F:0E:EF:69:E9",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-34",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "42:F6:A3:C6:BD:C3",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-35",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "DE:8A:5B:2A:4A:CB",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-36",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "EE:FC:46:EE:94:BC",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-37",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "42:62:B2:60:4B:76",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-38",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "38:F9:D3:6F:42:D9",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-4",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "00:93:37:58:81:58",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-4",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "70:3A:CB:8A:A5:17",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-40",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "82:88:14:AE:71:1A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-42",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "DA:A5:92:71:EB:18",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-43",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "2A:B7:83:6D:56:BD",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-44",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "0E:56:81:1D:0E:09",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-46",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "82:69:6E:FE:33:9D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-47",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8A:0D:84:18:6A:4C",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-48",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "92:3A:B8:6B:6A:0D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-49",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "B8:03:05:53:41:70",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-5",
-    "interface_type": "guest_wifi",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8E:96:FA:53:77:1F",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='2']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-5",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "96:D4:64:2C:7B:87",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-50",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "B0:E5:F9:ED:7C:AF",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-51",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "E8:03:9A:93:90:BB",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-53",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "18:26:49:E7:45:0A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-54",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "EE:C1:02:C0:B7:1B",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-56",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "7E:1D:65:74:F6:AA",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-58",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BC:24:11:74:E4:63",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-59",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BC:24:11:F0:EC:93",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-6",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "CA:FE:C5:64:77:80",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-60",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BC:24:11:3E:73:63",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-61",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BC:24:11:5D:44:E1",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-62",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BC:24:11:DD:55:97",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-63",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "C2:9D:F1:C0:E6:03",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-65",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "F0:18:98:6F:1F:CD",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-7",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "96:B6:89:94:57:38",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-71",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "C2:06:5C:FB:9D:7A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-75",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "E6:0D:1B:50:08:1A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-76",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "02:3F:DB:74:5A:D9",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-78",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "BE:18:37:28:22:D3",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-79",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "96:79:0A:0F:D9:34",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-80",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "1C:0B:8B:18:AD:A4",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-82",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "D6:F8:FD:24:C8:99",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-83",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "2A:A9:15:20:BD:83",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-84",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "46:BA:55:DE:55:A2",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-85",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8A:66:0F:C9:89:BD",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-86",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "82:A2:E9:9E:75:1D",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-87",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "8E:D5:13:4B:08:A4",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-88",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "FE:53:B1:A8:79:53",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-89",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "9A:DB:BF:9E:60:87",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-9",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "B0:E5:F9:ED:63:32",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-90",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "DE:58:5C:5F:0F:74",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-91",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "72:F1:26:98:17:DF",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-92",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "A6:35:86:70:6F:5A",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-96",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "0E:F8:57:2C:88:3C",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-97",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "7E:AD:49:07:2E:4E",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
-    ]
-  },
-  {
-    "current_ip": null,
-    "hostname": "cpe-99",
-    "interface_type": "unknown",
-    "is_active": false,
-    "is_reserved": false,
-    "mac": "38:F9:D3:D7:12:D3",
-    "reserved_ip": null,
-    "source_paths": [
-      "Device/DHCPv4/Server",
-      "Device/DHCPv4/Server/Pools",
-      "Device/DHCPv4/Server/Pools/Pool[@uid='1']"
+      "Device/Hosts/Hosts"
     ]
   },
   {
@@ -2625,7 +802,19 @@
     "mac": "36:C4:04:3A:D3:09",
     "reserved_ip": null,
     "source_paths": [
-      "Device/Hosts",
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": "syno",
+    "interface_type": "ethernet",
+    "is_active": false,
+    "is_reserved": true,
+    "mac": "00:11:32:FC:4A:33",
+    "reserved_ip": "192.168.2.100",
+    "source_paths": [
+      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
       "Device/Hosts/Hosts"
     ]
   },
@@ -2635,10 +824,35 @@
     "interface_type": "primary_wifi",
     "is_active": false,
     "is_reserved": false,
-    "mac": "06:EE:90:1C:F3:1D",
+    "mac": "76:B7:63:9F:C2:54",
     "reserved_ip": null,
     "source_paths": [
-      "Device/WiFi/AccessPoints"
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": null,
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": false,
+    "mac": "E6:39:99:40:28:D3",
+    "reserved_ip": null,
+    "source_paths": [
+      "Device/Hosts/Hosts"
+    ]
+  },
+  {
+    "current_ip": null,
+    "hostname": null,
+    "interface_type": "primary_wifi",
+    "is_active": false,
+    "is_reserved": true,
+    "mac": "00:80:92:54:C7:71",
+    "reserved_ip": "192.168.2.51",
+    "source_paths": [
+      "Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses",
+      "Device/Hosts/Hosts"
     ]
   }
 ]

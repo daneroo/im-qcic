@@ -1,24 +1,6 @@
-# Giga Hub DHCP Reservation Plan
+# Giga Hub DHCP Extraction
 
-A cli, and a web ui!
-
-## Usage
-
-- `uv run gigahub_extract.py -h`
-- `uv run gigahub_extract.py --summary`
-- `uv run gigahub_extract.py --serve`
-
-## Invocation
-
-- `cp .env.example .env`
-- Edit `.env` and set `SAGEMCOM_PASS`.
-- Crawl router and write JSON + summary (default): `uv run gigahub_extract.py`
-- Explicit crawl mode: `uv run gigahub_extract.py --scrape`
-- Rebuild only summary from existing JSON (no router crawl): `uv run gigahub_extract.py --summary`
-- Serve local UI + API (includes regenerate buttons): `uv run gigahub_extract.py --serve`
-- Show flags/help: `uv run gigahub_extract.py -h`
-- Optional one-off override:
-  - `SAGEMCOM_PASS='...' uv run gigahub_extract.py`
+Extract device inventory and DHCP reservation data from a Bell Giga Hub (Sagemcom F@st 5690).
 
 ## Context
 
@@ -27,124 +9,137 @@ A cli, and a web ui!
 - UI: **7.3.28**
 - Router IP: `192.168.2.1`
 - LAN: `192.168.2.0/24`
-- UI API endpoint: `POST /cgi/json-req`
+- API endpoint used by the web UI: `POST /cgi/json-req`
 
 ## Objective
 
-- Extract all known entries across Primary Wi-Fi, Guest Wi-Fi, and Wired.
-- Identify which entries are reserved/static.
-- Provide a repeatable script to export this data.
+- List known devices across Primary Wi-Fi, Guest Wi-Fi, and Wired.
+- Mark which devices are DHCP-reserved (static reservation).
+- Generate repeatable JSON outputs that diff cleanly in git.
+
+## Usage
+
+```bash
+uv run gigahub_extract.py -h
+uv run gigahub_extract.py --scrape
+uv run gigahub_extract.py --summary
+uv run gigahub_extract.py --serve
+```
+
+## Outputs (Read These First)
+
+All output files are in `report/`.
+
+| file                         | type             | meaning                                             |
+| ---------------------------- | ---------------- | --------------------------------------------------- |
+| `raw_xpath_values.json`      | source capture   | Raw API responses captured from router paths.       |
+| `known_devices.json`         | derived          | Full merged device list.                            |
+| `active_devices.json`        | derived          | Subset where device is currently active.            |
+| `reserved_devices.json`      | derived          | Subset where DHCP reservation is detected.          |
+| `reserved_by_interface.json` | derived          | Reserved devices grouped by interface label.        |
+| `entities.json`              | derived metadata | Counts and scrape success/failure per queried path. |
+| `summary.md`                 | derived report   | Human-readable summary generated from JSON files.   |
+
+## What Is Proven (Stable Facts)
+
+These facts are stable router configuration facts, not run-time counts.
+
+| fact                  | router path queried                         | value location in `raw_xpath_values.json` | expected value                                |
+| --------------------- | ------------------------------------------- | ----------------------------------------- | --------------------------------------------- |
+| LAN DHCP pool id      | `Device/DHCPv4/Server/Pools/Pool[@uid='1']` | `dhcp4_pool_1.Pool.uid`                   | `1`                                           |
+| LAN DHCP pool alias   | `Device/DHCPv4/Server/Pools/Pool[@uid='1']` | `dhcp4_pool_1.Pool.Alias`                 | `DEFAULT_POOL`                                |
+| LAN bridge            | `Device/DHCPv4/Server/Pools/Pool[@uid='1']` | `dhcp4_pool_1.Pool.Interface`             | `Device/IP/Interfaces/Interface[IP_BR_LAN]`   |
+| LAN router IP         | `Device/DHCPv4/Server/Pools/Pool[@uid='1']` | `dhcp4_pool_1.Pool.IPInterface`           | `192.168.2.1`                                 |
+| Guest DHCP pool id    | `Device/DHCPv4/Server/Pools/Pool[@uid='2']` | `dhcp4_pool_2.Pool.uid`                   | `2`                                           |
+| Guest DHCP pool alias | `Device/DHCPv4/Server/Pools/Pool[@uid='2']` | `dhcp4_pool_2.Pool.Alias`                 | `GUEST_POOL`                                  |
+| Guest bridge          | `Device/DHCPv4/Server/Pools/Pool[@uid='2']` | `dhcp4_pool_2.Pool.Interface`             | `Device/IP/Interfaces/Interface[IP_BR_GUEST]` |
+| Guest router IP       | `Device/DHCPv4/Server/Pools/Pool[@uid='2']` | `dhcp4_pool_2.Pool.IPInterface`           | `192.168.5.1`                                 |
+| ADMZ pool disabled    | `Device/DHCPv4/Server/Pools`                | `dhcp4_server_pools[]` row with `uid=3`   | `Alias=ADMZ_POOL`, `Enable=false`             |
+
+Run-time totals are intentionally excluded from this section.
+
+## Validation (Systematic)
+
+### 1) Validate source capture
+
+- Run: `uv run gigahub_extract.py --scrape`
+- Check `report/entities.json`:
+  - `xpath_success` has expected paths.
+  - `xpath_failure` is empty or understood.
+
+### 2) Validate pool mapping
+
+- Check `report/raw_xpath_values.json` values listed in the "What Is Proven" table.
+- This confirms LAN pool vs Guest pool mapping directly from router config.
+
+### 3) Validate active counts vs UI
+
+- Take UI snapshot counts at same time (Primary / Guest / Ethernet).
+- Compare with `report/entities.json.active_by_interface`.
+- This is time-sensitive and can drift as clients connect/disconnect.
+
+### 4) Validate reservation extraction
+
+- Compare UI reservation table rows with:
+  - `report/reserved_devices.json`
+  - `report/reserved_by_interface.json`
+- Differences should be explained by stale UI rows, stale DHCP lease history, or extractor heuristics.
+
+## Data Sources (How Outputs Are Built)
+
+### Terms
+
+- `path`: Router model selector sent to API (example: `Device/Hosts/Hosts`).
+- `query`: One HTTP POST to `/cgi/json-req` containing one or more actions.
+- `action`: One `getValue` operation for one path.
+- `alias key`: Local JSON key used in `raw_xpath_values.json` for that path response.
+
+### Queried paths
+
+| alias key                       | router path                                                 | currently used for                                   |
+| ------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------- |
+| `hosts_hosts`                   | `Device/Hosts/Hosts`                                        | active hosts, interface hints, hostnames, current IP |
+| `hosts_root`                    | `Device/Hosts`                                              | additional host metadata                             |
+| `dhcp4_server`                  | `Device/DHCPv4/Server`                                      | lease/client structures                              |
+| `dhcp4_server_pools`            | `Device/DHCPv4/Server/Pools`                                | pool list and enable flags                           |
+| `dhcp4_pool_1`                  | `Device/DHCPv4/Server/Pools/Pool[@uid='1']`                 | LAN pool config and lease hints                      |
+| `dhcp4_pool_2`                  | `Device/DHCPv4/Server/Pools/Pool[@uid='2']`                 | Guest pool config and lease hints                    |
+| `dhcp4_pool_1_static_addresses` | `Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses` | LAN reservation hints                                |
+| `dhcp4_pool_2_static_addresses` | `Device/DHCPv4/Server/Pools/Pool[@uid='2']/StaticAddresses` | Guest reservation hints                              |
+| `ip_interfaces`                 | `Device/IP/Interfaces`                                      | interface metadata                                   |
+| `wifi_access_points`            | `Device/WiFi/AccessPoints`                                  | wifi metadata                                        |
+
+Known failing candidate path:
+
+- alias `dhcp4_static_addresses`
+- path `Device/DHCPv4/Server/StaticAddresses`
+- router result `unknown_path`
+
+## Assumptions and Limits
+
+- No official vendor path catalog was available; path list is empirical.
+- Some identifiers may be DHCP `ClientID` values and not canonical 6-byte MAC addresses.
+- Router hostnames like `cpe-###` are often generic placeholders.
+- Interface labels in derived files are heuristic when source fields are ambiguous.
+
+## Sensitive Data Notes
+
+Review before committing `report/` files:
+
+- device MAC addresses
+- hostnames
+- internal IPv4 addresses
+- raw lease/client identifiers in `raw_xpath_values.json`
+
+## Protocol Details (Optional)
+
+This section is only needed if reimplementing extractor logic.
+
+- Transport: `POST /cgi/json-req`
+- Body: form-encoded field `req=<json string>`
+- Action style: `{"method":"getValue","xpath":"Device/..."}`
+- The script issues multiple `getValue` actions and writes each response into `raw_xpath_values.json` under its alias key.
 
 ## Tooling Rule
 
-- Use `uv` only for dependency/runtime management.
-- Do not use `pip install` in this project.
-- Prefer no `pyproject.toml` for this repo.
-
-## Task Tracker
-
-- [x] Confirm router context and endpoint family (`/cgi/json-req`)
-- [x] Confirm authenticated access and device table visibility
-- [ ] Capture reservation-specific `Device/...` xpaths from UI traffic
-  - [x] Primary + Wired reservation path (`Pool[@uid='1']/StaticAddresses`)
-  - [x] Guest reservation path (`Pool[@uid='2']/StaticAddresses`)
-  - [x] Generic static path unavailable on this firmware (`unknown_path`)
-- [x] Build repeatable extractor script (`gigahub_extract.py`)
-  - [x] Login/session handling
-  - [x] Query host + lease + reservation paths
-  - [x] Normalize records by MAC
-  - [x] Export stable JSON entities + summary markdown
-- [ ] Validate extraction against UI
-  - [x] Device counts match UI
-  - [ ] Reserved entries match UI
-  - [x] 3 repeated runs keep reservation set stable
-  - [ ] Failure checks: bad password, expired session, missing xpath
-
-## Validation Criteria
-
-1. Output contains all interfaces: `primary_wifi`, `guest_wifi`, `ethernet`.
-2. Every reserved UI entry appears with `is_reserved=true`.
-3. No silent drops for devices missing hostname or IP.
-4. Script exits non-zero on auth/session/path failures.
-
-## How Data Was Gathered
-
-### Browser approach (Playwright tool)
-
-- Logged into the modem UI and navigated live views (`dashboard`, `mynetwork`, `advancedtools/dhcp`).
-- Used `My devices` + `Advanced` view to verify per-device `IP/MAC` details.
-- Used dashboard and modal counts as UI ground truth:
-  - Primary Wi-Fi: `11`
-  - Guest Wi-Fi: `3`
-  - Ethernet: `15`
-  - Active total: `29`
-- Used `DHCP lease table` popup to validate what the UI currently exposes directly.
-
-### Python approach (`gigahub_extract.py`)
-
-- Uses direct `POST /cgi/json-req` requests (same backend family as UI).
-- Logs in and queries multiple `Device/...` xpaths (hosts, DHCP pools, static address lists, interfaces, Wi-Fi APs).
-- Normalizes all records by MAC and classifies into `primary_wifi`, `guest_wifi`, `ethernet`, `unknown`.
-- Produces deterministic, pretty-printed JSON and a markdown summary for repeatable git diffs.
-- Generates `summary.md` primarily from the JSON artifacts in `report/`.
-
-## DHCP XPath Coverage
-
-- Working reservation sources:
-  - `Device/DHCPv4/Server/Pools/Pool[@uid='1']/StaticAddresses`
-  - `Device/DHCPv4/Server/Pools/Pool[@uid='2']/StaticAddresses`
-- Working context paths:
-  - `Device/DHCPv4/Server`
-  - `Device/DHCPv4/Server/Pools`
-  - `Device/DHCPv4/Server/Pools/Pool[@uid='1']`
-  - `Device/DHCPv4/Server/Pools/Pool[@uid='2']`
-  - `Device/Hosts/Hosts`
-- Failed path:
-  - `Device/DHCPv4/Server/StaticAddresses` returns `unknown_path` on this firmware/UI.
-- Why this is not blocking:
-  - The script still extracts reservations from the per-pool static address paths above.
-  - `reserved_devices.json` and `reserved_by_interface.json` are built from those working sources.
-
-## Assumptions And Limits
-
-- No official per-firmware XPath schema is used here.
-- Candidate paths are inferred from:
-  - TR-181-style naming (`Device/...`)
-  - successful parent paths discovered on this router
-  - manual probing of nearby child paths
-- Pool assumptions currently used:
-  - `Pool[@uid='1']` is treated as default LAN (`192.168.2.x`)
-  - `Pool[@uid='2']` is treated as guest LAN (`192.168.5.x`)
-- Interface classification uses heuristics, not authoritative labels:
-  - `192.168.5.x` and `Pool[@uid='2']` imply `guest_wifi`
-  - `wifi/wlan` strings imply `primary_wifi`
-  - `ethernet/wired/eth` strings imply `ethernet`
-- `cpe-###` hostnames are router-generated aliases from DHCP pool client lists and can represent stale/inactive historical entries.
-- Some router rows include DHCP `ClientID` values that look MAC-like but are not true 6-byte layer-2 MAC addresses.
-- Known current bug/limitation:
-  - conflicting evidence from multiple source paths can keep some `192.168.5.x` entries labeled `primary_wifi` instead of `guest_wifi` (merge precedence issue).
-  - treat interface labels as inferred until this precedence fix lands.
-
-### Difference between approaches
-
-- Browser approach:
-  - Best for confirming what the UI truly shows right now.
-  - Good for manual validation and troubleshooting.
-- Python approach:
-  - Best for repeatable extraction and version-controlled outputs.
-  - Captures broader structured data than the UI tables alone.
-- Combined:
-  - Browser validates.
-  - Script operationalizes.
-
-## Output Entities
-
-Each run overwrites stable files in `./report/`:
-
-- `known_devices.json`: merged known device inventory keyed by normalized MAC.
-- `active_devices.json`: only currently active devices.
-- `reserved_devices.json`: devices flagged reserved/static by heuristics.
-- `reserved_by_interface.json`: reservation view grouped by `primary_wifi` / `guest_wifi` / `ethernet`.
-- `entities.json`: metadata, xpath success/failure, and aggregate counters.
-- `raw_xpath_values.json`: raw router payloads (contains sensitive data; review before commit).
-- `summary.md`: human summary generated mostly from the JSON files above.
+Use `uv` only in this project. Do not use `pip install` here.
