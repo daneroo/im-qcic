@@ -389,11 +389,12 @@ async def get_reservations(
 # ── Merge ──────────────────────────────────────────────────────────────────────
 
 def _ip_sort_key(device: dict[str, Any]) -> tuple:
-    ip = device.get("current_ip") or device.get("reserved_ip") or ""
-    try:
-        return (tuple(int(x) for x in ip.split(".")), device.get("mac", ""))
-    except (ValueError, AttributeError):
-        return ((999, 999, 999, 999), device.get("mac", ""))
+    def _octets(ip: str | None) -> tuple:
+        try:
+            return tuple(int(x) for x in (ip or "").split(".")) if ip else (999, 999, 999, 999)
+        except ValueError:
+            return (999, 999, 999, 999)
+    return (_octets(device.get("reserved_ip")), _octets(device.get("current_ip")), device.get("mac", ""))
 
 
 def merge(
@@ -700,7 +701,7 @@ def build_html() -> str:
 <script>
 // ── State ──────────────────────────────────────────────────────────────────────
 let allDevices = [];
-let sortCol = 'current_ip';
+let sortCol = 'reserved_ip';
 let sortAsc  = true;
 const filters = { network: 'all', medium: 'all', reservedOnly: false, activeOnly: false, group: true, search: '' };
 
