@@ -16,14 +16,6 @@
     "reserved_ip": "192.168.2.31"
   },
   {
-    "mac": "A2:C4:F4:D9:BF:82",
-    "hostname": "iMac",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.32",
-    "reserved_ip": null
-  },
-  {
     "mac": "5C:E9:1E:E3:53:5C",
     "hostname": "Galois",
     "network": "lan",
@@ -48,76 +40,12 @@
     "reserved_ip": "192.168.2.35"
   },
   {
-    "mac": "A8:20:66:1C:A1:BD",
-    "hostname": "shannon",
-    "network": "lan",
-    "medium": "ethernet",
-    "current_ip": "192.168.2.36",
-    "reserved_ip": null
-  },
-  {
-    "mac": "10:08:B1:9C:4A:68",
-    "hostname": "BRW1008B19C4A68",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.37",
-    "reserved_ip": null
-  },
-  {
-    "mac": "80:5B:65:7F:72:78",
-    "hostname": "LGwebOSTV",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.38",
-    "reserved_ip": null
-  },
-  {
-    "mac": "48:D6:D5:CE:D2:31",
-    "hostname": "Google-Home-Mini",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.42",
-    "reserved_ip": null
-  },
-  {
     "mac": "00:80:92:54:C7:71",
     "hostname": null,
     "network": "lan",
     "medium": "wifi",
     "current_ip": null,
     "reserved_ip": "192.168.2.51"
-  },
-  {
-    "mac": "7E:2F:D4:28:22:31",
-    "hostname": "iPhone",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.52",
-    "reserved_ip": null
-  },
-  {
-    "mac": "FC:B9:7E:07:44:EC",
-    "hostname": "\ufffd4\t0\ufffd\ufffd\u0001\u0010\u0003",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.70",
-    "reserved_ip": null
-  },
-  {
-    "mac": "48:E1:5C:AD:B6:55",
-    "hostname": "Foyer",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.95",
-    "reserved_ip": null
-  },
-  {
-    "mac": "98:25:4A:F7:EB:91",
-    "hostname": "HS300",
-    "network": "lan",
-    "medium": "wifi",
-    "current_ip": "192.168.2.99",
-    "reserved_ip": null
   },
   {
     "mac": "00:11:32:FC:4A:33",
@@ -128,28 +56,12 @@
     "reserved_ip": "192.168.2.100"
   },
   {
-    "mac": "98:B7:85:21:E9:4A",
-    "hostname": "syno",
-    "network": "lan",
-    "medium": "ethernet",
-    "current_ip": "192.168.2.100",
-    "reserved_ip": null
-  },
-  {
     "mac": "02:11:32:2C:5D:18",
     "hostname": "gateway",
     "network": "lan",
     "medium": "ethernet",
     "current_ip": "192.168.2.101",
     "reserved_ip": "192.168.2.101"
-  },
-  {
-    "mac": "98:B7:85:21:EB:18",
-    "hostname": "hilbert",
-    "network": "lan",
-    "medium": "ethernet",
-    "current_ip": "192.168.2.110",
-    "reserved_ip": null
   },
   {
     "mac": "C6:41:3F:F4:0F:7F",
@@ -208,6 +120,102 @@
     "reserved_ip": "192.168.2.130"
   },
   {
+    "mac": "70:70:FC:06:ED:C4",
+    "hostname": "omarchy",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.140",
+    "reserved_ip": "192.168.2.140"
+  },
+  {
+    "mac": "A2:C4:F4:D9:BF:82",
+    "hostname": "iMac",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.32",
+    "reserved_ip": null
+  },
+  {
+    "mac": "A8:20:66:1C:A1:BD",
+    "hostname": "shannon",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.36",
+    "reserved_ip": null
+  },
+  {
+    "mac": "10:08:B1:9C:4A:68",
+    "hostname": "BRW1008B19C4A68",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.37",
+    "reserved_ip": null
+  },
+  {
+    "mac": "80:5B:65:7F:72:78",
+    "hostname": "LGwebOSTV",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.38",
+    "reserved_ip": null
+  },
+  {
+    "mac": "48:D6:D5:CE:D2:31",
+    "hostname": "Google-Home-Mini",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.42",
+    "reserved_ip": null
+  },
+  {
+    "mac": "7E:2F:D4:28:22:31",
+    "hostname": "iPhone",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.52",
+    "reserved_ip": null
+  },
+  {
+    "mac": "FC:B9:7E:07:44:EC",
+    "hostname": "\ufffd4\t0\ufffd\ufffd\u0001\u0010\u0003",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.70",
+    "reserved_ip": null
+  },
+  {
+    "mac": "48:E1:5C:AD:B6:55",
+    "hostname": "Foyer",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.95",
+    "reserved_ip": null
+  },
+  {
+    "mac": "98:25:4A:F7:EB:91",
+    "hostname": "HS300",
+    "network": "lan",
+    "medium": "wifi",
+    "current_ip": "192.168.2.99",
+    "reserved_ip": null
+  },
+  {
+    "mac": "98:B7:85:21:E9:4A",
+    "hostname": "syno",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.100",
+    "reserved_ip": null
+  },
+  {
+    "mac": "98:B7:85:21:EB:18",
+    "hostname": "hilbert",
+    "network": "lan",
+    "medium": "ethernet",
+    "current_ip": "192.168.2.110",
+    "reserved_ip": null
+  },
+  {
     "mac": "DC:62:79:DB:A8:70",
     "hostname": "KP125M",
     "network": "lan",
@@ -222,14 +230,6 @@
     "medium": "wifi",
     "current_ip": "192.168.2.134",
     "reserved_ip": null
-  },
-  {
-    "mac": "70:70:FC:06:ED:C4",
-    "hostname": "omarchy",
-    "network": "lan",
-    "medium": "ethernet",
-    "current_ip": "192.168.2.140",
-    "reserved_ip": "192.168.2.140"
   },
   {
     "mac": "44:B7:D0:D6:37:A7",
