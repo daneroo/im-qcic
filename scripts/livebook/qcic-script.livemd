@@ -5,7 +5,9 @@ livebook_dir = Path.dirname(__ENV__.file)
 
 Mix.install([
   {:kino_vega_lite, "~> 0.1.11"},
-  {:qcic, path: Path.join(livebook_dir, "qcic")}
+  {:qcic, path: Path.join(livebook_dir, "qcic")},
+  {:pythonx, "~> 0.4.2"},
+  {:kino_pythonx, "~> 0.1.0"}
 ])
 ```
 
