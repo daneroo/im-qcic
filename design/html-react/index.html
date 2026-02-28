@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QCIC | React Prototype</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Outfit", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for in-browser JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      .theme-transition {
+        transition: all 0.6s ease-in-out;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#f7f7f5] text-stone-900 font-sans antialiased min-h-screen theme-transition"
+  >
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // Mock Data matching the exact nomenclature defined in README.md
+      const RAW_DATA = [
+        {
+          keyName: "Heartbeat",
+          subject: "im.qcic.heartbeat",
+          supplementary: "ping",
+          metrics: [
+            { label: "HEART", value: 12, unit: "hosts" },
+            { label: "delay", value: 0.4, unit: "s" },
+          ],
+        },
+        {
+          keyName: "Cast",
+          subject: "im.scrobblecast.scrape",
+          metrics: [
+            {
+              label: "CAST",
+              value:
+                "62a30942acbc2ddc893002f7d88eeb9df0647bd451dcdbb1472139d4aa7a3262",
+              unit: "sha256",
+            },
+            { label: "", value: 3, unit: "hosts" },
+          ],
+        },
+        {
+          keyName: "Ted",
+          subject: "im.ted1k.metrics",
+          metrics: [
+            { label: "TED", value: 0.99912, unit: "" },
+            { label: "samples", value: "86,324", unit: "" },
+            { label: "missing", value: 76, unit: "" },
+            { label: "duration", value: 86400, unit: "duration" },
+          ],
+        },
+      ];
+
+      // --- Formatting Hooks ---
+      const formatDigest = (val) => String(val).substring(0, 7);
+
+      const formatDuration = (sec) => {
+        const numSec = parseInt(sec, 10);
+        if (isNaN(numSec)) return sec;
+
+        if (numSec === 86400) return "24h";
+
+        const d = Math.floor(numSec / 86400);
+        const h = Math.floor((numSec % 86400) / 3600);
+        const m = Math.floor((numSec % 3600) / 60);
+        const s = numSec % 60;
+
+        let res = "";
+        if (d > 0) res += `${d}d`;
+        if (h > 0) res += `${h}h`;
+        if (m > 0 && !d) res += `${m}m`;
+        if (s > 0 && !d && !h) res += `${s}s`;
+
+        return res || "0s";
+      };
+
+      const applyUnitFormat = (value, unit) => {
+        if (unit === "sha256") return formatDigest(value);
+        if (unit === "duration") return formatDuration(value);
+        return value;
+      };
+
+      // --- Components ---
+
+      // Header component
+      const Header = ({ theme, setTheme }) => {
+        const [isOpen, setIsOpen] = useState(false);
+
+        const logoPath = React.useMemo(() => {
+          if (theme === "sketch") return "QCIC-light-sketch.png";
+          if (theme === "midnight") return "QCIC-midnight-blue.png";
+          return "QCIC-rust.png";
+        }, [theme]);
+
+        const headerStyles = {
+          sketch: "border-stone-300/80 bg-[#f7f7f5]/80",
+          midnight: "border-blue-900/40 bg-[#020617]/80 text-blue-50",
+          rust: "border-orange-900/30 bg-[#1c120b]/80 text-orange-50",
+        };
+
+        const themeOptions = [
+          { id: "sketch", label: "Sketch" },
+          { id: "midnight", label: "Midnight" },
+          { id: "rust", label: "Shadow" },
+        ];
+
+        return (
+          <header
+            className={`flex justify-between items-center px-10 py-6 border-b theme-transition relative z-20 backdrop-blur-xl ${headerStyles[theme]}`}
+          >
+            <div className="flex items-center gap-6 group cursor-default">
+              <div className="h-16 w-auto relative">
+                <div
+                  className={`absolute inset-0 blur-xl transition-opacity duration-700 rounded-full ${theme === "sketch" ? "opacity-0" : theme === "midnight" ? "bg-blue-500/30 opacity-100" : "bg-orange-500/20 opacity-100"}`}
+                ></div>
+                <img
+                  src={logoPath}
+                  className={`h-full w-auto theme-transition relative z-10 drop-shadow-sm group-hover:scale-105 duration-500 origin-left ${theme === "sketch" ? "mix-blend-multiply opacity-90" : "drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]"}`}
+                  alt="Quis custodiet ipsos custodes?"
+                  title="Quis custodiet ipsos custodes?"
+                />
+              </div>
+              <div className="transform group-hover:translate-x-2 transition-transform duration-500">
+                <h1 className="text-2xl font-light">Watching the Watchers</h1>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs tracking-widest uppercase font-medium border transition-all duration-300 w-28 justify-between ${
+                    theme === "sketch"
+                      ? "bg-white text-stone-900 border-stone-300 shadow-sm"
+                      : theme === "midnight"
+                        ? "bg-blue-950/80 text-blue-100 border-blue-800"
+                        : "bg-[#23150d] text-orange-100 border-orange-900"
+                  }`}
+                >
+                  {themeOptions.find((o) => o.id === theme)?.label || "Theme"}
+                  <svg
+                    className={`shrink-0 w-3 h-3 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {isOpen && (
+                  <div
+                    className={`absolute right-0 mt-2 w-32 rounded-xl border shadow-xl backdrop-blur-xl overflow-hidden z-50 transition-all ${
+                      theme === "sketch"
+                        ? "bg-white/90 border-stone-200"
+                        : theme === "midnight"
+                          ? "bg-[#020617]/95 border-blue-900/60"
+                          : "bg-[#1c120b]/95 border-orange-900/50"
+                    }`}
+                  >
+                    {themeOptions.map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setTheme(opt.id);
+                          setIsOpen(false);
+                        }}
+                        className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase font-medium transition-colors ${
+                          theme === opt.id
+                            ? theme === "sketch"
+                              ? "bg-stone-100 text-stone-900"
+                              : theme === "midnight"
+                                ? "bg-blue-900/40 text-blue-100"
+                                : "bg-orange-900/40 text-orange-100"
+                            : theme === "sketch"
+                              ? "text-stone-500 hover:bg-stone-50"
+                              : theme === "midnight"
+                                ? "text-blue-400 hover:bg-blue-950/50"
+                                : "text-orange-400 hover:bg-[#2a1a10]/50"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => {
+                  const idx = themeOptions.findIndex((o) => o.id === theme);
+                  setTheme(themeOptions[(idx + 1) % themeOptions.length].id);
+                }}
+                className={`flex-shrink-0 p-2 rounded-full transition-all duration-300 ${
+                  theme === "sketch"
+                    ? "text-stone-400 hover:text-stone-900 hover:bg-stone-200/50"
+                    : theme === "midnight"
+                      ? "text-blue-500 hover:text-blue-200 hover:bg-blue-900/40"
+                      : "text-orange-500 hover:text-orange-200 hover:bg-orange-900/40"
+                }`}
+                title="Next Theme"
+              >
+                <svg
+                  className="w-4 h-4 transition-transform active:rotate-45"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+              </button>
+            </div>
+          </header>
+        );
+      };
+
+      // Individual Secondary Metric Item
+      const SecondaryMetric = ({ metric, theme }) => {
+        const { label, value, unit } = metric;
+
+        // Custom formatting hook based on unit flags could go here (e.g. tracking "duration")
+        const isDuration = unit === "duration";
+
+        return (
+          <div className="flex items-baseline">
+            <span
+              className={`font-bold text-sm ${theme === "sketch" ? "text-stone-800" : theme === "midnight" ? "text-blue-200" : "text-orange-200"} ${label === "missing" && parseInt(value) > 0 ? "!text-red-500" : ""}`}
+            >
+              {applyUnitFormat(value, unit)}
+            </span>
+            {unit && !isDuration && (
+              <span className="ml-1 opacity-70">{unit}</span>
+            )}
+            {label && label !== "duration" && (
+              <span className="ml-1.5 opacity-60">{label}</span>
+            )}
+          </div>
+        );
+      };
+
+      // Sub-component rendering the Hero mapping out of `metrics[0]`
+      const MetricCard = ({ data, theme }) => {
+        // Explode explicit structures
+        const { subject, supplementary, metrics } = data;
+
+        // Destructure array elements precisely mapping to nomenclature rules:
+        const [hero, ...secondary] = metrics;
+
+        // Theme dictionaries
+        const cardBgs = {
+          sketch:
+            "bg-white border-stone-300 hover:shadow-xl hover:shadow-stone-200/50",
+          midnight:
+            "bg-blue-950/30 border-blue-800/40 shadow-[0_0_30px_rgba(30,58,138,0.15)] hover:shadow-[0_0_50px_rgba(30,58,138,0.3)] hover:border-blue-600/50",
+          rust: "bg-[#23150d]/60 border-orange-900/50 shadow-[0_0_30px_rgba(154,52,18,0.1)] hover:border-orange-700/60 hover:shadow-[0_0_40px_rgba(154,52,18,0.25)]",
+        };
+
+        const gradBgs = {
+          sketch: "from-stone-100 to-transparent",
+          midnight: "from-blue-600 to-transparent",
+          rust: "from-orange-600 to-transparent",
+        };
+
+        const heroColors = {
+          sketch: "text-stone-800",
+          midnight: "text-blue-100",
+          rust: "text-orange-100",
+        };
+
+        const formattedHeroValue = applyUnitFormat(hero.value, hero.unit);
+        const heroStr = String(formattedHeroValue);
+        // Track length for inline CSS variable typography math instead of Tailwind JIT classes
+        const totalLen = Math.max(
+          1,
+          heroStr.length + (hero.unit ? hero.unit.length * 0.4 : 0),
+        );
+
+        return (
+          <div
+            className={`h-full flex flex-col @container p-10 border theme-transition rounded-2xl relative overflow-hidden group transform hover:-translate-y-2 duration-500 ease-out backdrop-blur-md ${cardBgs[theme]}`}
+          >
+            {/* Subtle Gradient Backing */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity duration-500 ${gradBgs[theme]}`}
+            ></div>
+
+            {/* Primary Label (Watermark) */}
+            <div className="absolute -top-4 -left-4 text-8xl font-bold opacity-[0.03] pointer-events-none select-none z-0">
+              {hero.label}
+            </div>
+
+            {/* Supplementary ping (e.g. Heart) */}
+            {supplementary === "ping" && (
+              <div className="relative z-10 flex justify-end w-full">
+                <span className="flex h-2.5 w-2.5 relative">
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${theme === "sketch" ? "bg-stone-500" : theme === "midnight" ? "bg-blue-400" : "bg-orange-500"}`}
+                  ></span>
+                  <span
+                    className={`relative inline-flex rounded-full h-2.5 w-2.5 ${theme === "sketch" ? "bg-stone-600" : theme === "midnight" ? "bg-blue-500" : "bg-orange-600"}`}
+                  ></span>
+                </span>
+              </div>
+            )}
+
+            {/* Main Content Spring */}
+            <div className="flex-1 flex flex-col justify-center">
+              {/* Hero Payload (metrics[0]) */}
+              <div
+                className={`relative z-10 transform group-hover:scale-[1.02] transition-transform duration-500 origin-left ${supplementary ? "mt-10" : "mt-8"}`}
+              >
+                <div
+                  className="flex items-baseline mb-2 overflow-hidden"
+                  style={{ "--text-len": totalLen }}
+                >
+                  <span
+                    className={`font-mono tracking-tighter leading-none ${heroColors[theme]} truncate`}
+                    style={{
+                      fontSize:
+                        totalLen < 5
+                          ? "clamp(3rem, 24cqi, 7rem)" // Exceptionally short (e.g., 12) -> Massively scale up
+                          : "clamp(1.5rem, calc(20cqi - (var(--text-len) * 0.5cqi)), 3.5rem)", // Baseline & Long -> Progressively shrink
+                    }}
+                  >
+                    {formattedHeroValue}
+                  </span>
+                  {hero.unit && (
+                    <span className="text-xl ml-4 opacity-50 font-medium tracking-widest lowercase whitespace-nowrap">
+                      {hero.unit}
+                    </span>
+                  )}
+                </div>
+
+                {/* Secondary Payload Array (metrics.slice(1)) */}
+                {secondary.length > 0 && (
+                  <div className="mt-4 opacity-70 font-mono text-xs tracking-wide flex flex-wrap items-center gap-x-4 gap-y-2">
+                    {secondary.map((sec, idx) => (
+                      <SecondaryMetric key={idx} metric={sec} theme={theme} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Byline */}
+            <div className="mt-auto pt-10 flex items-center gap-3 relative z-10">
+              <div
+                className={`h-px flex-1 theme-transition ${theme === "sketch" ? "bg-stone-200" : theme === "midnight" ? "bg-blue-900/50" : "bg-orange-900/50"}`}
+              ></div>
+              <p className="text-[9px] tracking-widest opacity-50 font-medium lowercase">
+                {subject}
+              </p>
+            </div>
+          </div>
+        );
+      };
+
+      // Main App Container
+      const App = () => {
+        const [theme, setTheme] = useState("sketch");
+
+        // Apply background effects directly to the document body exactly like the original
+        useEffect(() => {
+          document.body.className = `font-sans antialiased min-h-screen theme-transition bg-fixed bg-cover ${
+            theme === "sketch"
+              ? "bg-[#f7f7f5] text-stone-900"
+              : theme === "midnight"
+                ? "bg-[#020617] text-blue-50"
+                : "bg-[#1c120b] text-orange-50"
+          }`;
+        }, [theme]);
+
+        return (
+          <div className="min-h-screen flex flex-col">
+            <Header theme={theme} setTheme={setTheme} />
+
+            <main className="max-w-7xl w-full mx-auto px-6 md:px-10 py-16 relative z-10 flex-col gap-12 flex flex-1">
+              <div className="flex flex-col gap-2">
+                <h2 className="text-sm opacity-70 font-medium">
+                  Homelab Metrics
+                </h2>
+                <div
+                  className={`h-px w-24 theme-transition ${theme === "sketch" ? "bg-stone-300" : theme === "midnight" ? "bg-blue-800" : "bg-orange-900"}`}
+                ></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {RAW_DATA.map((data, idx) => (
+                  <MetricCard key={idx} data={data} theme={theme} />
+                ))}
+              </div>
+            </main>
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
