@@ -244,7 +244,7 @@ showHTTPServices() {
   fi
 
   # Define peers as an array
-  local scrobble_peers=("dirac" "darwin" "d1-px1")
+  local scrobble_peers=("d1-px1" "darwin" "scast-hilbert")
   # Initialize an initial array for services
   local services=(
     "https://status.dl.imetrical.com/"
