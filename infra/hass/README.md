@@ -6,8 +6,8 @@ Exploring my options for a simplified home assistant deployment.
 
 - [x] assign a DNS Name / DHCP Reservation
   - <http://hass.imetrical.com:8123>
-- [x] enable ssh
-- [x] lets'encrypt for https
+- [x] enable ssh: ssh root@hass.imetrical.com
+- [ ] lets'encrypt for https - or tailscale serve?
 
 ## Requirements
 
@@ -48,7 +48,7 @@ unxz haos_ova-15.2.qcow2.xz      # leaves haos_ova-15.2.qcow2
 - Create an empty shell VM in the Proxmox GUI
   - No installation media, delete the default disk.
   - Note the VMID (we used id: 120).
-  - 2 cores /  4086 MB of memory
+  - 2 cores / 4086 MB of memory
   - Default network
 
 - Import Disk
