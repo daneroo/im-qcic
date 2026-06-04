@@ -2,6 +2,14 @@
 
 Exploring my options for a simplified home assistant deployment.
 
+## Operations
+
+Now that ssh is enabled..
+
+```bash
+ssh root@hass.imetrical.com 'ha info && ha os info && ha supervisor info && ha core info && ha core check'
+```
+
 ## TODO
 
 - [x] assign a DNS Name / DHCP Reservation
