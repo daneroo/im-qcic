@@ -1,32 +1,61 @@
 # Jellyfin
 
-First, we will deploy to synology, using `docker compose`
+Production is deployed to Synology using `docker compose`
+at <http://jellyfin.imetrical.com:8096/>
 
-## Docker on Synology
+```text
+MEDIA_ROOT=/volume1       # Synology
+MEDIA_ROOT=/Volumes/Space # galois
+
+$MEDIA_ROOT/{Watching,Volatile}/{Movies,TV-Shows}
+```
+
+## TODO
+
+- [ ] Validate TV-Show naming
+- [ ] Run the Node verifier on Synology, directly or in a container
+
+## Operations - Synology
 
 - See [Docs for Synology](https://jellyfin.org/docs/general/installation/synology)
-- I also added a link: `sudo ln -s /usr/local/bin/docker /usr/bin/docker`, so that I could use:
-  - use my copied galois' public ssh key in `syno:.ssh/authorized_keys`
-  - `DOCKER_HOST=ssh://syno.imetrical.com docker logs -f jellyfin-jellyfin-1`
+- Synology installs Docker at `/usr/local/bin/docker`, which is not in the
+  non-interactive SSH `PATH`.
+- Run Docker remotely from galois:
 
-## Legacy Docker on galois
+  ```bash
+  ssh syno /usr/local/bin/docker logs -f jellyfin
+  ```
 
-````bash
-daniel@galois:.../Downloads/jellyfin ❯ ls -ld /Volumes/Space/[VW]*
-0 drwxr-xr-x  4 daniel  staff  128  5 Oct  2022 /Volumes/Space/Volatile/
-0 drwxr-xr-x  4 daniel  staff  128 22 Jun  2022 /Volumes/Space/Watching/
-```
+## Development - galois
 
 ```bash
-docker pull jellyfin/jellyfin:latest  # or docker pull ghcr.io/jellyfin/jellyfin:latest
 mkdir -p ./data/{config,cache}
-mkdir -p ./data/media
-ln -s /Volumes/Space/Watching ./data/media/Watching
-ln -s /Volumes/Space/Volatile ./data/media/Volatile
-
 docker compose -f compose-galois.yaml up -d
-
-# cleanup
 docker compose -f compose-galois.yaml down
-rm -rf data/media/
 ```
+
+Local Jellyfin state is stored in `data/` and can be deleted when no longer
+needed. Media is mounted read-only from `/Volumes/Space`.
+
+## Naming and Validation
+
+Movie libraries contain canonical `Title (Year).mp4` files and optional matching
+`.srt` sidecars. The read-only verifier uses `ffprobe` to check file types,
+embedded title/year tags, canonical names, and sidecars.
+
+```bash
+node scripts/verify-canonical-names.mjs --help
+node scripts/verify-canonical-names.mjs
+```
+
+Generate and review an incremental rename script on galois, then run it against
+either copy of the media:
+
+```bash
+node scripts/verify-canonical-names.mjs --format bash > rename-movies.sh
+bash rename-movies.sh                 # galois
+ssh syno bash -s < rename-movies.sh   # syno
+```
+
+Both scripts detect `/Volumes/Space` or `/volume1`, validate the two movie
+directories, and accept an explicit root override when needed.
