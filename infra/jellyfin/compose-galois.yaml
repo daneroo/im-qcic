@@ -7,8 +7,8 @@ services:
     volumes:
       - ${PWD}/data/config:/config
       - ${PWD}/data/cache:/cache
-      - /Volumes/Space/Watching:/media/Watching
-      - /Volumes/Space/Volatile:/media/Volatile
+      - /Volumes/Space/Watching:/media/Watching:ro
+      - /Volumes/Space/Volatile:/media/Volatile:ro
     restart: "unless-stopped"
     environment:
       - JELLYFIN_PublishedServerUrl=http://galois.imetrical.com:8096
