@@ -10,6 +10,11 @@ Now that ssh is enabled..
 ssh root@hass.imetrical.com 'ha info && ha os info && ha supervisor info && ha core info && ha core check'
 ```
 
+### Backup & Recovery
+
+- Backup to Synology Samba Share `HomeAssistantBackups` 1Password / Synology SMB - Home Assistant Backup User
+- Emergency Kit in 1Password / Home Assistant (hass)
+
 ## TODO
 
 - [x] assign a DNS Name / DHCP Reservation
@@ -107,4 +112,4 @@ Do I need to migrate those connection, or setup afresh?
   - [x] Proxmox VM id:120 backup nightly
   - [x] Home Assistant native configuration backup
     - [x] Back up to SMB on Synology NAS - not locally as we have proxmox snapshots
-    - Emergency Kit in 1password
+    - [x] Emergency Kit in 1password

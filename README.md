@@ -10,7 +10,7 @@ This monorepo gathers concerns about the declarative and observed state of my ho
 
 ## TODO
 
-- move `gateway` to d1-px1 (already cloned),
+- move `gateway` to d1-px1 (already cloned - but I cannot find it),
   - or it's own vm; DNS update?
 - Repo cleanup
   - deprecate top level - (after replacing or moving if necessary)
@@ -87,7 +87,6 @@ lerna add standard --dev
 ## TODO Legacy
 
 - lerna + tsdx|microbundle
-
   - [tsdx mopnorepo starter](https://github.com/jaredpalmer/tsdx-monorepo)
   - clone site to nextra
   - hint tsdx uses nextra, and nextra is a monorepo (core branch, not master)
@@ -95,7 +94,6 @@ lerna add standard --dev
   - clone site to docusaurus
 
 - imetrical.net: LetsEncrypt: Using Caddy/Traefik
-
   - DNS Pricing AWS:R53:0.50/mo GCP:CloudDNS:0.20/mo Cloudflare: free?
   - History: myip.taurus.k.xrobots.dev
   - [Caddy docker](https://hub.docker.com/_/caddy)
@@ -110,7 +108,6 @@ lerna add standard --dev
 - npx create-react-library for qcic-react
 - Using Chakra-ui with Shared Nav Header
 - clean up and resync
-
   - docz - mdx docs / including this TODO
   - mdx-deck ?
   - instructions for operating/deploying
@@ -121,7 +118,6 @@ lerna add standard --dev
 - nats basic experiment
 - [graphql-yoga to replace api - add express middleware](https://oss.prisma.io/content/GraphQL-Yoga/01-Overview.html)
 - [gatsby](https://next.gatsbyjs.org/docs/gatsby-starters/)
-
   - <https://gatsby-starter-personal-blog.greglobinski.com/>
   - <https://gatsby-starter-hero-blog.greglobinski.com/>
   - <https://github.com/Vagr9K/gatsby-material-starter>
@@ -135,7 +131,6 @@ lerna add standard --dev
 - Refactor MessageList Graphql HOC: withMessages
 - ui styled jsx
   -Compare stock (git clone next.js/server/document.js) with our custom \_document.js
-
   - \_document.js:? [styled jsx on SSR](https://github.com/zeit/styled-jsx#server-side-rendering)
 
 - ui About in markdown in material
