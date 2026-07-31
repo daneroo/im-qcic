@@ -8,7 +8,7 @@
 
 - [Gateway](./infra/gateway/CONTEXT.md) — always-up Ubuntu VM hosting caddy, nats, natsql, status
 - [Hass](./infra/hass/CONTEXT.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
-- [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server deployment
+- [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois
 - [Cloudrun](./cloudrun/CONTEXT.md) — Google Cloud Run service, deployed at myip.g.imetrical.com
 - [Site](./packages/site/CONTEXT.md) — Gatsby static site, deployed to Vercel (manual, stale since 2022-03-01)
 - [Status](./packages/status/CONTEXT.md) — status service, built and run by Gateway
@@ -20,6 +20,7 @@
 - **Syno → Gateway, Pxbk**: Synology NAS host running these as VMs; also runs Jellyfin directly via Container Manager (not a VM)
 - **Syno → Synk**: Synk is an offsite mirror of many of Syno's volume shares
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
+- **Galois → Jellyfin (dev)**: a disposable local Jellyfin instance runs on Galois for development, reading the same media as the Syno production instance
 
 ## Deprecated / dead
 

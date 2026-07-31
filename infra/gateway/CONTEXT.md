@@ -5,7 +5,7 @@ An always-up Ubuntu VM (hosted on Syno) that terminates TLS and runs a small set
 ## Language
 
 **Gateway**:
-The Ubuntu VM itself, reachable as `gateway.{ts}.imetrical.com`. Hosts Caddy, Nats, Natsql, and Status as docker-compose services.
+The Ubuntu VM itself, reachable as `gateway.{ts}.imetrical.com`. Hosts Caddy, Nats, Natsql, and Status as docker-compose services. Unlike Jellyfin's copy-by-hand deploy model, Gateway has this repo cloned directly and deploys from its own `infra/gateway/` via `make build` / `make start` (`docker compose build/up`) — the repo clone on Gateway **is** the live source, not a reference copy. Every context has its own deploy story; don't assume they match.
 _Avoid_: the gateway VM, the server
 
 **Caddy**:
