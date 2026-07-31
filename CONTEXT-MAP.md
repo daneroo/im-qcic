@@ -7,7 +7,7 @@
 (confirmed active — has its own CONTEXT.md)
 
 - [Gateway](./infra/gateway/CONTEXT.md) — always-up Ubuntu VM hosting caddy, nats, natsql, status
-- [Hass](./infra/hass/CONTEXT.md) — Home Assistant home-automation deployment
+- [Hass](./infra/hass/CONTEXT.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
 - [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server deployment
 - [Cloudrun](./cloudrun/CONTEXT.md) — Google Cloud Run service, deployed at myip.g.imetrical.com
 - [Site](./packages/site/CONTEXT.md) — Gatsby static site, deployed to Vercel (manual, stale since 2022-03-01)
@@ -18,6 +18,8 @@
 
 - **Gateway → Status, Natsql**: Gateway's `docker-compose.yaml` builds and runs these packages directly as services
 - **Syno → Gateway, Pxbk**: Synology NAS host running these as VMs; also runs Jellyfin directly via Container Manager (not a VM)
+- **Syno → Synk**: Synk is an offsite mirror of many of Syno's volume shares
+- **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
 
 ## Deprecated / dead
 
@@ -31,6 +33,9 @@
 - **Pxbk** — Proxmox Backup Server VM on Syno. No deployment record in this repo at all; origin/config unknown.
 - **Dirac** — a host Caddy (on Gateway) proxies to (`dirac.imetrical.com:8000`, `:5000`). No deployment record in this repo at all.
 - **Scrobblecast** — a service reverse-proxied by Caddy (`scrobblecast.dl.imetrical.com → dirac.imetrical.com:8000`), consumed by Status's `logcheck`. No source/deployment record in this repo.
+- **Synk** — Syno's sibling, an offsite host mirroring many of Syno's volume shares. No directory yet; no deployment/config record in this repo.
+- **Hilbert** — Daniel's biggest (aging) Proxmox VE server, ZFS-backed (`rpool`, `pve-storage` 6T pool with `backups-isos`/`vmstorage` datasets). Runs the Hass VM. No directory yet; no config/inventory record in this repo.
+- **Galois** — Daniel's main machine, a Mac Mini M2 Pro. Mentioned in the README TODO for "local Staging/AppExperiments." No directory yet; role not fully pinned down.
 
 ## Unclassified
 
