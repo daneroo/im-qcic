@@ -2,7 +2,7 @@
 
 Main static site for QCIC
 
-- [Deployed on vercel](https://qcic.n.imetrical.com)
+- [Deployed on vercel](https://qcic.v.imetrical.com)
 
 ## TODO
 
@@ -31,7 +31,7 @@ npm run vercel:deploy  # production deployment
 
 ## Setup
 
-This is a gatsby site using  the Document theme  by [Code Bushi](https://codebushi.com/gatsby-starters-and-themes/).
+This is a gatsby site using the Document theme by [Code Bushi](https://codebushi.com/gatsby-starters-and-themes/).
 
 Now add dependencies:
 
