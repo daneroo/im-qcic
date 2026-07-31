@@ -12,6 +12,7 @@ This monorepo gathers concerns about the declarative and observed state of my ho
 
 - move `gateway` to d1-px1 (already cloned - but I cannot find it),
   - or it's own vm; DNS update?
+- Create galois local Staging/AppExperiments - for Planned
 - Repo cleanup
   - deprecate top level - (after replacing or moving if necessary)
     - [ ] `cloudrun/`: Google Cloud Run deployment of <https://myip.g.imetrical.com/>
@@ -44,12 +45,23 @@ This is the beginning of the revamping of the mono repo.
 
 In `./infra` we handle deployment of the `qcic` related resources.
 
-- Deployed to `gateway.imetrical.com`
+- Deployed to `gateway.{ts}.imetrical.com` as a Ubuntu VM / docker
   - caddy (See `./infra/README.md` and `./infra/config/caddy/Caddyfile` for details)
   - nats
   - natsql
   - status
   - ddclient (REMOVED 2023-09-11)
+- Jellyfin - deployed to Synology as docker compose
+- PLANNED - docker@galois
+  - [Immich 3.0](https://docs.immich.app/install/docker-compose)
+  - [Forgejo](https://forgejo.org/) - Git hosting
+  - [Borgbackup](https://borgbackup.readthedocs.io/en/1.4-maint/index.html#) - deduplicating backup
+  - [Rustfs](https://rustfs.com/download/) - S3/Minio alternative
+  - [WatchYourLAN](https://github.com/aceberg/WatchYourLAN) - LAN monitoring
+  - [Ntfy](https://docs.ntfy.sh/install/#docker) - notification server
+  - [Uptime Kuma](https://uptimekuma.org/) - monitoring
+  - [Storyteller](https://storyteller-platform.dev/) - automatically aligning ebooks and audiobooks
+  - [Wallos](https://wallosapp.com/) - personal subscription tracker.
 
 ## Operating
 
