@@ -29,6 +29,8 @@
 
 - **Syno** — the Synology NAS host itself (runs the `Gateway` and `Pxbk` VMs, plus `Jellyfin` via Container Manager). No directory yet; candidate location `infra/syno/`.
 - **Pxbk** — Proxmox Backup Server VM on Syno. No deployment record in this repo at all; origin/config unknown.
+- **Dirac** — a host Caddy (on Gateway) proxies to (`dirac.imetrical.com:8000`, `:5000`). No deployment record in this repo at all.
+- **Scrobblecast** — a service reverse-proxied by Caddy (`scrobblecast.dl.imetrical.com → dirac.imetrical.com:8000`), consumed by Status's `logcheck`. No source/deployment record in this repo.
 
 ## Unclassified
 
