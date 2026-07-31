@@ -19,7 +19,7 @@
 - [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois
 - [Cloudrun](./cloudrun/CONTEXT.md) — deployed "myip" service on Google Cloud Run, at myip.g.imetrical.com
 - [Site](./packages/site/CONTEXT.md) — Gatsby static site on Vercel, actively used daily, not rebuilt since 2022-03-01; config still has a leftover Netlify-era alias
-- [Status](./packages/status/CONTEXT.md) — status service, built and run by Gateway
+- [Status](./packages/status/CONTEXT.md) — health-check service (tedcheck, logcheck), built and run by Gateway, slated for eventual retirement
 - [Natsql](./packages/natsql/CONTEXT.md) — Daniel's own GraphQL-to-NATS subscription bridge; the repo's origin concept, built and run by Gateway
 
 ## Relationships
@@ -30,7 +30,7 @@
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
 - **Galois → Jellyfin (dev)**: a disposable local Jellyfin instance runs on Galois for development, reading the same media as the Syno production instance
 - **Cloudrun ↔ packages/myip**: same "myip" concept — Cloudrun is deployed and live, `packages/myip` is an undeployed rewrite meant to replace it (still Unclassified)
-- **Site → Nats, Natsql**: Site connects directly to both (both running on Gateway), reached publicly via Caddy's reverse proxy
+- **Site → Nats, Natsql, Status**: Site connects directly to all three (all running on Gateway), reached publicly via Caddy's reverse proxy — Status acts as a router for internal checks, mostly for Site's consumption
 
 ## Deprecated / dead
 
@@ -48,6 +48,7 @@
 - **Hilbert** — Daniel's biggest (aging) Proxmox VE server, ZFS-backed (`rpool`, `pve-storage` 6T pool with `backups-isos`/`vmstorage` datasets). Runs the Hass VM. No directory yet; no config/inventory record in this repo.
 - **Galois** — Daniel's main machine, a Mac Mini M2 Pro. Mentioned in the README TODO for "local Staging/AppExperiments." No directory yet; role not fully pinned down.
 - **Netlify** — account/deployments implied by the `.n.` DNS convention and the zeit/now → Netlify migration lineage in old TODOs. Needs spelunking: what's actually still deployed there, if anything, is unknown.
+- **Ted** — "The Energy Detective," Daniel's home power monitor. Source of the `watt` MySQL table that Status's `tedcheck` monitors for gaps (matches the "grafana-ted" commit history). No directory/deployment record in this repo — it's a physical device, not software.
 
 ## Unclassified
 
