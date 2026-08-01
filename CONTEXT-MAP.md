@@ -12,7 +12,20 @@
 
 ## Host naming convention
 
-Physical/virtual hosts are named after mathematicians and scientists: **Galois** (Mac Mini M2 Pro), **Hilbert** (biggest Proxmox VE server), **Dirac** (older host, formerly ran nats), **Boole** (new UCG-Fiber router, see `network/UniFi-Journey-2025`). Expect more of these to surface.
+Physical/virtual hosts are named after mathematicians and scientists:
+
+- **Galois** — Mac Mini M2 Pro, Daniel's main machine
+- **Hilbert** — main Proxmox VE server (biggest, aging)
+- **Euler** — secondary Proxmox server (temporary name, currently `px1`)
+- **Dirac** — older host, formerly ran nats
+- **Boole** — new UCG-Fiber router (see `network/UniFi-Journey-2025`)
+- **Gauss** — btrfs mirror host (see Fio)
+- **Davinci** — iMac M1
+- **Darwin** — Mac Mini running Ubuntu
+- **Goedel** — ancient MacBook
+- **Fermat** — Mac Mini
+
+Expect more of these to surface.
 
 ## Cloud accounts
 
@@ -44,6 +57,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - [Network/UniFi-Journey-2025](./network/UniFi-Journey-2025/CONTEXT.md) — active 2025 migration to UniFi/UCG-Fiber, 10GbE backbone upgrade
 - [Packages/myip](./packages/myip/CONTEXT.md) — undeployed rewrite meant to replace Cloudrun's "myip" service
 - [Scripts](./scripts/CONTEXT.md) — active home for health-check/status-reporting script experiments; destination for Mail and Nats (client)
+- [Fio](./fio/CONTEXT.md) — disk I/O characterization scripts, used to compare disk/filesystem performance across hosts
 
 ## Relationships
 
@@ -63,7 +77,6 @@ Cuts across almost every context above — worth tracking as its own axis rather
 
 - **`events/`** — Serverless.com "Event Gateway"; the product itself is discontinued. Credentials referenced "shannon," tied to fully-dead tech, not worth tracking further.
 - **`k8s/`** — abandoned early (2017-18) GKE cluster experiments; superseded by later, unrelated Talos/k3s thinking mentioned in `infra/gateway/README.md`.
-- **`fio/`** — turned out to be from the same abandoned k8s-learning exercise (Kasten Learning lab, `kubestr`), not a standalone disk-benchmark utility.
 - **`s3/`** — a one-time key-rotation experiment for pubnub's S3 usage; dies with pubnub. See the AWS gap below for the broader cleanup.
 - **`pubnub/`** — "not in a functional state" per its own README; explicit delete. Still owns live AWS S3 buckets that need decommissioning (see AWS gap below) — deleting the directory doesn't finish this one.
 - **`packages/ui`** — "garbage ancient next.js app" per README; was deployed to Netlify as `ui.qcic.n.imetrical.com` (now undeployed, confirmed via a Mailgun test-email link).
@@ -84,6 +97,11 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Hilbert** — Daniel's biggest (aging) Proxmox VE server, ZFS-backed (`rpool`, `pve-storage` 6T pool with `backups-isos`/`vmstorage` datasets). Runs the Hass VM. No directory yet; no config/inventory record in this repo.
 - **Galois** — Daniel's main machine, a Mac Mini M2 Pro. Mentioned in the README TODO for "local Staging/AppExperiments." No directory yet; role not fully pinned down.
 - **Ted** — "The Energy Detective," Daniel's home power monitor. Source of the `watt` MySQL table that Status's `tedcheck` monitors for gaps (matches the "grafana-ted" commit history). No directory/deployment record in this repo — it's a physical device, not software.
+- **Euler** — secondary Proxmox server (temporary name, currently `px1`). No directory/inventory record in this repo.
+- **Davinci** — an iMac M1. No directory/inventory record in this repo.
+- **Darwin** — a Mac Mini running Ubuntu. No directory/inventory record in this repo.
+- **Goedel** — an ancient MacBook. No directory/inventory record in this repo.
+- **Fermat** — a Mac Mini. No directory/inventory record in this repo.
 
 ## Unclassified
 
