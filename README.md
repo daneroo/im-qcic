@@ -62,6 +62,7 @@ In `./infra` we handle deployment of the `qcic` related resources.
   - [Uptime Kuma](https://uptimekuma.org/) - monitoring
   - [Storyteller](https://storyteller-platform.dev/) - automatically aligning ebooks and audiobooks
   - [Wallos](https://wallosapp.com/) - personal subscription tracker.
+  - [Buzz relay](https://engineering.block.xyz/blog/run-your-own-buzz-relay)
 
 ## Operating
 
