@@ -10,6 +10,10 @@
 - **`.ts.`** — Tailscale
 - **`.n.`** — Netlify (see Cloud accounts)
 
+## Host naming convention
+
+Physical/virtual hosts are named after mathematicians and scientists: **Galois** (Mac Mini M2 Pro), **Hilbert** (biggest Proxmox VE server), **Dirac** (older host, formerly ran nats), **Boole** (new UCG-Fiber router, see `network/UniFi-Journey-2025`). Expect more of these to surface.
+
 ## Cloud accounts
 
 Cuts across almost every context above — worth tracking as its own axis rather than burying inside Missing.
@@ -19,7 +23,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **GCP · iMetrical** (`daniel.lauzon@imetrical.com`) — several projects, including `qcic-237620` which runs Cloudrun's `myip` service (`myip.g.imetrical.com`). Other projects not yet inventoried.
 - **GCP · Personal** (`daniel.lauzon@gmail.com`) — no known resources.
 - **Cloudflare** — manages DNS for `*.imetrical.net` (Caddy's DNS-01 challenge uses a Cloudflare-scoped API token, see Gateway). Full account scope not yet inventoried.
-- **Netlify** — implied by the `.n.` DNS convention; `packages/ui` was deployed there as `ui.qcic.n.imetrical.com` (now undeployed). Needs spelunking: what, if anything, is still actually deployed there, and whether the `*.n.imetrical.com` wildcard is still pointed at it.
+- **Netlify** — implied by the `.n.` DNS convention. Two confirmed-dead deployments: `packages/ui` as `ui.qcic.n.imetrical.com`, and `packages/docz` as `docz.qcic.n.imetrical.com`. Needs spelunking: what, if anything, is still actually deployed there, and whether the `*.n.imetrical.com` wildcard is still pointed at it.
 - **Vercel** — hosts Site (`qcic.v.imetrical.com`). Account scope beyond Site not yet inventoried.
 
 ## Live contexts
@@ -35,6 +39,11 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - [Natsql](./packages/natsql/CONTEXT.md) — Daniel's own GraphQL-to-NATS subscription bridge; the repo's origin concept, built and run by Gateway
 - [Mail](./mail/CONTEXT.md) — Mailgun notification experiment; content still wanted, slated to move under `scripts/`
 - [Nats (client)](./nats/CONTEXT.md) — dev/test client for a NATS server; content still wanted, slated to move under `scripts/`
+- [Design/html-react](./design/html-react/CONTEXT.md) — active UI prototype for the QCIC status dashboard (Heartbeat/Cast Synch/Ted1k cards)
+- [Network/giga-router](./network/giga-router/CONTEXT.md) — DHCP/device extraction tool for the current Bell Giga Hub router
+- [Network/UniFi-Journey-2025](./network/UniFi-Journey-2025/CONTEXT.md) — active 2025 migration to UniFi/UCG-Fiber, 10GbE backbone upgrade
+- [Packages/myip](./packages/myip/CONTEXT.md) — undeployed rewrite meant to replace Cloudrun's "myip" service
+- [Scripts](./scripts/CONTEXT.md) — active home for health-check/status-reporting script experiments; destination for Mail and Nats (client)
 
 ## Relationships
 
@@ -43,8 +52,10 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Syno → Synk**: Synk is an offsite mirror of many of Syno's volume shares
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
 - **Galois → Jellyfin (dev)**: a disposable local Jellyfin instance runs on Galois for development, reading the same media as the Syno production instance
-- **Cloudrun ↔ packages/myip**: same "myip" concept — Cloudrun is deployed and live, `packages/myip` is an undeployed rewrite meant to replace it (still Unclassified)
+- **Cloudrun ↔ Packages/myip**: same "myip" concept — Cloudrun is deployed and live, Packages/myip is an undeployed rewrite meant to replace it
 - **Site → Nats, Natsql, Status**: Site connects directly to all three (all running on Gateway), reached publicly via Caddy's reverse proxy — Status acts as a router for internal checks, mostly for Site's consumption
+- **Design/html-react → Natsql, Scrobblecast, Status/Ted**: the dashboard's three metric cards (Heartbeat, Cast Synch, Ted1k) render exactly these three things
+- **Boole → Hilbert, Syno**: planned 10GbE SFP+ DAC connections as part of the UniFi migration; giga-router's Bell Giga Hub is what Boole (UCG-Fiber) replaces
 
 ## Deprecated / dead
 
@@ -57,6 +68,9 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **`pubnub/`** — "not in a functional state" per its own README; explicit delete. Still owns live AWS S3 buckets that need decommissioning (see AWS gap below) — deleting the directory doesn't finish this one.
 - **`packages/ui`** — "garbage ancient next.js app" per README; was deployed to Netlify as `ui.qcic.n.imetrical.com` (now undeployed, confirmed via a Mailgun test-email link).
 - **`packages/react`** — superseded reusable component library, explicit delete per README.
+- **`packages/cli`** — depends on `../api`, a package that no longer exists (renamed/merged into Natsql). Old Apollo Subscriptions CLI client, superseded.
+- **`packages/docz`** — old Netlify-era static status site (`docz.qcic.n.imetrical.com`), same purpose Design/html-react and Site now cover. Superseded.
+- **`packages/gql-client`** — reusable Apollo client helpers; no live consumers remain (only the now-deprecated `ui`/`react` packages ever used it).
 
 ## Missing
 
@@ -75,10 +89,4 @@ Cuts across almost every context above — worth tracking as its own axis rather
 
 (not yet reviewed)
 
-- `design/`
-- `network/`
-- `packages/cli`
-- `packages/docz`
-- `packages/gql-client`
-- `packages/myip`
-- `scripts/`
+None left — every directory in the repo has been classified as Live or Deprecated. The remaining open work is the Missing and Cloud accounts gaps above.
