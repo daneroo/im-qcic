@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
+import type { MysqlCredentials } from "./tedcheck-datasource";
 
 export interface Config {
   hostname: string;
@@ -10,8 +11,9 @@ export interface Config {
     node: string;
   };
   port: number;
+  // Not consumed yet - carried over for Logcheck (#226) to build on.
   loggly: unknown;
-  mysql: unknown;
+  mysql: MysqlCredentials | null;
 }
 
 export const config: Config = {
@@ -23,17 +25,15 @@ export const config: Config = {
     node: process.version,
   },
   port: Number(process.env.PORT) || 8001,
-  // Not consumed yet in this ticket - carried over for Tedcheck (#225,
-  // mysql) and Logcheck (#226, loggly) to build on.
   loggly: getCredential("credentials.loggly.json"),
-  mysql: getCredential("credentials.mysql.json"),
+  mysql: getCredential<MysqlCredentials>("credentials.mysql.json"),
 };
 
 // used for loggly/mysql credentials - gracefully returns null if the
 // gitignored file isn't present (e.g. local dev, or not yet mounted)
-function getCredential(path: string): unknown {
+function getCredential<T>(path: string): T | null {
   try {
-    return JSON.parse(readFileSync(path).toString());
+    return JSON.parse(readFileSync(path).toString()) as T;
   } catch (err) {
     console.warn("getCredential", path, (err as Error).message);
     return null;
