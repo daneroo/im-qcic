@@ -1,0 +1,35 @@
+{
+  "name": "qcic-v2",
+  "type": "module",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*"
+    ]
+  },
+  "scripts": {
+    "test": "bun test",
+    "check": "tsc --noEmit",
+    "fmt": "bunx prettier --write .",
+    "fmt:check": "bunx prettier --check .",
+    "lint": "bun run lint:js && bun run lint:md",
+    "lint:js": "bunx eslint .",
+    "lint:md": "bunx markdownlint-cli2 \"**/*.md\" \"*.md\"",
+    "ci": "bun run fmt:check && bun run lint && bun run check && bun run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "latest",
+    "@types/node": "^26.1.0",
+    "eslint": "^10.6.0",
+    "markdownlint-cli2": "^0.22.1",
+    "prettier": "^3.9.1",
+    "typescript-eslint": "^8.62.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "prettier": {
+    "proseWrap": "always"
+  }
+}

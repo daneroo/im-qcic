@@ -1,0 +1,16 @@
+{
+  "name": "@daneroo/qcic-status",
+  "version": "1.0.46",
+  "description": "Health-check API for the homelab (tedcheck, logcheck)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "pino": "^9.5.0"
+  }
+}
