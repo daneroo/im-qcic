@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { app, createApp } from "./app";
 import { config } from "./config";
+import type { LogglyDataSource } from "./logcheck-datasource";
 import type { Row } from "./tedcheck";
 import type { TedcheckDataSource } from "./tedcheck-datasource";
 
@@ -64,6 +65,37 @@ describe("@daneroo/qcic-status", () => {
     expect(body.data.missingDayByHour).toEqual([
       ["hour", "watt", "samples", "missing"],
       ["2019-03-12T03:00:00Z", 490, 3500, 100],
+    ]);
+  });
+
+  test("GET /api/logcheck returns meta + aggregated checkpoint digests", async () => {
+    const fakeLogcheck: LogglyDataSource = {
+      async search() {
+        return [
+          {
+            timestamp: "2019-03-12T03:52:19.279Z",
+            tags: ["pocketscrape", "host-newton.imetrical.com"],
+            event: { json: { digest: "abc1234" } },
+          },
+        ];
+      },
+    };
+    const testApp = createApp({ logcheck: fakeLogcheck });
+
+    const res = await testApp.request("/api/logcheck");
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      meta: { type: string; hostname: string };
+      data: (string | null)[][];
+    };
+
+    expect(body.meta).toMatchObject({
+      type: "logcheck",
+      hostname: config.hostname,
+    });
+    expect(body.data).toEqual([
+      ["checkpoint", "newton.imetrical.com"],
+      ["2019-03-12T03:50:00Z", "abc1234"],
     ]);
   });
 });

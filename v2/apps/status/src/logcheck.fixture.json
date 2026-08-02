@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "stamp": "2019-03-12T03:52:19.279Z",
+      "host": "newton",
+      "digest": "838ae31efb392938f611fc0887282b1f8d951707a8fb4f550072f98e38a78871"
+    },
+    {
+      "stamp": "2019-03-12T03:50:01.000Z",
+      "host": "newton",
+      "digest": "should be overriden because lesser date"
+    },
+    {
+      "stamp": "2019-03-12T03:52:09.822Z",
+      "host": "darwin",
+      "digest": "838ae31efb392938f611fc0887282b1f8d951707a8fb4f550072f98e38a78871"
+    },
+    {
+      "stamp": "2019-03-12T03:52:02.599Z",
+      "host": "euler",
+      "digest": "838ae31efb392938f611fc0887282b1f8d951707a8fb4f550072f98e38a78871"
+    },
+    {
+      "stamp": "2019-03-12T03:42:06.508Z",
+      "host": "euler",
+      "digest": "0a79ce887263f6aaf97cf7ded9e44fc7fcca701ef3e70d983024dd5a89ecc5db"
+    },
+    {
+      "stamp": "2019-03-12T03:42:02.863Z",
+      "host": "darwin",
+      "digest": "e53d2ac1103590f74f205ae5548985e4330f2f04ab547692c7945478a1801b33"
+    },
+    {
+      "stamp": "2019-03-12T03:41:56.507Z",
+      "host": "newton",
+      "digest": "e53d2ac1103590f74f205ae5548985e4330f2f04ab547692c7945478a1801b33"
+    },
+    {
+      "stamp": "2019-03-12T03:41:22.284Z",
+      "host": "dirac.imetrical.com",
+      "digest": "e53d2ac1103590f74f205ae5548985e4330f2f04ab547692c7945478a1801b33"
+    }
+  ]
+}

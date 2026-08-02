@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
+import type { LogglyCredentials } from "./logcheck-datasource";
 import type { MysqlCredentials } from "./tedcheck-datasource";
 
 export interface Config {
@@ -11,8 +12,7 @@ export interface Config {
     node: string;
   };
   port: number;
-  // Not consumed yet - carried over for Logcheck (#226) to build on.
-  loggly: unknown;
+  loggly: LogglyCredentials | null;
   mysql: MysqlCredentials | null;
 }
 
@@ -25,7 +25,7 @@ export const config: Config = {
     node: process.version,
   },
   port: Number(process.env.PORT) || 8001,
-  loggly: getCredential("credentials.loggly.json"),
+  loggly: getCredential<LogglyCredentials>("credentials.loggly.json"),
   mysql: getCredential<MysqlCredentials>("credentials.mysql.json"),
 };
 
