@@ -8,7 +8,7 @@
 - **`.v.`** — Vercel (e.g. Site)
 - **`.dl.`** — the homelab, as seen from outside; short for Daniel Lauzon's initials, not a per-provider tag like the others
 - **`.ts.`** — Tailscale
-- **`.n.`** — **not Netlify.** Leftover from **zeit/now** (`now.json`, v1/v2 configs) — "n" stood for "now," zeit's product name before it renamed to Vercel (~July 2020, when `now.json` files became `vercel.json`). Daniel picked the `.v.` suffix for the new Vercel custom domain around that same time. See Cloud accounts.
+- **`.n.`** — **not Netlify.** Leftover from **zeit/now** (`now.json`, v1/v2 configs) — "n" stood for "now," zeit's product name before it renamed to Vercel (2020). Confirmed via git history: the switch to `.v.` for this domain happened later, on 2022-02-28 (commit `e72cabf2`, `infra/gateway/Makefile`'s `web` target). That commit updated the Makefile but not `packages/site/vercel.json`'s alias — which is exactly why that file is still stale (see Site's CONTEXT.md). See Cloud accounts.
 
 ## Host naming convention
 
