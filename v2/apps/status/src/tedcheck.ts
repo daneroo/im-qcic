@@ -21,8 +21,6 @@ export function asTable(data: Row[]): Table {
       const tableRow: Cell[] = headers.map((col) => row[col] ?? null);
       table.push(tableRow);
     }
-  } else {
-    console.warn("No data");
   }
   return table;
 }

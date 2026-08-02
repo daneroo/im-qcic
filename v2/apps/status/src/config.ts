@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
 import type { LogglyCredentials } from "./logcheck-datasource";
+import { log } from "./logger";
 import type { MysqlCredentials } from "./tedcheck-datasource";
 
 export interface Config {
@@ -35,7 +36,10 @@ function getCredential<T>(path: string): T | null {
   try {
     return JSON.parse(readFileSync(path).toString()) as T;
   } catch (err) {
-    console.warn("getCredential", path, (err as Error).message);
+    log.warn(
+      { path, err: (err as Error).message },
+      "credential file not found",
+    );
     return null;
   }
 }

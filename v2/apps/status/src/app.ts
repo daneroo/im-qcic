@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { config } from "./config";
-import { requestLogger } from "./logger";
+import { log, requestLogger } from "./logger";
 import { asTable as asDigestTable, searchOptions } from "./logcheck";
 import {
   createLogglyDataSource,
@@ -24,6 +24,14 @@ export function createApp(deps: AppDeps = {}): Hono {
   const app = new Hono();
 
   app.use("*", requestLogger);
+
+  // Hono's default onError dumps the raw error + stack trace straight to
+  // stderr, bypassing pino entirely - log it as structured JSON instead,
+  // message only, no stack.
+  app.onError((err, c) => {
+    log.error({ path: c.req.path, err: err.message }, "request error");
+    return c.json({ error: "Internal Server Error" }, 500);
+  });
 
   app.get("/", (c) => c.json(config.version));
 
