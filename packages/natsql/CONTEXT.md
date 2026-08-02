@@ -10,3 +10,5 @@ _Avoid_: api (an older/stale name for this same service — see `infra/gateway/R
 
 **Heartbeat**:
 The one NATS subject Natsql currently bridges (`im.qcic.heartbeat`) — a periodic liveness message, exposed as a GraphQL Query, Mutation, and Subscription.
+
+**Note — technically redundant, kept anyway**: NATS later added its own native websocket support (see Gateway's `nats` service, port 9222), which can let Site talk to NATS directly without a GraphQL bridge in between. Natsql still exists partly because Daniel is genuinely proud of the original work (it's the repo's origin concept), not purely necessity — but the stated intent is to actually retire it. Don't treat its continued presence as evidence it's still architecturally required.
