@@ -9,3 +9,5 @@ Checks a MySQL `watt` table for missing samples, at day/week/hour granularity. T
 
 **Logcheck**:
 Checks Scrobblecast digest logs (see Missing) for gaps.
+
+**Note — build risk**: deployed via Gateway's docker-compose (`build: ../../packages/status/`), so the risk is less "does it run on my current Node" and more "does its Dockerfile's pinned base image still build" — unverified. Worth checking before any migration to a new monorepo structure.
