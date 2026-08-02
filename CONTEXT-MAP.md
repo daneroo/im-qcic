@@ -16,7 +16,9 @@ Physical/virtual hosts are named after mathematicians and scientists:
 
 - **Galois** — Mac Mini M2 Pro, Daniel's main machine
 - **Hilbert** — main Proxmox VE server (biggest, aging)
-- **Euler** — secondary Proxmox server (temporary name, currently `px1`)
+- **Euler** — secondary Proxmox server, currently named `px1` (a "cattle vs pets" naming experiment Daniel decided against — reverting to Euler)
+- **Feynman** — a retired macOS VM on Hilbert (VM 100, `feynman-production`), no longer used
+- **Dizzy** — a Ubuntu VM on Hilbert (VM 121), originally for OpenClaw (retired), now running a "Hermes/nous-portal" agent
 - **Dirac** — older host, formerly ran nats
 - **Boole** — new UCG-Fiber router (see `network/UniFi-Journey-2025`)
 - **Gauss** — btrfs mirror host (see Fio)
@@ -72,8 +74,8 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Site → Nats, Natsql, Status**: Site connects directly to all three (all running on Gateway), reached publicly via Caddy's reverse proxy — Status acts as a router for internal checks, mostly for Site's consumption. Site holds no state of its own by design — see [ADR-0001](./docs/adr/0001-site-proxies-state-through-natsql.md) for why (zeit/now's always-on containers → stateless serverless, forcing this proxy split)
 - **Design/html-react → Natsql, Scrobblecast, Status/Ted**: the dashboard's three metric cards (Heartbeat, Cast Synch, Ted1k) render exactly these three things
 - **Boole → Hilbert, Syno**: planned 10GbE SFP+ DAC connections as part of the UniFi migration; giga-router's Bell Giga Hub is what Boole (UCG-Fiber) replaces
-- **Hilbert → Audiobookshelf**: runs on a VM on Hilbert, at the legacy hostname `plex-audiobook.imetrical.com` (Plex itself is fully retired)
-- **D1-px1 → Scrobblecast, Ted**: hosts one of Scrobblecast's three copies (currently the active proxied one) and Ted's Grafana dashboard (`grafana-ted.dl.imetrical.com`)
+- **Hilbert → Feynman, Audiobookshelf, Scast-hilbert, Hass, Dizzy**: the five VMs it runs (VMIDs 100/101/102/120/121)
+- **Euler (`px1`) → Scast-euler (`d1-px1`)**: the VM hosts one of Scrobblecast's three copies (currently the active, publicly-proxied one) and Ted's Grafana dashboard (`grafana-ted.dl.imetrical.com`)
 
 ## Deprecated / dead
 
@@ -97,14 +99,13 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Syno** — the Synology NAS host itself (runs the `Gateway` and `Pxbk` VMs, plus `Jellyfin` via Container Manager). No directory yet; candidate location `infra/syno/`.
 - **Pxbk** — Proxmox Backup Server VM on Syno. No deployment record in this repo at all; origin/config unknown.
 - **Dirac** — a host Caddy (on Gateway) proxies to (`dirac.imetrical.com:8000`, `:5000`). No deployment record in this repo at all.
-- **Scrobblecast** — bigger than first thought: three copies run across the homelab, named directly in Caddy's config comments (2025-07-01) — `d1-px1` (currently the active proxied one, "`fermat-vm`", chosen for power-failure robustness), `darwin`, and `scast-hilbert`. Reverse-proxied at `scrobblecast.dl.imetrical.com → d1-px1.imetrical.com:8000` and checked for gaps by Status's `logcheck`. `/api/status` confirmed live (curl'd during this inventory) and publicly monitored by Better Stack (see Cloud accounts). Snapshots to S3 under the Personal AWS account. QCIC intends to actively track this one — credentials, S3 assets, and status/sync monitoring across the three copies — not just note it in passing. No source/deployment record in this repo yet.
-- **D1-px1** — a VM per Caddy's comments described as "`fermat-vm`" (i.e. living on Fermat), hosting one of Scrobblecast's three copies and Ted's Grafana dashboard (`grafana-ted.dl.imetrical.com`). **Naming conflict, unresolved**: Daniel separately described `Euler` as "temporarily named `px1`" — unclear whether `d1-px1` and Euler/`px1` are the same machine or two different things that happen to share "px1." Needs Daniel to clarify.
+- **Scrobblecast** — bigger than first thought: three copies run across the homelab — `scast-hilbert` (VM 102 on Hilbert), `darwin`, and `scast-euler` (currently named `d1-px1`, a Ubuntu VM on the Euler Proxmox host, running scrobblecast in docker — currently the active proxied one, chosen for power-failure robustness). Reverse-proxied at `scrobblecast.dl.imetrical.com → d1-px1.imetrical.com:8000` and checked for gaps by Status's `logcheck`. `/api/status` confirmed live (curl'd during this inventory) and publicly monitored by Better Stack (see Cloud accounts). Snapshots to S3 under the Personal AWS account. QCIC intends to actively track this one — credentials, S3 assets, and status/sync monitoring across the three copies — not just note it in passing. No source/deployment record in this repo yet.
 - **Audiobookshelf** — an important, daily-used (hours) service, publicly reverse-proxied via Gateway/Caddy at `audiobook.dl.imetrical.com`. Runs at the hostname `plex-audiobook.imetrical.com` — a naming vestige: Plex itself is fully retired (two former instances, on Hilbert and on Synology, both replaced by Jellyfin), but the old hostname stuck around and now points at Audiobookshelf instead. No directory/deployment record in this repo — given how central this one is to daily use, it's a strong candidate for early attention.
 - **Synk** — Syno's sibling, an offsite host mirroring many of Syno's volume shares. No directory yet; no deployment/config record in this repo.
-- **Hilbert** — Daniel's biggest (aging) Proxmox VE server, ZFS-backed (`rpool`, `pve-storage` 6T pool with `backups-isos`/`vmstorage` datasets). Runs the Hass VM. No directory yet; no config/inventory record in this repo.
+- **Hilbert** — Daniel's biggest (aging) Proxmox VE server, ZFS-backed (`rpool`, `pve-storage` 6T pool with `backups-isos`/`vmstorage` datasets). Runs 5 VMs: `feynman-production` (100, retired), `plex-audiobook`/Audiobookshelf (101), `scast-hilbert` (102), `hass` (120), `dizzy` (121). No directory yet; no config/inventory record in this repo.
 - **Galois** — Daniel's main machine, a Mac Mini M2 Pro. Mentioned in the README TODO for "local Staging/AppExperiments." No directory yet; role not fully pinned down.
 - **Ted** — "The Energy Detective," Daniel's home power monitor. Source of the `watt` MySQL table that Status's `tedcheck` monitors for gaps (matches the "grafana-ted" commit history). No directory/deployment record in this repo — it's a physical device, not software.
-- **Euler** — secondary Proxmox server (temporary name, currently `px1`). No directory/inventory record in this repo.
+- **Euler** — secondary Proxmox server, currently named `px1` (reverting — see naming convention above). Hosts a Ubuntu VM currently named `d1-px1`, soon to be renamed `scast-euler`, running one of Scrobblecast's three copies. No directory/inventory record in this repo.
 - **Davinci** — an iMac M1. No directory/inventory record in this repo.
 - **Darwin** — a Mac Mini running Ubuntu. No directory/inventory record in this repo.
 - **Goedel** — an ancient MacBook. No directory/inventory record in this repo.
