@@ -21,7 +21,7 @@ Physical/virtual hosts are named after mathematicians and scientists:
 - **Dizzy** — a Ubuntu VM on Hilbert (VM 121), originally for OpenClaw (retired), now running a "Hermes/nous-portal" agent
 - **Dirac** — older host, formerly ran nats
 - **Boole** — new UCG-Fiber router (see `network/UniFi-Journey-2025`)
-- **Gauss** — btrfs mirror host (see Fio)
+- **Gauss** — a Beelink SER8 running NixOS, btrfs-mirrored storage (see Missing, Fio)
 - **Davinci** — iMac M1
 - **Darwin** — Mac Mini running Ubuntu
 - **Goedel** — ancient MacBook
@@ -109,7 +109,10 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Ted / Ted1k** — "The Energy Detective," Daniel's home power monitor, and **Ted1k**, the software that ingests it: 1 sample/second, running continuously since **2007-08-28** (322M+ rows and counting, confirmed via `select count(*) from watt`). Deployed on Darwin as `im-ted1k-teddb-1` (MySQL, database `ted`, table `watt`) — the same `watt` table Status's `tedcheck` monitors for gaps. Has (at least) two NATS-connected roles, confirmed via `nats-top`: `capture.ted1k` (go client, on Darwin — publishes to the shared `im.qcic.heartbeat` subject, e.g. `{"host":"capture.ted1k","text":"watts: 4810"}`) and `subscribe.ted1k` (go client, on Euler's `d1-px1` VM). Ted1k's source lives in its **own separate repo**, `im-ted1k`, not in this monorepo at all. Given the data's age and continuity, this is one of the most significant things this inventory has found — worth real priority once the Missing bucket gets worked.
 - **Shannon** — a repurposed 19" iMac running Bluefin (the mathematician-named host, Claude Shannon), confirmed alive via Tailscale. Also the same "shannon" `events/`'s old README credited as a credentials source — so it's a real, long-lived host, not just a name in a stale note.
 - **Jetkvm** — a JetKVM hardware device (remote KVM-over-IP), seen offline in Tailscale's peer list. No further detail yet.
-- **Hardy** and **Ai** — two more Tailscale peers, unclassified. `Hardy` breaks the mathematician-naming pattern (possibly an old Ubuntu release codename?); `ai` routes through what looks like a Tokyo DERP relay. Not guessing at these — flagged for Daniel to identify.
+- **Gauss** — a Beelink SER8 running NixOS, with btrfs-mirrored storage used to benchmark against in Fio. Deployed from `daneroo/nix-garden` (see below).
+- **Hardy** — a converted Chromebook running NixOS, deployed from the same config repo as Gauss: **`daneroo/nix-garden`**, an external repo entirely outside this monorepo. Breaks the mathematician-naming pattern deliberately (Ubuntu release codename, "Hardy Heron").
+- **Ai** — one more Tailscale peer, still unidentified (routes through what looks like a Tokyo DERP relay). Not guessing — flagged for Daniel to identify.
+- **Nix-garden** (`daneroo/nix-garden`) — a separate repo managing NixOS configuration for at least Hardy and Gauss. Same pattern as `im-ted1k`: real infra-as-code, entirely outside this monorepo.
 - **Euler** — secondary Proxmox server, currently named `px1` (reverting — see naming convention above). Hosts a Ubuntu VM currently named `d1-px1`, soon to be renamed `scast-euler`, running one of Scrobblecast's three copies. No directory/inventory record in this repo.
 - **Davinci** — an iMac M1. No directory/inventory record in this repo.
 - **Darwin** — a Mac Mini running Ubuntu. No directory/inventory record in this repo.
