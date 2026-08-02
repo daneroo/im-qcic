@@ -9,3 +9,6 @@ Covers identity (hostname/user/ip/tailscale ip), connectivity (internet/LAN/WAN,
 
 **Backup concerns**:
 The README TODO mentions gmvault (Gmail backup), Backblaze, CCC (Carbon Copy Cloner), and TimeMachine as things to report on here — not yet implemented, but named as a direction. `packages/docz`'s old TODO mentioned the same set, suggesting this consolidates work that was previously scattered.
+
+**qcic-sh.sh** (`bash/qcic-sh.sh`):
+The most mature of the three language variants — confirmed working. Reports host identity, Tailscale peer status, live NATS subscription (`im.>`) and `nats-top` connection stats, and HTTP health checks against Status and all three Scrobblecast copies. The other two variants: `zx-node/index.mjs` (node/zx) and `livebook/qcic` (elixir, `mix run_qcic`) — the livebook one is currently broken, though it worked before.

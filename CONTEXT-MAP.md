@@ -26,6 +26,7 @@ Physical/virtual hosts are named after mathematicians and scientists:
 - **Darwin** — Mac Mini running Ubuntu
 - **Goedel** — ancient MacBook
 - **Fermat** — Mac Mini
+- **Shannon** — a host, purpose not yet pinned down (see Missing)
 
 Expect more of these to surface.
 
@@ -105,7 +106,10 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Synk** — Syno's sibling, an offsite host mirroring many of Syno's volume shares. No directory yet; no deployment/config record in this repo.
 - **Hilbert** — Daniel's biggest (aging) Proxmox VE server, ZFS-backed (`rpool`, `pve-storage` 6T pool with `backups-isos`/`vmstorage` datasets). Runs 5 VMs: `feynman-production` (100, retired), `plex-audiobook`/Audiobookshelf (101), `scast-hilbert` (102), `hass` (120), `dizzy` (121). No directory yet; no config/inventory record in this repo.
 - **Galois** — Daniel's main machine, a Mac Mini M2 Pro. Mentioned in the README TODO for "local Staging/AppExperiments." No directory yet; role not fully pinned down.
-- **Ted / Ted1k** — "The Energy Detective," Daniel's home power monitor, and **Ted1k**, the software that ingests it: 1 sample/second, running continuously since **2007-08-28** (322M+ rows and counting, confirmed via `select count(*) from watt`). Deployed on Darwin as `im-ted1k-teddb-1` (MySQL, database `ted`, table `watt`) — the same `watt` table Status's `tedcheck` monitors for gaps. Ted1k's source lives in its **own separate repo**, `im-ted1k`, not in this monorepo at all. Given the data's age and continuity, this is one of the most significant things this inventory has found — worth real priority once the Missing bucket gets worked.
+- **Ted / Ted1k** — "The Energy Detective," Daniel's home power monitor, and **Ted1k**, the software that ingests it: 1 sample/second, running continuously since **2007-08-28** (322M+ rows and counting, confirmed via `select count(*) from watt`). Deployed on Darwin as `im-ted1k-teddb-1` (MySQL, database `ted`, table `watt`) — the same `watt` table Status's `tedcheck` monitors for gaps. Has (at least) two NATS-connected roles, confirmed via `nats-top`: `capture.ted1k` (go client, on Darwin — publishes to the shared `im.qcic.heartbeat` subject, e.g. `{"host":"capture.ted1k","text":"watts: 4810"}`) and `subscribe.ted1k` (go client, on Euler's `d1-px1` VM). Ted1k's source lives in its **own separate repo**, `im-ted1k`, not in this monorepo at all. Given the data's age and continuity, this is one of the most significant things this inventory has found — worth real priority once the Missing bucket gets worked.
+- **Shannon** — a mathematician-named host (Claude Shannon), confirmed alive via Tailscale. Also the same "shannon" `events/`'s old README credited as a credentials source — so it's a real, long-lived host, not just a name in a stale note.
+- **Jetkvm** — a JetKVM hardware device (remote KVM-over-IP), seen offline in Tailscale's peer list. No further detail yet.
+- **Hardy** and **Ai** — two more Tailscale peers, unclassified. `Hardy` breaks the mathematician-naming pattern (possibly an old Ubuntu release codename?); `ai` routes through what looks like a Tokyo DERP relay. Not guessing at these — flagged for Daniel to identify.
 - **Euler** — secondary Proxmox server, currently named `px1` (reverting — see naming convention above). Hosts a Ubuntu VM currently named `d1-px1`, soon to be renamed `scast-euler`, running one of Scrobblecast's three copies. No directory/inventory record in this repo.
 - **Davinci** — an iMac M1. No directory/inventory record in this repo.
 - **Darwin** — a Mac Mini running Ubuntu. No directory/inventory record in this repo.
