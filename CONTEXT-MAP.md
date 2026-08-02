@@ -37,7 +37,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **GCP · Personal** (`daniel.lauzon@gmail.com`) — no known resources.
 - **Cloudflare** — manages DNS for `*.imetrical.net` (Caddy's DNS-01 challenge uses a Cloudflare-scoped API token, see Gateway). Full account scope not yet inventoried.
 - **Netlify** — a real, active account ("Daniel Lauzon's team"), unrelated to the `.n.` DNS convention (that was zeit/now, not Netlify — see above). Confirmed via `netlify sites:list`: 4 sites, none tied to qcic and none using an `imetrical.com` custom domain — all on default `*.netlify.app` URLs: `wifidan`, `djembe-bolt` (has its own repo, `daneroo/djembe-bolt-astro-site`), `ir-logo` (`daneroo/ir-logo`), `helium-logo` (`daneroo/helium-logo`). `packages/ui` does have a `netlify.toml` with a site ID (`f0220657-...`) not in this current list — a genuine but now-gone Netlify deployment attempt, separate from its `.n.` zeit/now alias.
-- **Zeit/now (defunct)** — the provider itself no longer exists; it rebranded to Vercel in 2020. Explains the `.n.` DNS convention and the `now.json` files found in `packages/{ui,docz,time}`. Nothing to inventory here beyond what's already noted — the provider is simply gone.
+- **Zeit/now (defunct)** — the provider itself no longer exists; it rebranded to Vercel in 2020. Explains the `.n.` DNS convention and the `now.json` files found in `packages/{ui,docz,time}`. Also explains a real architectural fork: zeit/now originally ran always-on containers (so a deployed service could hold its own state), and losing that on the move to stateless serverless is why Site proxies to the homelab instead of holding state itself — see [ADR-0001](./docs/adr/0001-site-proxies-state-through-natsql.md).
 - **Vercel** — hosts Site (`qcic.v.imetrical.com`). Account scope beyond Site not yet inventoried.
 
 ## Live contexts
@@ -68,7 +68,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
 - **Galois → Jellyfin (dev)**: a disposable local Jellyfin instance runs on Galois for development, reading the same media as the Syno production instance
 - **Cloudrun ↔ Packages/myip**: same "myip" concept — Cloudrun is deployed and live, Packages/myip is an undeployed rewrite meant to replace it
-- **Site → Nats, Natsql, Status**: Site connects directly to all three (all running on Gateway), reached publicly via Caddy's reverse proxy — Status acts as a router for internal checks, mostly for Site's consumption
+- **Site → Nats, Natsql, Status**: Site connects directly to all three (all running on Gateway), reached publicly via Caddy's reverse proxy — Status acts as a router for internal checks, mostly for Site's consumption. Site holds no state of its own by design — see [ADR-0001](./docs/adr/0001-site-proxies-state-through-natsql.md) for why (zeit/now's always-on containers → stateless serverless, forcing this proxy split)
 - **Design/html-react → Natsql, Scrobblecast, Status/Ted**: the dashboard's three metric cards (Heartbeat, Cast Synch, Ted1k) render exactly these three things
 - **Boole → Hilbert, Syno**: planned 10GbE SFP+ DAC connections as part of the UniFi migration; giga-router's Bell Giga Hub is what Boole (UCG-Fiber) replaces
 
