@@ -45,6 +45,13 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Better Stack** (formerly BetterUptime, [dashboard](https://uptime.betterstack.com/team/t17237/monitors)) — third-party uptime monitoring, replaced EasyCron 2021-09-04. Publicly monitors two confirmed-live endpoints: `natsql.dl.imetrical.com/health` and `scrobblecast.dl.imetrical.com/api/status`. The de facto safety net until QCIC's own dashboard (Design/html-react) can be fully trusted.
 - **Tailscale** — the tailnet linking every homelab host (see the `.ts.` DNS convention and Host naming convention above). Also provides an **AI proxy** feature (shows up as an "`ai`" entry in `tailscale status`, not a real peer/host) — centralizes LLM API request management and cost accounting across the tailnet. Not yet inventoried beyond that.
 
+## v2: Bun monorepo migration (in progress)
+
+Site and Status — the only two packages with real daily use — are being ported into a new self-contained `v2/` subtree (Bun workspaces, structured after `/Users/daniel/Code/iMetrical/ai-garden/prosodio`), decoupled from the existing lerna/pnpm root. See [ADR-0002](./docs/adr/0002-v2-bun-monorepo-subtree.md) for why a subtree, and Status's CONTEXT.md for the full port plan.
+
+- **Status** — first package ported, in scope for `/to-tickets` → `/implement`: faithful/behavior-frozen lift to TypeScript + ESM + Hono, running on Bun in production.
+- **Site** — deliberately out of scope here; needs its own `/wayfinder` session (framework, styling, whether it still proxies state through Natsql per ADR-0001, and how central NATS should be to the client — a decision that could retroactively make Status's phase-2 evolution moot).
+
 ## Live contexts
 
 (confirmed active — has its own CONTEXT.md)
@@ -54,7 +61,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois
 - [Cloudrun](./cloudrun/CONTEXT.md) — deployed "myip" service on Google Cloud Run, at myip.g.imetrical.com
 - [Site](./packages/site/CONTEXT.md) — Gatsby static site on Vercel, actively used daily, not rebuilt since 2022-03-01; config still has a leftover Netlify-era alias
-- [Status](./packages/status/CONTEXT.md) — health-check service (tedcheck, logcheck), built and run by Gateway, slated for eventual retirement
+- [Status](./packages/status/CONTEXT.md) — health-check service (tedcheck, logcheck), built and run by Gateway; first package being ported to `v2/` (see below)
 - [Natsql](./packages/natsql/CONTEXT.md) — Daniel's own GraphQL-to-NATS subscription bridge; the repo's origin concept, built and run by Gateway
 - [Mail](./mail/CONTEXT.md) — Mailgun notification experiment; content still wanted, slated to move under `scripts/`
 - [Nats (client)](./nats/CONTEXT.md) — dev/test client for a NATS server; content still wanted, slated to move under `scripts/`
