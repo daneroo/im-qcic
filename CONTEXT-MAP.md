@@ -8,7 +8,7 @@
 - **`.v.`** — Vercel (e.g. Site)
 - **`.dl.`** — the homelab, as seen from outside; short for Daniel Lauzon's initials, not a per-provider tag like the others
 - **`.ts.`** — Tailscale
-- **`.n.`** — Netlify (see Cloud accounts)
+- **`.n.`** — **not Netlify.** Leftover from **zeit/now** (`now.json`, v1/v2 configs) — "n" stood for "now," zeit's product name before it renamed to Vercel (~July 2020, when `now.json` files became `vercel.json`). Daniel picked the `.v.` suffix for the new Vercel custom domain around that same time. See Cloud accounts.
 
 ## Host naming convention
 
@@ -36,7 +36,8 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **GCP · iMetrical** (`daniel.lauzon@imetrical.com`) — several projects, including `qcic-237620` which runs Cloudrun's `myip` service (`myip.g.imetrical.com`). Other projects not yet inventoried.
 - **GCP · Personal** (`daniel.lauzon@gmail.com`) — no known resources.
 - **Cloudflare** — manages DNS for `*.imetrical.net` (Caddy's DNS-01 challenge uses a Cloudflare-scoped API token, see Gateway). Full account scope not yet inventoried.
-- **Netlify** — implied by the `.n.` DNS convention. Two confirmed-dead deployments: `packages/ui` as `ui.qcic.n.imetrical.com`, and `packages/docz` as `docz.qcic.n.imetrical.com`. Needs spelunking: what, if anything, is still actually deployed there, and whether the `*.n.imetrical.com` wildcard is still pointed at it.
+- **Netlify** — a real, active account ("Daniel Lauzon's team"), unrelated to the `.n.` DNS convention (that was zeit/now, not Netlify — see above). Confirmed via `netlify sites:list`: 4 sites, none tied to qcic and none using an `imetrical.com` custom domain — all on default `*.netlify.app` URLs: `wifidan`, `djembe-bolt` (has its own repo, `daneroo/djembe-bolt-astro-site`), `ir-logo` (`daneroo/ir-logo`), `helium-logo` (`daneroo/helium-logo`). `packages/ui` does have a `netlify.toml` with a site ID (`f0220657-...`) not in this current list — a genuine but now-gone Netlify deployment attempt, separate from its `.n.` zeit/now alias.
+- **Zeit/now (defunct)** — the provider itself no longer exists; it rebranded to Vercel in 2020. Explains the `.n.` DNS convention and the `now.json` files found in `packages/{ui,docz,time}`. Nothing to inventory here beyond what's already noted — the provider is simply gone.
 - **Vercel** — hosts Site (`qcic.v.imetrical.com`). Account scope beyond Site not yet inventoried.
 
 ## Live contexts
@@ -79,11 +80,12 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **`k8s/`** — abandoned early (2017-18) GKE cluster experiments; superseded by later, unrelated Talos/k3s thinking mentioned in `infra/gateway/README.md`.
 - **`s3/`** — a one-time key-rotation experiment for pubnub's S3 usage; dies with pubnub. See the AWS gap below for the broader cleanup.
 - **`pubnub/`** — "not in a functional state" per its own README; explicit delete. Still owns live AWS S3 buckets that need decommissioning (see AWS gap below) — deleting the directory doesn't finish this one.
-- **`packages/ui`** — "garbage ancient next.js app" per README; was deployed to Netlify as `ui.qcic.n.imetrical.com` (now undeployed, confirmed via a Mailgun test-email link).
+- **`packages/ui`** — "garbage ancient next.js app" per README; had a zeit/now alias `ui.qcic.n.imetrical.com` (confirmed via an old Mailgun test-email link, now undeployed) and separately a real but now-deleted Netlify site (`netlify.toml` site ID not in the current account).
 - **`packages/react`** — superseded reusable component library, explicit delete per README.
 - **`packages/cli`** — depends on `../api`, a package that no longer exists (renamed/merged into Natsql). Old Apollo Subscriptions CLI client, superseded.
-- **`packages/docz`** — old Netlify-era static status site (`docz.qcic.n.imetrical.com`), same purpose Design/html-react and Site now cover. Superseded.
+- **`packages/docz`** — old zeit/now-era static status site (`docz.qcic.n.imetrical.com`), same purpose Design/html-react and Site now cover. Superseded.
 - **`packages/gql-client`** — reusable Apollo client helpers; no live consumers remain (only the now-deprecated `ui`/`react` packages ever used it).
+- **`packages/time`** — a trivial zeit/now serverless function returning the current time as JSON (`time.qcic.n.imetrical.com`). Uses the old `now` CLI, which no longer exists. No evidence of ongoing use beyond being a lambda smoke test.
 
 ## Missing
 
@@ -102,9 +104,14 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Darwin** — a Mac Mini running Ubuntu. No directory/inventory record in this repo.
 - **Goedel** — an ancient MacBook. No directory/inventory record in this repo.
 - **Fermat** — a Mac Mini. No directory/inventory record in this repo.
+- **Drobo** — an older NAS (Drobo 5N, `drobo.imetrical.com`), benchmarked in `backups/`'s restic/duplicacy investigation. Its own TODO suggests moving off Drobo onto Syno, but current status (still in use vs. retired) is unconfirmed.
 
 ## Unclassified
 
 (not yet reviewed)
 
-None left — every directory in the repo has been classified as Live or Deprecated. The remaining open work is the Missing and Cloud accounts gaps above.
+- `backups/` — a 2020-era backup-strategy investigation (restic vs duplicacy, benchmarked against a Drobo NAS). Its own TODO says to move the KubeVol experiment off Drobo onto Syno, but no resolution is recorded. Not classifying this one by guess — asked Daniel to confirm whether it's still live work or superseded by Synk.
+
+Note: `.agents/`, `.claude/`, `.vscode/`, `docs/` are tooling/meta directories (this skill setup's own output, editor config) — intentionally out of scope for Over the Fence, not missed.
+
+Two directories were found late and had slipped through the original scan entirely (not just misjudged, actually absent from the list): `packages/time` (now classified, see Deprecated) and `backups/` (above). Worth a systematic `find`-based re-check like this one before calling any future pass "complete."
