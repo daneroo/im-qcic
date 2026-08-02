@@ -9,7 +9,7 @@ export interface Config {
   version: {
     name: string;
     version: string;
-    node: string;
+    runtime: string;
   };
   port: number;
   loggly: LogglyCredentials | null;
@@ -22,7 +22,7 @@ export const config: Config = {
     // also exposed as API /version
     name: pkg.name,
     version: pkg.version,
-    node: process.version,
+    runtime: `bun:${Bun.version}`,
   },
   port: Number(process.env.PORT) || 8001,
   loggly: getCredential<LogglyCredentials>("credentials.loggly.json"),
