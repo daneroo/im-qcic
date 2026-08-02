@@ -52,6 +52,8 @@ Site and Status — the only two packages with real daily use — are being port
 - **Status** — first package ported, in scope for `/to-tickets` → `/implement`: faithful/behavior-frozen lift to TypeScript + ESM + Hono, running on Bun in production.
 - **Site** — deliberately out of scope here; needs its own `/wayfinder` session (framework, styling, whether it still proxies state through Natsql per ADR-0001, and how central NATS should be to the client — a decision that could retroactively make Status's phase-2 evolution moot).
 
+**Open, deferred decision — versioning/tags**: the old root was tagged via `lerna version` — 50 plain `vX.Y.Z` tags (no `status@`-prefix or per-package tags), bumping each affected package's own `package.json` version but sharing one repo-wide tag per release (last: `v1.0.46`, 2023-04-09). `v2/` has no lerna and no tagging convention yet. Two options when this becomes relevant: adopt something equivalent (e.g. changesets, or a simpler per-package or workspace-wide tag scheme), or abandon version tags for `v2/` entirely. Not decided — noted so it doesn't get silently skipped once `v2/` starts cutting real releases.
+
 ## Live contexts
 
 (confirmed active — has its own CONTEXT.md)
