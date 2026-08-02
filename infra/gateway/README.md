@@ -63,7 +63,7 @@ This is not in a functional state
 BetterUptime does periodic http checks, as well as monitor _heartbeats_.
 Alarms are sent by email and on Slack. Incident responses are tracked.
 
-[See current status](https://betteruptime.com/team/20855/monitors)
+[See current status](https://uptime.betterstack.com/team/t17237/monitors)
 
 We monitor:
 

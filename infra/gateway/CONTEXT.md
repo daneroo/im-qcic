@@ -20,3 +20,6 @@ A service built and run by Gateway; own vocabulary defined in `packages/natsql/C
 
 **Status**:
 A service built and run by Gateway; own vocabulary defined in `packages/status/CONTEXT.md`.
+
+**Better Stack** (formerly BetterUptime):
+The external, third-party safety net — separate from and predating design/html-react's own dashboard. Does periodic HTTP health checks plus heartbeat monitoring, alarms via email/Slack, incident tracking. Publicly monitors two live endpoints, confirmed responding as of this inventory: `https://natsql.dl.imetrical.com/health` and `https://scrobblecast.dl.imetrical.com/api/status`. Until QCIC's own dashboard can be fully trusted, this is what's actually watching the watchers.
