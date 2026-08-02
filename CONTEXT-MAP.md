@@ -88,10 +88,10 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **`k8s/`** — abandoned early (2017-18) GKE cluster experiments; superseded by later, unrelated Talos/k3s thinking mentioned in `infra/gateway/README.md`.
 - **`s3/`** — a one-time key-rotation experiment for pubnub's S3 usage; dies with pubnub. See the AWS gap below for the broader cleanup.
 - **`pubnub/`** — "not in a functional state" per its own README; explicit delete. Still owns live AWS S3 buckets that need decommissioning (see AWS gap below) — deleting the directory doesn't finish this one.
-- **`packages/ui`** — "garbage ancient next.js app" per README; had a zeit/now alias `ui.qcic.n.imetrical.com` (confirmed via an old Mailgun test-email link, now undeployed) and separately a real but now-deleted Netlify site (`netlify.toml` site ID not in the current account).
+- **`packages/ui`** — "garbage ancient next.js app" per README; had a zeit/now alias `ui.qcic.n.imetrical.com` (confirmed via an old Mailgun test-email link, now undeployed) and separately a real but now-deleted Netlify site (`netlify.toml` site ID not in the current account). Also, per Daniel: no longer builds on current Node.js at all — doubly dead.
 - **`packages/react`** — superseded reusable component library, explicit delete per README.
 - **`packages/cli`** — depends on `../api`, a package that no longer exists (renamed/merged into Natsql). Old Apollo Subscriptions CLI client, superseded.
-- **`packages/docz`** — old zeit/now-era static status site (`docz.qcic.n.imetrical.com`), same purpose Design/html-react and Site now cover. Superseded.
+- **`packages/docz`** — old zeit/now-era static status site (`docz.qcic.n.imetrical.com`), same purpose Design/html-react and Site now cover. Superseded — also, per Daniel: this Gatsby build no longer builds on current Node.js at all.
 - **`packages/gql-client`** — reusable Apollo client helpers; no live consumers remain (only the now-deprecated `ui`/`react` packages ever used it).
 - **`packages/time`** — a trivial zeit/now serverless function returning the current time as JSON (`time.qcic.n.imetrical.com`). Uses the old `now` CLI, which no longer exists. No evidence of ongoing use beyond being a lambda smoke test.
 
