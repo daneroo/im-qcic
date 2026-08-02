@@ -43,6 +43,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Zeit/now (defunct)** — the provider itself no longer exists; it rebranded to Vercel in 2020. Explains the `.n.` DNS convention and the `now.json` files found in `packages/{ui,docz,time}`. Also explains a real architectural fork: zeit/now originally ran always-on containers (so a deployed service could hold its own state), and losing that on the move to stateless serverless is why Site proxies to the homelab instead of holding state itself — see [ADR-0001](./docs/adr/0001-site-proxies-state-through-natsql.md).
 - **Vercel** — hosts Site (`qcic.v.imetrical.com`). Account scope beyond Site not yet inventoried.
 - **Better Stack** (formerly BetterUptime, [dashboard](https://uptime.betterstack.com/team/t17237/monitors)) — third-party uptime monitoring, replaced EasyCron 2021-09-04. Publicly monitors two confirmed-live endpoints: `natsql.dl.imetrical.com/health` and `scrobblecast.dl.imetrical.com/api/status`. The de facto safety net until QCIC's own dashboard (Design/html-react) can be fully trusted.
+- **Tailscale** — the tailnet linking every homelab host (see the `.ts.` DNS convention and Host naming convention above). Also provides an **AI proxy** feature (shows up as an "`ai`" entry in `tailscale status`, not a real peer/host) — centralizes LLM API request management and cost accounting across the tailnet. Not yet inventoried beyond that.
 
 ## Live contexts
 
@@ -111,7 +112,6 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Jetkvm** — a JetKVM hardware device (remote KVM-over-IP), seen offline in Tailscale's peer list. No further detail yet.
 - **Gauss** — a Beelink SER8 running NixOS, with btrfs-mirrored storage used to benchmark against in Fio. Deployed from `daneroo/nix-garden` (see below).
 - **Hardy** — a converted Chromebook running NixOS, deployed from the same config repo as Gauss: **`daneroo/nix-garden`**, an external repo entirely outside this monorepo. Breaks the mathematician-naming pattern deliberately (Ubuntu release codename, "Hardy Heron").
-- **Ai** — one more Tailscale peer, still unidentified (routes through what looks like a Tokyo DERP relay). Not guessing — flagged for Daniel to identify.
 - **Nix-garden** (`daneroo/nix-garden`) — a separate repo managing NixOS configuration for at least Hardy and Gauss. Same pattern as `im-ted1k`: real infra-as-code, entirely outside this monorepo.
 - **Euler** — secondary Proxmox server, currently named `px1` (reverting — see naming convention above). Hosts a Ubuntu VM currently named `d1-px1`, soon to be renamed `scast-euler`, running one of Scrobblecast's three copies. No directory/inventory record in this repo.
 - **Davinci** — an iMac M1. No directory/inventory record in this repo.
