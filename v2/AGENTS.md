@@ -40,6 +40,8 @@ All apps default to port `8000`
 ([docs/adr/0003](../docs/adr/0003-v2-apps-share-a-standard-default-port.md))
 unless overridden via `PORT` or remapped at the Docker/Compose level.
 
+### Credentials
+
 Credentials live in a single flat `infra/credentials/` (gitignored as a whole
 directory — matches `infra/gateway`'s own `credentials/` convention, e.g.
 `credentials/caddy/CREDS.env`), volume-mounted at runtime, never baked into
