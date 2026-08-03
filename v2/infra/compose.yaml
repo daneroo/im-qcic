@@ -9,7 +9,7 @@ services:
     image: nats:2-alpine@sha256:f2123f533c2b0cada0a5c5ec434fb2b8cfe1cf220215ef9d7517e1372917ad66
     restart: unless-stopped
     volumes:
-      - ./config/nats-server.conf:/etc/nats/nats-server.conf
+      - ./config/nats/nats-server.conf:/etc/nats/nats-server.conf
       - ./data/nats/jetstream:/data/jetstream
     command: "-c /etc/nats/nats-server.conf"
     ports:
