@@ -1,0 +1,17 @@
+{
+  "name": "@daneroo/qcic-scast-derive",
+  "version": "1.0.0",
+  "description": "Derives Scrobblecast's checkpoint-digest table from its scrobblecastDigest JetStream stream, publishing to NATS KV",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "@nats-io/kv": "^3.4.0",
+    "@nats-io/transport-node": "^3.4.0",
+    "nats": "^2.29.3",
+    "pino": "^9.5.0"
+  }
+}
