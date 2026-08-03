@@ -47,10 +47,10 @@ WORKDIR /usr/src/app/apps/status
 EXPOSE 8000
 
 # Runtime credentials (gitignored, not baked into the image) mount at
-# /usr/src/app/credentials/ - mirrors the v2/credentials/ workspace
-# convention 1:1 (config.ts reaches it via ../../credentials/ from
-# WORKDIR), NOT /usr/src/app/credentials.*.json like the old
-# packages/status image:
-#   -v .../v2/credentials/credentials.mysql.json:/usr/src/app/credentials/credentials.mysql.json
-#   -v .../v2/credentials/credentials.loggly.json:/usr/src/app/credentials/credentials.loggly.json
+# /usr/src/app/infra/credentials/ - mirrors the v2/infra/credentials/
+# workspace convention 1:1 (config.ts reaches it via
+# ../../infra/credentials/ from WORKDIR), NOT /usr/src/app/credentials.*.json
+# like the old packages/status image:
+#   -v .../v2/infra/credentials/credentials.mysql.json:/usr/src/app/infra/credentials/credentials.mysql.json
+#   -v .../v2/infra/credentials/credentials.loggly.json:/usr/src/app/infra/credentials/credentials.loggly.json
 ENTRYPOINT ["bun", "run", "src/index.ts"]

@@ -28,15 +28,16 @@ export const config: Config = {
   // 8000 is the standard default across all v2/apps/* (see ADR-0003) -
   // override with PORT, or remap at the Docker/Compose level.
   port: Number(process.env.PORT) || 8000,
-  // Workspace-wide gitignored credentials/ (see v2/.gitignore, matching
-  // infra/gateway's own credentials/ convention) - ../../ from this app's
-  // WORKDIR reaches the v2/ workspace root in both local dev and Docker
-  // (see the Dockerfile's mount-path comment for the container side).
+  // Workspace-wide gitignored infra/credentials/ (see v2/.gitignore,
+  // matching infra/gateway's own credentials/ convention) - ../../ from
+  // this app's WORKDIR reaches the v2/ workspace root in both local dev
+  // and Docker (see the Dockerfile's mount-path comment for the container
+  // side).
   loggly: getCredential<LogglyCredentials>(
-    "../../credentials/credentials.loggly.json",
+    "../../infra/credentials/credentials.loggly.json",
   ),
   mysql: getCredential<MysqlCredentials>(
-    "../../credentials/credentials.mysql.json",
+    "../../infra/credentials/credentials.mysql.json",
   ),
 };
 

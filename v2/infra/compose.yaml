@@ -1,0 +1,33 @@
+# v2's own infrastructure - genuinely separate from infra/gateway's real
+# production deploy (see v2/AGENTS.md). Not wired into infra/gateway yet.
+#
+# Run from within v2/infra/:
+#   docker compose up
+
+services:
+  nats:
+    image: nats:2-alpine@sha256:f2123f533c2b0cada0a5c5ec434fb2b8cfe1cf220215ef9d7517e1372917ad66
+    restart: unless-stopped
+    volumes:
+      - ./config/nats/nats-server.conf:/etc/nats/nats-server.conf
+      - ./data/nats:/data
+    # No explicit command: the image's own default CMD is already
+    # `nats-server --config /etc/nats/nats-server.conf` - confirmed via
+    # `docker inspect`, not assumed.
+    ports:
+      - "4222:4222" # clients
+      - "8222:8222" # monitoring
+      - "9222:9222" # websockets (for web)
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    # Future idea, not built here: this would be a natural place to test
+    # Caddy (or Traefik) for real HTTPS/cert validation against custom dev
+    # subdomains - e.g. nats.dev.imetrical.com {...}, qcic.dev.imetrical.com
+    # (for `web`) - before ever touching the real production Caddy/gateway
+    # config.
+
+  # ted1k-derive and scast-derive services join here as they're built
+  # (see issues #238, #240).
