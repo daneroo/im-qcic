@@ -32,7 +32,9 @@ COPY apps/status apps/status
 ENV NODE_ENV=production
 RUN cd apps/status && bun test
 
-# release: minimal production image
+# release: minimal production image. Runs source directly (bun executes
+# TS natively) rather than a bundled dist/ output - matches oven/bun's
+# own official Docker example, which does the same.
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=install /temp/prod/apps/status/node_modules apps/status/node_modules
