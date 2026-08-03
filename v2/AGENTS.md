@@ -16,6 +16,10 @@ decoupled from the existing lerna/pnpm root at the repo root.
 ## Layout
 
 - `apps/` — runnables, each its own package (e.g. `apps/status`)
+- `infra/` — infrastructure this workspace itself depends on (e.g. a local NATS
+  server via `infra/compose.yaml`), plus `infra/credentials/` (see Credentials
+  below). Distinct from the repo-root `infra/gateway/`, which is the real
+  production deployment — nothing here is wired into that yet.
 
 ## Docker
 
@@ -36,12 +40,15 @@ All apps default to port `8000`
 ([docs/adr/0003](../docs/adr/0003-v2-apps-share-a-standard-default-port.md))
 unless overridden via `PORT` or remapped at the Docker/Compose level.
 
-Credentials live in a single flat `credentials/` at this workspace root
-(gitignored as a whole directory — matches `infra/gateway`'s own `credentials/`
-convention, e.g. `credentials/caddy/CREDS.env`), volume-mounted at runtime,
-never baked into images. Flat for now, one file per concern
-(`credentials.mysql.json`, `credentials.loggly.json`, ...) — split into per-app
-subdirectories only once a real naming collision actually happens, not before.
+Credentials live in a single flat `infra/credentials/` (gitignored as a whole
+directory — matches `infra/gateway`'s own `credentials/` convention, e.g.
+`credentials/caddy/CREDS.env`), volume-mounted at runtime, never baked into
+images. Flat for now, one file per concern (`credentials.mysql.json`,
+`credentials.loggly.json`, ...) — split into per-app subdirectories only once a
+real naming collision actually happens, not before. (Originally lived at this
+workspace's top-level `credentials/`; consolidated under `infra/` once that
+concept existed, since credentials are infrastructure the workspace depends on,
+not app source.)
 
 None of this is wired into `infra/gateway`'s real deploy yet — see each app's
 own `CONTEXT.md` (under the repo root's `packages/`) for cutover status.
