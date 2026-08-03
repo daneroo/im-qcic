@@ -1,0 +1,4 @@
+# Generated artifacts and gitignored secrets - do not reformat.
+bun.lock
+**/credentials.*.json
+**/dist/
