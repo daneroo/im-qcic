@@ -1,0 +1,8 @@
+# Shared across all apps/ once more than one gets dockerized - not
+# status-specific. Critical: without **/node_modules, Bun's workspace
+# symlinks get overwritten during COPY, producing ENOENT errors looking
+# in the wrong node_modules location.
+**/node_modules
+**/dist
+.git
+credentials.*.json
