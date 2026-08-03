@@ -10,8 +10,10 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/nats/nats-server.conf:/etc/nats/nats-server.conf
-      - ./data/nats/jetstream:/data/jetstream
-    command: "-c /etc/nats/nats-server.conf"
+      - ./data/nats:/data
+    # No explicit command: the image's own default CMD is already
+    # `nats-server --config /etc/nats/nats-server.conf` - confirmed via
+    # `docker inspect`, not assumed.
     ports:
       - "4222:4222" # clients
       - "8222:8222" # monitoring
