@@ -19,12 +19,8 @@ PORT=8098 bun run dev
 
 `tedcheck`/`logcheck` need real credentials to return real data — without them,
 those two endpoints log a warning and respond `500`, which is expected, not
-broken. Copy the gitignored files in from the original package:
-
-```sh
-cp ../../../packages/status/credentials.mysql.json .
-cp ../../../packages/status/credentials.loggly.json .
-```
+broken. Two gitignored files are needed in this directory:
+`credentials.mysql.json` and `credentials.loggly.json`.
 
 ## Docker
 
@@ -35,13 +31,14 @@ cd v2
 docker build -f apps/status/Dockerfile -t qcic-status:latest .
 ```
 
-Run it, with credentials mounted at their new nested path (see the Dockerfile's
-own comment for why this differs from the old `packages/status` image):
+Run it, with the same two credential files mounted (see the Dockerfile's own
+comment for the exact container-side path, which is nested under
+`apps/status/`):
 
 ```sh
 docker run -d --name qcic-status -p 8000:8000 \
-  -v "$(pwd)/../packages/status/credentials.mysql.json:/usr/src/app/apps/status/credentials.mysql.json:ro" \
-  -v "$(pwd)/../packages/status/credentials.loggly.json:/usr/src/app/apps/status/credentials.loggly.json:ro" \
+  -v "$(pwd)/apps/status/credentials.mysql.json:/usr/src/app/apps/status/credentials.mysql.json:ro" \
+  -v "$(pwd)/apps/status/credentials.loggly.json:/usr/src/app/apps/status/credentials.loggly.json:ro" \
   qcic-status:latest
 ```
 
