@@ -1,12 +1,9 @@
 import { readFileSync } from "node:fs";
 import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
+import type { NatsCredentials } from "./kv-publish";
 import { log } from "./logger";
 import type { ScrobblecastCredentials } from "./scrobblecast-datasource";
-
-export interface NatsCredentials {
-  servers: string;
-}
 
 export interface Config {
   hostname: string;
@@ -15,10 +12,10 @@ export interface Config {
     version: string;
     runtime: string;
   };
-  // how much history to replay from the production stream each cycle
+  // how much history to replay on startup, and how far back a record stays
+  // part of the current view before being pruned - matches Phase 1's 24h
+  // Loggly search window
   windowMs: number;
-  // how often to poll/publish
-  pollIntervalMs: number;
   // "prod" names infra/gateway's actual production NATS server - a durable
   // name regardless of what happens to it. `nats` (not "new"/"v2") is the
   // one this workspace publishes into and web reads from - "new" only made
@@ -35,8 +32,7 @@ export const config: Config = {
     version: pkg.version,
     runtime: `bun:${Bun.version}`,
   },
-  windowMs: Number(process.env.WINDOW_MS) || 24 * 60 * 60 * 1000, // 24h, matching Phase 1's Loggly search window
-  pollIntervalMs: Number(process.env.POLL_INTERVAL_MS) || 60_000, // matching Phase 1's polling cadence
+  windowMs: Number(process.env.WINDOW_MS) || 24 * 60 * 60 * 1000,
   // Workspace-wide gitignored infra/credentials/ (see v2/AGENTS.md) - ../../
   // from this app's WORKDIR reaches the v2/ workspace root.
   natsProd: getCredential<ScrobblecastCredentials>(

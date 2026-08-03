@@ -1,10 +1,13 @@
-// Ported from v2/apps/status/src/logcheck.ts. `parseCheckpointEvents` is
-// deliberately NOT carried over: it exists there to decode Loggly's raw
-// event shape (extracting host from a tags array, digging into
-// event.json.digest) into a CheckpointRecord. The NATS message this service
-// reads already arrives as {stamp, host, digest, scope, ...} - see
-// scrobblecast-datasource.ts's toCheckpointRecord, a trivial destructure,
-// not a port of that Loggly-specific parsing.
+// Ported from v2/apps/status/src/logcheck.ts (renamed here - "logcheck"
+// was an artifact of that view's data once being sourced from Loggly; the
+// real domain term is "digest", matching the NATS subject
+// im.scrobblecast.scrape.digest). `parseCheckpointEvents` is deliberately
+// NOT carried over: it exists there to decode Loggly's raw event shape
+// (extracting host from a tags array, digging into event.json.digest) into
+// a CheckpointRecord. The NATS message this service reads already arrives
+// as {stamp, host, digest, scope, ...} - see scrobblecast-datasource.ts's
+// toItemRecords, a trivial destructure, not a port of that Loggly-specific
+// parsing.
 
 export interface CheckpointRecord {
   stamp: string;

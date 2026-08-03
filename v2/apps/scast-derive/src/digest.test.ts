@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { aggregate, round10min } from "./logcheck";
-import fixture from "./logcheck.fixture.json";
+import { aggregate, round10min } from "./digest";
+import fixture from "./digest.fixture.json";
 
 // Reuses Phase 1's exact fixture (v2/apps/status/src/logcheck.fixture.json)
 // unchanged - its `data` field is already CheckpointRecord[] shape
 // ({stamp,host,digest}), matching what the real NATS message gives us
 // after a trivial destructure (see scrobblecast-datasource.ts), so no
 // Loggly-specific parsing step is needed to exercise these functions.
-describe("logcheck", () => {
+describe("digest", () => {
   describe("round10min", () => {
     test.each([
       ["1", "2019-03-12T03:40:00Z", "2019-03-12T03:41:34Z"],

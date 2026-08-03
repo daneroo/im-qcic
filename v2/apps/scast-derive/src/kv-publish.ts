@@ -4,10 +4,13 @@
 
 import { connect, type NatsConnection } from "@nats-io/transport-node";
 import { Kvm, type KV } from "@nats-io/kv";
-import type { NatsCredentials } from "./config";
 
 const BUCKET = "scast-derive";
-const KEY = "logcheck";
+const KEY = "digest";
+
+export interface NatsCredentials {
+  servers: string;
+}
 
 export interface Publish {
   (payload: unknown): Promise<void>;

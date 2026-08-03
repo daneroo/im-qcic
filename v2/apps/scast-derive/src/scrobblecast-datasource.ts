@@ -7,9 +7,14 @@
 // (2.7.3-beta.3, needs >=2.9.4) - the legacy client is the only one that
 // works here. See README.md for the full two-client architecture this
 // service is built around.
+//
+// Reactive, not polling: subscribe() live-tails the stream indefinitely
+// (an ordered consumer naturally keeps waiting for new messages once its
+// historical backlog is exhausted) - there's no fixed-interval re-fetch of
+// the same window over and over.
 
 import { connect, consumerOpts, JSONCodec, type NatsConnection } from "nats";
-import type { CheckpointRecord } from "./logcheck";
+import type { CheckpointRecord } from "./digest";
 
 // Stream is scrobblecastDigest, subjects im.scrobblecast.scrape.digest[.>] -
 // this service only reads the base subject (both "item" and "history"
@@ -29,10 +34,28 @@ interface RawDigestMessage {
 }
 
 export interface ScrobblecastDataSource {
-  // Replays the last `windowMs` of the digest stream and returns the
-  // scope==='item' records as CheckpointRecords.
-  fetchRecent(windowMs: number): Promise<CheckpointRecord[]>;
+  // Yields each scope==='item' record as it arrives, starting `windowMs`
+  // in the past (historical backlog first, then live) and continuing
+  // indefinitely - the seam this service is reactive through.
+  subscribe(windowMs: number): AsyncIterable<CheckpointRecord>;
   close(): Promise<void>;
+}
+
+// The message-handling seam this service is tested through (#239's
+// acceptance criteria): given a fake async iterable shaped like a real
+// JetStream subscription (JSON-encoded .data), decode and filter to
+// scope==='item' CheckpointRecords. No timers, no connection - pure
+// message handling.
+export async function* toItemRecords(
+  messages: AsyncIterable<{ data: Uint8Array }>,
+): AsyncGenerator<CheckpointRecord> {
+  const jc = JSONCodec<RawDigestMessage>();
+  for await (const m of messages) {
+    const { stamp, host, digest, scope } = jc.decode(m.data);
+    if (scope === "item") {
+      yield { stamp, host, digest };
+    }
+  }
 }
 
 export function createNatsDataSource(
@@ -57,7 +80,7 @@ export function createNatsDataSource(
   }
 
   return {
-    async fetchRecent(windowMs: number): Promise<CheckpointRecord[]> {
+    async *subscribe(windowMs: number): AsyncIterable<CheckpointRecord> {
       const nc = await getConnection();
       const js = nc.jetstream();
 
@@ -67,26 +90,7 @@ export function createNatsDataSource(
       opts.startAtTimeDelta(windowMs);
 
       const sub = await js.subscribe(SUBJECT, opts);
-      const jc = JSONCodec<RawDigestMessage>();
-
-      const records: CheckpointRecord[] = [];
-      const emptyTimeoutMs = 2_000;
-      let to = setTimeout(() => sub.unsubscribe(), emptyTimeoutMs);
-
-      for await (const m of sub) {
-        clearTimeout(to);
-        const { stamp, host, digest, scope } = jc.decode(m.data);
-        if (scope === "item") {
-          records.push({ stamp, host, digest });
-        }
-        if (m.info.pending === 0) {
-          sub.unsubscribe();
-          break;
-        }
-        to = setTimeout(() => sub.unsubscribe(), emptyTimeoutMs);
-      }
-      clearTimeout(to);
-      return records;
+      yield* toItemRecords(sub);
     },
 
     async close(): Promise<void> {

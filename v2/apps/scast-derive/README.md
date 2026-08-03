@@ -1,10 +1,21 @@
 # @daneroo/qcic-scast-derive
 
-Derives Scrobblecast's checkpoint-digest table (the "Logcheck" view — gaps
-across its 3 peer scraper instances) from NATS, publishing the result to a NATS
-KV bucket for `web` to consume live. Replaces `v2/apps/status`'s `/api/logcheck`
+Derives Scrobblecast's checkpoint-digest table (gaps across its 3 peer scraper
+instances - what `v2/apps/status` called "Logcheck", back when it was backed by
+Loggly; the real domain term is **digest**, matching the NATS subject
+`im.scrobblecast.scrape.digest`) from NATS, publishing the result to a NATS KV
+bucket for `web` to consume live. Replaces `v2/apps/status`'s `/api/logcheck`
 endpoint (Loggly-backed) with a NATS-native equivalent. See
 [../../AGENTS.md](../../AGENTS.md) for workspace-wide conventions.
+
+## Reactive, not polling
+
+This service subscribes once to the real digest stream (starting some window
+into the past, then live-tailing indefinitely) and republishes to KV on every
+new arrival — it does not run on a fixed timer re-fetching the same window over
+and over. See `run.ts`. A host going silent shows up as staleness in the
+published `meta.stamp`, rather than being masked by an artificial periodic
+refresh.
 
 ## Two NATS servers, two client packages — deliberately
 
@@ -47,8 +58,7 @@ Needs two gitignored credential files at the workspace-root
 - `credentials.nats.json` — `{ "servers": "<new NATS server address>" }` (e.g.
   `localhost:4222` when running `v2/infra/compose.yaml` locally)
 
-Without them, the poll cycle logs an error and does nothing that cycle —
-expected, not broken.
+Without them, startup logs an error and nothing runs — expected, not broken.
 
 To observe the real production traffic directly while working on the read side:
 
@@ -71,7 +81,7 @@ import { connect } from "@nats-io/transport-node";
 import { Kvm } from "@nats-io/kv";
 const nc = await connect({ servers: "localhost:4222" });
 const kv = await new Kvm(nc).open("scast-derive");
-console.log((await kv.get("logcheck"))?.string());
+console.log((await kv.get("digest"))?.string());
 ```
 
 Stop it — `SIGTERM`/`SIGINT` should produce a clean shutdown logged immediately,
