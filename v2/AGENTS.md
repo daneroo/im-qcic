@@ -35,8 +35,13 @@ get corrupted during `COPY`.
 All apps default to port `8000`
 ([docs/adr/0003](../docs/adr/0003-v2-apps-share-a-standard-default-port.md))
 unless overridden via `PORT` or remapped at the Docker/Compose level.
-Credentials (gitignored, never baked into images) are volume-mounted at runtime
-— see each app's own Dockerfile comments for its exact mount paths.
+
+Credentials live in a single flat `credentials/` at this workspace root
+(gitignored as a whole directory — matches `infra/gateway`'s own `credentials/`
+convention, e.g. `credentials/caddy/CREDS.env`), volume-mounted at runtime,
+never baked into images. Flat for now, one file per concern
+(`credentials.mysql.json`, `credentials.loggly.json`, ...) — split into per-app
+subdirectories only once a real naming collision actually happens, not before.
 
 None of this is wired into `infra/gateway`'s real deploy yet — see each app's
 own `CONTEXT.md` (under the repo root's `packages/`) for cutover status.
