@@ -12,12 +12,14 @@ export interface NatsCredentials {
   servers: string;
 }
 
-export interface Publish {
-  (payload: unknown): Promise<void>;
+export type Publish = (payload: unknown) => Promise<void>;
+
+export interface KvSink {
+  publish: Publish;
   close(): Promise<void>;
 }
 
-export function createKvPublish(credentials: NatsCredentials | null): Publish {
+export function createKvPublish(credentials: NatsCredentials | null): KvSink {
   // Tracked separately from `kv` (rather than fished out of it) - the KV
   // type doesn't expose the underlying connection.
   let ncPromise: Promise<NatsConnection> | null = null;
@@ -38,17 +40,16 @@ export function createKvPublish(credentials: NatsCredentials | null): Publish {
     return kvPromise;
   }
 
-  const publish = (async (payload: unknown) => {
-    const kv = await getKv();
-    await kv.put(KEY, JSON.stringify(payload));
-  }) as Publish;
-
-  publish.close = async () => {
-    if (ncPromise) {
-      const nc = await ncPromise;
-      await nc.drain();
-    }
+  return {
+    async publish(payload: unknown): Promise<void> {
+      const kv = await getKv();
+      await kv.put(KEY, JSON.stringify(payload));
+    },
+    async close(): Promise<void> {
+      if (ncPromise) {
+        const nc = await ncPromise;
+        await nc.drain();
+      }
+    },
   };
-
-  return publish;
 }

@@ -5,15 +5,12 @@ import { run } from "./run";
 import { createNatsDataSource } from "./scrobblecast-datasource";
 
 const dataSource = createNatsDataSource(config.natsProd);
-const publish = createKvPublish(config.nats);
+const kvSink = createKvPublish(config.nats);
 
-const loggingPublish: Publish = Object.assign(
-  async (payload: unknown) => {
-    await publish(payload);
-    log.info("published");
-  },
-  { close: publish.close },
-);
+const loggingPublish: Publish = async (payload) => {
+  await kvSink.publish(payload);
+  log.info("published");
+};
 
 log.info({ windowMs: config.windowMs }, "starting");
 
@@ -39,7 +36,7 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
     if (shuttingDown) return;
     shuttingDown = true;
     log.info({ signal }, "shutting down");
-    await Promise.all([dataSource.close(), publish.close()]);
+    await Promise.all([dataSource.close(), kvSink.close()]);
     process.exit(0);
   });
 }

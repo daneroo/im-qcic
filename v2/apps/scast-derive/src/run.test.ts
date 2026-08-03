@@ -34,12 +34,9 @@ describe("run", () => {
     }
 
     const published: unknown[] = [];
-    const publish = Object.assign(
-      async (payload: unknown) => {
-        published.push(payload);
-      },
-      { close: async () => {} },
-    );
+    const publish = async (payload: unknown) => {
+      published.push(payload);
+    };
 
     await run({
       records: fakeRecords(),
