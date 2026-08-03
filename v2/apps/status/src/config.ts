@@ -25,7 +25,9 @@ export const config: Config = {
     version: pkg.version,
     runtime: `bun:${Bun.version}`,
   },
-  port: Number(process.env.PORT) || 8001,
+  // 8000 is the standard default across all v2/apps/* (see ADR-0003) -
+  // override with PORT, or remap at the Docker/Compose level.
+  port: Number(process.env.PORT) || 8000,
   loggly: getCredential<LogglyCredentials>("credentials.loggly.json"),
   mysql: getCredential<MysqlCredentials>("credentials.mysql.json"),
 };
