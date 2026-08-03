@@ -49,7 +49,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 
 Site and Status — the only two packages with real daily use — are being ported into a new self-contained `v2/` subtree (Bun workspaces, structured after `/Users/daniel/Code/iMetrical/ai-garden/prosodio`), decoupled from the existing lerna/pnpm root. See [ADR-0002](./docs/adr/0002-v2-bun-monorepo-subtree.md) for why a subtree, and Status's CONTEXT.md for the full port plan.
 
-- **Status** — first package ported, in scope for `/to-tickets` → `/implement`: faithful/behavior-frozen lift to TypeScript + ESM + Hono, running on Bun in production.
+- **Status** — Phase 1 port done (#224–#227): faithful/behavior-frozen lift to TypeScript + ESM + Hono, running on Bun, Dockerized. Not yet wired into `infra/gateway`'s real deploy — that cutover is a deliberately separate, later decision.
 - **Site** — deliberately out of scope here; needs its own `/wayfinder` session (framework, styling, whether it still proxies state through Natsql per ADR-0001, and how central NATS should be to the client — a decision that could retroactively make Status's phase-2 evolution moot).
 
 **Open, deferred decision — versioning/tags**: the old root was tagged via `lerna version` — 50 plain `vX.Y.Z` tags (no `status@`-prefix or per-package tags), bumping each affected package's own `package.json` version but sharing one repo-wide tag per release (last: `v1.0.46`, 2023-04-09). `v2/` has no lerna and no tagging convention yet. Two options when this becomes relevant: adopt something equivalent (e.g. changesets, or a simpler per-package or workspace-wide tag scheme), or abandon version tags for `v2/` entirely. Not decided — noted so it doesn't get silently skipped once `v2/` starts cutting real releases.
