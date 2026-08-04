@@ -53,6 +53,16 @@ source's own `<service>Digest` naming precedent (not `KV_...` — this is a plai
 stream, not a KV bucket; the earlier `scast-derive` design published into a KV
 bucket, since retired along with the aggregation it existed to serve).
 
+**Known gap, verified not to matter today**: the source stream's own config
+lists two subjects, `im.scrobblecast.scrape.digest` and
+`im.scrobblecast.scrape.digest.>` — the destination stream mirrors both, but
+this bridge's _read side_ only subscribes to the bare subject. Live-verified (a
+targeted subscription to the wildcard-only pattern, replayed against the full
+stream) that the wildcard has never actually carried a message — it's dead
+configuration in the source itself. If that ever changes, this bridge would need
+a second consumer for the wildcard pattern, since NATS can't match both forms in
+one subject filter.
+
 ## Local dev
 
 ```sh

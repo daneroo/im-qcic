@@ -89,6 +89,16 @@ export function createScrobblecastSource(
       // created - a restart resumes from its saved position regardless.
       opts.startAtTimeDelta(initialWindowMs);
 
+      // Subscribes to the bare subject only, not the wildcard
+      // im.scrobblecast.scrape.digest.> the source stream's own config
+      // also lists - live-verified (a targeted subscription to the
+      // wildcard-only pattern against a full replay of the real stream
+      // returned zero messages, ever) that no sub-subject has actually
+      // been published there. That wildcard entry is dead configuration
+      // in the source itself, not something this bridge is choosing to
+      // ignore. If that ever changes, this bridge would need a second
+      // consumer for the wildcard pattern - NATS can't match both a bare
+      // subject and its wildcard children in one filter.
       const sub = await js.subscribe(SOURCE_SUBJECT, opts);
       yield* sub;
     },
