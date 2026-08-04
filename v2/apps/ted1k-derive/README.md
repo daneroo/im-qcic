@@ -30,11 +30,12 @@ plus `hostname`/`version`/`type`/`view`. Bucket `ted1k-derive`, keys
 `missingLastDay` / `missingWeekByDay` / `missingDayByHour` — matching the query
 names in `tedcheck.ts`'s `queries` map 1:1.
 
-**Future refinement, deliberately deferred** (see issue #237's discussion):
-fetch-on-demand instead of/alongside periodic push. Splitting the payload into
-per-query keys and giving each an independent cadence — the two other
-refinements originally listed there — are now built; this is the one still left
-for later.
+**Future refinements, deliberately deferred** (see issue #237's discussion):
+fetch-on-demand instead of/alongside periodic push, and making
+`missingWeekByDay`/`missingDayByHour` incremental (diff-only) rather than
+republishing the full table each cycle. Splitting the payload into per-query
+keys — the third item originally listed there — is now built, and each view's
+independent poll cadence went further than that original idea called for.
 
 ## Local dev
 

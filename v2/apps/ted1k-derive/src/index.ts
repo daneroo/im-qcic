@@ -30,9 +30,20 @@ async function cycle(view: ViewName): Promise<void> {
   }
 }
 
-await Promise.all(views.map(cycle));
+// Three independent timers means a cycle can be in flight on any of them
+// when a shutdown signal arrives - tracked here so shutdown can await
+// whatever's running before draining the sink's connection out from under
+// it, rather than racing a kv.put() against nc.drain().
+const inFlight = new Set<Promise<void>>();
+function scheduleCycle(view: ViewName): Promise<void> {
+  const p = cycle(view).finally(() => inFlight.delete(p));
+  inFlight.add(p);
+  return p;
+}
+
+await Promise.all(views.map(scheduleCycle));
 const timers = views.map((view) =>
-  setInterval(() => cycle(view), pollIntervalMs[view]),
+  setInterval(() => scheduleCycle(view), pollIntervalMs[view]),
 );
 
 // Guarded against re-entry - see v2/apps/scast-bridge/src/index.ts for why
@@ -44,6 +55,7 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
     shuttingDown = true;
     log.info({ signal }, "shutting down");
     for (const timer of timers) clearInterval(timer);
+    await Promise.all(inFlight);
     await sink.close();
     process.exit(0);
   });
