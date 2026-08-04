@@ -1,6 +1,6 @@
 // Connects to the new NATS server's scastDigest stream and yields raw
 // message bytes indefinitely, reconnecting on drop. Deliberately kept
-// separate from checkpoint.ts (the pure transform) and from any
+// separate from generation.ts (the pure transform) and from any
 // React/component code - this module only knows "connect, hand me bytes,
 // retry if it stops."
 
@@ -69,7 +69,15 @@ export function subscribe(
         opts.onStatus?.("connected");
         for await (const data of opened.messages) {
           if (closed) break;
-          opts.onMessage(data);
+          try {
+            opts.onMessage(data);
+          } catch (err) {
+            // A bug in the caller's onMessage must not look like a dropped
+            // connection to the catch below - isolated here so that catch
+            // stays meaningful (connection/consume errors only), and one
+            // bad message doesn't tear down an otherwise-healthy feed.
+            console.error("scast feed: onMessage threw", err);
+          }
         }
       } catch {
         // Connection/consume errors are always transient here - retried

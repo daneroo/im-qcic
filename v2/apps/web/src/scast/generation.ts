@@ -2,6 +2,12 @@
 // messages into a per-generation, per-host sync-state table. Framework-free
 // and NATS-free on purpose - a strong candidate for future extraction (see
 // issue #250) - so it only knows about plain records, never a connection.
+//
+// shorten/shortDate/shortHash/aggregate are copied verbatim from
+// v2/apps/status/src/logcheck.ts (same copy-across-apps convention
+// ted1k-derive/scast-bridge already use) - only aggregate's keying is
+// changed here (generation field vs. reconstructed via round10min(stamp),
+// see parseDigestMessage's comment below).
 
 export interface GenerationRecord {
   generation: string;
