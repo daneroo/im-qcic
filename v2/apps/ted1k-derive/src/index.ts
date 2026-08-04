@@ -1,33 +1,39 @@
-import { config, KV_BUCKET_NAME, KV_KEY } from "./config";
+import {
+  config,
+  KV_BUCKET_NAME,
+  pollIntervalMs,
+  type ViewName,
+} from "./config";
 import { createMysqlDataSource } from "./tedcheck-datasource";
 import { createKvSink } from "./kv-sink";
-import { pollOnce } from "./poll";
+import { pollView } from "./poll";
+import { queries } from "./tedcheck";
 import { log } from "./logger";
 
 const datasource = createMysqlDataSource(config.mysql);
 const sink = createKvSink(config.nats);
+const views = Object.keys(queries) as ViewName[];
 
-log.info(
-  { bucket: KV_BUCKET_NAME, key: KV_KEY, intervalMs: config.pollIntervalMs },
-  "starting",
-);
+log.info({ bucket: KV_BUCKET_NAME, views, pollIntervalMs }, "starting");
 
-async function cycle(): Promise<void> {
+async function cycle(view: ViewName): Promise<void> {
   try {
-    await pollOnce({
+    await pollView(view, {
       datasource,
       publish: sink.publish,
       hostname: config.hostname,
       version: config.version,
     });
-    log.info("published");
+    log.info({ view }, "published");
   } catch (err) {
-    log.error({ err: (err as Error).message }, "poll cycle failed");
+    log.error({ view, err: (err as Error).message }, "poll cycle failed");
   }
 }
 
-await cycle();
-const timer = setInterval(cycle, config.pollIntervalMs);
+await Promise.all(views.map(cycle));
+const timers = views.map((view) =>
+  setInterval(() => cycle(view), pollIntervalMs[view]),
+);
 
 // Guarded against re-entry - see v2/apps/scast-bridge/src/index.ts for why
 // (a signal can be delivered more than once).
@@ -37,7 +43,7 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
     if (shuttingDown) return;
     shuttingDown = true;
     log.info({ signal }, "shutting down");
-    clearInterval(timer);
+    for (const timer of timers) clearInterval(timer);
     await sink.close();
     process.exit(0);
   });

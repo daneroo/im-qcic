@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@nats-io/jetstream": "^3.4.0",
-    "@nats-io/transport-node": "^3.4.0",
+    "@nats-io/transport-node": "catalog:runtime",
     "nats": "^2.29.3",
     "pino": "catalog:runtime"
   }

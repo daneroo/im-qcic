@@ -1,10 +1,10 @@
 import { connect, type NatsConnection } from "@nats-io/transport-node";
 import { Kvm, type KV } from "@nats-io/kv";
-import { KV_BUCKET_NAME, KV_KEY, type NatsCredentials } from "./config";
-import type { TedcheckPayload } from "./poll";
+import { KV_BUCKET_NAME, type NatsCredentials, type ViewName } from "./config";
+import type { ViewPayload } from "./poll";
 
 export interface KvSink {
-  publish(payload: TedcheckPayload): Promise<void>;
+  publish(view: ViewName, payload: ViewPayload): Promise<void>;
   close(): Promise<void>;
 }
 
@@ -31,9 +31,9 @@ export function createKvSink(credentials: NatsCredentials | null): KvSink {
   }
 
   return {
-    async publish(payload: TedcheckPayload): Promise<void> {
+    async publish(view: ViewName, payload: ViewPayload): Promise<void> {
       const kv = await getKv();
-      await kv.put(KV_KEY, JSON.stringify(payload));
+      await kv.put(view, JSON.stringify(payload));
     },
 
     async close(): Promise<void> {

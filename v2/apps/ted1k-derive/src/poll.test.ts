@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { pollOnce, type TedcheckPayload } from "./poll";
+import { pollView } from "./poll";
 import { queries, type Row } from "./tedcheck";
 import type { TedcheckDataSource } from "./tedcheck-datasource";
 
@@ -13,71 +13,52 @@ function fakeDatasource(rowsBySql: Record<string, Row[]>): TedcheckDataSource {
 
 const version = { name: "test", version: "0.0.0", runtime: "test" };
 
-describe("pollOnce", () => {
-  test("queries all three tedcheck views and publishes the {meta,data} shape", async () => {
+describe("pollView", () => {
+  test("queries only the given view and publishes a self-contained {meta,data} payload", async () => {
     const datasource = fakeDatasource({
       [queries.missingLastDay]: [
         { since: "2019-03-12 03:40:00", watt: 500, samples: 100, missing: 0 },
       ],
-      [queries.missingWeekByDay]: [
-        { day: "2019-03-12 00:00:00", watt: 400, samples: 86333, missing: 67 },
-      ],
-      [queries.missingDayByHour]: [
-        { hour: "2019-03-12 03:00", watt: 450, samples: 3600, missing: 0 },
-      ],
     });
 
-    const published: TedcheckPayload[] = [];
-    await pollOnce({
+    const published: Array<{ view: string; data: unknown }> = [];
+    const payload = await pollView("missingLastDay", {
       datasource,
-      publish: async (payload) => {
-        published.push(payload);
+      publish: async (view, p) => {
+        published.push({ view, data: p });
       },
       hostname: "test-host",
       version,
       now: () => new Date("2026-08-04T12:00:00Z"),
     });
 
-    expect(published).toEqual([
-      {
-        meta: {
-          stamp: "2026-08-04T12:00:00.000Z",
-          hostname: "test-host",
-          version,
-          type: "tedcheck",
-        },
-        data: {
-          missingLastDay: [
-            ["since", "watt", "samples", "missing"],
-            ["2019-03-12T03:40:00Z", 500, 100, 0],
-          ],
-          missingWeekByDay: [
-            ["day", "watt", "samples", "missing"],
-            ["2019-03-12T00:00:00Z", 400, 86333, 67],
-          ],
-          missingDayByHour: [
-            ["hour", "watt", "samples", "missing"],
-            ["2019-03-12T03:00Z", 450, 3600, 0],
-          ],
-        },
+    expect(payload).toEqual({
+      meta: {
+        stamp: "2026-08-04T12:00:00.000Z",
+        hostname: "test-host",
+        version,
+        type: "tedcheck",
+        view: "missingLastDay",
       },
-    ]);
+      data: [
+        ["since", "watt", "samples", "missing"],
+        ["2019-03-12T03:40:00Z", 500, 100, 0],
+      ],
+    });
+    expect(published).toEqual([{ view: "missingLastDay", data: payload }]);
   });
 
-  test("returns an empty table for a view with no rows", async () => {
+  test("returns an empty table when the view's query has no rows", async () => {
     const datasource = fakeDatasource({});
 
-    const payload = await pollOnce({
+    const payload = await pollView("missingWeekByDay", {
       datasource,
       publish: async () => {},
       hostname: "test-host",
       version,
     });
 
-    expect(payload.data).toEqual({
-      missingLastDay: [],
-      missingWeekByDay: [],
-      missingDayByHour: [],
-    });
+    expect(payload.data).toEqual([]);
+    expect(payload.meta.view).toBe("missingWeekByDay");
   });
 });

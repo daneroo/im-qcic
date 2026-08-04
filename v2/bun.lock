@@ -22,7 +22,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@nats-io/jetstream": "^3.4.0",
-        "@nats-io/transport-node": "^3.4.0",
+        "@nats-io/transport-node": "catalog:runtime",
         "nats": "^2.29.3",
         "pino": "catalog:runtime",
       },
@@ -40,15 +40,15 @@
       "name": "@daneroo/qcic-ted1k-derive",
       "version": "1.0.0",
       "dependencies": {
-        "@nats-io/jetstream": "^3.4.0",
         "@nats-io/kv": "^3.4.0",
-        "@nats-io/transport-node": "^3.4.0",
+        "@nats-io/transport-node": "catalog:runtime",
         "pino": "catalog:runtime",
       },
     },
   },
   "catalogs": {
     "runtime": {
+      "@nats-io/transport-node": "^3.4.0",
       "pino": "^9.5.0",
     },
   },

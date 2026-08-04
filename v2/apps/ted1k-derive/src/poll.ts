@@ -1,46 +1,49 @@
 import { asTable, iso8601ify, queries, type Table } from "./tedcheck";
 import type { TedcheckDataSource } from "./tedcheck-datasource";
+import type { ViewName } from "./config";
 
-export interface TedcheckPayload {
+export interface ViewPayload {
   meta: {
     stamp: string;
     hostname: string;
     version: { name: string; version: string; runtime: string };
     type: "tedcheck";
+    view: ViewName;
   };
-  data: Record<string, Table>;
+  data: Table;
 }
 
 export interface PollDeps {
   datasource: TedcheckDataSource;
-  publish(payload: TedcheckPayload): Promise<void>;
+  publish(view: ViewName, payload: ViewPayload): Promise<void>;
   hostname: string;
-  version: TedcheckPayload["meta"]["version"];
+  version: ViewPayload["meta"]["version"];
   // Injectable for tests - defaults to the real clock.
   now?: () => Date;
 }
 
-// One poll cycle: query MySQL for all three Tedcheck views, build the same
-// {meta,data} shape v2/apps/status's /api/tedcheck already returns, and
-// publish it. Pure aside from the injected datasource/publish/clock, so
-// it's testable without real MySQL or NATS.
-export async function pollOnce(deps: PollDeps): Promise<TedcheckPayload> {
-  const data: Record<string, Table> = {};
-  for (const [name, sql] of Object.entries(queries)) {
-    const rows = await deps.datasource.query(sql);
-    data[name] = iso8601ify(asTable(rows));
-  }
+// One poll cycle for a single view: query MySQL for just that view's query,
+// build a self-contained {meta,data} payload (each view carries its own
+// stamp, since views now refresh on independent cadences), and publish it
+// under its own KV key. Pure aside from the injected datasource/publish/
+// clock, so it's testable without real MySQL or NATS.
+export async function pollView(
+  view: ViewName,
+  deps: PollDeps,
+): Promise<ViewPayload> {
+  const rows = await deps.datasource.query(queries[view]);
 
-  const payload: TedcheckPayload = {
+  const payload: ViewPayload = {
     meta: {
       stamp: (deps.now?.() ?? new Date()).toISOString(),
       hostname: deps.hostname,
       version: deps.version,
       type: "tedcheck",
+      view,
     },
-    data,
+    data: iso8601ify(asTable(rows)),
   };
 
-  await deps.publish(payload);
+  await deps.publish(view, payload);
   return payload;
 }

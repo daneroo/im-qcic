@@ -8,7 +8,8 @@
     ],
     "catalogs": {
       "runtime": {
-        "pino": "^9.5.0"
+        "pino": "^9.5.0",
+        "@nats-io/transport-node": "^3.4.0"
       }
     }
   },
