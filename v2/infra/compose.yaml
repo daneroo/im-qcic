@@ -29,5 +29,27 @@ services:
     # (for `web`) - before ever touching the real production Caddy/gateway
     # config.
 
-  # ted1k-derive and scast-derive services join here as they're built
-  # (see issues #238, #240).
+  ted1k-derive:
+    build:
+      context: ..
+      dockerfile: apps/ted1k-derive/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - nats
+    environment:
+      # credentials.nats.json's "localhost:4222" is only correct for
+      # bare-metal dev - "localhost" inside this network is the container
+      # itself, not the nats service (see config.ts's comment) - so this
+      # container doesn't need that credential file mounted at all.
+      NATS_SERVERS: nats:4222
+    volumes:
+      - ./credentials/credentials.mysql.json:/usr/src/app/infra/credentials/credentials.mysql.json:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # scast-bridge joins here once it's added to compose too (see #240 -
+  # its ticket title/scope still needs re-reconciling with the scast-bridge
+  # rename/redesign, see #239's closing comment).
