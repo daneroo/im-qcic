@@ -47,7 +47,10 @@ get corrupted during `COPY`.
 
 All apps default to port `8000`
 ([docs/adr/0003](../docs/adr/0003-v2-apps-share-a-standard-default-port.md))
-unless overridden via `PORT` or remapped at the Docker/Compose level.
+unless overridden via `PORT` or remapped at the Docker/Compose level. This only
+applies to apps that serve HTTP - a headless background worker with no server
+(e.g. `apps/scast-bridge`) binds no port at all, which isn't a deviation from
+ADR-0003, just outside what it governs.
 
 ### Digest-pinned base images
 

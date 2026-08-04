@@ -1,6 +1,4 @@
 import { readFileSync } from "node:fs";
-import { hostname as osHostname } from "node:os";
-import pkg from "../package.json" with { type: "json" };
 import { log } from "./logger";
 
 export interface ScrobblecastCredentials {
@@ -29,12 +27,6 @@ export function rewriteSubject(subject: string): string {
 }
 
 export interface Config {
-  hostname: string;
-  version: {
-    name: string;
-    version: string;
-    runtime: string;
-  };
   // Only used the first time this bridge's durable consumer is ever
   // created, to backfill history - after that, the durable consumer's own
   // saved position governs delivery on restart, not this value.
@@ -49,12 +41,6 @@ export interface Config {
 }
 
 export const config: Config = {
-  hostname: process.env.HOSTALIAS || osHostname(),
-  version: {
-    name: pkg.name,
-    version: pkg.version,
-    runtime: `bun:${Bun.version}`,
-  },
   initialWindowMs: Number(process.env.INITIAL_WINDOW_MS) || 24 * 60 * 60 * 1000,
   // Workspace-wide gitignored infra/credentials/ (see v2/AGENTS.md) - ../../
   // from this app's WORKDIR reaches the v2/ workspace root.
