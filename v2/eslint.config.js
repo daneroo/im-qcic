@@ -1,10 +1,26 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
+import reactHooks from "eslint-plugin-react-hooks";
 
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["node_modules/", "dist/", "**/dist/", "out/"],
+    plugins: { "react-hooks": reactHooks },
+    rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+    },
+  },
+  {
+    ignores: [
+      "node_modules/",
+      "dist/",
+      "**/dist/",
+      "out/",
+      "apps/web/src/routeTree.gen.ts",
+      "apps/web/.tanstack/",
+      "apps/web/.output/",
+    ],
   },
 );

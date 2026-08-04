@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* Tailwind v4 dark mode is prefers-color-scheme by default - this custom
+   variant switches it to class-based (a .dark class on <html>, set by
+   ThemeToggle/THEME_INIT_SCRIPT) so the toggle actually overrides the
+   system preference instead of just following it. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}

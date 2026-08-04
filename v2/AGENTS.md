@@ -30,6 +30,16 @@ one app currently uses — wait until it's genuinely shared.
   below). Distinct from the repo-root `infra/gateway/`, which is the real
   production deployment — nothing here is wired into that yet.
 
+`apps/web` (TanStack Start + Tailwind + React) shares the workspace's single
+root `tsconfig.json`/`eslint.config.js` like every other app — no per-app config
+files. Since it's the first browser/React app in the workspace, the root
+`tsconfig.json` carries `"lib": [..., "DOM", "DOM.Iterable"]` and
+`"jsx": "react-jsx"` (harmless no-ops for the headless server apps), and
+`eslint.config.js` carries `eslint-plugin-react-hooks`. `apps/web`'s own
+`src/routeTree.gen.ts` is TanStack Router's generated file — regenerated on
+every `dev`/`build`, excluded from Prettier/ESLint, but still committed (same
+convention as upstream `prosodio`).
+
 ## Docker
 
 Each dockerized app gets its own `Dockerfile` inside its `apps/<name>/`

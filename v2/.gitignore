@@ -1,2 +1,7 @@
 infra/credentials/
 infra/data/
+
+# apps/web build artifacts (TanStack Start/Vite)
+apps/web/.tanstack/
+apps/web/.output/
+apps/web/dist/

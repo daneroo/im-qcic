@@ -2,3 +2,4 @@
 bun.lock
 **/credentials.*.json
 **/dist/
+apps/web/src/routeTree.gen.ts
