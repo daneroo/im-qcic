@@ -24,7 +24,7 @@
         "@nats-io/jetstream": "^3.4.0",
         "@nats-io/transport-node": "^3.4.0",
         "nats": "^2.29.3",
-        "pino": "^9.5.0",
+        "pino": "catalog:runtime",
       },
     },
     "apps/status": {
@@ -33,8 +33,13 @@
       "dependencies": {
         "hono": "^4.6.0",
         "loggly": "^1.1.1",
-        "pino": "^9.5.0",
+        "pino": "catalog:runtime",
       },
+    },
+  },
+  "catalogs": {
+    "runtime": {
+      "pino": "^9.5.0",
     },
   },
   "packages": {

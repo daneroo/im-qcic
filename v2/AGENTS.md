@@ -13,6 +13,15 @@ decoupled from the existing lerna/pnpm root at the repo root.
 - `bun run ci` — after every edit, before every commit
 - `bun run fmt` — fix formatting when `ci` fails
 
+## Shared dependencies
+
+When the same dependency is pinned in two or more `apps/*/package.json` (e.g.
+`pino`), move the version spec into this workspace root's
+`workspaces.catalogs.runtime` entry and reference it from each app as
+`"pino": "catalog:runtime"` — one version across the workspace, no drift.
+(Convention carried over from `prosodio`.) Don't catalog a dependency that only
+one app currently uses — wait until it's genuinely shared.
+
 ## Layout
 
 - `apps/` — runnables, each its own package (e.g. `apps/status`)
