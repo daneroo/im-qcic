@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ThemeToggle } from "../components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
@@ -13,8 +13,10 @@ function Home() {
         <ThemeToggle />
       </div>
       <p className="mt-4 text-gray-600 dark:text-gray-400">
-        Scaffold only - live Tedcheck and Logcheck views land in follow-up
-        tickets.
+        <Link to="/scast" className="underline">
+          scast
+        </Link>{" "}
+        is live. Tedcheck views land in a follow-up ticket.
       </p>
     </main>
   );
