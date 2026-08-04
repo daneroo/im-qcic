@@ -1,9 +1,32 @@
 import { readFileSync } from "node:fs";
 import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
-import type { NatsCredentials } from "./kv-publish";
 import { log } from "./logger";
-import type { ScrobblecastCredentials } from "./scrobblecast-datasource";
+
+export interface ScrobblecastCredentials {
+  servers: string;
+}
+
+export interface NatsCredentials {
+  servers: string;
+}
+
+// The real, fixed upstream facts - not env-configurable, since they name
+// things this bridge doesn't own.
+export const SOURCE_STREAM_NAME = "scrobblecastDigest";
+export const SOURCE_SUBJECT = "im.scrobblecast.scrape.digest";
+
+// This bridge's own identity on both servers.
+export const DURABLE_NAME = "scast-bridge";
+export const DEST_STREAM_NAME = "scastDigest";
+export const DEST_SUBJECT_PREFIX = "im.scast.scrape.digest";
+
+// Renames the "scrobblecast" segment to "scast" - we're in a new namespace,
+// not scrobblecast's own. A plain string replace is safe here: SOURCE_SUBJECT
+// only ever appears once, as the prefix.
+export function rewriteSubject(subject: string): string {
+  return subject.replace(SOURCE_SUBJECT, DEST_SUBJECT_PREFIX);
+}
 
 export interface Config {
   hostname: string;
@@ -12,10 +35,10 @@ export interface Config {
     version: string;
     runtime: string;
   };
-  // how much history to replay on startup, and how far back a record stays
-  // part of the current view before being pruned - matches Phase 1's 24h
-  // Loggly search window
-  windowMs: number;
+  // Only used the first time this bridge's durable consumer is ever
+  // created, to backfill history - after that, the durable consumer's own
+  // saved position governs delivery on restart, not this value.
+  initialWindowMs: number;
   // "prod" names infra/gateway's actual production NATS server - a durable
   // name regardless of what happens to it. `nats` (not "new"/"v2") is the
   // one this workspace publishes into and web reads from - "new" only made
@@ -32,7 +55,7 @@ export const config: Config = {
     version: pkg.version,
     runtime: `bun:${Bun.version}`,
   },
-  windowMs: Number(process.env.WINDOW_MS) || 24 * 60 * 60 * 1000,
+  initialWindowMs: Number(process.env.INITIAL_WINDOW_MS) || 24 * 60 * 60 * 1000,
   // Workspace-wide gitignored infra/credentials/ (see v2/AGENTS.md) - ../../
   // from this app's WORKDIR reaches the v2/ workspace root.
   natsProd: getCredential<ScrobblecastCredentials>(

@@ -1,7 +1,7 @@
 {
-  "name": "@daneroo/qcic-scast-derive",
+  "name": "@daneroo/qcic-scast-bridge",
   "version": "1.0.0",
-  "description": "Derives Scrobblecast's checkpoint-digest table from its scrobblecastDigest JetStream stream, publishing to NATS KV",
+  "description": "Copies Scrobblecast's scrobblecastDigest JetStream stream, message-for-message unchanged, onto the new v2/infra NATS server",
   "type": "module",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "bun src/index.ts"
   },
   "dependencies": {
-    "@nats-io/kv": "^3.4.0",
+    "@nats-io/jetstream": "^3.4.0",
     "@nats-io/transport-node": "^3.4.0",
     "nats": "^2.29.3",
     "pino": "^9.5.0"

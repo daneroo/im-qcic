@@ -17,11 +17,11 @@
         "typescript": "^5",
       },
     },
-    "apps/scast-derive": {
-      "name": "@daneroo/qcic-scast-derive",
+    "apps/scast-bridge": {
+      "name": "@daneroo/qcic-scast-bridge",
       "version": "1.0.0",
       "dependencies": {
-        "@nats-io/kv": "^3.4.0",
+        "@nats-io/jetstream": "^3.4.0",
         "@nats-io/transport-node": "^3.4.0",
         "nats": "^2.29.3",
         "pino": "^9.5.0",
@@ -38,7 +38,7 @@
     },
   },
   "packages": {
-    "@daneroo/qcic-scast-derive": ["@daneroo/qcic-scast-derive@workspace:apps/scast-derive"],
+    "@daneroo/qcic-scast-bridge": ["@daneroo/qcic-scast-bridge@workspace:apps/scast-bridge"],
 
     "@daneroo/qcic-status": ["@daneroo/qcic-status@workspace:apps/status"],
 
@@ -69,8 +69,6 @@
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
     "@nats-io/jetstream": ["@nats-io/jetstream@3.4.0", "", { "dependencies": { "@nats-io/nats-core": "3.4.0" } }, "sha512-GzHQodNJ942+R5LRb8PuZ5ugVWVWMRiufxUYLLVWkXKfwDXYN+Owo0d7L/b9O7BPyrbYD7jQWAC6+ZVuXa9Gyw=="],
-
-    "@nats-io/kv": ["@nats-io/kv@3.4.0", "", { "dependencies": { "@nats-io/jetstream": "3.4.0", "@nats-io/nats-core": "3.4.0" } }, "sha512-168pcRJxWcIRHwdyczI3DaGk5r3CAj3CyKXuk4Nmx5KKj7N1znQOJPIxCoV0TPlAvoTidVb7eBv41J9imapMeQ=="],
 
     "@nats-io/nats-core": ["@nats-io/nats-core@3.4.0", "", { "dependencies": { "@nats-io/nkeys": "2.0.3", "@nats-io/nuid": "3.0.0" } }, "sha512-QMDM86EUNm+wudlKC67HLar/KHHQUvJGLfb4jbahje3pUk3K9afeck9fwsxBZF0eUFox6T/TA6m/t+lQqf+QsQ=="],
 
