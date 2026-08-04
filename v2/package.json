@@ -5,7 +5,12 @@
   "workspaces": {
     "packages": [
       "apps/*"
-    ]
+    ],
+    "catalogs": {
+      "runtime": {
+        "pino": "^9.5.0"
+      }
+    }
   },
   "scripts": {
     "test": "bun test",

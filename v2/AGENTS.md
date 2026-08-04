@@ -13,6 +13,15 @@ decoupled from the existing lerna/pnpm root at the repo root.
 - `bun run ci` — after every edit, before every commit
 - `bun run fmt` — fix formatting when `ci` fails
 
+## Shared dependencies
+
+When the same dependency is pinned in two or more `apps/*/package.json` (e.g.
+`pino`), move the version spec into this workspace root's
+`workspaces.catalogs.runtime` entry and reference it from each app as
+`"pino": "catalog:runtime"` — one version across the workspace, no drift.
+(Convention carried over from `prosodio`.) Don't catalog a dependency that only
+one app currently uses — wait until it's genuinely shared.
+
 ## Layout
 
 - `apps/` — runnables, each its own package (e.g. `apps/status`)
@@ -38,7 +47,10 @@ get corrupted during `COPY`.
 
 All apps default to port `8000`
 ([docs/adr/0003](../docs/adr/0003-v2-apps-share-a-standard-default-port.md))
-unless overridden via `PORT` or remapped at the Docker/Compose level.
+unless overridden via `PORT` or remapped at the Docker/Compose level. This only
+applies to apps that serve HTTP - a headless background worker with no server
+(e.g. `apps/scast-bridge`) binds no port at all, which isn't a deviation from
+ADR-0003, just outside what it governs.
 
 ### Digest-pinned base images
 

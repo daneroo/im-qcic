@@ -1,0 +1,17 @@
+{
+  "name": "@daneroo/qcic-scast-bridge",
+  "version": "1.0.0",
+  "description": "Copies Scrobblecast's scrobblecastDigest JetStream stream, message-for-message unchanged, onto the new v2/infra NATS server",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "@nats-io/jetstream": "^3.4.0",
+    "@nats-io/transport-node": "^3.4.0",
+    "nats": "^2.29.3",
+    "pino": "catalog:runtime"
+  }
+}

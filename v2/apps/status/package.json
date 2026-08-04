@@ -11,6 +11,6 @@
   "dependencies": {
     "hono": "^4.6.0",
     "loggly": "^1.1.1",
-    "pino": "^9.5.0"
+    "pino": "catalog:runtime"
   }
 }
