@@ -102,3 +102,25 @@ Stop it — `SIGTERM`/`SIGINT` should produce a clean shutdown logged immediatel
 not a hang or error. Restarting should copy nothing new unless new messages
 actually arrived upstream in the meantime (the durable consumer resumes from its
 saved position, not the start of the window).
+
+## Docker
+
+Build context is the **workspace root** (`v2/`), not this directory — see
+[../../AGENTS.md](../../AGENTS.md)'s Docker section:
+
+```sh
+cd v2
+docker build -f apps/scast-bridge/Dockerfile -t qcic-scast-bridge:latest .
+```
+
+Normally run via `v2/infra/compose.yaml` instead, which brings it up alongside
+`nats` and wires `NATS_SERVERS=nats:4222` (overriding `credentials.nats.json`'s
+bare-metal `localhost:4222` for the write side only — `natsProd` already names a
+real external host, see `config.ts`'s comment) and the
+`credentials.nats-prod.json` mount automatically:
+
+```sh
+cd v2/infra
+docker compose up -d --build scast-bridge
+docker logs -f infra-scast-bridge-1
+```
