@@ -11,6 +11,8 @@
     "start": "bun run dist/server/server.js"
   },
   "dependencies": {
+    "@nats-io/jetstream": "catalog:runtime",
+    "@nats-io/nats-core": "^3.4.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-router": "^1.170.17",
     "@tanstack/react-start": "^1.168.27",
