@@ -16,7 +16,11 @@ function Home() {
         <Link to="/scast" className="underline">
           scast
         </Link>{" "}
-        is live. Tedcheck views land in a follow-up ticket.
+        and{" "}
+        <Link to="/tedcheck" className="underline">
+          tedcheck
+        </Link>{" "}
+        are live.
       </p>
     </main>
   );

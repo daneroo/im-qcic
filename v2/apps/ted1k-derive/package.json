@@ -9,7 +9,7 @@
     "start": "bun src/index.ts"
   },
   "dependencies": {
-    "@nats-io/kv": "^3.4.0",
+    "@nats-io/kv": "catalog:runtime",
     "@nats-io/transport-node": "catalog:runtime",
     "pino": "catalog:runtime"
   }

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScastRouteImport } from './routes/scast'
+import { Route as TedcheckRouteImport } from './routes/tedcheck'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ScastRoute = ScastRouteImport.update({
   path: '/scast',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TedcheckRoute = TedcheckRouteImport.update({
+  id: '/tedcheck',
+  path: '/tedcheck',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/scast': typeof ScastRoute
+  '/tedcheck': typeof TedcheckRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/scast': typeof ScastRoute
+  '/tedcheck': typeof TedcheckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/scast': typeof ScastRoute
+  '/tedcheck': typeof TedcheckRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/scast'
+  fullPaths: '/' | '/scast' | '/tedcheck'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/scast'
-  id: '__root__' | '/' | '/scast'
+  to: '/' | '/scast' | '/tedcheck'
+  id: '__root__' | '/' | '/scast' | '/tedcheck'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ScastRoute: typeof ScastRoute
+  TedcheckRoute: typeof TedcheckRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScastRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tedcheck': {
+      id: '/tedcheck'
+      path: '/tedcheck'
+      fullPath: '/tedcheck'
+      preLoaderRoute: typeof TedcheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ScastRoute: ScastRoute,
+  TedcheckRoute: TedcheckRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
