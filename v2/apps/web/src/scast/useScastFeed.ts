@@ -35,8 +35,15 @@ export function useScastFeed(servers: string): ScastFeedState {
     const records = recordsRef.current;
     records.clear();
     setTable([]);
+    // React (StrictMode, in dev) mounts every effect twice: mount ->
+    // cleanup -> mount again. The first feed's close() is async, so its
+    // eventual onStatus("closed") can arrive after the second feed has
+    // already reported "connected" - without this guard, that stale
+    // callback clobbers live status with a false "closed".
+    let cancelled = false;
 
     function handleMessage(data: Uint8Array): void {
+      if (cancelled) return;
       let raw: unknown;
       try {
         raw = JSON.parse(decoder.decode(data));
@@ -57,11 +64,17 @@ export function useScastFeed(servers: string): ScastFeedState {
 
     const feed = subscribe(
       { servers },
-      { onMessage: handleMessage, onStatus: setStatus },
+      {
+        onMessage: handleMessage,
+        onStatus: (s) => {
+          if (!cancelled) setStatus(s);
+        },
+      },
       natsMessageSource,
     );
 
     return () => {
+      cancelled = true;
       void feed.close();
     };
   }, [servers]);

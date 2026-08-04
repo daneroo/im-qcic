@@ -24,6 +24,12 @@ export function useDerivedState<T>(
 
   useEffect(() => {
     setValue(null);
+    // React (StrictMode, in dev) mounts every effect twice: mount ->
+    // cleanup -> mount again. The first watch's close() is async, so its
+    // eventual onStatus("closed") can arrive after the second watch has
+    // already reported "connected" - without this guard, that stale
+    // callback clobbers live status with a false "closed".
+    let cancelled = false;
 
     const watch = watchKey(
       { servers },
@@ -31,18 +37,22 @@ export function useDerivedState<T>(
       key,
       {
         onEntry: (entry) => {
+          if (cancelled) return;
           try {
             setValue(entry.json<T>());
           } catch (err) {
             console.error("useDerivedState: failed to decode entry", err);
           }
         },
-        onStatus: setStatus,
+        onStatus: (s) => {
+          if (!cancelled) setStatus(s);
+        },
       },
       natsKvSource,
     );
 
     return () => {
+      cancelled = true;
       void watch.close();
     };
   }, [servers, bucket, key]);
