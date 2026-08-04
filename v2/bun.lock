@@ -41,7 +41,7 @@
       "name": "@daneroo/qcic-ted1k-derive",
       "version": "1.0.0",
       "dependencies": {
-        "@nats-io/kv": "^3.4.0",
+        "@nats-io/kv": "catalog:runtime",
         "@nats-io/transport-node": "catalog:runtime",
         "pino": "catalog:runtime",
       },
@@ -51,6 +51,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@nats-io/jetstream": "catalog:runtime",
+        "@nats-io/kv": "catalog:runtime",
         "@nats-io/nats-core": "^3.4.0",
         "@tailwindcss/vite": "^4.1.18",
         "@tanstack/react-router": "^1.170.17",
@@ -70,6 +71,7 @@
   "catalogs": {
     "runtime": {
       "@nats-io/jetstream": "^3.4.0",
+      "@nats-io/kv": "^3.4.0",
       "@nats-io/transport-node": "^3.4.0",
       "pino": "^9.5.0",
     },
