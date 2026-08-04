@@ -53,9 +53,16 @@ export const config: Config = {
   mysql: getCredential<MysqlCredentials>(
     "../../infra/credentials/credentials.mysql.json",
   ),
-  nats: getCredential<NatsCredentials>(
-    "../../infra/credentials/credentials.nats.json",
-  ),
+  // credentials.nats.json's "localhost:4222" is only correct for bare-metal
+  // dev - inside the compose network, "localhost" is the container itself,
+  // not the nats service, so NATS_SERVERS (set to "nats:4222" in
+  // v2/infra/compose.yaml) overrides it there. Same override pattern as
+  // HOSTALIAS/POLL_INTERVAL_* above.
+  nats: process.env.NATS_SERVERS
+    ? { servers: process.env.NATS_SERVERS }
+    : getCredential<NatsCredentials>(
+        "../../infra/credentials/credentials.nats.json",
+      ),
 };
 
 function getCredential<T>(path: string): T | null {

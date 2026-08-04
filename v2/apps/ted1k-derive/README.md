@@ -52,7 +52,7 @@ Needs two gitignored credential files at the workspace-root
 - `credentials.nats.json` — `{ "servers": "<new NATS server address>" }` (e.g.
   `localhost:4222` when running `v2/infra/compose.yaml` locally)
 
-## Verify
+## Verify (bare-metal)
 
 With `v2/infra/compose.yaml` up and both credential files in place:
 
@@ -68,3 +68,24 @@ nats -s localhost:4222 kv get ted1k-derive missingLastDay
 
 Stop it — `SIGTERM`/`SIGINT` should produce a clean shutdown logged immediately,
 not a hang or error.
+
+## Docker
+
+Build context is the **workspace root** (`v2/`), not this directory — see
+[../../AGENTS.md](../../AGENTS.md)'s Docker section:
+
+```sh
+cd v2
+docker build -f apps/ted1k-derive/Dockerfile -t qcic-ted1k-derive:latest .
+```
+
+Normally run via `v2/infra/compose.yaml` instead, which brings it up alongside
+`nats` and wires `NATS_SERVERS=nats:4222` (overriding `credentials.nats.json`'s
+bare-metal `localhost:4222` — see `config.ts`'s comment) and the
+`credentials.mysql.json` mount automatically:
+
+```sh
+cd v2/infra
+docker compose up -d --build ted1k-derive
+docker logs -f infra-ted1k-derive-1
+```
