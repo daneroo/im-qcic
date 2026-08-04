@@ -47,9 +47,17 @@ export const config: Config = {
   natsProd: getCredential<ScrobblecastCredentials>(
     "../../infra/credentials/credentials.nats-prod.json",
   ),
-  nats: getCredential<NatsCredentials>(
-    "../../infra/credentials/credentials.nats.json",
-  ),
+  // credentials.nats.json's "localhost:4222" is only correct for bare-metal
+  // dev - inside the compose network, "localhost" is the container itself,
+  // not the nats service, so NATS_SERVERS (set to "nats:4222" in
+  // v2/infra/compose.yaml) overrides it there. natsProd needs no such
+  // override - it already names a real external host, unaffected by which
+  // network this container runs in.
+  nats: process.env.NATS_SERVERS
+    ? { servers: process.env.NATS_SERVERS }
+    : getCredential<NatsCredentials>(
+        "../../infra/credentials/credentials.nats.json",
+      ),
 };
 
 function getCredential<T>(path: string): T | null {
