@@ -61,7 +61,7 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
       source: "live",
       value: day ? formatMissing(day.total.missing) : "—",
       unit: day
-        ? `missing · ${formatCoverage(day.total.missing, day.total.expected)} recorded`
+        ? `missing · ${formatCoverage(day.total.missing, day.total.expected)} ok`
         : undefined,
       secondary: [
         {

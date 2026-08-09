@@ -101,19 +101,25 @@ function Stratum({
  * The duration is the reading, and its qualifier stays on the SAME BASELINE.
  * Split across elements, a line reading "missing · 99.9%" on its own would
  * parse as "99.9% missing", which is the exact opposite of the truth; the
- * word `recorded` settles it even out of context.
+ * word `ok` settles it even out of context.
  * ------------------------------------------------------------------ */
 function Snapshot({
   label,
   view,
   now,
-  typical,
+  largest,
 }: {
   label: string;
   view: TedcheckView | null;
   now: Date;
-  /** Month only: separates one bad day from chronic flakiness. */
-  typical?: boolean;
+  /**
+   * Month only. A month's total is usually dominated by a single bad day, and
+   * a bare "1h04m missing" cannot tell that from being chronically flaky. An
+   * earlier version showed the median ("typical 36s/day"), which answered the
+   * question only if you knew what a median was and did the arithmetic. Naming
+   * the largest gap answers it directly.
+   */
+  largest?: boolean;
 }) {
   if (!view) {
     return (
@@ -128,7 +134,7 @@ function Snapshot({
     <div>
       <Figure
         value={formatMissing(view.total.missing)}
-        unit={`missing · ${formatCoverage(view.total.missing, view.total.expected)} recorded`}
+        unit={`missing · ${formatCoverage(view.total.missing, view.total.expected)} ok`}
         label={label}
       />
       <p className="mt-3 text-xs text-ink-3">
@@ -136,11 +142,15 @@ function Snapshot({
         <span className="qc-num text-ink-2">
           {formatKwhPerDay(view.meanWatt)} kWh/d
         </span>
-        {typical && view.baseline > 0 && (
+        {largest && view.worst && (
           <>
-            {" · typical "}
+            {" · largest gap "}
             <span className="qc-num text-ink-2">
-              {formatMissing(view.baseline)}/day
+              {formatMissing(view.worst.missing)}
+            </span>{" "}
+            on{" "}
+            <span className="qc-num text-ink-2">
+              {utcDate(view.worst.start)}
             </span>
           </>
         )}
@@ -280,7 +290,7 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
       >
         <div className="grid gap-8 sm:grid-cols-2">
           <Snapshot label="Last Day" view={day} now={now} />
-          <Snapshot label="Last Month" view={month} now={now} typical />
+          <Snapshot label="Last Month" view={month} now={now} largest />
         </div>
 
         <div className="mt-9 space-y-4 border-t border-rule pt-7">

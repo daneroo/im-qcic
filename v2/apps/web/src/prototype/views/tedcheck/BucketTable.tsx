@@ -74,23 +74,6 @@ export function BucketTable({ view }: { view: TedcheckView }) {
         )}
       </div>
 
-      {/* "Excursion" is a precise word doing real work here, but it is not
-          self-explanatory, so it gets defined in place rather than in a
-          tooltip nobody opens. The numbers are this window's own, not a
-          constant - which is the point of the definition. */}
-      <p className="mb-3 max-w-prose text-[11px] leading-relaxed text-ink-3">
-        <span className="text-ink-2">Excursion</span> — a gap far larger than
-        this window&rsquo;s ordinary loss. ted1k drops a few samples most{" "}
-        {view.unit}s and that is its resting state, so the bar is set from the
-        data itself: a typical{" "}
-        <span className="qc-num">{formatMissing(view.baseline)}</span> per{" "}
-        {view.unit} here, and anything past{" "}
-        <span className="qc-num">
-          {formatMissing(Math.round(view.significantThreshold))}
-        </span>{" "}
-        counts.
-      </p>
-
       <div className="overflow-x-auto">
         <table className="w-full min-w-[30rem] border-collapse text-sm">
           <thead>
@@ -104,7 +87,7 @@ export function BucketTable({ view }: { view: TedcheckView }) {
               <th className="py-1.5 px-3 text-right font-semibold">watt</th>
               <th className="py-1.5 px-3 text-right font-semibold">samples</th>
               <th className="py-1.5 px-3 text-right font-semibold">missing</th>
-              <th className="py-1.5 pl-3 text-right font-semibold">recorded</th>
+              <th className="py-1.5 pl-3 text-right font-semibold">ok</th>
             </tr>
           </thead>
           <tbody>

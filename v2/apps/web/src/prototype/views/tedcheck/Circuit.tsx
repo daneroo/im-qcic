@@ -235,7 +235,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                 <div>
                   <Figure
                     value={formatMissing(headline.total.missing)}
-                    unit={`missing · ${formatCoverage(headline.total.missing, headline.total.expected)} recorded`}
+                    unit={`missing · ${formatCoverage(headline.total.missing, headline.total.expected)} ok`}
                     label="continuity across this link, last day"
                   />
                   <p className="mt-3 text-xs text-ink-2">
@@ -256,7 +256,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                     <div className="mt-6 border-t border-rule pt-5">
                       <Figure
                         value={formatMissing(month.total.missing)}
-                        unit={`missing · ${formatCoverage(month.total.missing, month.total.expected)} recorded`}
+                        unit={`missing · ${formatCoverage(month.total.missing, month.total.expected)} ok`}
                         size="sm"
                         label="Last Month"
                         caption={
@@ -279,7 +279,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                                 month.lastSignificantGap.missing,
                                 month.lastSignificantGap.expected,
                               )}{" "}
-                              recorded)
+                              ok)
                             </>
                           ) : (
                             <>No breaks in the window</>

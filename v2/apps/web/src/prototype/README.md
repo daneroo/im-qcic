@@ -72,61 +72,67 @@ just how they look. That is the test for whether a term belongs here.
 
 ### Measuring continuity
 
-**Nines** — `-log10(1 - availability)`. A readable shorthand for _how many
-samples went missing over a day or a month_, on a log scale. Shown to **one
-decimal and without a range**: it is a label, not a measurement, and dressing it
-up with an axis and a ceiling claimed more precision than it has. The right unit
-for ted1k because 86400 samples a day give the ratio resolution; the wrong unit
-for scast, whose ~144 generations per window make one divergence 2.46 nines on
-its own.
-
-**Resolvable ceiling** — the best _non-perfect_ figure a window's sampling can
-express: `log10(expected)`, so 4.94 for a day, 6.44 for a month. Still computed,
-because it is what makes nines meaningful for ted1k and meaningless for scast —
-but deliberately **not displayed**. See the y-scale rule below for why that is
-not a contradiction.
-
-**The y-scale rule** — a plot's vertical axis is always defined and, for
-measurements, always starts at zero. A plot makes a visual claim about
-magnitude, so it has to say what it is measured against; an auto-scaled line
-exaggerates every wobble, since a house drifting 1.8→2.1 kW fills the same box
-as one swinging 0→4 kW. A _label_ like nines makes no such claim and needs no
-axis. Trim a range only with a specific reason.
-
 **Missing** — samples that never arrived, named after the column it comes from.
-Reported as a duration, because ted1k samples once a second so the count _is_ a
-duration: `2347` is `39m`. The page says `49s missing` and nothing more — the
-explanation below is why that is enough, not something to reprint on screen
-every render.
+Reported as a Go-style duration, because ted1k samples once a second so the
+count _is_ a duration. Formatting rules, in order: prefer the largest unit that
+fits (`1m`, never `60s`); leading segment unpadded, later ones padded to two
+digits so the string keeps a constant shape (`1m02s`, `2h`); drop trailing zero
+segments (`13h59m`); keep interior ones, since skipping one makes the units
+ambiguous (`2h00m03s`, never `2h3s`). The page says `49s missing` and nothing
+more.
+
+**Coverage** — the same fact normalised, so windows of different lengths can be
+compared: `49s missing · 99.9% ok` for a day against `1h04m missing · 99% ok`
+for a month. Precision is set by how many nines the figure has —
+`decimals = max(0, leadingNines − 2)` — which is the one genuinely useful idea
+inside "nines", kept as a formatting rule instead of a number on screen. It
+**truncates, never rounds**: a month at 99.8611% must not print `100%`. `100%`
+is reserved for nothing missing at all.
+
+**Nines (retired)** — `−log10(1 − availability)`. Dropped: given the window it
+is a bijection with `missing`, so it derived nothing and only rescaled. It
+exists in the industry because percentages crowd at the top and a log buys the
+resolution back; a duration never had that problem, because as things improve
+the number moves toward zero where there is room. `49s / 78s / 112s` reads at a
+glance where `99.943% / 99.912% / 99.87%` does not.
 
 **Consumption** — mean power, normalised to **kWh/d** (`W × 24 / 1000`), the
-scale this house actually reads at a glance. Sample-weighted across the window,
-so a partial bucket contributes its share rather than counting as a whole day.
-The upstream capture never records a zero watt — a zero is not a legitimate
-sensor reading and such values are excluded before reaching the `watt` table —
-so the published `avg(watt)` is already an average over real values only.
+scale this house reads at a glance. Sample-weighted across the window, so a
+partial bucket contributes its share rather than counting as a whole day. The
+upstream capture never records a zero watt — a zero is not a legitimate sensor
+reading and such values are excluded before reaching the `watt` table — so the
+published `avg(watt)` is already an average over real values only.
 
 **What missing time actually means.** A house never draws zero, so there is no
 such thing as a low-watt outage — an outage can only appear as missing samples.
-And a recorder failure looks exactly the same from here. The two are genuinely
-indistinguishable in this data, so the page must not pretend to tell them apart;
-in practice both mean **the power was out**. This closes the question rather
-than leaving it open: absence is one event with one plausible cause, not an
-ambiguity to resolve later.
+A recorder failure looks identical from here. The two are indistinguishable in
+this data, so the page must not pretend to tell them apart.
 
-**Baseline** — the median missing time across a window's whole buckets. ted1k's
-resting state, not a fault.
+**Significant gap** — missing time past a **fixed** threshold: over **1 minute**
+in an hour bucket, over **5 minutes** in a day bucket. This, and never
+`missing > 0`, is what earns the alarm colour.
 
-**Significant gap** — missing time far above the baseline (8× median, floored at
-0.5% of a bucket). This, and never `missing > 0`, is what earns the alarm
-colour; on live data it picks out one day in 32 and no hours in 24.
+The threshold is where the explanation changes. Below it the sensor simply
+failed to deliver some samples — it has never managed a perfect 1 Hz, and a few
+tens of seconds a day is its resting state, not an incident. Above it something
+stopped, and since a house never draws zero, "the power was out" is the most
+plausible reading.
 
-The threshold is not just statistical hygiene — **it is where the explanation
-changes**. Below it the sensor simply failed to deliver some samples; it has
-never managed a perfect 1 Hz and a few tens of seconds a day is its resting
-state. Above it something stopped, and since a house never draws zero, "the
-power was out" is the most plausible reading. (Was called an _excursion_ in an
-earlier draft. Invented jargon for something that is just a big gap.)
+Fixed rather than derived, deliberately. An earlier version set the bar at 8×
+the window's own median, which meant "significant" quietly meant something
+different this month than last and the page's own history stopped being citable.
+(Also called an _excursion_ in an earlier draft — invented jargon for something
+that is just a big gap.)
+
+**A caveat this cannot escape:** these are per-bucket _totals_, not contiguous
+runs. 60s missing in an hour might be one 60-second outage or sixty separate
+1-second drops, and an aggregate cannot tell them apart — which is exactly the
+distinction the threshold is trying to make. Only the raw 1 Hz series can, and
+that lives in Grafana.
+
+**Largest gap** — the worst single bucket in a window, named on the month
+summary. A month's total is usually dominated by one bad day, and a bare
+`1h04m missing` cannot distinguish that from being chronically flaky.
 
 ### Measuring agreement
 

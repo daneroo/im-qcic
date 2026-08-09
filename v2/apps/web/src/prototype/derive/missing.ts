@@ -60,23 +60,55 @@ export function formatCoverage(missing: number, expected: number): string {
  * (ted1k samples once a second), so the count *is* a duration - and the unit
  * carries the magnitude while the digits carry the precision, which is the
  * logarithmic behaviour nines was reaching for.
+ *
+ * THE RULES, in order:
+ *
+ *  1. Prefer the largest unit that fits. 60s is `1m`, never `60s`.
+ *  2. The leading segment is unpadded; every later one is padded to two
+ *     digits, so the string keeps a constant shape as it changes: `1m02s`,
+ *     not `1m2s`, and `2h` rather than `02h`.
+ *  3. Trailing zero segments are dropped: `13h59m`, not `13h59m00s`.
+ *  4. INTERIOR zero segments are NOT dropped, because skipping one would make
+ *     the units ambiguous at a glance: two hours and three seconds is
+ *     `2h00m03s`, never `2h3s`.
+ *
+ *     49s          3600 -> 1h          7203  -> 2h00m03s
+ *     60  -> 1m    3660 -> 1h01m       50340 -> 13h59m
+ *     62  -> 1m02s 3663 -> 1h01m03s    90000 -> 1d01h
+ *
+ * These cases are the spec: if this graduates, they become the unit tests.
  */
+const UNITS: [seconds: number, suffix: string][] = [
+  [86400, "d"],
+  [3600, "h"],
+  [60, "m"],
+  [1, "s"],
+];
+
 export function formatMissing(seconds: number): string {
-  if (seconds <= 0) return "none";
-  // Up to two minutes, seconds are the honest figure: rounding 71s to "1m"
-  // throws away precision at exactly the scale ted1k's ordinary losses live.
-  if (seconds < 120) return `${Math.round(seconds)}s`;
-  if (seconds < 3600) {
-    const m = Math.floor(seconds / 60);
-    const s = Math.round(seconds % 60);
-    return s > 0 ? `${m}m${String(s).padStart(2, "0")}s` : `${m}m`;
-  }
-  const h = Math.floor(seconds / 3600);
-  const m = Math.round((seconds % 3600) / 60);
-  if (h < 24) return m > 0 ? `${h}h${String(m).padStart(2, "0")}m` : `${h}h`;
-  const d = Math.floor(h / 24);
-  const rh = h % 24;
-  return rh > 0 ? `${d}d${String(rh).padStart(2, "0")}h` : `${d}d`;
+  if (!Number.isFinite(seconds) || seconds <= 0) return "none";
+
+  let rest = Math.round(seconds);
+  const counts = UNITS.map(([size]) => {
+    const n = Math.floor(rest / size);
+    rest -= n * size;
+    return n;
+  });
+
+  const first = counts.findIndex((n) => n > 0);
+  if (first === -1) return "none";
+  let last = counts.length - 1;
+  while (last > first && counts[last] === 0) last--;
+
+  return counts
+    .slice(first, last + 1)
+    .map((n, i) => {
+      const suffix = UNITS[first + i]![1];
+      return i === 0
+        ? `${n}${suffix}`
+        : `${String(n).padStart(2, "0")}${suffix}`;
+    })
+    .join("");
 }
 
 /**
