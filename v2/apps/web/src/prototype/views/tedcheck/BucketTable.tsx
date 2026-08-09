@@ -13,7 +13,7 @@
 // full table available underneath rather than being the page.
 
 import { useState } from "react";
-import { formatMissing, formatNines } from "../../derive/nines";
+import { formatCoverage, formatMissing } from "../../derive/missing";
 import type { Bucket, TedcheckView } from "../../derive/tedcheck";
 import { localHM, tzLabel, utcDate, utcISO } from "../../derive/time";
 
@@ -104,7 +104,7 @@ export function BucketTable({ view }: { view: TedcheckView }) {
               <th className="py-1.5 px-3 text-right font-semibold">watt</th>
               <th className="py-1.5 px-3 text-right font-semibold">samples</th>
               <th className="py-1.5 px-3 text-right font-semibold">missing</th>
-              <th className="py-1.5 pl-3 text-right font-semibold">nines</th>
+              <th className="py-1.5 pl-3 text-right font-semibold">recorded</th>
             </tr>
           </thead>
           <tbody>
@@ -151,16 +151,15 @@ export function BucketTable({ view }: { view: TedcheckView }) {
                 >
                   {b.missing > 0 ? formatMissing(b.missing) : "—"}
                 </td>
-                {/* Deliberately NOT coloured by quality band: a "poor" nines
-                    figure on a bucket that lost 3 seconds is arithmetically
-                    true and completely uninteresting. Only a genuinely significant gap
-                    earns ink here. */}
+                {/* Only a genuinely significant gap earns ink here: coverage
+                    is low on any bucket that lost a few seconds, and that is
+                    arithmetically true and completely uninteresting. */}
                 <td
                   className={`qc-num py-1.5 pl-3 text-right ${
                     b.significant ? "font-medium text-alarm" : "text-ink-2"
                   }`}
                 >
-                  {formatNines(b.nines)}
+                  {formatCoverage(b.missing, b.expected)}
                 </td>
               </tr>
             ))}

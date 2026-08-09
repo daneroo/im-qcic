@@ -21,19 +21,19 @@
 
 import { useState } from "react";
 import {
-  formatMissing,
+  formatCoverage,
   formatKwhPerDay,
-  formatNines,
-} from "../../derive/nines";
+  formatMissing,
+} from "../../derive/missing";
 import { since } from "../../derive/tedcheck";
 import {
   Byline,
   CoverageStrip,
   Eyebrow,
+  Figure,
   Masthead,
   LivenessDot,
   LivenessLabel,
-  NinesFigure,
   Sparkline,
 } from "../../ui/primitives";
 import { BucketTable } from "./BucketTable";
@@ -233,8 +233,9 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
             {active.id === "capture" && headline && (
               <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
                 <div>
-                  <NinesFigure
-                    value={headline.total.nines}
+                  <Figure
+                    value={formatMissing(headline.total.missing)}
+                    unit={`missing · ${formatCoverage(headline.total.missing, headline.total.expected)} recorded`}
                     label="continuity across this link, last day"
                   />
                   <p className="mt-3 text-xs text-ink-2">
@@ -253,8 +254,9 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                   </p>
                   {month && (
                     <div className="mt-6 border-t border-rule pt-5">
-                      <NinesFigure
-                        value={month.total.nines}
+                      <Figure
+                        value={formatMissing(month.total.missing)}
+                        unit={`missing · ${formatCoverage(month.total.missing, month.total.expected)} recorded`}
                         size="sm"
                         label="Last Month"
                         caption={
@@ -272,8 +274,12 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                                   month.lastSignificantGap.missing,
                                 )}
                               </span>{" "}
-                              ({formatNines(month.lastSignificantGap.nines)}{" "}
-                              nines)
+                              (
+                              {formatCoverage(
+                                month.lastSignificantGap.missing,
+                                month.lastSignificantGap.expected,
+                              )}{" "}
+                              recorded)
                             </>
                           ) : (
                             <>No breaks in the window</>

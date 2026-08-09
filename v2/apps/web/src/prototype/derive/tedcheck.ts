@@ -23,7 +23,6 @@
 
 import type { Table, TedcheckViewPayload } from "../../tedcheck/types";
 import type { ViewName } from "../../tedcheck/config";
-import { nines, ninesCeiling, type NinesQuality, ninesQuality } from "./nines";
 
 const HOUR = 3600;
 const DAY = 86400;
@@ -31,7 +30,15 @@ const DAY = 86400;
 /** Bucket size and window span per view, matching ted1k-derive's SQL. */
 const VIEW_SHAPE: Record<
   ViewName,
-  { bucketSeconds: number; windowSeconds: number; label: string; unit: string }
+  {
+    bucketSeconds: number;
+    windowSeconds: number;
+    label: string;
+    unit: string;
+    /** Missing time above which a bucket is a SIGNIFICANT GAP. Fixed, not
+        derived - see the note in deriveView. */
+    significantSeconds: number;
+  }
 > = {
   // A single row covering the whole rolling 24h - complete by construction,
   // so it needs no boundary correction.
@@ -40,12 +47,14 @@ const VIEW_SHAPE: Record<
     windowSeconds: DAY,
     label: "Last Day",
     unit: "day",
+    significantSeconds: 300,
   },
   missingDayByHour: {
     bucketSeconds: HOUR,
     windowSeconds: DAY,
     label: "Last Day by hour",
     unit: "hour",
+    significantSeconds: 60,
   },
   // "Last Month" reads better than "32 days" and is what it's for; the query's
   // 32-day span is padding, so a full month of buckets is always available
@@ -55,6 +64,7 @@ const VIEW_SHAPE: Record<
     windowSeconds: 32 * DAY,
     label: "Last Month by day",
     unit: "day",
+    significantSeconds: 300,
   },
 };
 
@@ -77,14 +87,10 @@ export interface Bucket {
   /** True when the bucket is clipped by the window - opening, or in progress. */
   partial: boolean;
   /**
-   * Materially worse than this window's own normal loss - see
-   * `significantThreshold`. This, not `missing > 0`, is what earns the one
-   * chromatic token.
+   * Missing time past `significantThreshold`. This, not `missing > 0`, is what
+   * earns the one chromatic token.
    */
   significant: boolean;
-  nines: number | null;
-  ninesCeiling: number;
-  quality: NinesQuality;
 }
 
 export interface TedcheckView {
@@ -97,25 +103,19 @@ export interface TedcheckView {
   /** Interior (non-partial) buckets only - the fair basis for any summary. */
   whole: Bucket[];
   /** Roll-up over the whole window, boundary-corrected. */
-  total: {
-    expected: number;
-    missing: number;
-    nines: number | null;
-    ceiling: number;
-    quality: NinesQuality;
-  };
-  /** Worst interior bucket by absence - the thing worth naming. */
+  total: { expected: number; missing: number };
+  /** Worst interior bucket by missing time - the thing worth naming. */
   worst: Bucket | null;
   /** Most recent significant gap, partial buckets excluded. */
   lastSignificantGap: Bucket | null;
   /** Every significant gap, newest last. */
   significantGaps: Bucket[];
   /**
-   * Median absence across whole buckets that lost anything - ted1k's *normal*
-   * rate of loss for this window. Roughly 3-60s/day in practice.
+   * Median missing time across whole buckets that lost anything - ted1k's
+   * resting state for this window, shown as context and never as the bar.
    */
   baseline: number;
-  /** Absence above which a bucket stops being normal. See deriveView. */
+  /** Missing time above which a bucket counts as a significant gap. */
   significantThreshold: number;
   /**
    * Sample-weighted mean watts across the window - total energy over total
@@ -130,9 +130,9 @@ export interface TedcheckView {
    * non-zero values are the same set, and no producer-side change is needed.
    *
    * The consequence worth knowing: a genuine power outage does not appear
-   * here as low watts, it appears as ABSENT SAMPLES. Which means `missing`
-   * conflates two different events - "the recorder failed" and "there was
-   * nothing to record" - and nines cannot tell them apart. See the README.
+   * here as low watts, it appears as MISSING SAMPLES - so `missing` conflates
+   * "the recorder failed" with "there was nothing to record", and nothing in
+   * this data can tell them apart. See the README.
    */
   meanWatt: number | null;
   wattRange: { min: number; max: number } | null;
@@ -218,9 +218,6 @@ export function deriveView(
       ? Math.max(0, Math.round(expected - samples))
       : rawMissing;
 
-    const ceiling = ninesCeiling(expected);
-    const value = nines(missing, expected);
-
     buckets.push({
       start,
       watt: toNumber(row[col.watt]),
@@ -229,10 +226,7 @@ export function deriveView(
       missing,
       expected,
       partial,
-      significant: false, // set below, once the window's own baseline is known
-      nines: value,
-      ninesCeiling: ceiling,
-      quality: ninesQuality(value, ceiling),
+      significant: false, // set below, against the view's fixed threshold
     });
   }
 
@@ -240,24 +234,33 @@ export function deriveView(
 
   const whole = buckets.filter((b) => !b.partial);
 
-  // WHAT MAKES A GAP SIGNIFICANT, and why the threshold is more than
-  // statistical hygiene: IT IS WHERE THE EXPLANATION CHANGES.
+  // WHAT MAKES A GAP SIGNIFICANT, and why the threshold is FIXED rather than
+  // derived from the data.
   //
-  // Below it, the sensor simply failed to deliver some samples. It does not
-  // manage a perfect 1 Hz and never has; a few tens of seconds a day is its
-  // resting state, not an incident. Painting those in the alarm colour is what
-  // the first draft of this page did, and it made the alarm colour meaningless.
+  // The threshold is where the explanation changes. Below it the sensor simply
+  // failed to deliver some samples - it has never managed a perfect 1 Hz, and
+  // a few tens of seconds a day is its resting state, not an incident. Above
+  // it something stopped, and since a house never draws zero, "the power was
+  // out" is the most plausible reading.
   //
-  // Above it, something stopped. Since a house never draws zero, an outage can
-  // only ever appear as missing samples - so for a large gap "the power was
-  // out" is the most plausible reading. (An outage and a recorder failure are
-  // indistinguishable from this data, and the page does not pretend otherwise.)
+  // An earlier version derived the bar from the window's own median (8x), and
+  // that was a mistake: a moving threshold means "significant" quietly means
+  // something different this month than last, so the page's own history stops
+  // being citable. One minute in an hour, five minutes in a day - round,
+  // memorable, and the same in December as today. The median is still computed
+  // and shown, as CONTEXT ("typical 36s/day"), never as the bar.
   //
-  // The bar is set by the window's own behaviour rather than a constant: well
-  // above the median loss, and above a floor of 0.5% of a bucket so a
-  // freakishly clean stretch doesn't make ordinary noise look alarming. On
-  // live data it picks out one day in 32 (2026-08-03, 39m) and no hours in the
-  // last 24h - which matches what actually happened.
+  // Caveat this cannot escape: these are per-bucket TOTALS, not contiguous
+  // runs. 60s missing in an hour might be one 60-second outage or sixty
+  // separate 1-second drops, and an aggregate cannot tell them apart. Only the
+  // raw 1 Hz series can, and that lives in Grafana.
+  const significantThreshold = shape.significantSeconds;
+  for (const b of buckets) {
+    b.significant = !b.partial && b.missing > significantThreshold;
+  }
+
+  // The window's resting state: median missing time across whole buckets that
+  // lost anything. Context only - it no longer sets the bar.
   const losses = whole
     .filter((b) => b.missing > 0)
     .map((b) => b.missing)
@@ -265,17 +268,8 @@ export function deriveView(
   const baseline = losses.length
     ? (losses[Math.floor(losses.length / 2)] ?? 0)
     : 0;
-  const significantThreshold = Math.max(
-    shape.bucketSeconds * 0.005,
-    baseline * 8,
-  );
-  for (const b of buckets) {
-    b.significant = !b.partial && b.missing > significantThreshold;
-  }
   const totalExpected = buckets.reduce((sum, b) => sum + b.expected, 0);
   const totalMissing = buckets.reduce((sum, b) => sum + b.missing, 0);
-  const totalCeiling = ninesCeiling(totalExpected);
-  const totalNines = nines(totalMissing, totalExpected);
 
   const withAbsence = whole.filter((b) => b.missing > 0);
   const worst = withAbsence.reduce<Bucket | null>(
@@ -315,13 +309,7 @@ export function deriveView(
     hostname: payload.meta.hostname,
     buckets,
     whole,
-    total: {
-      expected: totalExpected,
-      missing: totalMissing,
-      nines: totalNines,
-      ceiling: totalCeiling,
-      quality: ninesQuality(totalNines, totalCeiling),
-    },
+    total: { expected: totalExpected, missing: totalMissing },
     worst,
     lastSignificantGap,
     significantGaps,

@@ -5,31 +5,38 @@
 // The verdict comes first, then the page descends through the things that
 // verdict depends on, each layer sitting on a lower rung of the surface
 // elevation ladder (paper -> sunken -> deep). Nothing here is a shadow or a
-// card; depth is carried by the token ladder itself, which is exactly what
-// Catppuccin's crust/mantle/base sequence was built for.
+// card; depth is carried by the token ladder itself.
 //
 // The rule that makes it more than a layout: WHEN A LOWER STRATUM IS
 // UNHEALTHY, THE STRATA ABOVE IT GO UNVERIFIABLE, NOT RED. If the bus is
-// reconnecting, this page genuinely does not know the state of ted1k - it only
-// knows the last thing it was told, and when. Saying "3.09 nines" in that
-// moment would be a claim the page cannot support. So it dims, marks itself
-// stale, and says so. That is the entire "who watches the watchers" thesis
-// compressed into one interaction.
+// reconnecting, this page does not know the state of ted1k - it knows the last
+// thing it was told, and when.
+//
+// SIGNAL IS ARRANGED SYMMETRICALLY, in two halves:
+//
+//   SNAPSHOT      Last Day and Last Month side by side, three readings each.
+//   GAP ANALYSIS  Last Day by hour and Last Month by day - two identical
+//                 blocks of [missing chart, power chart, collapsed table].
+//
+// The symmetry does structural work. Two identical blocks read as one pattern
+// rather than as two things to parse, and that is what buys the extra level of
+// nesting. The discipline is that neither block may acquire something the
+// other lacks.
 
 import {
-  formatMissing,
+  formatCoverage,
   formatKwhPerDay,
-  formatNines,
-} from "../../derive/nines";
+  formatMissing,
+} from "../../derive/missing";
 import { since, type TedcheckView } from "../../derive/tedcheck";
 import { localHM, tzLabel, utcDate } from "../../derive/time";
 import {
   Byline,
   CoverageStrip,
   Eyebrow,
-  Masthead,
+  Figure,
   LivenessLabel,
-  NinesFigure,
+  Masthead,
   Sparkline,
   type Liveness,
 } from "../../ui/primitives";
@@ -50,7 +57,6 @@ function Stratum({
   role: string;
   tone: "paper" | "sunken" | "deep";
   unverifiable?: boolean;
-  /** Bedrock fills whatever height is left — it goes down forever. */
   grow?: boolean;
   children: React.ReactNode;
 }) {
@@ -60,9 +66,6 @@ function Stratum({
   return (
     <section className={`${bg} border-t border-rule ${grow ? "flex-1" : ""}`}>
       <div className="mx-auto flex max-w-5xl gap-5 px-5 py-8 sm:gap-8 sm:px-8">
-        {/* Stratigraphic legend: depth index then layer name, set vertically in
-            the margin the way a core-sample column is labelled — so the label
-            sits beside the layer it names rather than floating above it. */}
         <div className="flex w-7 shrink-0 flex-col items-center gap-2 sm:w-9">
           <span className="qc-num text-[11px] font-medium tabular-nums text-ink-2">
             {String(index).padStart(2, "0")}
@@ -77,10 +80,10 @@ function Stratum({
         </div>
 
         <div className={`min-w-0 flex-1 ${unverifiable ? "opacity-45" : ""}`}>
-          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+          <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
             <Eyebrow>{role}</Eyebrow>
             {unverifiable && (
-              <span className="rounded-full border border-dashed border-partial px-2 py-0.5 text-[10px] uppercase tracking-wider text-partial">
+              <span className="rounded-full border border-dashed border-partial px-2 py-0.5 text-[10px] text-partial">
                 unverifiable — substrate down
               </span>
             )}
@@ -92,30 +95,136 @@ function Stratum({
   );
 }
 
-/** Disclosure around the full table — summary first, record on request. */
-function Record({ label, view }: { label: string; view: TedcheckView }) {
-  return (
-    <details className="group rounded-lg border border-rule bg-surface/50 open:bg-surface">
-      <summary className="flex cursor-pointer list-none items-baseline justify-between gap-3 px-3 py-2 text-sm text-ink-2 hover:text-ink">
-        <span>
-          <span className="text-ink">{label}</span>
-          <span className="ml-2 text-xs text-ink-3">
-            {view.significantGaps.length === 0
-              ? "no significant gaps"
-              : `${view.significantGaps.length} significant gap${view.significantGaps.length === 1 ? "" : "s"}`}
-          </span>
-        </span>
-        <span className="text-[11px] text-ink-3 group-open:hidden">
-          show record ▾
-        </span>
-        <span className="hidden text-[11px] text-ink-3 group-open:inline">
-          hide ▴
-        </span>
-      </summary>
-      <div className="border-t border-rule px-3 py-3">
-        <BucketTable view={view} />
+/* ------------------------------------------------------------------ *
+ * SNAPSHOT — one half of the symmetrical top.
+ *
+ * The duration is the reading, and its qualifier stays on the SAME BASELINE.
+ * Split across elements, a line reading "missing · 99.9%" on its own would
+ * parse as "99.9% missing", which is the exact opposite of the truth; the
+ * word `recorded` settles it even out of context.
+ * ------------------------------------------------------------------ */
+function Snapshot({
+  label,
+  view,
+  now,
+  typical,
+}: {
+  label: string;
+  view: TedcheckView | null;
+  now: Date;
+  /** Month only: separates one bad day from chronic flakiness. */
+  typical?: boolean;
+}) {
+  if (!view) {
+    return (
+      <div>
+        <div className="mb-1 text-[11px] text-ink-3">{label}</div>
+        <p className="text-sm text-ink-3">Waiting…</p>
       </div>
-    </details>
+    );
+  }
+
+  return (
+    <div>
+      <Figure
+        value={formatMissing(view.total.missing)}
+        unit={`missing · ${formatCoverage(view.total.missing, view.total.expected)} recorded`}
+        label={label}
+      />
+      <p className="mt-3 text-xs text-ink-3">
+        consumption{" "}
+        <span className="qc-num text-ink-2">
+          {formatKwhPerDay(view.meanWatt)} kWh/d
+        </span>
+        {typical && view.baseline > 0 && (
+          <>
+            {" · typical "}
+            <span className="qc-num text-ink-2">
+              {formatMissing(view.baseline)}/day
+            </span>
+          </>
+        )}
+      </p>
+      {/* The pair is not equally fresh - Last Day has its own 60s query, Last
+          Month is aggregated from a 10min one. Perfect symmetry would hide
+          that, so it is stated. */}
+      <p className="mt-1 text-[10px] text-ink-3">
+        updated {since(view.stamp, now)}
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * GAP ANALYSIS — the other half. Identical in both blocks.
+ *
+ * The two charts share an x-axis and are stacked so the time axes line up.
+ * That alignment is the closest this page can get to "was that an outage or
+ * the sensor?", since a gap beside an otherwise ordinary power trace reads
+ * very differently from one in a disturbed stretch. Putting them behind the
+ * disclosure would throw it away - and the charts ARE the summary; the table
+ * is the record.
+ * ------------------------------------------------------------------ */
+function GapAnalysis({ view, now }: { view: TedcheckView; now: Date }) {
+  const first = view.buckets[0];
+  const last = view.buckets.at(-1);
+  const axis = view.unit === "hour" ? localHM : utcDate;
+
+  return (
+    <section className="rounded-xl border border-rule bg-surface/40 p-4 sm:p-5">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h3 className="text-sm text-ink">{view.label}</h3>
+        <span className="text-[10px] text-ink-3">
+          updated {since(view.stamp, now)}
+        </span>
+      </div>
+
+      <CoverageStrip
+        buckets={view.buckets}
+        title={`missing by ${view.unit}`}
+        height={48}
+      />
+
+      <div className="mt-5 text-accent">
+        <Sparkline
+          values={view.buckets.map((b) => b.watt)}
+          label={<span className="text-ink-3">power, same window</span>}
+        />
+      </div>
+
+      {/* One shared axis label for both charts - same window, same width. */}
+      <div className="mt-1 flex justify-between text-[10px] text-ink-3">
+        <span className="qc-num">{first && axis(first.start)}</span>
+        <span className="qc-num">
+          {view.unit === "hour" ? tzLabel() : "UTC"}
+        </span>
+        <span className="qc-num">{last && axis(last.start)}</span>
+      </div>
+
+      <details className="group mt-5 rounded-lg border border-rule bg-surface">
+        <summary className="flex cursor-pointer list-none items-baseline justify-between gap-3 px-3 py-2 text-sm text-ink-2 hover:text-ink">
+          <span>
+            <span className="text-ink">Table of gaps</span>
+            <span className="ml-2 text-xs text-ink-3">
+              {view.significantGaps.length === 0
+                ? "none significant"
+                : `${view.significantGaps.length} significant`}
+              {" · over "}
+              {formatMissing(view.significantThreshold)}
+            </span>
+          </span>
+          <span className="text-[11px] text-ink-3 group-open:hidden">
+            show ▾
+          </span>
+          <span className="hidden text-[11px] text-ink-3 group-open:inline">
+            hide ▴
+          </span>
+        </summary>
+        <div className="border-t border-rule px-3 py-3">
+          <BucketTable view={view} />
+        </div>
+      </details>
+    </section>
   );
 }
 
@@ -152,146 +261,36 @@ function CadenceRow({
 }
 
 export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
-  const headline = feed.lastDay.view;
+  const day = feed.lastDay.view;
   const today = feed.dayByHour.view;
   const month = feed.weekByDay.view;
-  const now = headline?.stamp ?? new Date();
+  const now = day?.stamp ?? new Date();
   const unverifiable = feed.busStatus !== "connected";
 
   return (
     <div className="flex min-h-screen flex-col bg-paper">
       <Masthead running={<>ted1k &middot; continuity</>} />
 
-      {/* ---- 01 SIGNAL: the verdict, and the shape of today --------------- */}
       <Stratum
         index={1}
         name="signal"
-        role="What ted1k has actually recorded"
+        role="Where ted1k stands, and which periods lost time"
         tone="paper"
         unverifiable={unverifiable}
       >
-        {headline ? (
-          <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:items-start">
-            <div>
-              {/* Continuity is the hero; consumption is context. This page is
-                  about service quality - Grafana is where power actually gets
-                  looked at, and the moment these two carry equal weight this
-                  has quietly become a second energy dashboard. */}
-              <NinesFigure value={headline.total.nines} label="Last Day" />
-              {/* State the fact. The page does not explain itself every time
-                  it renders - what "missing" means lives in the glossary. */}
-              <p className="mt-3 text-xs text-ink-2">
-                <span className="qc-num font-medium text-ink">
-                  {formatMissing(headline.total.missing)}
-                </span>{" "}
-                missing
-              </p>
-              <p className="mt-2 text-xs text-ink-3">
-                consumption{" "}
-                <span className="qc-num text-ink-2">
-                  {formatKwhPerDay(headline.meanWatt)} kWh/d
-                </span>
-              </p>
+        <div className="grid gap-8 sm:grid-cols-2">
+          <Snapshot label="Last Day" view={day} now={now} />
+          <Snapshot label="Last Month" view={month} now={now} typical />
+        </div>
 
-              {month && (
-                <div className="mt-7 border-t border-rule pt-5">
-                  <NinesFigure
-                    value={month.total.nines}
-                    size="sm"
-                    label="Last Month"
-                  />
-                  <p className="mt-2 text-xs text-ink-3">
-                    consumption{" "}
-                    <span className="qc-num text-ink-2">
-                      {formatKwhPerDay(month.meanWatt)} kWh/d
-                    </span>
-                  </p>
-                  <p className="mt-2 text-xs text-ink-2">
-                    {month.lastSignificantGap ? (
-                      <>
-                        <span className="qc-num text-ink">
-                          {month.significantGaps.length}
-                        </span>{" "}
-                        significant gap
-                        {month.significantGaps.length === 1 ? "" : "s"} — last
-                        on{" "}
-                        <span className="qc-num text-ink">
-                          {utcDate(month.lastSignificantGap.start)}
-                        </span>
-                        ,{" "}
-                        <span className="qc-num text-alarm">
-                          {formatMissing(month.lastSignificantGap.missing)}
-                        </span>{" "}
-                        missing ({formatNines(month.lastSignificantGap.nines)}{" "}
-                        nines). Otherwise a typical{" "}
-                        <span className="qc-num">
-                          {formatMissing(month.baseline)}
-                        </span>{" "}
-                        a day.
-                      </>
-                    ) : (
-                      <>
-                        No significant gaps in {month.whole.length} days — a
-                        typical{" "}
-                        <span className="qc-num text-ink">
-                          {formatMissing(month.baseline)}
-                        </span>{" "}
-                        lost per day.
-                      </>
-                    )}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div>
-              {today && (
-                <>
-                  <CoverageStrip
-                    buckets={today.buckets}
-                    title="missing by hour"
-                    height={56}
-                  />
-                  <div className="mt-1 flex justify-between text-[10px] text-ink-3">
-                    <span className="qc-num">
-                      {today.buckets[0] && localHM(today.buckets[0].start)}
-                    </span>
-                    <span className="qc-num">{tzLabel()}</span>
-                    <span className="qc-num">
-                      {today.buckets.at(-1) &&
-                        localHM(today.buckets.at(-1)!.start)}
-                    </span>
-                  </div>
-
-                  {today.wattRange && (
-                    <div className="mt-6 text-accent">
-                      <Sparkline
-                        values={today.buckets.map((b) => b.watt)}
-                        label={
-                          <span className="text-ink-3">power, same window</span>
-                        }
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        ) : (
-          <p className="text-sm text-ink-3">Waiting for the first value…</p>
-        )}
-
-        {/* The record is available, not the page. Summary above; the full
-            table is one click away and opens to significant gaps only. */}
-        <div className="mt-9 space-y-3 border-t border-rule pt-6">
-          {today && <Record label="Last Day by hour" view={today} />}
-          {month && <Record label="Last Month by day" view={month} />}
+        <div className="mt-9 space-y-4 border-t border-rule pt-7">
+          {today && <GapAnalysis view={today} now={now} />}
+          {month && <GapAnalysis view={month} now={now} />}
         </div>
 
         <Byline>im.ted1k · kv:ted1k-derive</Byline>
       </Stratum>
 
-      {/* ---- 02 PRODUCER ------------------------------------------------- */}
       <Stratum
         index={2}
         name="producer"
@@ -330,7 +329,6 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
         />
       </Stratum>
 
-      {/* ---- 03 SUBSTRATE: bedrock. Everything above rests on this. ------ */}
       <Stratum
         index={3}
         name="substrate"

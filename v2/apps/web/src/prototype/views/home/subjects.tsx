@@ -9,7 +9,7 @@
 // an HTTP probe. Nothing here blends the two silently — a fixture subject
 // carries the marker wherever it is rendered.
 
-import { formatMissing, formatNines } from "../../derive/nines";
+import { formatCoverage, formatMissing } from "../../derive/missing";
 import { since } from "../../derive/tedcheck";
 import {
   NETWORK_FIXTURE,
@@ -59,8 +59,10 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
       qualifier: "continuity · 1 Hz since 2007",
       layer: "services",
       source: "live",
-      value: day ? formatNines(day.total.nines) : "—",
-      unit: day ? `of ${day.total.ceiling.toFixed(2)} nines` : undefined,
+      value: day ? formatMissing(day.total.missing) : "—",
+      unit: day
+        ? `missing · ${formatCoverage(day.total.missing, day.total.expected)} recorded`
+        : undefined,
       secondary: [
         {
           label: "missing 24h",

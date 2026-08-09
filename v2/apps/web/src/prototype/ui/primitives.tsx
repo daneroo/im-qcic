@@ -4,21 +4,13 @@
 // structure, not about one of them having nicer widgets.
 
 import type { ReactNode } from "react";
-import { formatMissing, formatNines, type NinesQuality } from "../derive/nines";
+import { formatMissing } from "../derive/missing";
 import { utcISO } from "../derive/time";
 
 /** Compact enough to sit as an axis label without wrapping. */
 function formatMissingShort(seconds: number): string {
   return formatMissing(seconds);
 }
-
-export const QUALITY_INK: Record<NinesQuality, string> = {
-  perfect: "text-live",
-  high: "text-ink",
-  fair: "text-ink-2",
-  poor: "text-alarm",
-  unknown: "text-partial",
-};
 
 /* ------------------------------------------------------------------ *
  * A headline reading: one figure, its unit, and what it means.
@@ -80,30 +72,6 @@ export function Figure({
       </div>
       {caption && <div className="mt-2 text-xs text-ink-2">{caption}</div>}
     </div>
-  );
-}
-
-/** The nines shorthand, at the precision it actually claims. */
-export function NinesFigure({
-  value,
-  size = "lg",
-  label,
-  caption,
-}: {
-  value: number | null;
-  size?: "lg" | "sm";
-  label?: string;
-  caption?: ReactNode;
-}) {
-  return (
-    <Figure
-      value={value === null ? "clean" : formatNines(value)}
-      unit={value === null ? "no gaps" : "nines"}
-      tone={value === null ? "live" : "normal"}
-      size={size}
-      label={label}
-      caption={caption}
-    />
   );
 }
 

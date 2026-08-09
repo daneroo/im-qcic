@@ -19,7 +19,7 @@
 // rests on it.
 
 import { useState } from "react";
-import { formatMissing, formatNines } from "../../derive/nines";
+import { formatCoverage, formatMissing } from "../../derive/missing";
 import { since, type TedcheckView } from "../../derive/tedcheck";
 import {
   Byline,
@@ -37,8 +37,7 @@ interface Line {
   qualifier: string;
   status: Liveness;
   /** Optional — only where sample density earns it. */
-  nines: number | null;
-  ceiling: number | null;
+  coverage: string;
   perfect: boolean;
   lastBreak: string;
   duration: string;
@@ -62,8 +61,7 @@ function toLine(
       subject,
       qualifier,
       status,
-      nines: null,
-      ceiling: null,
+      coverage: "—",
       perfect: false,
       lastBreak: "—",
       duration: "—",
@@ -78,9 +76,8 @@ function toLine(
     subject,
     qualifier,
     status,
-    nines: view.total.nines,
-    ceiling: view.total.ceiling,
-    perfect: view.total.nines === null,
+    coverage: formatCoverage(view.total.missing, view.total.expected),
+    perfect: view.total.missing <= 0,
     lastBreak: last ? since(last.start, now) : "none in window",
     duration: last ? formatMissing(last.missing) : "—",
     broken: Boolean(last),
@@ -107,17 +104,12 @@ function Row({ line }: { line: Line }) {
         </td>
 
         <td className="qc-num px-3 py-2.5 text-right align-middle">
-          {line.nines === null && !line.perfect ? (
+          {line.coverage === "—" && !line.perfect ? (
             <span className="text-ink-3">—</span>
           ) : line.perfect ? (
             <span className="text-live">clean</span>
           ) : (
-            <span className="text-ink">{formatNines(line.nines)}</span>
-          )}
-          {line.ceiling !== null && !line.perfect && line.nines !== null && (
-            <span className="ml-1 text-[10px] text-ink-3">
-              /{line.ceiling.toFixed(1)}
-            </span>
+            <span className="text-ink">{line.coverage}</span>
           )}
         </td>
 
