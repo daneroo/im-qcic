@@ -1,42 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DataTable } from "../components/DataTable";
-import { NATS_WS_URL } from "../config";
-import { KV_BUCKET_NAME, VIEW_NAMES, type ViewName } from "../tedcheck/config";
-import type { TedcheckViewPayload } from "../tedcheck/types";
-import { useDerivedState } from "../tedcheck/useDerivedState";
+// PROTOTYPE — this route dispatches to a design variant.
+// See ../prototype/README.md.
+import { VariantSwitcher } from "../prototype/VariantSwitcher";
+import { validatePrototypeSearch } from "../prototype/variants";
+import { TedcheckCircuit } from "../prototype/views/tedcheck/Circuit";
+import { useTedcheckFeed } from "../prototype/views/tedcheck/data";
+import { TedcheckSheet } from "../prototype/views/tedcheck/Sheet";
+import { TedcheckStrata } from "../prototype/views/tedcheck/Strata";
 
 export const Route = createFileRoute("/tedcheck")({
+  validateSearch: validatePrototypeSearch,
   component: TedcheckPage,
 });
 
 function TedcheckPage() {
-  return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold">tedcheck</h1>
-      {VIEW_NAMES.map((view) => (
-        <TedcheckView key={view} view={view} />
-      ))}
-    </main>
-  );
-}
-
-function TedcheckView({ view }: { view: ViewName }) {
-  const { status, value } = useDerivedState<TedcheckViewPayload>(
-    NATS_WS_URL,
-    KV_BUCKET_NAME,
-    view,
-  );
+  const search = Route.useSearch();
+  const feed = useTedcheckFeed();
 
   return (
-    <section className="mt-8">
-      <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-medium">{view}</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {status === "connected" ? "Live" : status}
-          {value ? ` · updated ${value.meta.stamp}` : ""}
-        </p>
-      </div>
-      <DataTable table={value?.data ?? []} />
-    </section>
+    <>
+      {search.variant === "circuit" ? (
+        <TedcheckCircuit feed={feed} />
+      ) : search.variant === "sheet" ? (
+        <TedcheckSheet feed={feed} />
+      ) : (
+        <TedcheckStrata feed={feed} />
+      )}
+      <VariantSwitcher search={search} />
+    </>
   );
 }
