@@ -30,7 +30,6 @@ import {
   Masthead,
   LivenessLabel,
   NinesFigure,
-  Figure,
   Sparkline,
   type Liveness,
 } from "../../ui/primitives";
@@ -174,16 +173,11 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
         {headline ? (
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:items-start">
             <div>
-              {/* The two things ted1k is for, side by side: whether it
-                  recorded, and what it recorded. */}
-              <div className="flex flex-wrap items-start gap-x-12 gap-y-5">
-                <NinesFigure value={headline.total.nines} label="Last Day" />
-                <Figure
-                  value={formatKwhPerDay(headline.meanWatt)}
-                  unit="kWh/d"
-                  label="consumption"
-                />
-              </div>
+              {/* Continuity is the hero; consumption is context. This page is
+                  about service quality - Grafana is where power actually gets
+                  looked at, and the moment these two carry equal weight this
+                  has quietly become a second energy dashboard. */}
+              <NinesFigure value={headline.total.nines} label="Last Day" />
               <p className="mt-3 text-xs text-ink-2">
                 {headline.total.missing === 0 ? (
                   <>Every second accounted for.</>
@@ -192,27 +186,32 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
                     <span className="qc-num font-medium text-ink">
                       {formatAbsence(headline.total.missing)}
                     </span>{" "}
-                    absent of 24h, at one sample per second.
+                    unrecorded — a house never draws zero, so a gap means the
+                    power was out.
                   </>
                 )}
+              </p>
+              <p className="mt-2 text-xs text-ink-3">
+                consumption{" "}
+                <span className="qc-num text-ink-2">
+                  {formatKwhPerDay(headline.meanWatt)} kWh/d
+                </span>
               </p>
 
               {month && (
                 <div className="mt-7 border-t border-rule pt-5">
-                  <div className="flex flex-wrap items-start gap-x-12 gap-y-4">
-                    <NinesFigure
-                      value={month.total.nines}
-                      size="sm"
-                      label="Last Month"
-                    />
-                    <Figure
-                      value={formatKwhPerDay(month.meanWatt)}
-                      unit="kWh/d"
-                      size="sm"
-                      label="consumption"
-                    />
-                  </div>
-                  <p className="mt-3 text-xs text-ink-2">
+                  <NinesFigure
+                    value={month.total.nines}
+                    size="sm"
+                    label="Last Month"
+                  />
+                  <p className="mt-2 text-xs text-ink-3">
+                    consumption{" "}
+                    <span className="qc-num text-ink-2">
+                      {formatKwhPerDay(month.meanWatt)} kWh/d
+                    </span>
+                  </p>
+                  <p className="mt-2 text-xs text-ink-2">
                     {month.lastExcursion ? (
                       <>
                         <span className="qc-num text-ink">

@@ -13,6 +13,20 @@ The question it answers: **what should QCIC's visual language be**, given that
 the app today is two large monitoring tables but the broader information space
 (hosts, tailnet, NATS, services) is much wider.
 
+## Scope guard — this is service quality, not consumption
+
+QCIC watches whether the watchers are working. It is **not** an energy
+dashboard: Grafana already does that job well, with a live power gauge, the full
+1 Hz sample series and a data explorer, and there is no reason to rebuild any of
+it here.
+
+The distinction is easy to lose because the two share a data source, and this
+prototype has already drifted once — consumption briefly appeared as a co-equal
+hero next to the continuity figure. It is now a secondary reading, which is what
+it is: useful context for judging whether a gap mattered, not the point of the
+page. **If a change would make this more useful for looking at power and no more
+useful for judging whether ted1k is healthy, it belongs in Grafana.**
+
 ## How to run
 
 ```sh
@@ -89,11 +103,13 @@ The upstream capture never records a zero watt — a zero is not a legitimate
 sensor reading and such values are excluded before reaching the `watt` table —
 so the published `avg(watt)` is already an average over real values only.
 
-**An open question this raises:** a genuine power outage cannot show up as low
-watts, only as absent samples. So `missing` conflates _the recorder failed_ with
-_there was nothing to record_, and nines cannot distinguish them. The 39-minute
-excursion on 2026-08-03 may well have been an outage rather than a monitoring
-failure. Worth deciding whether the page should ever claim to know which.
+**What an absence actually means.** A house never draws zero, so there is no
+such thing as a low-watt outage — an outage can only appear as missing samples.
+And a recorder failure looks exactly the same from here. The two are genuinely
+indistinguishable in this data, so the page must not pretend to tell them apart;
+in practice both mean **the power was out**. This closes the question rather
+than leaving it open: absence is one event with one plausible cause, not an
+ambiguity to resolve later.
 
 **Baseline** — the median absence across a window's whole buckets. ted1k's
 resting state, not a fault.

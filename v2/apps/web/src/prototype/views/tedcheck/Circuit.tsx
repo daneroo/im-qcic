@@ -34,7 +34,6 @@ import {
   LivenessDot,
   LivenessLabel,
   NinesFigure,
-  Figure,
   Sparkline,
 } from "../../ui/primitives";
 import { BucketTable } from "./BucketTable";
@@ -234,24 +233,23 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
             {active.id === "capture" && headline && (
               <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
                 <div>
-                  <div className="flex flex-wrap items-start gap-x-12 gap-y-5">
-                    <NinesFigure
-                      value={headline.total.nines}
-                      label="continuity across this link, last day"
-                    />
-                    <Figure
-                      value={formatKwhPerDay(headline.meanWatt)}
-                      unit="kWh/d"
-                      label="carried"
-                    />
-                  </div>
+                  <NinesFigure
+                    value={headline.total.nines}
+                    label="continuity across this link, last day"
+                  />
                   <p className="mt-3 text-xs text-ink-2">
-                    {
-                      <>
-                        Loss on this edge is the only reason a second goes
-                        unrecorded — both ends stay up throughout.
-                      </>
-                    }
+                    A house never draws zero, so a gap on this edge means the
+                    power was out — an outage and a recorder failure look
+                    identical from here, and the page does not pretend
+                    otherwise.
+                  </p>
+                  {/* Context, not the point: see the scope guard in the
+                      prototype README. Grafana owns consumption. */}
+                  <p className="mt-2 text-xs text-ink-3">
+                    carrying{" "}
+                    <span className="qc-num text-ink-2">
+                      {formatKwhPerDay(headline.meanWatt)} kWh/d
+                    </span>
                   </p>
                   {month && (
                     <div className="mt-6 border-t border-rule pt-5">
