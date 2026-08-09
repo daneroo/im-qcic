@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScastRouteImport } from './routes/scast'
 import { Route as TedcheckRouteImport } from './routes/tedcheck'
+import { Route as PrototypeMarkRouteImport } from './routes/prototype.mark'
+import { Route as PrototypeNetworkRouteImport } from './routes/prototype.network'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +30,60 @@ const TedcheckRoute = TedcheckRouteImport.update({
   path: '/tedcheck',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrototypeMarkRoute = PrototypeMarkRouteImport.update({
+  id: '/prototype/mark',
+  path: '/prototype/mark',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrototypeNetworkRoute = PrototypeNetworkRouteImport.update({
+  id: '/prototype/network',
+  path: '/prototype/network',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/scast': typeof ScastRoute
   '/tedcheck': typeof TedcheckRoute
+  '/prototype/mark': typeof PrototypeMarkRoute
+  '/prototype/network': typeof PrototypeNetworkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/scast': typeof ScastRoute
   '/tedcheck': typeof TedcheckRoute
+  '/prototype/mark': typeof PrototypeMarkRoute
+  '/prototype/network': typeof PrototypeNetworkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/scast': typeof ScastRoute
   '/tedcheck': typeof TedcheckRoute
+  '/prototype/mark': typeof PrototypeMarkRoute
+  '/prototype/network': typeof PrototypeNetworkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/scast' | '/tedcheck'
+  fullPaths:
+    '/' | '/scast' | '/tedcheck' | '/prototype/mark' | '/prototype/network'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/scast' | '/tedcheck'
-  id: '__root__' | '/' | '/scast' | '/tedcheck'
+  to: '/' | '/scast' | '/tedcheck' | '/prototype/mark' | '/prototype/network'
+  id:
+    | '__root__'
+    | '/'
+    | '/scast'
+    | '/tedcheck'
+    | '/prototype/mark'
+    | '/prototype/network'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ScastRoute: typeof ScastRoute
   TedcheckRoute: typeof TedcheckRoute
+  PrototypeMarkRoute: typeof PrototypeMarkRoute
+  PrototypeNetworkRoute: typeof PrototypeNetworkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +109,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TedcheckRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prototype/mark': {
+      id: '/prototype/mark'
+      path: '/prototype/mark'
+      fullPath: '/prototype/mark'
+      preLoaderRoute: typeof PrototypeMarkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prototype/network': {
+      id: '/prototype/network'
+      path: '/prototype/network'
+      fullPath: '/prototype/network'
+      preLoaderRoute: typeof PrototypeNetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +130,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ScastRoute: ScastRoute,
   TedcheckRoute: TedcheckRoute,
+  PrototypeMarkRoute: PrototypeMarkRoute,
+  PrototypeNetworkRoute: PrototypeNetworkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
