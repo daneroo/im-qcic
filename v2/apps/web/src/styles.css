@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* PROTOTYPE — throwaway design tokens (see ./prototype/README.md). Imported
+   after tailwind so @theme inline can extend the utility set. */
+@import "./prototype/theme.css";
+
 /* Tailwind v4 dark mode is prefers-color-scheme by default - this custom
    variant switches it to class-based (a .dark class on <html>, set by
    ThemeToggle/THEME_INIT_SCRIPT) so the toggle actually overrides the

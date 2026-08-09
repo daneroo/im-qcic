@@ -1,0 +1,233 @@
+/* PROTOTYPE — throwaway. See ./README.md.
+
+   Three theme families, each with a light and a dark member. The family is
+   chosen by `data-theme` on <html>; light vs dark stays on the existing `.dark`
+   class, so the app's pre-hydration no-flash script keeps working untouched.
+
+   TWO LAYERS, kept apart on purpose — this is the unsolved problem named in
+   /design/html-react/README.md:
+
+   - SURFACE tokens (deep/sunken/paper/surface/surface-2/rule/rule-strong)
+     carry atmosphere and, critically, ELEVATION. They form a ladder, so a
+     layered view can express "this sits on top of that" without inventing
+     shadows. Catppuccin ships exactly this ladder (crust < mantle < base <
+     surface0 < surface1 < surface2), which is why it earns its place here.
+
+   - SEMANTIC tokens (ink, ink-2, ink-3, live, excursion, partial, absent)
+     carry meaning and must survive all six surfaces.
+
+   ONE RULE governs the semantics, and it is the whole point:
+   `--qc-excursion` is the only high-chroma colour in any theme, and it is
+   spent only on an active anomaly. A healthy page shows it ZERO times. That
+   is what keeps Catppuccin usable here — its accents are designed to coexist
+   at equal weight for syntax highlighting, which is precisely wrong for a
+   status page. So we take its ladder and its restraint, bind exactly one
+   accent (peach) to excursion, one (sky) to liveness, one (mauve) to brand,
+   and leave the other eleven on the shelf.
+
+   `--qc-partial` must read as UNKNOWN — never as bad. It marks a window-edge
+   bucket, or a service whose substrate is down and therefore cannot be
+   vouched for. Rendering "unverifiable" as "broken" is a lie the old view
+   tells; this token exists to stop telling it. */
+
+/* NB: not wrapped in `@layer theme` — that's Tailwind v4's own reserved layer
+   name and wrapping user CSS in it breaks the parse. Plain selectors work. */
+
+/* ---- sketch (default): monochrome, warm paper and graphite ------------ */
+/* Deliberately monochrome: liveness and agreement are carried by SHAPE and
+   weight, not hue, so the one chromatic token stays shocking when used. */
+html,
+html[data-theme="sketch"] {
+  --qc-deep: #edeae1;
+  --qc-sunken: #f4f2ea;
+  --qc-paper: #fbfaf7;
+  --qc-surface: #ffffff;
+  --qc-surface-2: #f4f2ec;
+  --qc-rule: #e2dfd6;
+  --qc-rule-strong: #cbc7bb;
+  --qc-ink: #171613;
+  --qc-ink-2: #5c584f;
+  --qc-ink-3: #96918a;
+  --qc-accent: #33302a;
+  --qc-live: #33302a;
+  --qc-excursion: #93301f;
+  --qc-partial: #b6b1a4;
+  --qc-absent: #d8d4c9;
+}
+
+html[data-theme="sketch"].dark {
+  --qc-deep: #0b0a09;
+  --qc-sunken: #0f0e0d;
+  --qc-paper: #131211;
+  --qc-surface: #1b1a18;
+  --qc-surface-2: #232120;
+  --qc-rule: #2f2d2a;
+  --qc-rule-strong: #45423d;
+  --qc-ink: #f3f0e9;
+  --qc-ink-2: #a9a399;
+  --qc-ink-3: #6f6a61;
+  --qc-accent: #d6d0c3;
+  --qc-live: #d6d0c3;
+  --qc-excursion: #e2705a;
+  --qc-partial: #4c4840;
+  --qc-absent: #33302b;
+}
+
+/* ---- chromatic: the combined midnight/rust pair ----------------------- */
+/* Not two themes. One system where midnight and rust swap roles: rust
+     ground with midnight accents by day, midnight ground with copper accents
+     by night. Taken from /design/html-react/README.md's own "Chromatic" plan,
+     which was written down but never built. */
+html[data-theme="chromatic"] {
+  --qc-deep: #eadfca;
+  --qc-sunken: #f2e9d9;
+  --qc-paper: #f8f1e7;
+  --qc-surface: #fffbf3;
+  --qc-surface-2: #f0e6d6;
+  --qc-rule: #e0d0b8;
+  --qc-rule-strong: #c6b092;
+  --qc-ink: #241a12;
+  --qc-ink-2: #6a5744;
+  --qc-ink-3: #9c8a72;
+  --qc-accent: #1b3a6b;
+  --qc-live: #1b3a6b;
+  --qc-excursion: #b04a1e;
+  --qc-partial: #c4b49a;
+  --qc-absent: #dccfb8;
+}
+
+html[data-theme="chromatic"].dark {
+  --qc-deep: #040711;
+  --qc-sunken: #060a15;
+  --qc-paper: #080d1a;
+  --qc-surface: #101829;
+  --qc-surface-2: #16203a;
+  --qc-rule: #1f2c49;
+  --qc-rule-strong: #33456e;
+  --qc-ink: #e9effa;
+  --qc-ink-2: #93a6c6;
+  --qc-ink-3: #5c708f;
+  --qc-accent: #c9803f;
+  --qc-live: #74a9d6;
+  --qc-excursion: #e4713c;
+  --qc-partial: #2c3a5a;
+  --qc-absent: #1a2540;
+}
+
+/* ---- catppuccin: Latte / Mocha, with a hierarchy imposed -------------- */
+html[data-theme="catppuccin"] {
+  --qc-deep: #dce0e8; /* crust */
+  --qc-sunken: #e6e9ef; /* mantle */
+  --qc-paper: #eff1f5; /* base */
+  --qc-surface: #ccd0da; /* surface0 */
+  --qc-surface-2: #bcc0cc; /* surface1 */
+  --qc-rule: #ccd0da;
+  --qc-rule-strong: #acb0be; /* surface2 */
+  --qc-ink: #4c4f69; /* text */
+  --qc-ink-2: #6c6f85; /* subtext0 */
+  --qc-ink-3: #8c8fa1; /* overlay1 */
+  --qc-accent: #8839ef; /* mauve */
+  --qc-live: #209fb5; /* sapphire */
+  --qc-excursion: #fe640b; /* peach — the only one spent on anomaly */
+  --qc-partial: #9ca0b0; /* overlay0 */
+  --qc-absent: #bcc0cc;
+}
+
+html[data-theme="catppuccin"].dark {
+  --qc-deep: #11111b; /* crust */
+  --qc-sunken: #181825; /* mantle */
+  --qc-paper: #1e1e2e; /* base */
+  --qc-surface: #313244; /* surface0 */
+  --qc-surface-2: #45475a; /* surface1 */
+  --qc-rule: #313244;
+  --qc-rule-strong: #585b70; /* surface2 */
+  --qc-ink: #cdd6f4; /* text */
+  --qc-ink-2: #a6adc8; /* subtext0 */
+  --qc-ink-3: #7f849c; /* overlay1 */
+  --qc-accent: #cba6f7; /* mauve */
+  --qc-live: #89dceb; /* sky */
+  --qc-excursion: #fab387; /* peach */
+  --qc-partial: #6c7086; /* overlay0 */
+  --qc-absent: #45475a;
+}
+
+/* Expose the tokens as real Tailwind utilities (bg-paper, text-ink-2, ...).
+   `inline` keeps them as var() references rather than resolved values, which
+   is what lets a theme swap take effect at runtime. */
+@theme inline {
+  --color-deep: var(--qc-deep);
+  --color-sunken: var(--qc-sunken);
+  --color-paper: var(--qc-paper);
+  --color-surface: var(--qc-surface);
+  --color-surface-2: var(--qc-surface-2);
+  --color-rule: var(--qc-rule);
+  --color-rule-strong: var(--qc-rule-strong);
+  --color-ink: var(--qc-ink);
+  --color-ink-2: var(--qc-ink-2);
+  --color-ink-3: var(--qc-ink-3);
+  --color-accent: var(--qc-accent);
+  --color-live: var(--qc-live);
+  --color-excursion: var(--qc-excursion);
+  --color-partial: var(--qc-partial);
+  --color-absent: var(--qc-absent);
+
+  /* Rubik for everything a human reads, including numbers. Chosen over the
+     Outfit/Figtree/Jakarta default trio for two reasons: its softened corners
+     echo the hand-drawn braid in the QCIC logo, and it is the closest
+     Google-served relative of Tondo. JetBrains Mono is held back for digests
+     ONLY, where matching characters by position is the actual task - the brief
+     was "mono can be overdone", and this is the line. */
+  --font-sans:
+    "Rubik", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* THE WORDMARK. Stand-in for the drawn QCIC monogram
+     (/design/html-react/*.png) until that exists as an SVG.
+
+     A Garamond is the right register and always was: QCIC is an acronym of a
+     Roman line (Juvenal, Satire VI), and Garamond is the French Renaissance
+     roman drawn from exactly those classical letterforms.
+
+     EB Garamond, not Cormorant. Same lineage, different optical class:
+     Cormorant is explicitly a DISPLAY Garamond whose hairlines are drawn thin
+     on purpose for 60px+ settings, and at 26px those strokes fall under a
+     device pixel and break up. EB Garamond is a text-size revival - the thins
+     are drawn to survive at reading size, which is the whole problem here.
+     See .qc-mark below for the second half of the fix, and /prototype/mark for
+     the side-by-side. */
+  --font-serif: "EB Garamond", ui-serif, Georgia, serif;
+}
+
+/* Numerals line up in every table without monospacing the page. Rubik carries
+   real tabular figures; `slashed-zero` keeps 0/O apart next to hex digests. */
+.qc-num {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* The other half of the rendering fix. `<body>` carries Tailwind's
+   `antialiased` (-webkit-font-smoothing: antialiased), which disables macOS
+   subpixel rendering and makes every stroke lighter. That flatters the UI sans
+   and actively harms a serif, whose thin strokes then have even less to sit
+   on. `auto` restores subpixel rendering for this one element; the rest of the
+   page keeps the setting it wants. */
+.qc-mark {
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+.qc-digest {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  letter-spacing: 0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
