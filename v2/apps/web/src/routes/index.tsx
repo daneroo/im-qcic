@@ -1,27 +1,37 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { createFileRoute } from "@tanstack/react-router";
+// PROTOTYPE — the aggregate home. See ../prototype/README.md.
+import { VariantSwitcher } from "../prototype/VariantSwitcher";
+import { validatePrototypeSearch } from "../prototype/variants";
+import {
+  HomeCircuit,
+  HomeSheet,
+  HomeStrata,
+} from "../prototype/views/home/variants";
+import { useRichScastFeed } from "../prototype/views/scast/data";
+import { useTedcheckFeed } from "../prototype/views/tedcheck/data";
 
 export const Route = createFileRoute("/")({
+  validateSearch: validatePrototypeSearch,
   component: Home,
 });
 
 function Home() {
+  const search = Route.useSearch();
+  const ted = useTedcheckFeed();
+  const scast = useRichScastFeed();
+
+  const props = { ted, scast, search };
+
   return (
-    <main className="mx-auto max-w-2xl p-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">im-qcic</h1>
-        <ThemeToggle />
-      </div>
-      <p className="mt-4 text-gray-600 dark:text-gray-400">
-        <Link to="/scast" className="underline">
-          scast
-        </Link>{" "}
-        and{" "}
-        <Link to="/tedcheck" className="underline">
-          tedcheck
-        </Link>{" "}
-        are live.
-      </p>
-    </main>
+    <>
+      {search.variant === "circuit" ? (
+        <HomeCircuit {...props} />
+      ) : search.variant === "sheet" ? (
+        <HomeSheet {...props} />
+      ) : (
+        <HomeStrata {...props} />
+      )}
+      <VariantSwitcher search={search} />
+    </>
   );
 }
