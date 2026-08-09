@@ -164,7 +164,7 @@ export function TedcheckSheet({ feed }: { feed: TedcheckFeed }) {
     toLine(
       "hour",
       "ted1k",
-      "Last Day by hour",
+      "Last Day by Hour",
       feed.dayByHour.status,
       today,
       now,
@@ -175,7 +175,7 @@ export function TedcheckSheet({ feed }: { feed: TedcheckFeed }) {
     toLine(
       "month",
       "ted1k",
-      "Last Month by day",
+      "Last Month by Day",
       feed.weekByDay.status,
       month,
       now,

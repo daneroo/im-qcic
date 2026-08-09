@@ -15,7 +15,7 @@
 // SIGNAL IS ARRANGED SYMMETRICALLY, in two halves:
 //
 //   SNAPSHOT      Last Day and Last Month side by side, three readings each.
-//   GAP ANALYSIS  Last Day by hour and Last Month by day - two identical
+//   GAP ANALYSIS  Last Day by Hour and Last Month by Day - two identical
 //                 blocks of [missing chart, power chart, collapsed table].
 //
 // The symmetry does structural work. Two identical blocks read as one pattern

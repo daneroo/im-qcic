@@ -375,7 +375,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
             {today && (
               <details className="rounded-lg border border-rule bg-surface/50">
                 <summary className="cursor-pointer list-none px-3 py-2 text-sm text-ink-2 hover:text-ink">
-                  Last Day by hour — record
+                  Last Day by Hour — record
                 </summary>
                 <div className="border-t border-rule px-3 py-3">
                   <BucketTable view={today} />
@@ -385,7 +385,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
             {month && (
               <details className="rounded-lg border border-rule bg-surface/50">
                 <summary className="cursor-pointer list-none px-3 py-2 text-sm text-ink-2 hover:text-ink">
-                  Last Month by day — record
+                  Last Month by Day — record
                 </summary>
                 <div className="border-t border-rule px-3 py-3">
                   <BucketTable view={month} />

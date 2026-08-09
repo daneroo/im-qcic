@@ -169,6 +169,15 @@ drawn as _unknown_.
 shape taken from `scripts/bash/qcic-sh.sh` because a browser cannot observe it.
 Never blended silently.
 
+### Naming
+
+**Window names are capitalised** — Last Day, Last Month, Last Day by Hour, Last
+Month by Day. `by` stays lowercase as a connector. Everything else on the page
+is a description and stays sentence case or lowercase: "missing by hour",
+"power, same window", "Table of gaps". So the same word can appear both ways —
+`Hour` in a window's name, `hour` in a chart's label — and the case tells you
+which it is.
+
 ### Structure
 
 **Fabric / bus / services** — the three dependency rungs. Order is never

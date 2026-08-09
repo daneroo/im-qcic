@@ -27,7 +27,16 @@ import type { ViewName } from "../../tedcheck/config";
 const HOUR = 3600;
 const DAY = 86400;
 
-/** Bucket size and window span per view, matching ted1k-derive's SQL. */
+/**
+ * Bucket size and window span per view, matching ted1k-derive's SQL.
+ *
+ * NAMING RULE. The four windows are NAMES, so both words are capitalised:
+ * Last Day, Last Month, Last Day by Hour, Last Month by Day ("by" stays
+ * lowercase, as a connector). Everything else on the page is a description and
+ * stays sentence case or lowercase - "missing by hour", "power, same window",
+ * "Table of gaps". That is why the same word appears both ways: `Hour` in a
+ * window's name, `hour` in a chart's label.
+ */
 const VIEW_SHAPE: Record<
   ViewName,
   {
@@ -52,7 +61,7 @@ const VIEW_SHAPE: Record<
   missingDayByHour: {
     bucketSeconds: HOUR,
     windowSeconds: DAY,
-    label: "Last Day by hour",
+    label: "Last Day by Hour",
     unit: "hour",
     significantSeconds: 60,
   },
@@ -62,7 +71,7 @@ const VIEW_SHAPE: Record<
   missingWeekByDay: {
     bucketSeconds: DAY,
     windowSeconds: 32 * DAY,
-    label: "Last Month by day",
+    label: "Last Month by Day",
     unit: "day",
     significantSeconds: 300,
   },
