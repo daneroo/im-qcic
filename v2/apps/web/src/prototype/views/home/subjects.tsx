@@ -59,20 +59,26 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
       qualifier: "continuity · 1 Hz since 2007",
       layer: "services",
       source: "live",
+      // The hero is the DAY, and it names its own window - the secondaries
+      // carry a month figure beside it, so an unlabelled hero would invite
+      // exactly the wrong reading. An earlier version repeated the day's
+      // duration as a secondary, which spent a row saying the same thing
+      // twice; the month is the reading that was actually missing.
       value: day ? formatMissing(day.total.missing) : "—",
       unit: day
-        ? `missing · ${formatCoverage(day.total.missing, day.total.expected)} ok`
+        ? `missing 24h · ${formatCoverage(day.total.missing, day.total.expected)} ok`
         : undefined,
       secondary: [
         {
-          label: "missing 24h",
-          value: day ? formatMissing(day.total.missing) : "—",
+          label: "month",
+          value: month ? formatMissing(month.total.missing) : "—",
         },
         {
+          // Significant gaps over the month window - see the glossary.
           label: "last big gap",
           value: month?.lastSignificantGap
             ? since(month.lastSignificantGap.start, now)
-            : "none in 32d",
+            : "none this month",
         },
       ],
       byline: "kv:ted1k-derive",
