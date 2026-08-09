@@ -176,83 +176,88 @@ export function CoverageStrip({
   );
 }
 
-/**
- * Power over the window, in kW. A measurement, drawn as a line — never as an
- * alarm.
+/* ------------------------------------------------------------------ *
+ * Power over the window, in kW. Columns, not a line, and deliberately built
+ * from the same flex-of-divs as CoverageStrip so the two charts align
+ * STRUCTURALLY rather than by eye — same count, same widths, same 2px gaps.
+ * That alignment is the point: stacked under the missing chart you can read a
+ * column vertically and get "that hour lost 34s AND drew 4.1 kW".
  *
- * ZERO IS ALWAYS ON THE AXIS. The y-range runs 0 → max and is never trimmed to
- * the data's own extremes. An auto-scaled sparkline exaggerates every wobble:
- * a house drifting between 1.8 and 2.1 kW looks identical to one swinging from
- * 0 to 4 kW, because both fill the same box. Baselining at zero makes the
- * *proportion* of the swing legible, which is the thing worth seeing. The only
- * reason to trim would be a signal whose interesting variation is genuinely
- * tiny next to its offset, and power is not that.
+ * WHY NOT A LINE. Every value here is a bucketed average — mean power over an
+ * hour, or over a day. A line interpolates between bucket centres and so
+ * implies the value glided smoothly from one to the next; it didn't, it was
+ * constant across the bucket by construction. A column says "this value held
+ * for this interval", which is what an average over a bucket actually means.
  *
- * kW rather than W: a four-digit number changes width as it moves and reads as
- * precision the average does not have.
- */
-export function Sparkline({
-  values,
-  height = 40,
+ * WHY FILLED TO ZERO. Beyond the y-scale rule, the area under a power curve
+ * *is* energy — so the filled area is literally the quantity the kWh/d figure
+ * above it reports, rather than decoration.
+ *
+ * NO CONDITIONAL COLOUR. There is no such thing as a bad wattage; a 4 kW hour
+ * is not a fault, it is a kettle. Power is a measurement and gets one flat
+ * quiet ink. The only state a column inherits is PARTIAL — a bucket clipped by
+ * the window, whose average is computed over fewer samples and is therefore
+ * less trustworthy — drawn outlined, exactly as the missing chart draws it.
+ * ------------------------------------------------------------------ */
+export function PowerStrip({
+  buckets,
+  height = 44,
   label,
 }: {
-  /** Watts. Converted to kW for display. */
-  values: (number | null)[];
+  buckets: { start: Date; watt: number | null; partial: boolean }[];
   height?: number;
   label?: ReactNode;
 }) {
-  const points = values
-    .map((v, i) => ({ v, i }))
-    .filter((p): p is { v: number; i: number } => p.v !== null);
-  if (points.length < 2) return null;
+  const values = buckets
+    .map((b) => b.watt)
+    .filter((w): w is number => w !== null);
+  if (values.length === 0) return null;
 
-  const max = Math.max(...points.map((p) => p.v));
-  // Head-room so the peak does not sit on the top edge; still zero-based.
+  const max = Math.max(...values);
   const top = max * 1.08 || 1;
-  const w = 100;
-  const y = (watt: number) => height - (watt / top) * (height - 1) - 0.5;
-
-  const line = points
-    .map((p, k) => {
-      const x = (p.i / Math.max(1, values.length - 1)) * w;
-      return `${k === 0 ? "M" : "L"}${x.toFixed(2)},${y(p.v).toFixed(2)}`;
-    })
-    .join(" ");
-
   const kw = (watt: number) => `${(watt / 1000).toFixed(2)} kW`;
 
   return (
     <div className="w-full">
-      {label && (
-        <div className="mb-1.5 flex items-baseline justify-between gap-3">
-          <span className="text-[11px] text-ink-3">{label}</span>
-          <span className="qc-num text-[10px] text-ink-3">peak {kw(max)}</span>
-        </div>
-      )}
-      <div style={{ height }} className="w-full">
-        <svg
-          viewBox={`0 0 ${w} ${height}`}
-          preserveAspectRatio="none"
-          className="h-full w-full"
-          role="img"
-          aria-label={`power from 0 to a peak of ${kw(max)}`}
-        >
-          <path
-            d={line}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.25}
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
+      <div className="mb-1.5 flex items-baseline justify-between gap-3">
+        <span className="text-[11px] text-ink-3">{label}</span>
+        <span className="qc-num text-[10px] text-ink-3">peak {kw(max)}</span>
       </div>
-      {/* The zero line, drawn and labelled, because it is the whole point. */}
-      <div className="h-px w-full bg-rule-strong" />
+      <div
+        className="flex w-full items-end gap-[2px] border-b border-rule-strong"
+        style={{ height }}
+        role="img"
+        aria-label={`power by bucket, from 0 to a peak of ${kw(max)}`}
+      >
+        {buckets.map((b) => {
+          const key = b.start.toISOString();
+          const when = utcISO(b.start);
+          if (b.watt === null) {
+            return <div key={key} className="min-w-0 flex-1" />;
+          }
+          const share = Math.max(0.02, b.watt / top);
+          if (b.partial) {
+            return (
+              <div
+                key={key}
+                title={`${when} — ${kw(b.watt)}, averaged over a partial bucket`}
+                className="min-w-0 flex-1 rounded-t-[2px] border border-b-0 border-dashed border-partial"
+                style={{ height: `${share * 100}%` }}
+              />
+            );
+          }
+          return (
+            <div
+              key={key}
+              title={`${when} — ${kw(b.watt)}`}
+              className="min-w-0 flex-1 rounded-t-[2px] bg-current opacity-45"
+              style={{ height: `${share * 100}%` }}
+            />
+          );
+        })}
+      </div>
       <div className="mt-1 flex justify-between text-[10px] text-ink-3">
         <span className="qc-num">0 kW</span>
-        {!label && <span className="qc-num">peak {kw(max)}</span>}
       </div>
     </div>
   );

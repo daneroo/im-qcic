@@ -37,7 +37,7 @@ import {
   Figure,
   LivenessLabel,
   Masthead,
-  Sparkline,
+  PowerStrip,
   type Liveness,
 } from "../../ui/primitives";
 import { BucketTable } from "./BucketTable";
@@ -196,8 +196,9 @@ function GapAnalysis({ view, now }: { view: TedcheckView; now: Date }) {
       />
 
       <div className="mt-5 text-accent">
-        <Sparkline
-          values={view.buckets.map((b) => b.watt)}
+        <PowerStrip
+          buckets={view.buckets}
+          height={48}
           label={<span className="text-ink-3">power, same window</span>}
         />
       </div>

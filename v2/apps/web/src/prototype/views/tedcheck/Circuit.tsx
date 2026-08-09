@@ -34,7 +34,7 @@ import {
   Masthead,
   LivenessDot,
   LivenessLabel,
-  Sparkline,
+  PowerStrip,
 } from "../../ui/primitives";
 import { BucketTable } from "./BucketTable";
 import type { TedcheckFeed } from "./data";
@@ -299,8 +299,8 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                       />
                       {today.wattRange && (
                         <div className="mt-6 text-accent">
-                          <Sparkline
-                            values={today.buckets.map((b) => b.watt)}
+                          <PowerStrip
+                            buckets={today.buckets}
                             label={
                               <span className="text-ink-3">power carried</span>
                             }
