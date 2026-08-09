@@ -21,90 +21,89 @@ export const QUALITY_INK: Record<NinesQuality, string> = {
 };
 
 /* ------------------------------------------------------------------ *
- * The nines scale — this prototype's signature mark.
+ * A headline reading: one figure, its unit, and what it means.
  *
- * A big number over a log axis whose MAXIMUM IS SET BY THE DATA, not by a
- * designer: the finest non-perfect figure 86400 samples can resolve is one
- * missing sample, i.e. 4.94 nines. A month resolves 6.44, a single hour 3.56.
- * Drawing the same bar against an arbitrary "5" would quietly lie about how
- * much precision the measurement actually has, which is the exact failure a
- * page called "who watches the watchers" should not commit.
+ * The nines figure used to be drawn on a log axis against its resolvable
+ * ceiling. That is gone deliberately. Nines is a readable shorthand for "how
+ * many samples went missing over a day or a month" — not a measurement in its
+ * own right — and giving a shorthand an axis, tick marks and a "4.94
+ * resolvable" label dressed it up as something more precise than it claims to
+ * be. One decimal, no range.
  *
- * So the ceiling is drawn, labelled, and different per window. That honesty
- * IS the visual idea.
+ * This is not in tension with the rule that plots must define their y-scale.
+ * A plot makes a visual claim about magnitude and has to say what it is
+ * measured against; a label does not.
  * ------------------------------------------------------------------ */
-export function NinesScale({
+export function Figure({
   value,
-  ceiling,
-  quality,
-  size = "lg",
+  unit,
   label,
+  size = "lg",
+  tone = "normal",
   caption,
 }: {
-  value: number | null;
-  ceiling: number;
-  quality: NinesQuality;
-  size?: "lg" | "sm";
+  value: ReactNode;
+  unit?: string;
   label?: string;
+  size?: "lg" | "sm";
+  tone?: "normal" | "excursion" | "live" | "quiet";
   caption?: ReactNode;
 }) {
-  const ticks = Array.from({ length: Math.floor(ceiling) }, (_, i) => i + 1);
-  const pct =
-    value === null ? 100 : Math.max(0, Math.min(100, (value / ceiling) * 100));
   const big = size === "lg";
+  const ink =
+    tone === "excursion"
+      ? "text-excursion"
+      : tone === "live"
+        ? "text-live"
+        : tone === "quiet"
+          ? "text-ink-3"
+          : "text-ink";
 
   return (
     <div className="w-full">
       {label && <div className="mb-1 text-[11px] text-ink-3">{label}</div>}
       <div className="flex items-baseline gap-2">
         <span
-          className={`qc-num tabular-nums leading-none ${QUALITY_INK[quality]} ${
-            big ? "text-6xl font-light tracking-tight" : "text-2xl font-normal"
+          className={`qc-num leading-none ${ink} ${
+            big ? "text-5xl font-light tracking-tight" : "text-2xl font-normal"
           }`}
         >
-          {value === null ? "clean" : formatNines(value)}
+          {value}
         </span>
-        <span
-          className={`font-medium text-ink-3 ${big ? "text-sm" : "text-[11px]"}`}
-        >
-          {value === null ? "no gaps" : "nines"}
-        </span>
+        {unit && (
+          <span
+            className={`font-medium text-ink-3 ${big ? "text-sm" : "text-[11px]"}`}
+          >
+            {unit}
+          </span>
+        )}
       </div>
-
-      {/* The axis. Filled portion is the achieved figure; the remainder to the
-          labelled ceiling is what this window is physically able to resolve. */}
-      <div className={big ? "mt-3" : "mt-2"}>
-        <div
-          className="relative h-[6px] w-full overflow-hidden rounded-full bg-absent"
-          role="img"
-          aria-label={`${value === null ? "no gaps" : formatNines(value)} of a resolvable ${ceiling.toFixed(2)} nines`}
-        >
-          <div
-            className={`absolute inset-y-0 left-0 rounded-full ${
-              quality === "poor"
-                ? "bg-excursion"
-                : quality === "perfect"
-                  ? "bg-live"
-                  : "bg-ink-2"
-            }`}
-            style={{ width: `${pct}%` }}
-          />
-          {ticks.map((t) => (
-            <span
-              key={t}
-              className="absolute top-0 h-full w-px bg-paper/70"
-              style={{ left: `${(t / ceiling) * 100}%` }}
-            />
-          ))}
-        </div>
-        <div className="mt-1 flex justify-between text-[10px] text-ink-3">
-          <span className="qc-num">0</span>
-          <span className="qc-num">{ceiling.toFixed(2)} resolvable</span>
-        </div>
-      </div>
-
       {caption && <div className="mt-2 text-xs text-ink-2">{caption}</div>}
     </div>
+  );
+}
+
+/** The nines shorthand, at the precision it actually claims. */
+export function NinesFigure({
+  value,
+  size = "lg",
+  label,
+  caption,
+}: {
+  value: number | null;
+  size?: "lg" | "sm";
+  label?: string;
+  caption?: ReactNode;
+}) {
+  return (
+    <Figure
+      value={value === null ? "clean" : formatNines(value)}
+      unit={value === null ? "no gaps" : "nines"}
+      tone={value === null ? "live" : "normal"}
+      size={size}
+      label={label}
+      caption={caption}
+    />
   );
 }
 
@@ -210,22 +209,28 @@ export function CoverageStrip({
 }
 
 /**
- * Watts over the window. A measurement, drawn as a line — never as an alarm.
+ * Power over the window, in kW. A measurement, drawn as a line — never as an
+ * alarm.
  *
- * Carries its own min/max labels rather than leaving them to the caller: a
- * sparkline is auto-scaled to its own extremes, so an unlabelled one shows
- * shape while silently hiding whether the swing is 40 W or 4000 W. Two pages
- * that forgot the labels is how that happened the first time.
+ * ZERO IS ALWAYS ON THE AXIS. The y-range runs 0 → max and is never trimmed to
+ * the data's own extremes. An auto-scaled sparkline exaggerates every wobble:
+ * a house drifting between 1.8 and 2.1 kW looks identical to one swinging from
+ * 0 to 4 kW, because both fill the same box. Baselining at zero makes the
+ * *proportion* of the swing legible, which is the thing worth seeing. The only
+ * reason to trim would be a signal whose interesting variation is genuinely
+ * tiny next to its offset, and power is not that.
+ *
+ * kW rather than W: a four-digit number changes width as it moves and reads as
+ * precision the average does not have.
  */
 export function Sparkline({
   values,
-  height = 34,
-  unit = "W",
+  height = 40,
   label,
 }: {
+  /** Watts. Converted to kW for display. */
   values: (number | null)[];
   height?: number;
-  unit?: string;
   label?: ReactNode;
 }) {
   const points = values
@@ -233,26 +238,27 @@ export function Sparkline({
     .filter((p): p is { v: number; i: number } => p.v !== null);
   if (points.length < 2) return null;
 
-  const min = Math.min(...points.map((p) => p.v));
   const max = Math.max(...points.map((p) => p.v));
-  const span = max - min || 1;
+  // Head-room so the peak does not sit on the top edge; still zero-based.
+  const top = max * 1.08 || 1;
   const w = 100;
-  const d = points
+  const y = (watt: number) => height - (watt / top) * (height - 1) - 0.5;
+
+  const line = points
     .map((p, k) => {
       const x = (p.i / Math.max(1, values.length - 1)) * w;
-      const y = height - ((p.v - min) / span) * (height - 2) - 1;
-      return `${k === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+      return `${k === 0 ? "M" : "L"}${x.toFixed(2)},${y(p.v).toFixed(2)}`;
     })
     .join(" ");
 
-  const fmt = (n: number) => `${Math.round(n).toLocaleString()} ${unit}`;
+  const kw = (watt: number) => `${(watt / 1000).toFixed(2)} kW`;
 
   return (
     <div className="w-full">
       {label && (
         <div className="mb-1.5 flex items-baseline justify-between gap-3">
           <span className="text-[11px] text-ink-3">{label}</span>
-          <span className="qc-num text-[10px] text-ink-3">{fmt(max)}</span>
+          <span className="qc-num text-[10px] text-ink-3">peak {kw(max)}</span>
         </div>
       )}
       <div style={{ height }} className="w-full">
@@ -261,10 +267,10 @@ export function Sparkline({
           preserveAspectRatio="none"
           className="h-full w-full"
           role="img"
-          aria-label={`ranges from ${fmt(min)} to ${fmt(max)}`}
+          aria-label={`power from 0 to a peak of ${kw(max)}`}
         >
           <path
-            d={d}
+            d={line}
             fill="none"
             stroke="currentColor"
             strokeWidth={1.25}
@@ -274,9 +280,11 @@ export function Sparkline({
           />
         </svg>
       </div>
+      {/* The zero line, drawn and labelled, because it is the whole point. */}
+      <div className="h-px w-full bg-rule-strong" />
       <div className="mt-1 flex justify-between text-[10px] text-ink-3">
-        <span className="qc-num">{fmt(min)}</span>
-        {!label && <span className="qc-num">{fmt(max)}</span>}
+        <span className="qc-num">0 kW</span>
+        {!label && <span className="qc-num">peak {kw(max)}</span>}
       </div>
     </div>
   );

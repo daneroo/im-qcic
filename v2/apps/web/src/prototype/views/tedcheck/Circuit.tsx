@@ -20,7 +20,11 @@
 // Selecting an edge shows what is known about that link and nothing else.
 
 import { useState } from "react";
-import { formatAbsence, formatNines } from "../../derive/nines";
+import {
+  formatAbsence,
+  formatKwhPerDay,
+  formatNines,
+} from "../../derive/nines";
 import { since } from "../../derive/tedcheck";
 import {
   Byline,
@@ -29,7 +33,8 @@ import {
   Masthead,
   LivenessDot,
   LivenessLabel,
-  NinesScale,
+  NinesFigure,
+  Figure,
   Sparkline,
 } from "../../ui/primitives";
 import { BucketTable } from "./BucketTable";
@@ -229,24 +234,29 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
             {active.id === "capture" && headline && (
               <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
                 <div>
-                  <NinesScale
-                    value={headline.total.nines}
-                    ceiling={headline.total.ceiling}
-                    quality={headline.total.quality}
-                    label="continuity across this link, last day"
-                    caption={
+                  <div className="flex flex-wrap items-start gap-x-12 gap-y-5">
+                    <NinesFigure
+                      value={headline.total.nines}
+                      label="continuity across this link, last day"
+                    />
+                    <Figure
+                      value={formatKwhPerDay(headline.meanWatt)}
+                      unit="kWh/d"
+                      label="carried"
+                    />
+                  </div>
+                  <p className="mt-3 text-xs text-ink-2">
+                    {
                       <>
                         Loss on this edge is the only reason a second goes
                         unrecorded — both ends stay up throughout.
                       </>
                     }
-                  />
+                  </p>
                   {month && (
                     <div className="mt-6 border-t border-rule pt-5">
-                      <NinesScale
+                      <NinesFigure
                         value={month.total.nines}
-                        ceiling={month.total.ceiling}
-                        quality={month.total.quality}
                         size="sm"
                         label="Last Month"
                         caption={
@@ -285,7 +295,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                           <Sparkline
                             values={today.buckets.map((b) => b.watt)}
                             label={
-                              <span className="text-ink-3">watts carried</span>
+                              <span className="text-ink-3">power carried</span>
                             }
                           />
                         </div>

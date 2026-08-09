@@ -117,6 +117,24 @@ export interface TedcheckView {
   baseline: number;
   /** Absence above which a bucket stops being normal. See deriveView. */
   excursionThreshold: number;
+  /**
+   * Sample-weighted mean watts across the window - total energy over total
+   * samples, so a partial bucket contributes exactly its share rather than
+   * counting as a whole day. This is the second thing ted1k is for: not just
+   * whether it recorded, but what it recorded.
+   *
+   * `avg(watt)` here IS the non-zero average: the upstream capture never
+   * writes a zero-watt row, because a zero is not something the sensor can
+   * legitimately measure - such readings are treated as bad and excluded
+   * before they reach the `watt` table. So the set of rows and the set of
+   * non-zero values are the same set, and no producer-side change is needed.
+   *
+   * The consequence worth knowing: a genuine power outage does not appear
+   * here as low watts, it appears as ABSENT SAMPLES. Which means `missing`
+   * conflates two different events - "the recorder failed" and "there was
+   * nothing to record" - and nines cannot tell them apart. See the README.
+   */
+  meanWatt: number | null;
   wattRange: { min: number; max: number } | null;
 }
 
@@ -266,6 +284,21 @@ export function deriveView(
     .map((b) => b.watt)
     .filter((w): w is number => w !== null);
 
+  // Sample-weighted, not a mean of means: a day with 10230 samples must not
+  // carry the same weight as one with 86400.
+  const weighted = buckets.reduce(
+    (acc, b) =>
+      b.watt === null
+        ? acc
+        : {
+            energy: acc.energy + b.watt * b.samples,
+            samples: acc.samples + b.samples,
+          },
+    { energy: 0, samples: 0 },
+  );
+  const meanWatt =
+    weighted.samples > 0 ? weighted.energy / weighted.samples : null;
+
   return {
     view,
     label: shape.label,
@@ -286,6 +319,7 @@ export function deriveView(
     excursions,
     baseline,
     excursionThreshold,
+    meanWatt,
     wattRange: watts.length
       ? { min: Math.min(...watts), max: Math.max(...watts) }
       : null,

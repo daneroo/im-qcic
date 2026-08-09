@@ -16,7 +16,11 @@
 // stale, and says so. That is the entire "who watches the watchers" thesis
 // compressed into one interaction.
 
-import { formatAbsence, formatNines } from "../../derive/nines";
+import {
+  formatAbsence,
+  formatKwhPerDay,
+  formatNines,
+} from "../../derive/nines";
 import { since, type TedcheckView } from "../../derive/tedcheck";
 import { localHM, tzLabel, utcDate } from "../../derive/time";
 import {
@@ -25,7 +29,8 @@ import {
   Eyebrow,
   Masthead,
   LivenessLabel,
-  NinesScale,
+  NinesFigure,
+  Figure,
   Sparkline,
   type Liveness,
 } from "../../ui/primitives";
@@ -169,67 +174,76 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
         {headline ? (
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:items-start">
             <div>
-              <NinesScale
-                value={headline.total.nines}
-                ceiling={headline.total.ceiling}
-                quality={headline.total.quality}
-                label="Last Day"
-                caption={
+              {/* The two things ted1k is for, side by side: whether it
+                  recorded, and what it recorded. */}
+              <div className="flex flex-wrap items-start gap-x-12 gap-y-5">
+                <NinesFigure value={headline.total.nines} label="Last Day" />
+                <Figure
+                  value={formatKwhPerDay(headline.meanWatt)}
+                  unit="kWh/d"
+                  label="consumption"
+                />
+              </div>
+              <p className="mt-3 text-xs text-ink-2">
+                {headline.total.missing === 0 ? (
+                  <>Every second accounted for.</>
+                ) : (
                   <>
-                    {headline.total.missing === 0 ? (
-                      <>Every second accounted for.</>
-                    ) : (
-                      <>
-                        <span className="qc-num font-medium text-ink">
-                          {formatAbsence(headline.total.missing)}
-                        </span>{" "}
-                        absent of 24h, at one sample per second.
-                      </>
-                    )}
+                    <span className="qc-num font-medium text-ink">
+                      {formatAbsence(headline.total.missing)}
+                    </span>{" "}
+                    absent of 24h, at one sample per second.
                   </>
-                }
-              />
+                )}
+              </p>
+
               {month && (
                 <div className="mt-7 border-t border-rule pt-5">
-                  <NinesScale
-                    value={month.total.nines}
-                    ceiling={month.total.ceiling}
-                    quality={month.total.quality}
-                    size="sm"
-                    label="Last Month"
-                    caption={
-                      month.lastExcursion ? (
-                        <>
-                          <span className="qc-num text-ink">
-                            {month.excursions.length}
-                          </span>{" "}
-                          excursion
-                          {month.excursions.length === 1 ? "" : "s"} — last on{" "}
-                          <span className="qc-num text-ink">
-                            {utcDate(month.lastExcursion.start)}
-                          </span>
-                          ,{" "}
-                          <span className="qc-num text-excursion">
-                            {formatAbsence(month.lastExcursion.missing)}
-                          </span>{" "}
-                          absent ({formatNines(month.lastExcursion.nines)}{" "}
-                          nines). Otherwise a typical{" "}
-                          <span className="qc-num">
-                            {formatAbsence(month.baseline)}
-                          </span>{" "}
-                          a day.
-                        </>
-                      ) : (
-                        <>
-                          No excursions in {month.whole.length} days — a typical{" "}
-                          <span className="qc-num text-ink">
-                            {formatAbsence(month.baseline)}
-                          </span>{" "}
-                          lost per day.
-                        </>
-                      )
-                    }
-                  />
+                  <div className="flex flex-wrap items-start gap-x-12 gap-y-4">
+                    <NinesFigure
+                      value={month.total.nines}
+                      size="sm"
+                      label="Last Month"
+                    />
+                    <Figure
+                      value={formatKwhPerDay(month.meanWatt)}
+                      unit="kWh/d"
+                      size="sm"
+                      label="consumption"
+                    />
+                  </div>
+                  <p className="mt-3 text-xs text-ink-2">
+                    {month.lastExcursion ? (
+                      <>
+                        <span className="qc-num text-ink">
+                          {month.excursions.length}
+                        </span>{" "}
+                        excursion
+                        {month.excursions.length === 1 ? "" : "s"} — last on{" "}
+                        <span className="qc-num text-ink">
+                          {utcDate(month.lastExcursion.start)}
+                        </span>
+                        ,{" "}
+                        <span className="qc-num text-excursion">
+                          {formatAbsence(month.lastExcursion.missing)}
+                        </span>{" "}
+                        absent ({formatNines(month.lastExcursion.nines)} nines).
+                        Otherwise a typical{" "}
+                        <span className="qc-num">
+                          {formatAbsence(month.baseline)}
+                        </span>{" "}
+                        a day.
+                      </>
+                    ) : (
+                      <>
+                        No excursions in {month.whole.length} days — a typical{" "}
+                        <span className="qc-num text-ink">
+                          {formatAbsence(month.baseline)}
+                        </span>{" "}
+                        lost per day.
+                      </>
+                    )}
+                  </p>
                 </div>
               )}
             </div>
@@ -258,9 +272,7 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
                       <Sparkline
                         values={today.buckets.map((b) => b.watt)}
                         label={
-                          <span className="text-ink-3">
-                            mean watts, same window
-                          </span>
+                          <span className="text-ink-3">power, same window</span>
                         }
                       />
                     </div>

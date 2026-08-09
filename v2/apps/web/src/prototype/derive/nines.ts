@@ -71,10 +71,41 @@ export function ninesQuality(
   return "poor";
 }
 
-/** `3.06` — two decimals, because the interesting movement is in them. */
+/**
+ * `3.1` — one decimal.
+ *
+ * Nines here is a readable shorthand for "how many samples went missing over a
+ * day/month", on a log scale, and not a measurement in its own right. Two
+ * decimals implied a precision the figure does not claim, and the resolvable
+ * ceiling is deliberately NOT shown alongside it for the same reason: a
+ * shorthand does not get an axis. (This is the one place the "always define
+ * the y-scale" rule does not apply - it is a label, not a plot.)
+ */
 export function formatNines(value: number | null): string {
   if (value === null) return "—";
-  return value.toFixed(2);
+  return value.toFixed(1);
+}
+
+/**
+ * Household energy, in the unit this house actually thinks in.
+ *
+ *   kWh/d = W x 24 / 1000
+ *
+ * Technically still a power figure, but a scale everyone here reads at a
+ * glance - "44.7" means something, "1864 W" needs converting in your head.
+ */
+export function kwhPerDay(watt: number): number {
+  return (watt * 24) / 1000;
+}
+
+export function formatKwhPerDay(watt: number | null): string {
+  if (watt === null) return "—";
+  return kwhPerDay(watt).toFixed(1);
+}
+
+/** Watts as kilowatts, for plotting. Always drawn from zero - see Sparkline. */
+export function formatKw(watt: number): string {
+  return (watt / 1000).toFixed(2);
 }
 
 /**

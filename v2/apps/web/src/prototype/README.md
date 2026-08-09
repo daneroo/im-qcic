@@ -58,18 +58,42 @@ they look. That is the test for whether a term belongs here.
 
 ### Measuring continuity
 
-**Nines** — `-log10(1 - availability)`, the reliability convention. `0.993` is
-2.15 nines. The right unit for ted1k because 86400 samples a day give the ratio
-enough resolution; the wrong unit for scast, whose ~144 generations per window
-make one divergence 2.46 nines on its own.
+**Nines** — `-log10(1 - availability)`. A readable shorthand for _how many
+samples went missing over a day or a month_, on a log scale. Shown to **one
+decimal and without a range**: it is a label, not a measurement, and dressing it
+up with an axis and a ceiling claimed more precision than it has. The right unit
+for ted1k because 86400 samples a day give the ratio resolution; the wrong unit
+for scast, whose ~144 generations per window make one divergence 2.46 nines on
+its own.
 
 **Resolvable ceiling** — the best _non-perfect_ figure a window's sampling can
-express, i.e. one single absence: `log10(expected)`. 4.94 for a day, 6.44 for a
-month, 3.56 for an hour. Scales are drawn against this, never against a round
-number a designer picked.
+express: `log10(expected)`, so 4.94 for a day, 6.44 for a month. Still computed,
+because it is what makes nines meaningful for ted1k and meaningless for scast —
+but deliberately **not displayed**. See the y-scale rule below for why that is
+not a contradiction.
+
+**The y-scale rule** — a plot's vertical axis is always defined and, for
+measurements, always starts at zero. A plot makes a visual claim about
+magnitude, so it has to say what it is measured against; an auto-scaled line
+exaggerates every wobble, since a house drifting 1.8→2.1 kW fills the same box
+as one swinging 0→4 kW. A _label_ like nines makes no such claim and needs no
+axis. Trim a range only with a specific reason.
 
 **Absence** — samples that never arrived. Reported as a duration, because ted1k
 samples once a second so the count _is_ a duration: `2347` is `39m`.
+
+**Consumption** — mean power, normalised to **kWh/d** (`W × 24 / 1000`), the
+scale this house actually reads at a glance. Sample-weighted across the window,
+so a partial bucket contributes its share rather than counting as a whole day.
+The upstream capture never records a zero watt — a zero is not a legitimate
+sensor reading and such values are excluded before reaching the `watt` table —
+so the published `avg(watt)` is already an average over real values only.
+
+**An open question this raises:** a genuine power outage cannot show up as low
+watts, only as absent samples. So `missing` conflates _the recorder failed_ with
+_there was nothing to record_, and nines cannot distinguish them. The 39-minute
+excursion on 2026-08-03 may well have been an outage rather than a monitoring
+failure. Worth deciding whether the page should ever claim to know which.
 
 **Baseline** — the median absence across a window's whole buckets. ted1k's
 resting state, not a fault.
