@@ -78,10 +78,10 @@ export interface Bucket {
   partial: boolean;
   /**
    * Materially worse than this window's own normal loss - see
-   * `excursionThreshold`. This, not `missing > 0`, is what earns the one
+   * `significantThreshold`. This, not `missing > 0`, is what earns the one
    * chromatic token.
    */
-  excursion: boolean;
+  significant: boolean;
   nines: number | null;
   ninesCeiling: number;
   quality: NinesQuality;
@@ -106,17 +106,17 @@ export interface TedcheckView {
   };
   /** Worst interior bucket by absence - the thing worth naming. */
   worst: Bucket | null;
-  /** Most recent genuine excursion, partial buckets excluded. */
-  lastExcursion: Bucket | null;
-  /** Every genuine excursion, newest last. */
-  excursions: Bucket[];
+  /** Most recent significant gap, partial buckets excluded. */
+  lastSignificantGap: Bucket | null;
+  /** Every significant gap, newest last. */
+  significantGaps: Bucket[];
   /**
    * Median absence across whole buckets that lost anything - ted1k's *normal*
    * rate of loss for this window. Roughly 3-60s/day in practice.
    */
   baseline: number;
   /** Absence above which a bucket stops being normal. See deriveView. */
-  excursionThreshold: number;
+  significantThreshold: number;
   /**
    * Sample-weighted mean watts across the window - total energy over total
    * samples, so a partial bucket contributes exactly its share rather than
@@ -229,7 +229,7 @@ export function deriveView(
       missing,
       expected,
       partial,
-      excursion: false, // set below, once the window's own baseline is known
+      significant: false, // set below, once the window's own baseline is known
       nines: value,
       ninesCeiling: ceiling,
       quality: ninesQuality(value, ceiling),
@@ -240,16 +240,24 @@ export function deriveView(
 
   const whole = buckets.filter((b) => !b.partial);
 
-  // WHAT COUNTS AS AN EXCURSION. ted1k drops a handful of samples most days -
-  // that is its resting state, not an incident, and painting every one of them
-  // in the alarm colour would make the alarm colour meaningless (which is
-  // exactly what the first draft of this page did). So the bar is set by the
-  // window's own behaviour: an excursion is an absence well above this
-  // window's median loss, and above a floor of 0.5% of a bucket so that a
-  // freakishly clean stretch doesn't make ordinary noise look alarming.
+  // WHAT MAKES A GAP SIGNIFICANT, and why the threshold is more than
+  // statistical hygiene: IT IS WHERE THE EXPLANATION CHANGES.
   //
-  // On live data this picks out exactly one day in 32 (2026-08-03, 39m) and no
-  // hours at all in the last 24h - which matches what actually happened.
+  // Below it, the sensor simply failed to deliver some samples. It does not
+  // manage a perfect 1 Hz and never has; a few tens of seconds a day is its
+  // resting state, not an incident. Painting those in the alarm colour is what
+  // the first draft of this page did, and it made the alarm colour meaningless.
+  //
+  // Above it, something stopped. Since a house never draws zero, an outage can
+  // only ever appear as missing samples - so for a large gap "the power was
+  // out" is the most plausible reading. (An outage and a recorder failure are
+  // indistinguishable from this data, and the page does not pretend otherwise.)
+  //
+  // The bar is set by the window's own behaviour rather than a constant: well
+  // above the median loss, and above a floor of 0.5% of a bucket so a
+  // freakishly clean stretch doesn't make ordinary noise look alarming. On
+  // live data it picks out one day in 32 (2026-08-03, 39m) and no hours in the
+  // last 24h - which matches what actually happened.
   const losses = whole
     .filter((b) => b.missing > 0)
     .map((b) => b.missing)
@@ -257,12 +265,12 @@ export function deriveView(
   const baseline = losses.length
     ? (losses[Math.floor(losses.length / 2)] ?? 0)
     : 0;
-  const excursionThreshold = Math.max(
+  const significantThreshold = Math.max(
     shape.bucketSeconds * 0.005,
     baseline * 8,
   );
   for (const b of buckets) {
-    b.excursion = !b.partial && b.missing > excursionThreshold;
+    b.significant = !b.partial && b.missing > significantThreshold;
   }
   const totalExpected = buckets.reduce((sum, b) => sum + b.expected, 0);
   const totalMissing = buckets.reduce((sum, b) => sum + b.missing, 0);
@@ -274,8 +282,8 @@ export function deriveView(
     (acc, b) => (acc === null || b.missing > acc.missing ? b : acc),
     null,
   );
-  const excursions = whole.filter((b) => b.excursion);
-  const lastExcursion = excursions.reduce<Bucket | null>(
+  const significantGaps = whole.filter((b) => b.significant);
+  const lastSignificantGap = significantGaps.reduce<Bucket | null>(
     (acc, b) => (acc === null || b.start > acc.start ? b : acc),
     null,
   );
@@ -315,10 +323,10 @@ export function deriveView(
       quality: ninesQuality(totalNines, totalCeiling),
     },
     worst,
-    lastExcursion,
-    excursions,
+    lastSignificantGap,
+    significantGaps,
     baseline,
-    excursionThreshold,
+    significantThreshold,
     meanWatt,
     wattRange: watts.length
       ? { min: Math.min(...watts), max: Math.max(...watts) }

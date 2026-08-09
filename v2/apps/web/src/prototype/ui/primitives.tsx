@@ -4,19 +4,19 @@
 // structure, not about one of them having nicer widgets.
 
 import type { ReactNode } from "react";
-import { formatAbsence, formatNines, type NinesQuality } from "../derive/nines";
+import { formatMissing, formatNines, type NinesQuality } from "../derive/nines";
 import { utcISO } from "../derive/time";
 
 /** Compact enough to sit as an axis label without wrapping. */
-function formatAbsenceShort(seconds: number): string {
-  return formatAbsence(seconds);
+function formatMissingShort(seconds: number): string {
+  return formatMissing(seconds);
 }
 
 export const QUALITY_INK: Record<NinesQuality, string> = {
   perfect: "text-live",
   high: "text-ink",
   fair: "text-ink-2",
-  poor: "text-excursion",
+  poor: "text-alarm",
   unknown: "text-partial",
 };
 
@@ -46,13 +46,13 @@ export function Figure({
   unit?: string;
   label?: string;
   size?: "lg" | "sm";
-  tone?: "normal" | "excursion" | "live" | "quiet";
+  tone?: "normal" | "alarm" | "live" | "quiet";
   caption?: ReactNode;
 }) {
   const big = size === "lg";
   const ink =
-    tone === "excursion"
-      ? "text-excursion"
+    tone === "alarm"
+      ? "text-alarm"
       : tone === "live"
         ? "text-live"
         : tone === "quiet"
@@ -116,7 +116,7 @@ export function NinesFigure({
  *                so scanning finds only what didn't.
  *   ordinary   — a real but unremarkable loss, drawn in neutral ink. ted1k
  *                drops a few samples most days; that is its resting state.
- *   excursion  — above this window's own baseline (see derive/tedcheck.ts).
+ *   significant — above this window's own baseline (see derive/tedcheck.ts).
  *                ONLY these get the chromatic token. On a healthy page the
  *                alarm colour therefore appears zero times, which is what
  *                keeps it meaning something when it does appear.
@@ -133,7 +133,7 @@ export function CoverageStrip({
     missing: number;
     expected: number;
     partial: boolean;
-    excursion: boolean;
+    significant: boolean;
   }[];
   height?: number;
   title?: string;
@@ -157,7 +157,7 @@ export function CoverageStrip({
               two different pages. Naming the peak makes the axis real. */}
           {scale && (
             <span className="qc-num text-[10px] text-ink-3">
-              peak {formatAbsenceShort(worst)}
+              peak {formatMissingShort(worst)}
             </span>
           )}
         </div>
@@ -195,9 +195,9 @@ export function CoverageStrip({
           return (
             <div
               key={key}
-              title={`${when} — ${b.missing}s absent${b.excursion ? " (excursion)" : ""}`}
+              title={`${when} — ${b.missing}s missing${b.significant ? " (significant)" : ""}`}
               className={`min-w-0 flex-1 rounded-[2px] ${
-                b.excursion ? "bg-excursion" : "bg-ink-3/45"
+                b.significant ? "bg-alarm" : "bg-ink-3/45"
               }`}
               style={{ height: `${share * 100}%` }}
             />
@@ -368,7 +368,7 @@ export function Tile({
   byline?: string;
   status?: Liveness;
   fixture?: boolean;
-  tone?: "normal" | "excursion" | "quiet";
+  tone?: "normal" | "alarm" | "quiet";
   href?: ReactNode;
 }) {
   return (
@@ -404,8 +404,8 @@ export function Tile({
       <div className="relative mt-3 flex items-baseline gap-2">
         <span
           className={`qc-num text-3xl leading-none font-light tracking-tight ${
-            tone === "excursion"
-              ? "text-excursion"
+            tone === "alarm"
+              ? "text-alarm"
               : tone === "quiet"
                 ? "text-ink-3"
                 : "text-ink"
@@ -468,7 +468,7 @@ export function LivenessDot({ status }: { status: Liveness }) {
   }
   if (status === "closed") {
     return (
-      <span className="inline-block h-2 w-2 shrink-0 rounded-full border border-excursion" />
+      <span className="inline-block h-2 w-2 shrink-0 rounded-full border border-alarm" />
     );
   }
   return (

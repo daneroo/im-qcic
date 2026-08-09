@@ -13,16 +13,16 @@
      shadows. Catppuccin ships exactly this ladder (crust < mantle < base <
      surface0 < surface1 < surface2), which is why it earns its place here.
 
-   - SEMANTIC tokens (ink, ink-2, ink-3, live, excursion, partial, absent)
+   - SEMANTIC tokens (ink, ink-2, ink-3, live, alarm, partial, absent)
      carry meaning and must survive all six surfaces.
 
    ONE RULE governs the semantics, and it is the whole point:
-   `--qc-excursion` is the only high-chroma colour in any theme, and it is
+   `--qc-alarm` is the only high-chroma colour in any theme, and it is
    spent only on an active anomaly. A healthy page shows it ZERO times. That
    is what keeps Catppuccin usable here — its accents are designed to coexist
    at equal weight for syntax highlighting, which is precisely wrong for a
    status page. So we take its ladder and its restraint, bind exactly one
-   accent (peach) to excursion, one (sky) to liveness, one (mauve) to brand,
+   accent (peach) to alarm, one (sky) to liveness, one (mauve) to brand,
    and leave the other eleven on the shelf.
 
    `--qc-partial` must read as UNKNOWN — never as bad. It marks a window-edge
@@ -50,7 +50,7 @@ html[data-theme="sketch"] {
   --qc-ink-3: #96918a;
   --qc-accent: #33302a;
   --qc-live: #33302a;
-  --qc-excursion: #93301f;
+  --qc-alarm: #93301f;
   --qc-partial: #b6b1a4;
   --qc-absent: #d8d4c9;
 }
@@ -68,7 +68,7 @@ html[data-theme="sketch"].dark {
   --qc-ink-3: #6f6a61;
   --qc-accent: #d6d0c3;
   --qc-live: #d6d0c3;
-  --qc-excursion: #e2705a;
+  --qc-alarm: #e2705a;
   --qc-partial: #4c4840;
   --qc-absent: #33302b;
 }
@@ -91,7 +91,7 @@ html[data-theme="chromatic"] {
   --qc-ink-3: #9c8a72;
   --qc-accent: #1b3a6b;
   --qc-live: #1b3a6b;
-  --qc-excursion: #b04a1e;
+  --qc-alarm: #b04a1e;
   --qc-partial: #c4b49a;
   --qc-absent: #dccfb8;
 }
@@ -109,7 +109,7 @@ html[data-theme="chromatic"].dark {
   --qc-ink-3: #5c708f;
   --qc-accent: #c9803f;
   --qc-live: #74a9d6;
-  --qc-excursion: #e4713c;
+  --qc-alarm: #e4713c;
   --qc-partial: #2c3a5a;
   --qc-absent: #1a2540;
 }
@@ -128,7 +128,7 @@ html[data-theme="catppuccin"] {
   --qc-ink-3: #8c8fa1; /* overlay1 */
   --qc-accent: #8839ef; /* mauve */
   --qc-live: #209fb5; /* sapphire */
-  --qc-excursion: #fe640b; /* peach — the only one spent on anomaly */
+  --qc-alarm: #fe640b; /* peach — the only one spent on anomaly */
   --qc-partial: #9ca0b0; /* overlay0 */
   --qc-absent: #bcc0cc;
 }
@@ -146,7 +146,7 @@ html[data-theme="catppuccin"].dark {
   --qc-ink-3: #7f849c; /* overlay1 */
   --qc-accent: #cba6f7; /* mauve */
   --qc-live: #89dceb; /* sky */
-  --qc-excursion: #fab387; /* peach */
+  --qc-alarm: #fab387; /* peach */
   --qc-partial: #6c7086; /* overlay0 */
   --qc-absent: #45475a;
 }
@@ -167,7 +167,7 @@ html[data-theme="catppuccin"].dark {
   --color-ink-3: var(--qc-ink-3);
   --color-accent: var(--qc-accent);
   --color-live: var(--qc-live);
-  --color-excursion: var(--qc-excursion);
+  --color-alarm: var(--qc-alarm);
   --color-partial: var(--qc-partial);
   --color-absent: var(--qc-absent);
 

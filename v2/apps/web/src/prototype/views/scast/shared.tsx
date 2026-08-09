@@ -88,7 +88,7 @@ export function ConvergenceStrip({
             <div
               key={key}
               title={`${utcISO(g.generation)} — ${g.distinct.length} different digests; ${g.dissenting.join(", ") || "no majority"} out of step${g.stuckRun ? " (run exceeded 2 cycles)" : ""}`}
-              className={`min-w-0 flex-1 rounded-[2px] ${g.stuckRun ? "bg-excursion" : "bg-ink-3/45"}`}
+              className={`min-w-0 flex-1 rounded-[2px] ${g.stuckRun ? "bg-alarm" : "bg-ink-3/45"}`}
               style={{ height: g.stuckRun ? "100%" : "48%" }}
             />
           );
@@ -192,7 +192,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                       {shortDigest(g.consensus)}
                     </span>
                   ) : (
-                    <span className="text-excursion">no majority</span>
+                    <span className="text-alarm">no majority</span>
                   )}
                 </td>
                 {state.hosts.map((h) => {
@@ -222,7 +222,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                   return (
                     <td
                       key={h}
-                      className={`qc-digest py-1.5 px-3 text-[12px] ${g.stuckRun ? "font-medium text-excursion" : "text-ink-2"}`}
+                      className={`qc-digest py-1.5 px-3 text-[12px] ${g.stuckRun ? "font-medium text-alarm" : "text-ink-2"}`}
                       title={`${report.digest} · out of step${g.stuckRun ? " (run exceeded 2 cycles)" : ""}`}
                     >
                       {shortDigest(report.digest)}
@@ -294,7 +294,7 @@ export function CopyRows({
                 {h.missed || "—"}
               </td>
               <td
-                className={`qc-num py-2 pl-3 text-right ${h.dissented > 0 ? "font-medium text-excursion" : "text-ink-3/50"}`}
+                className={`qc-num py-2 pl-3 text-right ${h.dissented > 0 ? "font-medium text-alarm" : "text-ink-3/50"}`}
               >
                 {h.dissented || "—"}
               </td>
@@ -313,7 +313,7 @@ export function CopyRows({
 
 /** The verdict sentence, shared so all three variants say the same thing. */
 export function ConvergenceVerdict({ state }: { state: ScastState }) {
-  const last = state.lastExcursion;
+  const last = state.lastDivergence;
   if (!state.latestSettled) {
     return <>Waiting for a complete generation.</>;
   }
@@ -322,7 +322,7 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
     return (
       <>
         The copies are{" "}
-        <span className="font-medium text-excursion">out of step</span> and have
+        <span className="font-medium text-alarm">out of step</span> and have
         been for <span className="qc-num">{cycles}</span>{" "}
         {cycles === 1 ? "cycle" : "cycles"}
         {cycles > SELF_HEALING_CYCLES ? (

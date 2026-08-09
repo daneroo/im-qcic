@@ -33,7 +33,7 @@ function Headline({ feed }: { feed: ScastFeed }) {
             state.latestSettled
               ? state.converged
                 ? "text-ink"
-                : "text-excursion"
+                : "text-alarm"
               : "text-partial"
           }`}
         >
@@ -58,10 +58,10 @@ function Headline({ feed }: { feed: ScastFeed }) {
             {(state.convergenceRate * 100).toFixed(1)}%
           </span>{" "}
           of {state.settled.length} settled generations agreed;{" "}
-          <span className="qc-num text-ink-2">{state.excursions.length}</span>{" "}
-          divergence{state.excursions.length === 1 ? "" : "s"}, of which{" "}
+          <span className="qc-num text-ink-2">{state.divergences.length}</span>{" "}
+          divergence{state.divergences.length === 1 ? "" : "s"}, of which{" "}
           <span className="qc-num text-ink-2">
-            {state.excursions.filter((e) => e.stuck).length}
+            {state.divergences.filter((e) => e.stuck).length}
           </span>{" "}
           lasted more than {SELF_HEALING_CYCLES} cycles.
         </p>
@@ -220,7 +220,7 @@ export function ScastCircuit({ feed }: { feed: ScastFeed }) {
 
                   <span className="relative flex min-w-0 flex-1 items-center">
                     <span
-                      className={`h-px w-full ${dissenting ? "bg-excursion" : "bg-rule-strong"}`}
+                      className={`h-px w-full ${dissenting ? "bg-alarm" : "bg-rule-strong"}`}
                     />
                     <span className="absolute left-1/2 -translate-x-1/2 bg-paper px-2 text-[10px] text-ink-3">
                       {h.medianLagMs === null
@@ -230,7 +230,7 @@ export function ScastCircuit({ feed }: { feed: ScastFeed }) {
                   </span>
 
                   <span
-                    className={`w-24 shrink-0 text-right text-[11px] ${dissenting ? "text-excursion" : "text-ink-3"}`}
+                    className={`w-24 shrink-0 text-right text-[11px] ${dissenting ? "text-alarm" : "text-ink-3"}`}
                   >
                     {dissenting ? "out of step" : "in step"}
                   </span>
@@ -284,7 +284,7 @@ export function ScastCircuit({ feed }: { feed: ScastFeed }) {
 
 export function ScastSheet({ feed }: { feed: ScastFeed }) {
   const { state } = feed;
-  const last = state.lastExcursion;
+  const last = state.lastDivergence;
 
   return (
     <div className="min-h-screen bg-paper pb-28">
@@ -317,7 +317,7 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
                   </span>
                 </td>
                 <td
-                  className={`qc-num px-3 py-2.5 text-right ${state.converged ? "text-ink" : "text-excursion"}`}
+                  className={`qc-num px-3 py-2.5 text-right ${state.converged ? "text-ink" : "text-alarm"}`}
                 >
                   {state.convergenceRate === null
                     ? "—"
@@ -327,7 +327,7 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
                   {last ? genLabel(last.to) : "none in window"}
                 </td>
                 <td
-                  className={`qc-num px-3 py-2.5 text-right text-[13px] ${last?.stuck ? "font-medium text-excursion" : "text-ink-3"}`}
+                  className={`qc-num px-3 py-2.5 text-right text-[13px] ${last?.stuck ? "font-medium text-alarm" : "text-ink-3"}`}
                 >
                   {last ? `${last.cycles} cyc` : "—"}
                 </td>

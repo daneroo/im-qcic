@@ -67,8 +67,8 @@ networking slice — that one is `network`.
 
 A working glossary, not a finished one — correct it as the design gets refined.
 Several of these started as design words and turned out to be domain words:
-**excursion** and **unverifiable** changed what the pages compute, not just how
-they look. That is the test for whether a term belongs here.
+**significant gap** and **unverifiable** changed what the pages compute, not
+just how they look. That is the test for whether a term belongs here.
 
 ### Measuring continuity
 
@@ -93,8 +93,11 @@ exaggerates every wobble, since a house drifting 1.8→2.1 kW fills the same box
 as one swinging 0→4 kW. A _label_ like nines makes no such claim and needs no
 axis. Trim a range only with a specific reason.
 
-**Absence** — samples that never arrived. Reported as a duration, because ted1k
-samples once a second so the count _is_ a duration: `2347` is `39m`.
+**Missing** — samples that never arrived, named after the column it comes from.
+Reported as a duration, because ted1k samples once a second so the count _is_ a
+duration: `2347` is `39m`. The page says `49s missing` and nothing more — the
+explanation below is why that is enough, not something to reprint on screen
+every render.
 
 **Consumption** — mean power, normalised to **kWh/d** (`W × 24 / 1000`), the
 scale this house actually reads at a glance. Sample-weighted across the window,
@@ -103,7 +106,7 @@ The upstream capture never records a zero watt — a zero is not a legitimate
 sensor reading and such values are excluded before reaching the `watt` table —
 so the published `avg(watt)` is already an average over real values only.
 
-**What an absence actually means.** A house never draws zero, so there is no
+**What missing time actually means.** A house never draws zero, so there is no
 such thing as a low-watt outage — an outage can only appear as missing samples.
 And a recorder failure looks exactly the same from here. The two are genuinely
 indistinguishable in this data, so the page must not pretend to tell them apart;
@@ -111,12 +114,19 @@ in practice both mean **the power was out**. This closes the question rather
 than leaving it open: absence is one event with one plausible cause, not an
 ambiguity to resolve later.
 
-**Baseline** — the median absence across a window's whole buckets. ted1k's
+**Baseline** — the median missing time across a window's whole buckets. ted1k's
 resting state, not a fault.
 
-**Excursion** — an absence materially above the baseline (8× median, floored at
+**Significant gap** — missing time far above the baseline (8× median, floored at
 0.5% of a bucket). This, and never `missing > 0`, is what earns the alarm
-colour. On live data it picks out one day in 32 and no hours in 24.
+colour; on live data it picks out one day in 32 and no hours in 24.
+
+The threshold is not just statistical hygiene — **it is where the explanation
+changes**. Below it the sensor simply failed to deliver some samples; it has
+never managed a perfect 1 Hz and a few tens of seconds a day is its resting
+state. Above it something stopped, and since a house never draws zero, "the
+power was out" is the most plausible reading. (Was called an _excursion_ in an
+earlier draft. Invented jargon for something that is just a big gap.)
 
 ### Measuring agreement
 
@@ -166,7 +176,7 @@ Provenance as a designed element; kept from `/design/html-react`.
 
 ### Colour discipline
 
-**One chromatic token.** `--qc-excursion` is the only high-chroma colour in any
+**One chromatic token.** `--qc-alarm` is the only high-chroma colour in any
 theme and is spent only on an active anomaly, so a healthy page shows it zero
 times. Every time it appeared without something actually being wrong — ted1k's
 ordinary daily loss, scast's routine two-cycle splits, the tailnet's

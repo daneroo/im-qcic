@@ -17,7 +17,7 @@
 // compressed into one interaction.
 
 import {
-  formatAbsence,
+  formatMissing,
   formatKwhPerDay,
   formatNines,
 } from "../../derive/nines";
@@ -100,9 +100,9 @@ function Record({ label, view }: { label: string; view: TedcheckView }) {
         <span>
           <span className="text-ink">{label}</span>
           <span className="ml-2 text-xs text-ink-3">
-            {view.excursions.length === 0
-              ? "no excursions"
-              : `${view.excursions.length} excursion${view.excursions.length === 1 ? "" : "s"}`}
+            {view.significantGaps.length === 0
+              ? "no significant gaps"
+              : `${view.significantGaps.length} significant gap${view.significantGaps.length === 1 ? "" : "s"}`}
           </span>
         </span>
         <span className="text-[11px] text-ink-3 group-open:hidden">
@@ -178,18 +178,13 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
                   looked at, and the moment these two carry equal weight this
                   has quietly become a second energy dashboard. */}
               <NinesFigure value={headline.total.nines} label="Last Day" />
+              {/* State the fact. The page does not explain itself every time
+                  it renders - what "missing" means lives in the glossary. */}
               <p className="mt-3 text-xs text-ink-2">
-                {headline.total.missing === 0 ? (
-                  <>Every second accounted for.</>
-                ) : (
-                  <>
-                    <span className="qc-num font-medium text-ink">
-                      {formatAbsence(headline.total.missing)}
-                    </span>{" "}
-                    unrecorded — a house never draws zero, so a gap means the
-                    power was out.
-                  </>
-                )}
+                <span className="qc-num font-medium text-ink">
+                  {formatMissing(headline.total.missing)}
+                </span>{" "}
+                missing
               </p>
               <p className="mt-2 text-xs text-ink-3">
                 consumption{" "}
@@ -212,32 +207,34 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
                     </span>
                   </p>
                   <p className="mt-2 text-xs text-ink-2">
-                    {month.lastExcursion ? (
+                    {month.lastSignificantGap ? (
                       <>
                         <span className="qc-num text-ink">
-                          {month.excursions.length}
+                          {month.significantGaps.length}
                         </span>{" "}
-                        excursion
-                        {month.excursions.length === 1 ? "" : "s"} — last on{" "}
+                        significant gap
+                        {month.significantGaps.length === 1 ? "" : "s"} — last
+                        on{" "}
                         <span className="qc-num text-ink">
-                          {utcDate(month.lastExcursion.start)}
+                          {utcDate(month.lastSignificantGap.start)}
                         </span>
                         ,{" "}
-                        <span className="qc-num text-excursion">
-                          {formatAbsence(month.lastExcursion.missing)}
+                        <span className="qc-num text-alarm">
+                          {formatMissing(month.lastSignificantGap.missing)}
                         </span>{" "}
-                        absent ({formatNines(month.lastExcursion.nines)} nines).
-                        Otherwise a typical{" "}
+                        missing ({formatNines(month.lastSignificantGap.nines)}{" "}
+                        nines). Otherwise a typical{" "}
                         <span className="qc-num">
-                          {formatAbsence(month.baseline)}
+                          {formatMissing(month.baseline)}
                         </span>{" "}
                         a day.
                       </>
                     ) : (
                       <>
-                        No excursions in {month.whole.length} days — a typical{" "}
+                        No significant gaps in {month.whole.length} days — a
+                        typical{" "}
                         <span className="qc-num text-ink">
-                          {formatAbsence(month.baseline)}
+                          {formatMissing(month.baseline)}
                         </span>{" "}
                         lost per day.
                       </>
@@ -252,7 +249,7 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
                 <>
                   <CoverageStrip
                     buckets={today.buckets}
-                    title="absence by hour"
+                    title="missing by hour"
                     height={56}
                   />
                   <div className="mt-1 flex justify-between text-[10px] text-ink-3">
@@ -285,7 +282,7 @@ export function TedcheckStrata({ feed }: { feed: TedcheckFeed }) {
         )}
 
         {/* The record is available, not the page. Summary above; the full
-            table is one click away and opens to excursions only. */}
+            table is one click away and opens to significant gaps only. */}
         <div className="mt-9 space-y-3 border-t border-rule pt-6">
           {today && <Record label="Last Day by hour" view={today} />}
           {month && <Record label="Last Month by day" view={month} />}

@@ -1,7 +1,8 @@
 // PROTOTYPE — throwaway. See ../README.md.
 //
-// "Nines" in the reliability/physics sense: the number of leading nines in an
-// availability figure, read off a log scale.
+// "Nines" — a readable shorthand for how many samples went missing over a day
+// or a month, read off a log scale. The number of leading nines in an
+// availability figure.
 //
 //   nines = -log10(1 - availability)
 //
@@ -13,7 +14,7 @@
 // meaningful. It is the *wrong* unit for scast, whose 48h window holds only
 // ~288 generations - there, one divergent generation is already 2.46 nines and
 // two is 2.16, so the scale is too coarse and too jumpy to say anything. scast
-// gets the excursion vocabulary instead (see ./scast.ts).
+// gets the divergence vocabulary instead (see ./scast.ts).
 
 /**
  * Nines for `missing` absences out of `expected` opportunities.
@@ -35,11 +36,10 @@ export function nines(missing: number, expected: number): number | null {
  * The best *non-perfect* figure this many opportunities can resolve — one
  * single absence, i.e. -log10(1/expected) = log10(expected).
  *
- * This is what makes nines honest here: the top of the scale is set by the
- * sampling resolution, not by a designer picking a maximum. A 24h window of
- * 1Hz samples tops out at 4.94; 30 days tops out at 6.41; a single hour at
- * 3.56. Gauges and bars must be drawn against this, never against an
- * arbitrary 5 or 6.
+ * A 24h window of 1Hz samples tops out at 4.94, 30 days at 6.41, an hour at
+ * 3.56. NOT DISPLAYED: nines is a shorthand label rather than a measurement,
+ * and giving it an axis overstated its precision. Still computed, because it
+ * is what makes the unit meaningful for ted1k and meaningless for scast.
  */
 export function ninesCeiling(expected: number): number {
   if (!Number.isFinite(expected) || expected <= 1) return 0;
@@ -113,7 +113,7 @@ export function formatKw(watt: number): string {
  * (ted1k samples once a second), so it doubles as a duration - which is far
  * more legible than the count: "39m" says more than "2347".
  */
-export function formatAbsence(seconds: number): string {
+export function formatMissing(seconds: number): string {
   if (seconds <= 0) return "none";
   // Seconds up to two minutes: "71s" is the honest figure, and rounding it to
   // "1m" throws away precision the reader came for at exactly the scale where

@@ -215,7 +215,7 @@ export function NetworkCircuit({
               label: "unreachable",
               value: fabric.offline,
               note: "listed by the tailnet, not answering",
-              tone: fabric.offline > 0 ? "text-excursion" : "text-ink-3",
+              tone: fabric.offline > 0 ? "text-alarm" : "text-ink-3",
             },
           ].map((s) => (
             <div
@@ -252,7 +252,7 @@ export function NetworkCircuit({
                     <span
                       className={`h-px flex-1 ${
                         h === "down"
-                          ? "bg-excursion"
+                          ? "bg-alarm"
                           : h === "unverifiable"
                             ? "bg-partial"
                             : "bg-rule-strong"
@@ -262,7 +262,7 @@ export function NetworkCircuit({
                   <span
                     className={`shrink-0 rounded-md border px-3 py-1.5 text-[13px] ${
                       h === "down"
-                        ? "border-excursion text-excursion"
+                        ? "border-alarm text-alarm"
                         : h === "unverifiable"
                           ? "border-dashed border-partial text-partial"
                           : "border-rule-strong bg-surface text-ink"

@@ -126,7 +126,7 @@ export function HomeStrata({ ted, scast, search }: HomeProps) {
                       byline={s.byline}
                       status={s.status}
                       fixture={s.source === "fixture"}
-                      tone={s.bad ? "excursion" : "normal"}
+                      tone={s.bad ? "alarm" : "normal"}
                     />
                   ))}
                 </div>
@@ -179,7 +179,7 @@ export function HomeCircuit({ ted, scast, search }: HomeProps) {
 
                 <span className="relative flex min-w-0 flex-1 items-center">
                   <span
-                    className={`h-px w-full ${s.bad ? "bg-excursion" : "bg-rule-strong"}`}
+                    className={`h-px w-full ${s.bad ? "bg-alarm" : "bg-rule-strong"}`}
                   />
                   <span className="absolute left-1/2 -translate-x-1/2 bg-paper px-2 text-[10px] text-ink-3">
                     <span className="qc-digest">{s.byline}</span>
@@ -191,7 +191,7 @@ export function HomeCircuit({ ted, scast, search }: HomeProps) {
 
                 <span className="w-40 shrink-0 text-right">
                   <span
-                    className={`qc-num text-sm ${s.bad ? "text-excursion" : "text-ink"}`}
+                    className={`qc-num text-sm ${s.bad ? "text-alarm" : "text-ink"}`}
                   >
                     {s.value}
                   </span>
@@ -211,7 +211,7 @@ export function HomeCircuit({ ted, scast, search }: HomeProps) {
                 <span
                   className={`inline-block rounded-md border px-3 py-1.5 text-[13px] font-medium ${
                     bus.bad
-                      ? "border-excursion text-excursion"
+                      ? "border-alarm text-alarm"
                       : "border-rule-strong bg-surface text-ink"
                   }`}
                 >
@@ -308,7 +308,7 @@ export function HomeSheet({ ted, scast, search }: HomeProps) {
                       </span>
                     </td>
                     <td
-                      className={`qc-num px-3 py-2.5 text-right ${s.bad ? "text-excursion" : "text-ink"}`}
+                      className={`qc-num px-3 py-2.5 text-right ${s.bad ? "text-alarm" : "text-ink"}`}
                     >
                       {s.value}
                       {s.unit && (

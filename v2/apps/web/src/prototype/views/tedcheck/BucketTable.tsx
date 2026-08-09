@@ -9,11 +9,11 @@
 //      second, so 2347 *is* 39 minutes - and "39m" is the sentence a human
 //      wanted. The raw count is kept in the title attribute.
 //
-// Collapsed to excursions by default: the brief is summary-first, with the
+// Collapsed to significant gaps by default: the brief is summary-first, with the
 // full table available underneath rather than being the page.
 
 import { useState } from "react";
-import { formatAbsence, formatNines } from "../../derive/nines";
+import { formatMissing, formatNines } from "../../derive/nines";
 import type { Bucket, TedcheckView } from "../../derive/tedcheck";
 import { localHM, tzLabel, utcDate, utcISO } from "../../derive/time";
 
@@ -32,12 +32,12 @@ export function BucketTable({ view }: { view: TedcheckView }) {
   // strips need a left-to-right time axis, but a table is read top-down and
   // the row you want is almost always the most recent one.
   const ordered = [...view.buckets].reverse();
-  // Collapsed view: the excursions, plus the window edges. When nothing went
+  // Collapsed view: the significant gaps, plus the window edges. When nothing went
   // wrong that would leave only two partial rows on screen, which reads as a
   // broken table rather than as good news - so fall back to the most recent
   // buckets, which is what someone opening a clean record wants anyway.
-  const notable = view.excursions.length
-    ? ordered.filter((b) => b.partial || b.excursion)
+  const notable = view.significantGaps.length
+    ? ordered.filter((b) => b.partial || b.significant)
     : ordered.slice(0, 8);
   const rows = showAll ? ordered : notable;
   const hiddenCount = ordered.length - notable.length;
@@ -48,15 +48,17 @@ export function BucketTable({ view }: { view: TedcheckView }) {
         <p className="text-xs text-ink-2">
           {showAll ? (
             <>Full record — {view.buckets.length} buckets</>
-          ) : view.excursions.length === 0 ? (
+          ) : view.significantGaps.length === 0 ? (
             <>
-              No excursions in {view.whole.length} whole {view.unit}s — showing
-              the most recent {Math.min(8, view.buckets.length)}
+              No significant gaps in {view.whole.length} whole {view.unit}s —
+              showing the most recent {Math.min(8, view.buckets.length)}
             </>
           ) : (
             <>
-              <span className="qc-num text-ink">{view.excursions.length}</span>{" "}
-              excursion{view.excursions.length === 1 ? "" : "s"} in{" "}
+              <span className="qc-num text-ink">
+                {view.significantGaps.length}
+              </span>{" "}
+              significant gap{view.significantGaps.length === 1 ? "" : "s"} in{" "}
               {view.whole.length} whole {view.unit}s
             </>
           )}
@@ -67,7 +69,7 @@ export function BucketTable({ view }: { view: TedcheckView }) {
             onClick={() => setShowAll((v) => !v)}
             className="rounded-full border border-rule px-2.5 py-0.5 text-[11px] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink"
           >
-            {showAll ? "Excursions only" : `Show all ${view.buckets.length}`}
+            {showAll ? "Significant only" : `Show all ${view.buckets.length}`}
           </button>
         )}
       </div>
@@ -81,10 +83,10 @@ export function BucketTable({ view }: { view: TedcheckView }) {
         this window&rsquo;s ordinary loss. ted1k drops a few samples most{" "}
         {view.unit}s and that is its resting state, so the bar is set from the
         data itself: a typical{" "}
-        <span className="qc-num">{formatAbsence(view.baseline)}</span> per{" "}
+        <span className="qc-num">{formatMissing(view.baseline)}</span> per{" "}
         {view.unit} here, and anything past{" "}
         <span className="qc-num">
-          {formatAbsence(Math.round(view.excursionThreshold))}
+          {formatMissing(Math.round(view.significantThreshold))}
         </span>{" "}
         counts.
       </p>
@@ -101,7 +103,7 @@ export function BucketTable({ view }: { view: TedcheckView }) {
               </th>
               <th className="py-1.5 px-3 text-right font-semibold">watt</th>
               <th className="py-1.5 px-3 text-right font-semibold">samples</th>
-              <th className="py-1.5 px-3 text-right font-semibold">absent</th>
+              <th className="py-1.5 px-3 text-right font-semibold">missing</th>
               <th className="py-1.5 pl-3 text-right font-semibold">nines</th>
             </tr>
           </thead>
@@ -135,8 +137,8 @@ export function BucketTable({ view }: { view: TedcheckView }) {
                   className={`qc-num py-1.5 px-3 text-right ${
                     b.partial
                       ? "text-partial"
-                      : b.excursion
-                        ? "font-medium text-excursion"
+                      : b.significant
+                        ? "font-medium text-alarm"
                         : b.missing > 0
                           ? "text-ink-2"
                           : "text-ink-3/50"
@@ -147,15 +149,15 @@ export function BucketTable({ view }: { view: TedcheckView }) {
                       : `${b.missing} samples`
                   }
                 >
-                  {b.missing > 0 ? formatAbsence(b.missing) : "—"}
+                  {b.missing > 0 ? formatMissing(b.missing) : "—"}
                 </td>
                 {/* Deliberately NOT coloured by quality band: a "poor" nines
                     figure on a bucket that lost 3 seconds is arithmetically
-                    true and completely uninteresting. Only a real excursion
+                    true and completely uninteresting. Only a genuinely significant gap
                     earns ink here. */}
                 <td
                   className={`qc-num py-1.5 pl-3 text-right ${
-                    b.excursion ? "font-medium text-excursion" : "text-ink-2"
+                    b.significant ? "font-medium text-alarm" : "text-ink-2"
                   }`}
                 >
                   {formatNines(b.nines)}
@@ -165,7 +167,7 @@ export function BucketTable({ view }: { view: TedcheckView }) {
             {rows.length === 0 && (
               <tr>
                 <td colSpan={5} className="py-6 text-center text-sm text-ink-3">
-                  Nothing absent across the whole window.
+                  Nothing missing across the whole window.
                 </td>
               </tr>
             )}

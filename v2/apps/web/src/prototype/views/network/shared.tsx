@@ -64,7 +64,7 @@ export function HealthNote({
   if (health === "ok") return null;
   if (health === "down") {
     return (
-      <span className="rounded-full border border-excursion px-2 py-0.5 text-[10px] tracking-wide text-excursion">
+      <span className="rounded-full border border-alarm px-2 py-0.5 text-[10px] tracking-wide text-alarm">
         down
       </span>
     );
@@ -190,7 +190,7 @@ export function BusPanel({ bus }: { bus: BusStats }) {
             <dd
               className={`qc-num text-lg ${
                 label === "slow consumers" && value !== "0"
-                  ? "text-excursion"
+                  ? "text-alarm"
                   : "text-ink"
               }`}
             >
@@ -226,7 +226,7 @@ export function ProbeTable({ probes }: { probes: HttpProbe[] }) {
                   {p.url}
                 </td>
                 <td
-                  className={`qc-num py-1.5 px-3 text-right ${ok ? "text-ink-2" : "font-medium text-excursion"}`}
+                  className={`qc-num py-1.5 px-3 text-right ${ok ? "text-ink-2" : "font-medium text-alarm"}`}
                 >
                   {p.status ?? "no answer"}
                 </td>
@@ -251,7 +251,7 @@ export function ProbeSummaryLine({ probes }: { probes: HttpProbe[] }) {
       {s.failing.length > 0 && (
         <>
           {" "}
-          — <span className="text-excursion">{s.failing.length} not</span>
+          — <span className="text-alarm">{s.failing.length} not</span>
         </>
       )}
       .

@@ -9,7 +9,7 @@
 // an HTTP probe. Nothing here blends the two silently — a fixture subject
 // carries the marker wherever it is rendered.
 
-import { formatAbsence, formatNines } from "../../derive/nines";
+import { formatMissing, formatNines } from "../../derive/nines";
 import { since } from "../../derive/tedcheck";
 import {
   NETWORK_FIXTURE,
@@ -50,7 +50,7 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
   const now = day?.stamp ?? new Date();
   const fabric = summariseFabric(F.peers);
   const probes = summariseProbes(F.probes);
-  const lastSplit = scast.state.lastExcursion;
+  const lastSplit = scast.state.lastDivergence;
 
   return [
     {
@@ -63,13 +63,13 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
       unit: day ? `of ${day.total.ceiling.toFixed(2)} nines` : undefined,
       secondary: [
         {
-          label: "absent 24h",
-          value: day ? formatAbsence(day.total.missing) : "—",
+          label: "missing 24h",
+          value: day ? formatMissing(day.total.missing) : "—",
         },
         {
-          label: "last excursion",
-          value: month?.lastExcursion
-            ? since(month.lastExcursion.start, now)
+          label: "last big gap",
+          value: month?.lastSignificantGap
+            ? since(month.lastSignificantGap.start, now)
             : "none in 32d",
         },
       ],

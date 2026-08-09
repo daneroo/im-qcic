@@ -21,7 +21,7 @@
 
 import { useState } from "react";
 import {
-  formatAbsence,
+  formatMissing,
   formatKwhPerDay,
   formatNines,
 } from "../../derive/nines";
@@ -47,15 +47,15 @@ interface EdgeSpec {
   to: string;
   property: string;
   detail: string;
-  state: "ok" | "excursion" | "unknown" | "down";
+  state: "ok" | "alarm" | "unknown" | "down";
 }
 
 function edgeInk(state: EdgeSpec["state"]): string {
   switch (state) {
-    case "excursion":
-      return "text-excursion";
+    case "alarm":
+      return "text-alarm";
     case "down":
-      return "text-excursion";
+      return "text-alarm";
     case "unknown":
       return "text-partial";
     default:
@@ -88,8 +88,8 @@ function Edge({
   onSelect(): void;
 }) {
   const line =
-    spec.state === "excursion" || spec.state === "down"
-      ? "bg-excursion"
+    spec.state === "alarm" || spec.state === "down"
+      ? "bg-alarm"
       : spec.state === "unknown"
         ? "bg-partial"
         : "bg-rule-strong";
@@ -144,9 +144,9 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
       to: "mysql",
       property: "1 Hz",
       detail: headline
-        ? `${formatAbsence(headline.total.missing)} unrecorded in the last 24h`
+        ? `${formatMissing(headline.total.missing)} missing in the last day`
         : "waiting",
-      state: month?.lastExcursion ? "excursion" : "ok",
+      state: month?.lastSignificantGap ? "alarm" : "ok",
     },
     {
       id: "poll",
@@ -238,10 +238,10 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                     label="continuity across this link, last day"
                   />
                   <p className="mt-3 text-xs text-ink-2">
-                    A house never draws zero, so a gap on this edge means the
-                    power was out — an outage and a recorder failure look
-                    identical from here, and the page does not pretend
-                    otherwise.
+                    <span className="qc-num font-medium text-ink">
+                      {formatMissing(headline.total.missing)}
+                    </span>{" "}
+                    missing on this edge
                   </p>
                   {/* Context, not the point: see the scope guard in the
                       prototype README. Grafana owns consumption. */}
@@ -258,19 +258,22 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                         size="sm"
                         label="Last Month"
                         caption={
-                          month.lastExcursion ? (
+                          month.lastSignificantGap ? (
                             <>
                               Last break{" "}
                               <span className="qc-num text-ink">
-                                {month.lastExcursion.start
+                                {month.lastSignificantGap.start
                                   .toISOString()
                                   .slice(0, 10)}
                               </span>{" "}
                               —{" "}
-                              <span className="qc-num text-excursion">
-                                {formatAbsence(month.lastExcursion.missing)}
+                              <span className="qc-num text-alarm">
+                                {formatMissing(
+                                  month.lastSignificantGap.missing,
+                                )}
                               </span>{" "}
-                              ({formatNines(month.lastExcursion.nines)} nines)
+                              ({formatNines(month.lastSignificantGap.nines)}{" "}
+                              nines)
                             </>
                           ) : (
                             <>No breaks in the window</>
@@ -285,7 +288,7 @@ export function TedcheckCircuit({ feed }: { feed: TedcheckFeed }) {
                     <>
                       <CoverageStrip
                         buckets={today.buckets}
-                        title="absence by hour"
+                        title="missing by hour"
                         height={54}
                       />
                       {today.wattRange && (

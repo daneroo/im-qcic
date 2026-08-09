@@ -11,7 +11,7 @@
 // needs sample density to mean anything: 86400 samples/day earns one, but
 // scast's ~288 generations per 48h does not (one divergence there is already
 // 2.46 nines and two is 2.16 — too coarse and too jumpy to read). So the
-// universal half is the second half — last excursion, and its duration — and
+// universal half is the second half — last big gap, and its duration — and
 // nines is an *optional column*, filled only where the data can carry it.
 // That asymmetry is a finding, not a compromise.
 //
@@ -19,7 +19,7 @@
 // rests on it.
 
 import { useState } from "react";
-import { formatAbsence, formatNines } from "../../derive/nines";
+import { formatMissing, formatNines } from "../../derive/nines";
 import { since, type TedcheckView } from "../../derive/tedcheck";
 import {
   Byline,
@@ -72,7 +72,7 @@ function toLine(
       record: null,
     };
   }
-  const last = view.lastExcursion;
+  const last = view.lastSignificantGap;
   return {
     key,
     subject,
@@ -82,7 +82,7 @@ function toLine(
     ceiling: view.total.ceiling,
     perfect: view.total.nines === null,
     lastBreak: last ? since(last.start, now) : "none in window",
-    duration: last ? formatAbsence(last.missing) : "—",
+    duration: last ? formatMissing(last.missing) : "—",
     broken: Boolean(last),
     strip: opts.strip ? view : null,
     record: view,
@@ -131,7 +131,7 @@ function Row({ line }: { line: Line }) {
 
         <td
           className={`qc-num px-3 py-2.5 text-right align-middle text-[13px] ${
-            line.broken ? "font-medium text-excursion" : "text-ink-3"
+            line.broken ? "font-medium text-alarm" : "text-ink-3"
           }`}
         >
           {line.duration}
@@ -205,7 +205,7 @@ export function TedcheckSheet({ feed }: { feed: TedcheckFeed }) {
                 <th className="py-2 pr-3 text-left font-semibold">subject</th>
                 <th className="py-2 px-3 text-right font-semibold">nines</th>
                 <th className="py-2 px-3 text-right font-semibold">
-                  last excursion
+                  last big gap
                 </th>
                 <th className="py-2 px-3 text-right font-semibold">lasted</th>
                 <th className="py-2 pl-3 text-left font-semibold">window</th>
@@ -255,7 +255,7 @@ export function TedcheckSheet({ feed }: { feed: TedcheckFeed }) {
             <span className="text-ink">{month?.whole.length ?? 0}</span> whole
             days in this window, losing a typical{" "}
             <span className="qc-num text-ink">
-              {formatAbsence(month?.baseline ?? 0)}
+              {formatMissing(month?.baseline ?? 0)}
             </span>{" "}
             a day.
           </p>

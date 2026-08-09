@@ -123,7 +123,7 @@ export interface GenerationRow {
   stuckRun: boolean;
 }
 
-export interface Excursion {
+export interface Divergence {
   from: Date;
   to: Date;
   cycles: number;
@@ -153,8 +153,8 @@ export interface ScastState {
   latestSettled: GenerationRow | null;
   latest: GenerationRow | null;
   converged: boolean;
-  excursions: Excursion[];
-  lastExcursion: Excursion | null;
+  divergences: Divergence[];
+  lastDivergence: Divergence | null;
   /** Fraction of settled generations that were converged. */
   convergenceRate: number | null;
   perHost: HostSummary[];
@@ -247,13 +247,13 @@ export function deriveScast(records: DigestRecord[]): ScastState {
   const settled = generations.filter((g) => g.state !== "pending");
 
   // Excursions: runs of consecutive settled generations that disagreed.
-  const excursions: Excursion[] = [];
+  const divergences: Divergence[] = [];
   let run: GenerationRow[] = [];
   const flush = (ongoing: boolean) => {
     if (run.length === 0) return;
     const first = run[0]!;
     const last = run[run.length - 1]!;
-    excursions.push({
+    divergences.push({
       from: first.generation,
       to: last.generation,
       cycles: run.length,
@@ -274,7 +274,7 @@ export function deriveScast(records: DigestRecord[]): ScastState {
   // Second pass: tag the generations inside a run that outlasted the copies'
   // normal reconciliation, so the view can keep the alarm colour for those
   // alone.
-  for (const e of excursions) {
+  for (const e of divergences) {
     if (!e.stuck) continue;
     for (const g of settled) {
       if (g.generation >= e.from && g.generation <= e.to) g.stuckRun = true;
@@ -313,9 +313,9 @@ export function deriveScast(records: DigestRecord[]): ScastState {
     latestSettled,
     latest: generations.length ? generations[generations.length - 1]! : null,
     converged: latestSettled?.state === "converged",
-    excursions,
-    lastExcursion: excursions.length
-      ? excursions[excursions.length - 1]!
+    divergences,
+    lastDivergence: divergences.length
+      ? divergences[divergences.length - 1]!
       : null,
     convergenceRate: settled.length ? convergedCount / settled.length : null,
     perHost,
