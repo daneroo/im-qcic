@@ -4,7 +4,7 @@
 // is thin: the substance lives in ../../derive/scast.ts and ./shared.tsx, and
 // what differs between them is only how hierarchy and summary are arranged.
 
-import { CRITICAL_CYCLES, formatDuration } from "../../derive/scast";
+import { CRITICAL_GENERATIONS, formatDuration } from "../../derive/scast";
 import {
   Byline,
   Eyebrow,
@@ -63,7 +63,7 @@ function Headline({ feed }: { feed: ScastFeed }) {
           <span className="qc-num text-ink-2">
             {state.divergences.filter((e) => e.critical).length}
           </span>{" "}
-          ran past {CRITICAL_CYCLES} cycles — about an hour.
+          ran past {CRITICAL_GENERATIONS} generations — about an hour.
         </p>
       )}
     </div>
@@ -331,7 +331,7 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
                 <td
                   className={`qc-num px-3 py-2.5 text-right text-[13px] ${last?.critical ? "font-medium text-alarm" : "text-ink-3"}`}
                 >
-                  {last ? `${last.cycles} cyc` : "—"}
+                  {last ? `${last.generations} gen` : "—"}
                 </td>
                 <td className="w-[34%] py-2.5 pl-3">
                   <ConvergenceStrip

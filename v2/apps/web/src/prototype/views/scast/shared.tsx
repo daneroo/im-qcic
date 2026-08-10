@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   formatDuration,
   formatSeconds,
-  CRITICAL_CYCLES,
+  CRITICAL_GENERATIONS,
   type GenerationRow,
   type ScastState,
 } from "../../derive/scast";
@@ -83,7 +83,7 @@ export function ConvergenceStrip({
           }
           // A short split is the reconciliation working as designed, so it is
           // drawn in neutral ink at half height. Only a run past
-          // CRITICAL_CYCLES gets the alarm colour.
+          // CRITICAL_GENERATIONS gets the alarm colour.
           return (
             <div
               key={key}
@@ -101,11 +101,16 @@ export function ConvergenceStrip({
 /* ------------------------------------------------------------------ *
  * GENERATION TABLE — three visual layers, one job each, no overlap.
  *
- *   COLSPAN      agreed vs split. When every copy holds the same digest the
- *                row's host cells MERGE INTO ONE, so agreement is carried
- *                structurally: the row is either one cell or N cells, with
- *                nothing in between. That is all-or-nothing made visible, and
- *                no value is ever privileged.
+ *   CONTRAST    agreed vs split. Collapsing an agreed row into one merged
+ *               cell was tried and abandoned: centring a value across three
+ *               host columns lands it under the MIDDLE one and reads as that
+ *               copy's, and every fix for that - rules to the cell edges,
+ *               flanking arrows - either clashed with the row dividers or was
+ *               too faint to see. So the grid stays perfectly regular and
+ *               agreement is carried by INK instead: an agreed row is dimmed,
+ *               a split row is not. The calm case still disappears, by
+ *               contrast rather than by collapsing, and identical strings side
+ *               by side are what agreement actually looks like.
  *
  *   MARKER       which digests are identical, for aiming a manual resync.
  *                Only groups with more than one member get one, so a
@@ -115,7 +120,7 @@ export function ConvergenceStrip({
  *                and the majority reading cannot creep back in through the
  *                visual system. Also survives the monochrome theme.
  *
- *   ROW BAND     this split has run past CRITICAL_CYCLES. Consecutive rows
+ *   ROW BAND     this split has run past CRITICAL_GENERATIONS. Consecutive rows
  *                form a contiguous block, so the DURATION of a divergence
  *                reads as a bar without counting - which is the thing this
  *                page is watched for.
@@ -183,7 +188,6 @@ export function GenerationTable({ state }: { state: ScastState }) {
           <tbody>
             {rows.map((g) => {
               const agreed = g.state === "agreed";
-              const only = g.reports[0];
               return (
                 <tr
                   key={g.generation.toISOString()}
@@ -206,55 +210,41 @@ export function GenerationTable({ state }: { state: ScastState }) {
                     )}
                   </td>
 
-                  {agreed && only ? (
-                    <td
-                      colSpan={state.hosts.length}
-                      className="qc-digest py-1.5 px-3 text-[12px] text-ink-3"
-                      title={`all ${g.reports.length} copies hold ${only.digest}`}
-                    >
-                      {shortDigest(only.digest)}
-                      <span className="ml-2 text-[10px] tracking-wide">
-                        all agree
-                      </span>
-                    </td>
-                  ) : (
-                    state.hosts.map((h) => {
-                      const report = g.reports.find((r) => r.host === h);
-                      if (!report) {
-                        return (
-                          <td
-                            key={h}
-                            className="py-1.5 px-3 text-ink-3/50"
-                            title="no report for this generation"
-                          >
-                            —
-                          </td>
-                        );
-                      }
-                      const mark = g.matchGroup[h];
+                  {state.hosts.map((h) => {
+                    const report = g.reports.find((r) => r.host === h);
+                    if (!report) {
                       return (
                         <td
                           key={h}
-                          className={`qc-digest py-1.5 px-3 text-[12px] ${
-                            g.critical ? "text-alarm" : "text-ink-2"
-                          }`}
-                          title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
+                          className="py-1.5 px-3 text-ink-3/50"
+                          title="no report for this generation"
                         >
-                          {shortDigest(report.digest)}
-                          {/* TRAILING, not leading. A glyph in front would
-                              push the hex right on marked cells only, and
-                              break the column alignment that makes reading
-                              the digests by eye possible at all - which is
-                              the primary channel the marker only assists. */}
-                          <span className="ml-1.5 inline-block w-2 text-[9px] text-ink-3/70">
-                            {mark === undefined
-                              ? ""
-                              : MATCH_MARKS[mark % MATCH_MARKS.length]}
-                          </span>
+                          —
                         </td>
                       );
-                    })
-                  )}
+                    }
+                    const mark = g.matchGroup[h];
+                    return (
+                      <td
+                        key={h}
+                        className={`qc-digest py-1.5 px-3 text-[12px] ${
+                          g.critical
+                            ? "text-alarm"
+                            : agreed
+                              ? "text-ink-3/60"
+                              : "text-ink-2"
+                        }`}
+                        title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
+                      >
+                        {shortDigest(report.digest)}
+                        <span className="ml-1.5 inline-block w-2 text-[9px] text-ink-3/70">
+                          {mark === undefined
+                            ? ""
+                            : MATCH_MARKS[mark % MATCH_MARKS.length]}
+                        </span>
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}
@@ -337,14 +327,14 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
     return <>Waiting for a complete generation.</>;
   }
   if (!state.agreed) {
-    const cycles = last?.cycles ?? 1;
+    const generations = last?.generations ?? 1;
     return (
       <>
         The copies are{" "}
         <span className="font-medium text-alarm">out of step</span> and have
-        been for <span className="qc-num">{cycles}</span>{" "}
-        {cycles === 1 ? "cycle" : "cycles"}
-        {cycles > CRITICAL_CYCLES ? (
+        been for <span className="qc-num">{generations}</span>{" "}
+        {generations === 1 ? "generation" : "generations"}
+        {generations > CRITICAL_GENERATIONS ? (
           <> — longer than they normally take to reconcile.</>
         ) : (
           <> — within the one or two cycles they normally take.</>
@@ -361,8 +351,8 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
     <>
       All {state.hosts.length} copies agree. Last divergence{" "}
       <span className="qc-num text-ink">{genLabel(last.to)}</span>, lasting{" "}
-      <span className="qc-num text-ink">{last.cycles}</span>{" "}
-      {last.cycles === 1 ? "cycle" : "cycles"}
+      <span className="qc-num text-ink">{last.generations}</span>{" "}
+      {last.generations === 1 ? "cycle" : "cycles"}
       {last.critical ? " — longer than usual." : " and it healed itself."}
     </>
   );

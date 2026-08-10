@@ -108,7 +108,7 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
         {
           label: "last split",
           value: lastSplit
-            ? `${genLabel(lastSplit.to)} · ${lastSplit.cycles} cyc`
+            ? `${genLabel(lastSplit.to)} · ${lastSplit.generations} gen`
             : "none",
         },
       ],

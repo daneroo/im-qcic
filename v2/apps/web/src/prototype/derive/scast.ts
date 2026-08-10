@@ -43,7 +43,7 @@ export const GENERATION_MS = 10 * 60 * 1000;
  * is fixed: a moving bar means "critical" quietly means something different
  * this month than last.
  */
-export const CRITICAL_CYCLES = 6;
+export const CRITICAL_GENERATIONS = 6;
 
 export type Scope = "item" | "history";
 
@@ -141,7 +141,7 @@ export interface GenerationRow {
   ways: number;
   missing: string[];
   /**
-   * Belongs to a split that ran past CRITICAL_CYCLES. Only these are drawn in
+   * Belongs to a split that ran past CRITICAL_GENERATIONS. Only these are drawn in
    * the alarm colour - a short split is the reconciliation working as designed,
    * and painting every one of them red would drown the few that ran long.
    * Set after the runs are known.
@@ -152,10 +152,10 @@ export interface GenerationRow {
 export interface Divergence {
   from: Date;
   to: Date;
-  cycles: number;
+  generations: number;
   /** Still split as of the newest settled generation. */
   ongoing: boolean;
-  /** Ran past CRITICAL_CYCLES - about an hour. */
+  /** Ran past CRITICAL_GENERATIONS - about an hour. */
   critical: boolean;
 }
 
@@ -296,9 +296,9 @@ export function deriveScast(records: DigestRecord[]): ScastState {
     divergences.push({
       from: first.generation,
       to: last.generation,
-      cycles: run.length,
+      generations: run.length,
       ongoing,
-      critical: run.length > CRITICAL_CYCLES,
+      critical: run.length > CRITICAL_GENERATIONS,
     });
     run = [];
   };
