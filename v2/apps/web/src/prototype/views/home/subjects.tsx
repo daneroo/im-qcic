@@ -93,7 +93,7 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
       layer: "services",
       source: "live",
       value: scast.state.latestSettled
-        ? scast.state.converged
+        ? scast.state.agreed
           ? "agreed"
           : "split"
         : "waiting",
@@ -101,9 +101,9 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
         {
           label: "agreed",
           value:
-            scast.state.convergenceRate === null
+            scast.state.agreedRate === null
               ? "—"
-              : `${(scast.state.convergenceRate * 100).toFixed(1)}%`,
+              : `${(scast.state.agreedRate * 100).toFixed(1)}%`,
         },
         {
           label: "last split",
@@ -113,7 +113,7 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
         },
       ],
       byline: "im.scast.scrape.digest",
-      bad: Boolean(scast.state.latestSettled) && !scast.state.converged,
+      bad: Boolean(scast.state.latestSettled) && !scast.state.agreed,
       status: scast.status,
       to: "/scast",
     },

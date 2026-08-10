@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   formatDuration,
   formatSeconds,
-  SELF_HEALING_CYCLES,
+  CRITICAL_CYCLES,
   type GenerationRow,
   type ScastState,
 } from "../../derive/scast";
@@ -26,7 +26,7 @@ export function shortDigest(d: string): string {
  * Convergence strip — one tick per generation, same grammar as the
  * tedcheck coverage strip so the two pages read as one system.
  *
- *   converged  floor tick, near-invisible. The resting state disappears.
+ *   agreed     floor tick, near-invisible. The resting state disappears.
  *   diverged   full height, chromatic. Rare, so it reads instantly.
  *   pending    dashed outline. The copies report minutes apart, so the
  *              newest generation is nearly always incomplete — showing that
@@ -71,25 +71,25 @@ export function ConvergenceStrip({
               />
             );
           }
-          if (g.state === "converged") {
+          if (g.state === "agreed") {
             return (
               <div
                 key={key}
-                title={`${utcISO(g.generation)} — all ${g.reports.length} copies agree on ${shortDigest(g.consensus ?? "")}`}
+                title={`${utcISO(g.generation)} — all ${g.reports.length} copies agree`}
                 className="min-w-0 flex-1 rounded-[2px] bg-absent/70"
                 style={{ height: "14%" }}
               />
             );
           }
-          // A one- or two-cycle split is the system reconciling itself
-          // exactly as described, so it is drawn in neutral ink at half
-          // height. Only a run that outlasted that gets the alarm colour.
+          // A short split is the reconciliation working as designed, so it is
+          // drawn in neutral ink at half height. Only a run past
+          // CRITICAL_CYCLES gets the alarm colour.
           return (
             <div
               key={key}
-              title={`${utcISO(g.generation)} — ${g.distinct.length} different digests; ${g.dissenting.join(", ") || "no majority"} out of step${g.stuckRun ? " (run exceeded 2 cycles)" : ""}`}
-              className={`min-w-0 flex-1 rounded-[2px] ${g.stuckRun ? "bg-alarm" : "bg-ink-3/45"}`}
-              style={{ height: g.stuckRun ? "100%" : "48%" }}
+              title={`${utcISO(g.generation)} — ${g.ways} distinct digests${g.critical ? ", split over an hour" : ""}`}
+              className={`min-w-0 flex-1 rounded-[2px] ${g.critical ? "bg-alarm" : "bg-ink-3/45"}`}
+              style={{ height: g.critical ? "100%" : "48%" }}
             />
           );
         })}
@@ -99,22 +99,40 @@ export function ConvergenceStrip({
 }
 
 /* ------------------------------------------------------------------ *
- * The cross-tab, rewritten around the question it exists to answer.
+ * GENERATION TABLE — three visual layers, one job each, no overlap.
  *
- * The production view prints a 7-character digest in every cell and leaves
- * the reader to diff hex across columns. But agreement is the expected state
- * and it is the same value in every column — so it is written ONCE, at the
- * row head, and each agreeing copy carries a ditto. Only a copy that
- * disagrees spells its digest out.
+ *   COLSPAN      agreed vs split. When every copy holds the same digest the
+ *                row's host cells MERGE INTO ONE, so agreement is carried
+ *                structurally: the row is either one cell or N cells, with
+ *                nothing in between. That is all-or-nothing made visible, and
+ *                no value is ever privileged.
  *
- * The result: a page of quiet dittos, where divergence is the only thing that
- * speaks. Same information, and the eye does none of the work.
+ *   MARKER       which digests are identical, for aiming a manual resync.
+ *                Only groups with more than one member get one, so a
+ *                three-way split shows NO markers - the correct answer, since
+ *                nothing matches. Shape, not colour or weight: shape is a
+ *                nominal channel, so no group can look weightier than another
+ *                and the majority reading cannot creep back in through the
+ *                visual system. Also survives the monochrome theme.
+ *
+ *   ROW BAND     this split has run past CRITICAL_CYCLES. Consecutive rows
+ *                form a contiguous block, so the DURATION of a divergence
+ *                reads as a bar without counting - which is the thing this
+ *                page is watched for.
+ *
+ * What is gone: consensus, majority, dissenter, ditto marks pointing at a
+ * privileged value. Two copies agreeing are not more right than the third.
  * ------------------------------------------------------------------ */
+
+/** Nominal, ordered by first appearance. Shapes, never letters - a-f are hex
+    digits and would be read as part of the digest. */
+const MATCH_MARKS = ["\u25CF", "\u25C6", "\u25A0", "\u25B2"];
+
 export function GenerationTable({ state }: { state: ScastState }) {
   const [showAll, setShowAll] = useState(false);
 
   const ordered = [...state.generations].reverse();
-  const notable = ordered.filter((g) => g.state !== "converged");
+  const notable = ordered.filter((g) => g.state !== "agreed");
   const rows = showAll
     ? ordered
     : notable.length
@@ -141,10 +159,11 @@ export function GenerationTable({ state }: { state: ScastState }) {
       </div>
 
       <p className="mb-3 max-w-prose text-[11px] leading-relaxed text-ink-3">
-        Agreement is written once, at the row head. A{" "}
-        <span className="text-ink-2">&ldquo;</span> means that copy matched it.
-        A copy that disagrees spells out its own digest; a copy that
-        hasn&rsquo;t reported yet shows a dash.
+        When every copy agrees the row is one cell. When they do not, all values
+        are shown and none is treated as correct — two copies matching does not
+        outvote the third, which may be the one holding the missing piece. A{" "}
+        <span className="text-ink-2">●</span> marks copies that happen to hold
+        the same digest.
       </p>
 
       <div className="overflow-x-auto">
@@ -154,7 +173,6 @@ export function GenerationTable({ state }: { state: ScastState }) {
               <th className="py-1.5 pr-3 text-left font-semibold">
                 generation <span className="normal-case">({tzLabel()})</span>
               </th>
-              <th className="py-1.5 px-3 text-left font-semibold">agreed</th>
               {state.hosts.map((h) => (
                 <th key={h} className="py-1.5 px-3 text-left font-semibold">
                   {h}
@@ -163,74 +181,83 @@ export function GenerationTable({ state }: { state: ScastState }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((g) => (
-              <tr
-                key={g.generation.toISOString()}
-                className="border-b border-rule/60 last:border-0 hover:bg-surface-2/60"
-              >
-                <td
-                  className="qc-num py-1.5 pr-3 text-ink-2"
-                  title={utcISO(g.generation)}
+            {rows.map((g) => {
+              const agreed = g.state === "agreed";
+              const only = g.reports[0];
+              return (
+                <tr
+                  key={g.generation.toISOString()}
+                  className={`border-b border-rule/60 last:border-0 ${
+                    g.critical ? "bg-alarm/10" : "hover:bg-surface-2/60"
+                  }`}
                 >
-                  {genLabel(g.generation)}
-                  {g.state === "pending" && (
-                    <span
-                      className="ml-2 rounded-sm border border-dashed border-partial px-1 text-[9px] uppercase tracking-wider text-partial"
-                      title="Not every copy has reported yet"
-                    >
-                      pending
-                    </span>
-                  )}
-                </td>
-                <td className="qc-digest py-1.5 px-3 text-[12px]">
-                  {g.consensus ? (
-                    <span
-                      className={
-                        g.state === "diverged" ? "text-ink" : "text-ink-2"
-                      }
-                    >
-                      {shortDigest(g.consensus)}
-                    </span>
-                  ) : (
-                    <span className="text-alarm">no majority</span>
-                  )}
-                </td>
-                {state.hosts.map((h) => {
-                  const report = g.reports.find((r) => r.host === h);
-                  if (!report) {
-                    return (
-                      <td
-                        key={h}
-                        className="py-1.5 px-3 text-ink-3/50"
-                        title="no report for this generation"
+                  <td
+                    className="qc-num py-1.5 pr-3 text-ink-2"
+                    title={utcISO(g.generation)}
+                  >
+                    {genLabel(g.generation)}
+                    {g.state === "pending" && (
+                      <span
+                        className="ml-2 rounded-sm border border-dashed border-partial px-1 text-[9px] uppercase tracking-wider text-partial"
+                        title="Not every copy has reported yet"
                       >
-                        —
-                      </td>
-                    );
-                  }
-                  if (report.digest === g.consensus) {
-                    return (
-                      <td
-                        key={h}
-                        className="py-1.5 px-3 text-ink-3"
-                        title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
-                      >
-                        &ldquo;
-                      </td>
-                    );
-                  }
-                  return (
+                        pending
+                      </span>
+                    )}
+                  </td>
+
+                  {agreed && only ? (
                     <td
-                      key={h}
-                      className={`qc-digest py-1.5 px-3 text-[12px] ${g.stuckRun ? "font-medium text-alarm" : "text-ink-2"}`}
-                      title={`${report.digest} · out of step${g.stuckRun ? " (run exceeded 2 cycles)" : ""}`}
+                      colSpan={state.hosts.length}
+                      className="qc-digest py-1.5 px-3 text-[12px] text-ink-3"
+                      title={`all ${g.reports.length} copies hold ${only.digest}`}
                     >
-                      {shortDigest(report.digest)}
+                      {shortDigest(only.digest)}
+                      <span className="ml-2 text-[10px] tracking-wide">
+                        all agree
+                      </span>
                     </td>
-                  );
-                })}
-              </tr>
-            ))}
+                  ) : (
+                    state.hosts.map((h) => {
+                      const report = g.reports.find((r) => r.host === h);
+                      if (!report) {
+                        return (
+                          <td
+                            key={h}
+                            className="py-1.5 px-3 text-ink-3/50"
+                            title="no report for this generation"
+                          >
+                            —
+                          </td>
+                        );
+                      }
+                      const mark = g.matchGroup[h];
+                      return (
+                        <td
+                          key={h}
+                          className={`qc-digest py-1.5 px-3 text-[12px] ${
+                            g.critical ? "text-alarm" : "text-ink-2"
+                          }`}
+                          title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
+                        >
+                          {shortDigest(report.digest)}
+                          {/* TRAILING, not leading. A glyph in front would
+                              push the hex right on marked cells only, and
+                              break the column alignment that makes reading
+                              the digests by eye possible at all - which is
+                              the primary channel the marker only assists. */}
+                          <span className="ml-1.5 inline-block w-2 text-[9px] text-ink-3/70">
+                            {mark === undefined
+                              ? ""
+                              : MATCH_MARKS[mark % MATCH_MARKS.length]}
+                          </span>
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -258,9 +285,6 @@ export function CopyRows({
             </th>
             <th className="py-1.5 px-3 text-right font-semibold">scrape</th>
             <th className="py-1.5 px-3 text-right font-semibold">missed</th>
-            <th className="py-1.5 pl-3 text-right font-semibold">
-              out of step
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -293,11 +317,6 @@ export function CopyRows({
               >
                 {h.missed || "—"}
               </td>
-              <td
-                className={`qc-num py-2 pl-3 text-right ${h.dissented > 0 ? "font-medium text-alarm" : "text-ink-3/50"}`}
-              >
-                {h.dissented || "—"}
-              </td>
             </tr>
           ))}
         </tbody>
@@ -317,7 +336,7 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
   if (!state.latestSettled) {
     return <>Waiting for a complete generation.</>;
   }
-  if (!state.converged) {
+  if (!state.agreed) {
     const cycles = last?.cycles ?? 1;
     return (
       <>
@@ -325,7 +344,7 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
         <span className="font-medium text-alarm">out of step</span> and have
         been for <span className="qc-num">{cycles}</span>{" "}
         {cycles === 1 ? "cycle" : "cycles"}
-        {cycles > SELF_HEALING_CYCLES ? (
+        {cycles > CRITICAL_CYCLES ? (
           <> — longer than they normally take to reconcile.</>
         ) : (
           <> — within the one or two cycles they normally take.</>
@@ -344,7 +363,7 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
       <span className="qc-num text-ink">{genLabel(last.to)}</span>, lasting{" "}
       <span className="qc-num text-ink">{last.cycles}</span>{" "}
       {last.cycles === 1 ? "cycle" : "cycles"}
-      {last.stuck ? " — longer than usual." : " and it healed itself."}
+      {last.critical ? " — longer than usual." : " and it healed itself."}
     </>
   );
 }

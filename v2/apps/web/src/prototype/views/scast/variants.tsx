@@ -4,7 +4,7 @@
 // is thin: the substance lives in ../../derive/scast.ts and ./shared.tsx, and
 // what differs between them is only how hierarchy and summary are arranged.
 
-import { formatDuration, SELF_HEALING_CYCLES } from "../../derive/scast";
+import { CRITICAL_CYCLES, formatDuration } from "../../derive/scast";
 import {
   Byline,
   Eyebrow,
@@ -31,39 +31,39 @@ function Headline({ feed }: { feed: ScastFeed }) {
         <span
           className={`text-5xl leading-none font-light tracking-tight ${
             state.latestSettled
-              ? state.converged
+              ? state.agreed
                 ? "text-ink"
                 : "text-alarm"
               : "text-partial"
           }`}
         >
           {state.latestSettled
-            ? state.converged
+            ? state.agreed
               ? "agreed"
               : "split"
             : "waiting"}
         </span>
-        {state.latestSettled && (
+        {state.latestSettled && state.agreed && (
           <span className="qc-digest text-sm text-ink-3">
-            {shortDigest(state.latestSettled.consensus ?? "")}
+            {shortDigest(state.latestSettled.reports[0]?.digest ?? "")}
           </span>
         )}
       </div>
       <p className="mt-3 max-w-prose text-sm text-ink-2">
         <ConvergenceVerdict state={state} />
       </p>
-      {state.convergenceRate !== null && (
+      {state.agreedRate !== null && (
         <p className="mt-2 text-xs text-ink-3">
           <span className="qc-num text-ink-2">
-            {(state.convergenceRate * 100).toFixed(1)}%
+            {(state.agreedRate * 100).toFixed(1)}%
           </span>{" "}
           of {state.settled.length} settled generations agreed;{" "}
           <span className="qc-num text-ink-2">{state.divergences.length}</span>{" "}
           divergence{state.divergences.length === 1 ? "" : "s"}, of which{" "}
           <span className="qc-num text-ink-2">
-            {state.divergences.filter((e) => e.stuck).length}
+            {state.divergences.filter((e) => e.critical).length}
           </span>{" "}
-          lasted more than {SELF_HEALING_CYCLES} cycles.
+          ran past {CRITICAL_CYCLES} cycles — about an hour.
         </p>
       )}
     </div>
@@ -205,7 +205,9 @@ export function ScastCircuit({ feed }: { feed: ScastFeed }) {
           <div className="min-w-[38rem]">
             {state.perHost.map((h) => {
               const dissenting =
-                state.latestSettled?.dissenting.includes(h.host) ?? false;
+                (state.latestSettled?.state === "split" &&
+                  state.latestSettled.reports.some((r) => r.host === h.host)) ??
+                false;
               return (
                 <div
                   key={h.host}
@@ -317,17 +319,17 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
                   </span>
                 </td>
                 <td
-                  className={`qc-num px-3 py-2.5 text-right ${state.converged ? "text-ink" : "text-alarm"}`}
+                  className={`qc-num px-3 py-2.5 text-right ${state.agreed ? "text-ink" : "text-alarm"}`}
                 >
-                  {state.convergenceRate === null
+                  {state.agreedRate === null
                     ? "—"
-                    : `${(state.convergenceRate * 100).toFixed(1)}%`}
+                    : `${(state.agreedRate * 100).toFixed(1)}%`}
                 </td>
                 <td className="qc-num px-3 py-2.5 text-right text-[13px] text-ink-2">
                   {last ? genLabel(last.to) : "none in window"}
                 </td>
                 <td
-                  className={`qc-num px-3 py-2.5 text-right text-[13px] ${last?.stuck ? "font-medium text-alarm" : "text-ink-3"}`}
+                  className={`qc-num px-3 py-2.5 text-right text-[13px] ${last?.critical ? "font-medium text-alarm" : "text-ink-3"}`}
                 >
                   {last ? `${last.cycles} cyc` : "—"}
                 </td>
@@ -351,7 +353,7 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
                     </span>
                   </td>
                   <td className="qc-num px-3 py-2.5 text-right text-ink-2">
-                    {h.dissented === 0 ? "always" : `${h.dissented} off`}
+                    {h.reports} reports
                   </td>
                   <td className="qc-num px-3 py-2.5 text-right text-[13px] text-ink-3">
                     {h.medianLagMs === null
