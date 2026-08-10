@@ -162,22 +162,39 @@ const MATCH_MARKS = ["\u25CF", "\u25C6", "\u25A0", "\u25B2"];
  * sits at half a stroke from the edge so the round cap's outer extremity falls
  * exactly on x=0 - the tip is the element's edge, which is what the 2/3
  * alignment below is measured against.
+ *
+ * WEIGHT AND TONE, because the balance was inverted. The digest is the datum;
+ * the arrow only says the datum is shared. But a 1.5px stroke run across two
+ * ~180px spans lays down far more ink than the seven glyphs it annotates, so
+ * on 106 of 147 rows the annotation shouted over the value - and those are the
+ * CALM rows, the ones that are supposed to recede.
+ *
+ * The fix is tonal, not geometric. `rule-strong`, not `ink-3`: this mark is
+ * structural furniture like the row dividers, not text, and the token is
+ * lighter than ink-3 in the light themes and darker in the dark ones, so it
+ * recedes in both without a per-theme rule. Weight drops to 1.25 to sit in the
+ * same register as the rules themselves.
+ *
+ * The head then has to work harder, since a rule-coloured hairline is exactly
+ * what could be mistaken for a stray row divider - so the arms go to 4.5,
+ * still at 45 degrees. Bigger head, quieter line: the mark stays unmistakably
+ * an arrow while spending less ink than the digest it points at.
  */
 function SpanArrow({ flip = false }: { flip?: boolean }) {
   return (
     <span className={`min-w-0 flex-1 ${flip ? "-scale-x-100" : ""}`}>
       <svg
-        className="block h-3 w-full text-ink-3"
+        className="block h-3 w-full text-rule-strong"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
         aria-hidden="true"
         focusable="false"
       >
-        <path d="M4.25 2.5 L0.75 6 L4.25 9.5" />
-        <line x1="0.75" y1="6" x2="100%" y2="6" />
+        <path d="M5.125 1.5 L0.625 6 L5.125 10.5" />
+        <line x1="0.625" y1="6" x2="100%" y2="6" />
       </svg>
     </span>
   );
@@ -286,7 +303,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                       className="py-1.5 text-center"
                       title={`all ${g.reports.length} copies hold ${g.reports[0]?.digest}`}
                     >
-                      <span className="mx-auto flex w-2/3 items-center gap-2">
+                      <span className="mx-auto flex w-2/3 items-center gap-3">
                         <SpanArrow />
                         <span className="qc-digest shrink-0 text-[12px] text-ink-2">
                           {shortDigest(g.reports[0]?.digest ?? "")}
