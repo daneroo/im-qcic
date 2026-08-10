@@ -52,18 +52,21 @@ function Headline({ feed }: { feed: ScastFeed }) {
       <p className="mt-3 max-w-prose text-sm text-ink-2">
         <ConvergenceVerdict state={state} />
       </p>
-      {state.agreedRate !== null && (
+      {/* No rate of agreement. Convergence is guaranteed by the
+          reconciliation, so what fraction of generations agreed answers a
+          question nobody has; how long a split lasts is the whole reason this
+          is watched. */}
+      {state.divergences.length > 0 && (
         <p className="mt-2 text-xs text-ink-3">
-          <span className="qc-num text-ink-2">
-            {(state.agreedRate * 100).toFixed(1)}%
-          </span>{" "}
-          of {state.settled.length} settled generations agreed;{" "}
           <span className="qc-num text-ink-2">{state.divergences.length}</span>{" "}
-          divergence{state.divergences.length === 1 ? "" : "s"}, of which{" "}
+          split{state.divergences.length === 1 ? "" : "s"} in{" "}
+          <span className="qc-num text-ink-2">{state.settled.length}</span>{" "}
+          generations · longest{" "}
+          <span className="qc-num text-ink-2">{state.longestSplit}</span> ·{" "}
           <span className="qc-num text-ink-2">
             {state.divergences.filter((e) => e.critical).length}
           </span>{" "}
-          ran past {CRITICAL_GENERATIONS} generations — about an hour.
+          past {CRITICAL_GENERATIONS}
         </p>
       )}
     </div>
@@ -321,9 +324,7 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
                 <td
                   className={`qc-num px-3 py-2.5 text-right ${state.agreed ? "text-ink" : "text-alarm"}`}
                 >
-                  {state.agreedRate === null
-                    ? "—"
-                    : `${(state.agreedRate * 100).toFixed(1)}%`}
+                  {state.agreed ? "agreed" : "split"}
                 </td>
                 <td className="qc-num px-3 py-2.5 text-right text-[13px] text-ink-2">
                   {last ? genLabel(last.to) : "none in window"}

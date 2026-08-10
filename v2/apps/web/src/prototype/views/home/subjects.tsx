@@ -99,11 +99,10 @@ export function buildSubjects(ted: TedcheckFeed, scast: ScastFeed): Subject[] {
         : "waiting",
       secondary: [
         {
-          label: "agreed",
-          value:
-            scast.state.agreedRate === null
-              ? "—"
-              : `${(scast.state.agreedRate * 100).toFixed(1)}%`,
+          label: "longest split",
+          value: scast.state.longestSplit
+            ? `${scast.state.longestSplit} gen`
+            : "none",
         },
         {
           label: "last split",

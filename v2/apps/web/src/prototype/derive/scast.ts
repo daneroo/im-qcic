@@ -180,11 +180,12 @@ export interface ScastState {
   divergences: Divergence[];
   lastDivergence: Divergence | null;
   /**
-   * Fraction of settled generations that agreed. Kept, but NOT the headline:
-   * convergence is guaranteed by the reconciliation, so "whether" was never
-   * the question - "how long" is. See longestSplit / typicalSplit.
+   * The longest split in the window, in generations. THIS is the figure worth
+   * watching: convergence is guaranteed by the reconciliation, so a rate of
+   * agreement answers a question nobody has. How long a split can last does
+   * not.
    */
-  agreedRate: number | null;
+  longestSplit: number | null;
   perHost: HostSummary[];
   /** The second digest series the cross-tab ignores, counted only. */
   historyRecords: number;
@@ -343,7 +344,6 @@ export function deriveScast(records: DigestRecord[]): ScastState {
   });
 
   const latestSettled = settled.length ? settled[settled.length - 1]! : null;
-  const agreedCount = settled.filter((g) => g.state === "agreed").length;
 
   return {
     hosts,
@@ -356,7 +356,9 @@ export function deriveScast(records: DigestRecord[]): ScastState {
     lastDivergence: divergences.length
       ? divergences[divergences.length - 1]!
       : null,
-    agreedRate: settled.length ? agreedCount / settled.length : null,
+    longestSplit: divergences.length
+      ? Math.max(...divergences.map((d) => d.generations))
+      : null,
     perHost,
     historyRecords,
     windowFrom: generations[0]?.generation ?? null,

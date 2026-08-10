@@ -13,7 +13,7 @@ import {
 import { LivenessDot, type Liveness } from "../../ui/primitives";
 import { localHM, tzLabel, utcISO } from "../../derive/time";
 
-/** Generations are ten-minute cycles - an hour/minute label, so localised. */
+/** Generations are ten minutes apart - an hour/minute label, so localised. */
 export function genLabel(d: Date): string {
   return localHM(d);
 }
@@ -163,23 +163,27 @@ export function GenerationTable({ state }: { state: ScastState }) {
         </button>
       </div>
 
-      <p className="mb-3 max-w-prose text-[11px] leading-relaxed text-ink-3">
-        When every copy agrees the row is one cell. When they do not, all values
-        are shown and none is treated as correct — two copies matching does not
-        outvote the third, which may be the one holding the missing piece. A{" "}
-        <span className="text-ink-2">●</span> marks copies that happen to hold
-        the same digest.
+      <p className="mb-3 text-[11px] text-ink-3">
+        <span className="text-ink-2">●</span> same digest as another copy
       </p>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[34rem] border-collapse text-sm">
+        <table className="w-full min-w-[34rem] table-fixed border-collapse text-sm">
           <thead>
             <tr className="border-b border-rule-strong text-[10px] uppercase tracking-[0.12em] text-ink-3">
-              <th className="py-1.5 pr-3 text-left font-semibold">
+              {/* table-fixed with EQUAL host columns: without it the columns
+                  are content-sized (d1-px1 vs scast-hilbert), so the centre of
+                  a merged cell is not the centre of anything, and the digests
+                  do not line up down the page either. */}
+              <th className="w-[26%] py-1.5 pr-3 text-left font-semibold">
                 generation <span className="normal-case">({tzLabel()})</span>
               </th>
               {state.hosts.map((h) => (
-                <th key={h} className="py-1.5 px-3 text-left font-semibold">
+                <th
+                  key={h}
+                  className="py-1.5 px-3 text-left font-semibold"
+                  style={{ width: `${74 / state.hosts.length}%` }}
+                >
                   {h}
                 </th>
               ))}
@@ -210,41 +214,91 @@ export function GenerationTable({ state }: { state: ScastState }) {
                     )}
                   </td>
 
-                  {state.hosts.map((h) => {
-                    const report = g.reports.find((r) => r.host === h);
-                    if (!report) {
+                  {agreed ? (
+                    /* One merged cell, CENTRED, with the span shown by arrows
+                       drawn as text characters on the baseline.
+
+                       Two earlier attempts failed for reasons worth keeping:
+                       CSS hairlines to the cell edges sit at the cell's
+                       vertical centre, which is exactly where a row divider
+                       sits, so they read as a stray rule. And arrows set at
+                       11px in ink-3 at 60% opacity were triple-faint and
+                       simply disappeared. Characters sit on the baseline with
+                       the digest, so they read as typography rather than as a
+                       rule, and at 12px in ink-2 they are actually visible. */
+                    <td
+                      colSpan={state.hosts.length}
+                      className="py-1.5 px-3 text-center"
+                      title={`all ${g.reports.length} copies hold ${g.reports[0]?.digest}`}
+                    >
+                      {/* A dimension line, drawn in SVG.
+                          The arrows were unicode (U+27F8/27F9) and simply did
+                          not render: neither JetBrains Mono nor Rubik carries
+                          those glyphs, so the browser fell back to a stub with
+                          no head at all. That, not size or opacity, is why
+                          they were invisible. SVG heads depend on no font.
+                          The shafts stretch to the edges of the merged cell,
+                          so the mark reads as spanning all the host columns
+                          rather than belonging to the middle one. */}
+                      <span className="flex items-center justify-center gap-1.5 text-ink-3">
+                        <svg
+                          width="6"
+                          height="6"
+                          viewBox="0 0 6 6"
+                          className="shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M6 0 L0 3 L6 6 Z" fill="currentColor" />
+                        </svg>
+                        <span className="h-px w-4 bg-current opacity-60" />
+                        <span className="qc-digest text-[12px] text-ink-2">
+                          {shortDigest(g.reports[0]?.digest ?? "")}
+                        </span>
+                        <span className="h-px w-4 bg-current opacity-60" />
+                        <svg
+                          width="6"
+                          height="6"
+                          viewBox="0 0 6 6"
+                          className="shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M0 0 L6 3 L0 6 Z" fill="currentColor" />
+                        </svg>
+                      </span>
+                    </td>
+                  ) : (
+                    state.hosts.map((h) => {
+                      const report = g.reports.find((r) => r.host === h);
+                      if (!report) {
+                        return (
+                          <td
+                            key={h}
+                            className="py-1.5 px-3 text-ink-3/50"
+                            title="no report for this generation"
+                          >
+                            —
+                          </td>
+                        );
+                      }
+                      const mark = g.matchGroup[h];
                       return (
                         <td
                           key={h}
-                          className="py-1.5 px-3 text-ink-3/50"
-                          title="no report for this generation"
+                          className={`qc-digest py-1.5 px-3 text-[12px] ${
+                            g.critical ? "text-alarm" : "text-ink-2"
+                          }`}
+                          title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
                         >
-                          —
+                          {shortDigest(report.digest)}
+                          <span className="ml-1.5 inline-block w-2 text-[9px] text-ink-3/70">
+                            {mark === undefined
+                              ? ""
+                              : MATCH_MARKS[mark % MATCH_MARKS.length]}
+                          </span>
                         </td>
                       );
-                    }
-                    const mark = g.matchGroup[h];
-                    return (
-                      <td
-                        key={h}
-                        className={`qc-digest py-1.5 px-3 text-[12px] ${
-                          g.critical
-                            ? "text-alarm"
-                            : agreed
-                              ? "text-ink-3/60"
-                              : "text-ink-2"
-                        }`}
-                        title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
-                      >
-                        {shortDigest(report.digest)}
-                        <span className="ml-1.5 inline-block w-2 text-[9px] text-ink-3/70">
-                          {mark === undefined
-                            ? ""
-                            : MATCH_MARKS[mark % MATCH_MARKS.length]}
-                        </span>
-                      </td>
-                    );
-                  })}
+                    })
+                  )}
                 </tr>
               );
             })}
@@ -265,7 +319,7 @@ export function CopyRows({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[34rem] border-collapse text-sm">
+      <table className="w-full min-w-[34rem] table-fixed border-collapse text-sm">
         <thead>
           <tr className="border-b border-rule-strong text-[10px] uppercase tracking-[0.12em] text-ink-3">
             <th className="py-1.5 pr-3 text-left font-semibold">copy</th>
@@ -312,9 +366,8 @@ export function CopyRows({
         </tbody>
       </table>
       <p className="mt-2 max-w-prose text-[11px] text-ink-3">
-        Reporting lag is the copy&rsquo;s publish time minus the cycle it
-        belongs to; scrape is how long its own run took. Both ride on every
-        message and neither is shown by the current view.
+        Lag is publish time minus the generation; scrape is how long the run
+        took.
       </p>
     </div>
   );
@@ -337,7 +390,7 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
         {generations > CRITICAL_GENERATIONS ? (
           <> — longer than they normally take to reconcile.</>
         ) : (
-          <> — within the one or two cycles they normally take.</>
+          <> — the reconciliation is expected to close it.</>
         )}
       </>
     );
@@ -352,7 +405,7 @@ export function ConvergenceVerdict({ state }: { state: ScastState }) {
       All {state.hosts.length} copies agree. Last divergence{" "}
       <span className="qc-num text-ink">{genLabel(last.to)}</span>, lasting{" "}
       <span className="qc-num text-ink">{last.generations}</span>{" "}
-      {last.generations === 1 ? "cycle" : "cycles"}
+      {last.generations === 1 ? "generation" : "generations"}
       {last.critical ? " — longer than usual." : " and it healed itself."}
     </>
   );
