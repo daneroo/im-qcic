@@ -284,33 +284,79 @@ function SpanArrow({ flip = false }: { flip?: boolean }) {
   );
 }
 
+/** Nothing has ever gone wrong in this window - show a little of the record. */
+const RESTING_ROWS = 8;
+
+/**
+ * The default view: the latest divergence, with one agreed generation of
+ * context on each side.
+ *
+ * WHY NOT "NOTABLE ONLY", WHICH THIS REPLACES. That filter kept every
+ * non-agreed generation and silently dropped the rest, so 48 split generations
+ * belonging to 17 SEPARATE runs arrived as one flat list and two adjacent rows
+ * could be hours apart. It destroyed the only thing the table is watched for -
+ * how long a split lasted - and it made the critical row band lie, since that
+ * band was designed so consecutive rows form a block and consecutive-in-view
+ * was no longer consecutive-in-time.
+ *
+ * A CONTIGUOUS SLICE CANNOT LIE THAT WAY. Everything between the two ends is
+ * present, so run length is exactly what it looks like.
+ *
+ * "Since the last agreement" was the other candidate and is the same thing when
+ * the copies are split right now. It was rejected for what it does the rest of
+ * the time: the newest generation is agreed roughly three quarters of the time,
+ * so that filter would show an empty table on most visits. Anchoring on the
+ * divergence instead means the view always holds the most recent thing that
+ * actually happened, whether it is still happening or not.
+ *
+ * The context rows are the point of the "+1 each side": the agreed row after a
+ * run is what the copies converged ON, and the one before is what they left.
+ * Neither is visible in a list of splits.
+ */
+function latestDivergenceRows(state: ScastState): GenerationRow[] {
+  const asc = state.generations;
+  const d = state.lastDivergence;
+  if (!d) return asc.slice(-RESTING_ROWS);
+
+  const at = (t: Date) =>
+    asc.findIndex((g) => g.generation.getTime() === t.getTime());
+  const start = Math.max(0, at(d.from) - 1);
+  // Still open: run to the live edge, so the pending generations show as the
+  // context they are. Closed: one agreed generation past the end.
+  const end = d.ongoing ? asc.length : Math.min(asc.length, at(d.to) + 2);
+  return asc.slice(start, end);
+}
+
 export function GenerationTable({ state }: { state: ScastState }) {
   const [showAll, setShowAll] = useState(false);
 
   const ordered = [...state.generations].reverse();
-  const notable = ordered.filter((g) => g.state !== "agreed");
-  const rows = showAll
-    ? ordered
-    : notable.length
-      ? notable
-      : ordered.slice(0, 8);
+  const latest = [...latestDivergenceRows(state)].reverse();
+  const rows = showAll ? ordered : latest;
+  const d = state.lastDivergence;
 
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+        {/* The caption states which slice is on screen and how long the run
+            was. It does not restate whether that is good - the verdict above
+            the strip already says that, and saying it twice is how a page
+            starts explaining itself. */}
         <p className="text-xs text-ink-2">
           {showAll
             ? `Full record — ${ordered.length} generations`
-            : notable.length
-              ? `${notable.length} generation${notable.length === 1 ? "" : "s"} not settled and agreed`
-              : `All ${state.settled.length} settled generations agree — showing the most recent 8`}
+            : !d
+              ? `No divergence in the window — the most recent ${Math.min(RESTING_ROWS, ordered.length)}`
+              : d.ongoing
+                ? `Split for ${d.generations} generation${d.generations === 1 ? "" : "s"}, still open`
+                : `Latest divergence — ${d.generations} generation${d.generations === 1 ? "" : "s"}, healed`}
         </p>
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
           className="rounded-full border border-rule px-2.5 py-0.5 text-[11px] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink"
         >
-          {showAll ? "Notable only" : `Show all ${ordered.length}`}
+          {showAll ? "Latest divergence" : `Full record (${ordered.length})`}
         </button>
       </div>
 
@@ -360,7 +406,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                 <tr
                   key={g.generation.toISOString()}
                   className={`border-b border-rule/60 last:border-0 ${
-                    g.critical ? "bg-alarm/10" : "hover:bg-surface-2/60"
+                    g.alarm ? "bg-alarm/10" : "hover:bg-surface-2/60"
                   }`}
                 >
                   <td
@@ -427,7 +473,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                         <td
                           key={h}
                           className={`qc-digest py-1.5 px-2 text-center text-[12px] sm:px-3 ${
-                            g.critical ? "text-alarm" : "text-ink-2"
+                            g.alarm ? "text-alarm" : "text-ink-2"
                           }`}
                           title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
                         >
