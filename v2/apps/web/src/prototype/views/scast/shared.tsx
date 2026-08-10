@@ -41,14 +41,52 @@ function Digest({ value }: { value: string }) {
 }
 
 /* ------------------------------------------------------------------ *
- * Convergence strip — one tick per generation, same grammar as the
- * tedcheck coverage strip so the two pages read as one system.
+ * Convergence strip — one tick per generation.
  *
- *   agreed     floor tick, near-invisible. The resting state disappears.
- *   diverged   full height, chromatic. Rare, so it reads instantly.
- *   pending    dashed outline. The copies report minutes apart, so the
- *              newest generation is nearly always incomplete — showing that
- *              as disagreement would cry wolf every ten minutes.
+ * BOOLEAN, NOT A MAGNITUDE. Agreement is nominal: a generation agrees or it
+ * does not. The earlier version drew four heights - agreed 14%, split 48%,
+ * critical 100%, pending 100% - which asserts that a split is 3.4x an
+ * agreement and critical is 2x a split. Those ratios mean nothing, and `ways`
+ * cannot rescue them, since two copies agreeing are not more right than the
+ * third. So there are two heights and the rest is tone.
+ *
+ * IT HANGS DOWN FROM THE BASELINE. Agreement is the unbroken rule along the
+ * top; a split is a notch falling out of it. That matches the domain - a split
+ * is a fall FROM consensus, not a spike of something - and it is how the strip
+ * DEGRADES that settles it. Convergence is scrobblecast's job to make prompt,
+ * and when it does, every one of these disappears: this strip then becomes a
+ * single clean hairline, which is the correct picture of a healthy system. A
+ * bottom-baseline version would degrade to an empty box instead.
+ *
+ * This deliberately no longer rhymes with the tedcheck coverage strip. That
+ * was a mistake worth naming: tedcheck's missing-time IS a magnitude, in
+ * seconds, so height-as-magnitude is right there and wrong here. The shared
+ * grammar was importing a quantitative encoding into a nominal domain.
+ *
+ * NOW IS ON THE LEFT, and time reads backwards to the right. Two reasons, and
+ * neither is convention - charts usually run the other way.
+ *
+ *   The table is newest-first, so a page with now on the strip's right had
+ *   time running in two directions at once. One of them had to move.
+ *   In Strata the strip sits immediately right of the headline, so now on the
+ *   left puts the live edge against the live statement - "split", and the
+ *   run that says so, adjacent rather than a strip's width apart.
+ *
+ * The direction is stated by labels at the two ends rather than an axis or an
+ * arrow glyph: labels do not need an axis, and an arrow would be one more
+ * character to go missing from a font.
+ *
+ *   agreed     nothing. The calm case has no ink of its own - it IS the
+ *              baseline - so the resting state costs zero marks rather than
+ *              the ~110 stubs it used to draw.
+ *   pending    the baseline itself, dashed. The copies report minutes apart,
+ *              so the newest generation is nearly always incomplete; drawing
+ *              it full height would put a permanent event at the live edge.
+ *              It is not an event, it is not counted yet.
+ *   split      full notch, neutral ink - the reconciliation working as
+ *              designed.
+ *   alarm      the one chromatic token, and only for a critical run that is
+ *              STILL OPEN. A healed divergence is history, not a fault.
  * ------------------------------------------------------------------ */
 export function ConvergenceStrip({
   generations,
@@ -63,6 +101,17 @@ export function ConvergenceStrip({
       would otherwise add its own height and break the cell's rhythm. */
   chrome?: boolean;
 }) {
+  // Newest first, to match the table. Copied, never reversed in place - this
+  // array is the derived state and other readings depend on its order.
+  const ticks = [...generations].reverse();
+
+  const oldest = generations[0]?.generation;
+  const newest = generations[generations.length - 1]?.generation;
+  const spanHours =
+    oldest && newest
+      ? Math.round((newest.getTime() - oldest.getTime()) / 3_600_000)
+      : null;
+
   return (
     <div className="w-full">
       {chrome && (
@@ -73,45 +122,62 @@ export function ConvergenceStrip({
           </span>
         </div>
       )}
+      {/* NO GAP between ticks, and the baseline is rule-strong.
+          The window is 24h - scast-bridge replays 24h, whatever the client's
+          buffer holds - so it carries ~144 generations, and in 450px each tick
+          is about 3px. With the old 2px gap the marks were 1.14px and the GAPS were
+          wider than them, which broke the one thing the strip is for: a run of
+          seven consecutive splits read as seven separate hairlines instead of
+          a bar seven wide. Butted together, adjacent splits merge and duration
+          reads without counting - which is the point, since counting ticks is
+          exactly what nobody should have to do. Agreed generations draw
+          nothing, so removing the gap costs the calm case nothing at all.
+          The baseline carries the resting state now, so it has to be visible:
+          `rule` was too faint to read as a line. */}
       <div
-        className="flex w-full items-end gap-[2px] border-b border-rule"
+        className="flex w-full items-start border-t border-rule-strong"
         style={{ height }}
       >
-        {generations.map((g) => {
+        {ticks.map((g) => {
           const key = g.generation.toISOString();
-          if (g.state === "pending") {
-            return (
-              <div
-                key={key}
-                title={`${utcISO(g.generation)} — ${g.reports.length}/${g.reports.length + g.missing.length} copies in; waiting on ${g.missing.join(", ")}`}
-                className="min-w-0 flex-1 rounded-[2px] border border-dashed border-partial"
-                style={{ height: "100%" }}
-              />
-            );
-          }
           if (g.state === "agreed") {
             return (
               <div
                 key={key}
                 title={`${utcISO(g.generation)} — all ${g.reports.length} copies agree`}
-                className="min-w-0 flex-1 rounded-[2px] bg-absent/70"
-                style={{ height: "14%" }}
+                className="min-w-0 flex-1"
               />
             );
           }
-          // A short split is the reconciliation working as designed, so it is
-          // drawn in neutral ink at half height. Only a run past
-          // CRITICAL_GENERATIONS gets the alarm colour.
+          if (g.state === "pending") {
+            // A zero-height element carrying only a top border: it replaces
+            // the baseline under this generation rather than standing off it.
+            return (
+              <div
+                key={key}
+                title={`${utcISO(g.generation)} — ${g.reports.length}/${g.reports.length + g.missing.length} copies in; waiting on ${g.missing.join(", ")}`}
+                className="h-0 min-w-0 flex-1 border-t border-dashed border-partial"
+              />
+            );
+          }
           return (
             <div
               key={key}
               title={`${utcISO(g.generation)} — ${g.ways} distinct digests${g.critical ? ", split over an hour" : ""}`}
-              className={`min-w-0 flex-1 rounded-[2px] ${g.critical ? "bg-alarm" : "bg-ink-3/45"}`}
-              style={{ height: g.critical ? "100%" : "48%" }}
+              className={`min-w-0 flex-1 ${g.alarm ? "bg-alarm" : "bg-ink-3/70"}`}
+              style={{ height: "100%" }}
             />
           );
         })}
       </div>
+      {chrome && (
+        <div className="mt-1 flex items-baseline justify-between gap-3 text-[10px] text-ink-3">
+          <span>now</span>
+          {spanHours !== null && (
+            <span className="qc-num">{spanHours}h ago</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

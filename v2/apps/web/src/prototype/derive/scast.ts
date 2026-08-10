@@ -141,12 +141,22 @@ export interface GenerationRow {
   ways: number;
   missing: string[];
   /**
-   * Belongs to a split that ran past CRITICAL_GENERATIONS. Only these are drawn in
-   * the alarm colour - a short split is the reconciliation working as designed,
-   * and painting every one of them red would drown the few that ran long.
-   * Set after the runs are known.
+   * Belongs to a split that ran past CRITICAL_GENERATIONS. Set after the runs
+   * are known.
    */
   critical: boolean;
+  /**
+   * Belongs to a split that is critical AND STILL OPEN. This, not `critical`,
+   * is what earns the alarm colour.
+   *
+   * The distinction is the difference between a fault and a record of one. A
+   * long divergence that closed last Tuesday is history: it is worth seeing,
+   * but there is nothing to act on, and the colour discipline spends the one
+   * chromatic token only on an ACTIVE anomaly. Painting healed runs red is the
+   * same mistake as painting every routine two-cycle split red - it just takes
+   * longer to notice.
+   */
+  alarm: boolean;
 }
 
 export interface Divergence {
@@ -282,6 +292,7 @@ export function deriveScast(records: DigestRecord[]): ScastState {
         ways: distinct.length,
         missing,
         critical: false,
+        alarm: false,
       };
     });
 
@@ -313,12 +324,15 @@ export function deriveScast(records: DigestRecord[]): ScastState {
   });
 
   // Second pass: tag the generations inside a run that outlasted the copies'
-  // normal reconciliation, so the view can keep the alarm colour for those
-  // alone.
+  // normal reconciliation. `alarm` narrows that to runs still open, which is
+  // what the views colour on - see the field comments.
   for (const e of divergences) {
     if (!e.critical) continue;
     for (const g of settled) {
-      if (g.generation >= e.from && g.generation <= e.to) g.critical = true;
+      if (g.generation >= e.from && g.generation <= e.to) {
+        g.critical = true;
+        if (e.ongoing) g.alarm = true;
+      }
     }
   }
 
