@@ -16,7 +16,7 @@ import {
   ConvergenceStrip,
   ConvergenceVerdict,
   CopyRows,
-  GenerationTable,
+  GenerationRecord,
   genLabel,
   shortDigest,
 } from "./shared";
@@ -140,15 +140,7 @@ export function ScastStrata({ feed }: { feed: ScastFeed }) {
         </div>
 
         <div className="mt-9 border-t border-rule pt-6">
-          <details className="group rounded-lg border border-rule bg-surface/50 open:bg-surface">
-            <summary className="flex cursor-pointer list-none items-baseline justify-between gap-3 px-3 py-2 text-sm text-ink-2 hover:text-ink">
-              <span className="text-ink">Generation Digests by Host</span>
-              <span className="text-[11px] text-ink-3">show record ▾</span>
-            </summary>
-            <div className="border-t border-rule px-3 py-3">
-              <GenerationTable state={state} />
-            </div>
-          </details>
+          <GenerationRecord state={state} />
         </div>
 
         <Byline>im.scast.scrape.digest</Byline>
@@ -266,14 +258,7 @@ export function ScastCircuit({ feed }: { feed: ScastFeed }) {
           </div>
         </section>
 
-        <details className="mt-6 rounded-lg border border-rule bg-surface/50">
-          <summary className="cursor-pointer list-none px-3 py-2 text-sm text-ink-2 hover:text-ink">
-            Generation Digests by Host
-          </summary>
-          <div className="border-t border-rule px-3 py-3">
-            <GenerationTable state={state} />
-          </div>
-        </details>
+        <GenerationRecord state={state} className="mt-6" />
 
         <div className="mt-6">
           <CopyRows state={state} status={feed.status} />
@@ -380,14 +365,7 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
           carry.
         </p>
 
-        <details className="mt-6 rounded-lg border border-rule bg-surface/50">
-          <summary className="cursor-pointer list-none px-3 py-2 text-sm text-ink-2 hover:text-ink">
-            Generation Digests by Host
-          </summary>
-          <div className="border-t border-rule px-3 py-3">
-            <GenerationTable state={state} />
-          </div>
-        </details>
+        <GenerationRecord state={state} className="mt-6" />
 
         <Byline>im.scast.scrape.digest</Byline>
       </main>

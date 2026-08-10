@@ -2,7 +2,7 @@
 //
 // The scast marks, shared by all three variants.
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   formatDuration,
   formatSeconds,
@@ -502,6 +502,78 @@ export function GenerationTable({ state }: { state: ScastState }) {
         </table>
       </div>
     </div>
+  );
+}
+
+/**
+ * The record, behind a disclosure, open from the start when something is
+ * actually wrong.
+ *
+ * THE TRIGGER IS THE ALARM PREDICATE, not `!agreed`. The newest settled
+ * generation is split about a third of the time in a window like today's, and
+ * a routine two-cycle split is the reconciliation working as designed - the
+ * same thing that must not earn the alarm colour must not earn an auto-opened
+ * panel either. Opening on any split would be crying wolf in a quieter
+ * register. So it opens for a run that is past CRITICAL_GENERATIONS and STILL
+ * OPEN, which is the one state on this page that means "look at this".
+ *
+ * IT OPENS ONCE, AND NEVER CLOSES ITSELF. Getting there took two measured
+ * failures, both of them about live data rather than about React:
+ *
+ *   A `useState` initialiser runs on the FIRST render, which here is before
+ *   NATS has delivered anything: `state` is empty, there is no divergence to
+ *   find, and the answer is false forever. Measured - it never opened, with a
+ *   critical run in flight.
+ *   Latching on the first render that HAS data fails too, and more subtly. The
+ *   24h replay streams in progressively, so the first populated render holds a
+ *   run only a few generations long, which is not yet critical. It latched
+ *   "no" and never looked again. Also measured, also silent.
+ *
+ * So the rule is not "decide at time T" - there is no T at which the window is
+ * known to be whole. It is: the first time the condition is ever observed,
+ * open. The ref makes that idempotent, so StrictMode's double invocation is a
+ * no-op, and once it has fired nothing here writes `open` again - the reader's
+ * toggling wins from then on, and a reconciliation can never yank the panel
+ * shut mid-read.
+ *
+ * The remaining case is deliberate: if a run crosses the threshold while the
+ * page is open, the panel opens then. That is a routine split becoming a stuck
+ * one, which is the single event on this page worth interrupting for.
+ */
+export function GenerationRecord({
+  state,
+  className = "",
+}: {
+  state: ScastState;
+  className?: string;
+}) {
+  const [openInitially, setOpenInitially] = useState(false);
+  const opened = useRef(false);
+
+  useEffect(() => {
+    if (opened.current) return;
+    const d = state.lastDivergence;
+    if (!d?.ongoing || !d.critical) return;
+    opened.current = true;
+    setOpenInitially(true);
+  }, [state]);
+
+  return (
+    <details
+      open={openInitially}
+      className={`group rounded-lg border border-rule bg-surface/50 open:bg-surface ${className}`}
+    >
+      <summary className="flex cursor-pointer list-none items-baseline justify-between gap-3 px-3 py-2 text-sm text-ink-2 hover:text-ink">
+        <span className="text-ink">Generation Digests by Host</span>
+        <span className="text-[11px] text-ink-3">
+          <span className="group-open:hidden">show ▾</span>
+          <span className="hidden group-open:inline">hide ▴</span>
+        </span>
+      </summary>
+      <div className="border-t border-rule px-3 py-3">
+        <GenerationTable state={state} />
+      </div>
+    </details>
   );
 }
 
