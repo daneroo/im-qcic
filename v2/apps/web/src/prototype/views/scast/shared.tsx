@@ -22,6 +22,24 @@ export function shortDigest(d: string): string {
   return d.slice(0, 7);
 }
 
+/**
+ * The digest at two lengths, picked by CSS rather than by measuring the
+ * viewport in JS - no resize listener, and nothing that can differ between the
+ * server's first paint and the client's.
+ *
+ * Four hex characters is 65536 buckets, which is ample for the only question
+ * asked of these strings on a phone: do the copies match. The full digest is
+ * still on the cell's title, and the seven-character form returns at `sm`.
+ */
+function Digest({ value }: { value: string }) {
+  return (
+    <>
+      <span className="sm:hidden">{value.slice(0, 4)}</span>
+      <span className="hidden sm:inline">{value.slice(0, 7)}</span>
+    </>
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * Convergence strip — one tick per generation, same grammar as the
  * tedcheck coverage strip so the two pages read as one system.
@@ -230,25 +248,38 @@ export function GenerationTable({ state }: { state: ScastState }) {
         </button>
       </div>
 
+      {/* The timezone is a constant for the whole table, so it is stated once
+          here rather than living in the generation header - where it was the
+          widest thing on the narrowest screen, costing 36px of a column whose
+          data needs 38. */}
       <p className="mb-3 text-[11px] text-ink-3">
-        <span className="text-ink-2">●</span> same digest as another copy
+        <span className="text-ink-2">●</span> same digest as another copy ·
+        times in {tzLabel()}
       </p>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[34rem] table-fixed border-collapse text-sm">
+        {/* The 34rem floor is a desktop figure. On a phone the table sits in a
+            283px column, and what was setting the width there was never the
+            data - it was the headers: `SCAST-HILBERT` wants 95px where a
+            digest wants 64. Below `sm` the labels give way instead, and the
+            hyphenated hostnames wrap at their own hyphens. */}
+        <table className="w-full min-w-[17rem] table-fixed border-collapse text-sm sm:min-w-[34rem]">
           <thead>
             <tr className="border-b border-rule-strong text-[10px] uppercase tracking-[0.12em] text-ink-3">
-              {/* table-fixed with EQUAL host columns: without it the columns
-                  are content-sized (d1-px1 vs scast-hilbert), so the centre of
-                  a merged cell is not the centre of anything, and the digests
-                  do not line up down the page either. */}
-              <th className="w-[26%] py-1.5 pr-3 text-left font-semibold">
-                generation <span className="normal-case">({tzLabel()})</span>
+              {/* table-fixed with EQUAL host columns is now LOAD-BEARING, not a
+                  nicety. The agreed row's 2/3 span is exact only because the
+                  outer digests sit at 1/6 and 5/6 of the merged cell, and that
+                  is true only when the columns are equal. Content-sized columns
+                  would shift those centres and the arrow tips would quietly
+                  stop landing on the digests. */}
+              <th className="w-[26%] py-1.5 pr-2 text-left font-semibold sm:pr-3">
+                <span className="sm:hidden">gen</span>
+                <span className="hidden sm:inline">generation</span>
               </th>
               {state.hosts.map((h) => (
                 <th
                   key={h}
-                  className="py-1.5 px-3 text-center font-semibold"
+                  className="py-1.5 px-2 text-center font-semibold sm:px-3"
                   style={{ width: `${74 / state.hosts.length}%` }}
                 >
                   {h}
@@ -267,7 +298,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                   }`}
                 >
                   <td
-                    className="qc-num py-1.5 pr-3 text-ink-2"
+                    className="qc-num py-1.5 pr-2 text-ink-2 sm:pr-3"
                     title={utcISO(g.generation)}
                   >
                     {genLabel(g.generation)}
@@ -306,7 +337,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                       <span className="mx-auto flex w-2/3 items-center gap-3">
                         <SpanArrow />
                         <span className="qc-digest shrink-0 text-[12px] text-ink-2">
-                          {shortDigest(g.reports[0]?.digest ?? "")}
+                          <Digest value={g.reports[0]?.digest ?? ""} />
                         </span>
                         <SpanArrow flip />
                       </span>
@@ -318,7 +349,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                         return (
                           <td
                             key={h}
-                            className="py-1.5 px-3 text-center text-ink-3/50"
+                            className="py-1.5 px-2 text-center text-ink-3/50 sm:px-3"
                             title="no report for this generation"
                           >
                             —
@@ -329,7 +360,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                       return (
                         <td
                           key={h}
-                          className={`qc-digest py-1.5 px-3 text-center text-[12px] ${
+                          className={`qc-digest py-1.5 px-2 text-center text-[12px] sm:px-3 ${
                             g.critical ? "text-alarm" : "text-ink-2"
                           }`}
                           title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
@@ -341,7 +372,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                               and the agreed row's arrow tips then could not
                               land on both neighbours symmetrically. */}
                           <span className="relative inline-block">
-                            {shortDigest(report.digest)}
+                            <Digest value={report.digest} />
                             <span className="absolute top-0 left-full ml-1.5 w-2 text-[9px] text-ink-3/70">
                               {mark === undefined
                                 ? ""
