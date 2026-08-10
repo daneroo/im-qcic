@@ -135,34 +135,49 @@ export function ConvergenceStrip({
 const MATCH_MARKS = ["\u25CF", "\u25C6", "\u25A0", "\u25B2"];
 
 /**
- * One arrow: head and shaft in a single coordinate system, pointing left.
- * The right-hand one is the same element flipped with scaleX(-1).
+ * One arrow, pointing left; the right-hand one is the same element flipped
+ * with scaleX(-1). Head and shaft live in one coordinate system.
  *
- * Deliberately NOT a triangle plus a gap plus a hairline div: composing it
- * that way makes the shaft the leftover of flexbox arithmetic, so its length
- * depends on gaps and cell padding, and the shaft itself is a 1px background
- * span - the very construct that reads as a stray row rule. Here there is no
- * viewBox, so user units are CSS pixels: the head is a fixed 12x10 at the tip
- * and the shaft runs to `100%`, whatever width flex hands the element.
+ * The geometry is lucide's `move-horizontal`, which is precisely this mark:
+ *
+ *   viewBox 0 0 24 24, fill none, stroke-width 2, linecap+linejoin round
+ *   m6 8-4 4 4 4    head, a chevron
+ *   M2 12h20        shaft, running tip to tip
+ *
+ * Three properties of that are what make an arrow look drawn rather than
+ * assembled, and an earlier version here had none of them:
+ *
+ *   STROKED HEAD, SAME WEIGHT AS THE SHAFT. A filled triangle on a hairline is
+ *   two different pen weights in one mark, so the head reads as a blob with a
+ *   wire attached. lucide's head is fill:none and inherits the shaft's stroke.
+ *   ROUND JOIN AND CAP. The chevron vertex and the shaft ends are rounded.
+ *   TIP TO TIP. The shaft starts AT the vertex (x=2 in both paths), it is not
+ *   butted against the head, and there is no opacity fade along it.
+ *
+ * Proportions are lucide's: arms at 45 degrees, shaft collinear with the
+ * vertex. Only the scale differs - 12px tall against 12px digits - and the
+ * shaft is fluid. There is no viewBox, so user units are CSS pixels and the
+ * shaft can run to `100%` of whatever width flex hands the element; path data
+ * cannot take a percentage, which is why the shaft is a <line>. The vertex
+ * sits at half a stroke from the edge so the round cap's outer extremity falls
+ * exactly on x=0 - the tip is the element's edge, which is what the 2/3
+ * alignment below is measured against.
  */
 function SpanArrow({ flip = false }: { flip?: boolean }) {
   return (
     <span className={`min-w-0 flex-1 ${flip ? "-scale-x-100" : ""}`}>
       <svg
-        className="block h-2.5 w-full text-ink-3"
+        className="block h-3 w-full text-ink-3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         aria-hidden="true"
         focusable="false"
       >
-        <path d="M12 0 L0 5 L12 10 Z" fill="currentColor" />
-        <line
-          x1="11"
-          y1="5"
-          x2="100%"
-          y2="5"
-          stroke="currentColor"
-          strokeWidth="1"
-          opacity="0.55"
-        />
+        <path d="M4.25 2.5 L0.75 6 L4.25 9.5" />
+        <line x1="0.75" y1="6" x2="100%" y2="6" />
       </svg>
     </span>
   );
