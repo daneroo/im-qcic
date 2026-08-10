@@ -134,6 +134,40 @@ export function ConvergenceStrip({
     digits and would be read as part of the digest. */
 const MATCH_MARKS = ["\u25CF", "\u25C6", "\u25A0", "\u25B2"];
 
+/**
+ * One arrow: head and shaft in a single coordinate system, pointing left.
+ * The right-hand one is the same element flipped with scaleX(-1).
+ *
+ * Deliberately NOT a triangle plus a gap plus a hairline div: composing it
+ * that way makes the shaft the leftover of flexbox arithmetic, so its length
+ * depends on gaps and cell padding, and the shaft itself is a 1px background
+ * span - the very construct that reads as a stray row rule. Here there is no
+ * viewBox, so user units are CSS pixels: the head is a fixed 12x10 at the tip
+ * and the shaft runs to `100%`, whatever width flex hands the element.
+ */
+function SpanArrow({ flip = false }: { flip?: boolean }) {
+  return (
+    <span className={`min-w-0 flex-1 ${flip ? "-scale-x-100" : ""}`}>
+      <svg
+        className="block h-2.5 w-full text-ink-3"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M12 0 L0 5 L12 10 Z" fill="currentColor" />
+        <line
+          x1="11"
+          y1="5"
+          x2="100%"
+          y2="5"
+          stroke="currentColor"
+          strokeWidth="1"
+          opacity="0.55"
+        />
+      </svg>
+    </span>
+  );
+}
+
 export function GenerationTable({ state }: { state: ScastState }) {
   const [showAll, setShowAll] = useState(false);
 
@@ -182,7 +216,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
               {state.hosts.map((h) => (
                 <th
                   key={h}
-                  className="py-1.5 px-3 text-left font-semibold"
+                  className="py-1.5 px-3 text-center font-semibold"
                   style={{ width: `${74 / state.hosts.length}%` }}
                 >
                   {h}
@@ -216,63 +250,33 @@ export function GenerationTable({ state }: { state: ScastState }) {
                   </td>
 
                   {agreed ? (
-                    /* One merged cell, CENTRED, with the span shown by arrows
-                       drawn as text characters on the baseline.
+                    /* THE WIDTH IS 2/3, AND THAT NUMBER IS EXACT. The host
+                       columns are centred, so with n equal columns the two
+                       OUTER digests sit at 1/(2n) and 1-1/(2n) of the merged
+                       cell - 1/6 and 5/6 for three. A mark spanning exactly
+                       the middle 2/3 therefore lands its arrow TIPS on those
+                       two digest positions: it reaches from where one copy's
+                       value would be printed to where the other's would. Both
+                       are fractions of the same cell, so it holds at any table
+                       width. No cell padding here - px-3 would shrink the
+                       content box and the 2/3 would stop being 2/3.
 
-                       Two earlier attempts failed for reasons worth keeping:
-                       CSS hairlines to the cell edges sit at the cell's
-                       vertical centre, which is exactly where a row divider
-                       sits, so they read as a stray rule. And arrows set at
-                       11px in ink-3 at 60% opacity were triple-faint and
-                       simply disappeared. Characters sit on the baseline with
-                       the digest, so they read as typography rather than as a
-                       rule, and at 12px in ink-2 they are actually visible. */
+                       Centring the COLUMNS is what makes a centred collapse
+                       legible. While they were left-aligned the digests sat at
+                       471/684/898 against a cell centred at 779, so no centred
+                       mark could point at anything, and the arrows were never
+                       going to rescue it. */
                     <td
                       colSpan={state.hosts.length}
-                      className="py-1.5 px-3 text-center"
+                      className="py-1.5 text-center"
                       title={`all ${g.reports.length} copies hold ${g.reports[0]?.digest}`}
                     >
-                      {/* A dimension line, drawn in SVG.
-                          The arrows were unicode (U+27F8/27F9) and simply did
-                          not render: neither JetBrains Mono nor Rubik carries
-                          those glyphs, so the browser fell back to a stub with
-                          no head at all. That, not size or opacity, is why
-                          they were invisible. SVG heads depend on no font.
-
-                          WIDTH IS THE WHOLE POINT. The first SVG attempt was
-                          ~120px of visible mark centred in a 641px merged
-                          cell, which put the entire assembly INSIDE the middle
-                          host column - so it read as that copy's value with
-                          decoration. At 72% the shafts cross both column
-                          boundaries, so the mark is visibly wider than any one
-                          column while still stopping short of the table edges,
-                          where a full-width hairline would read as a rule.
-                          Heads are 12x10, larger than the 12px digest's cap
-                          height, so they are terminators rather than specks. */}
-                      <span className="mx-auto flex w-[72%] items-center gap-2 text-ink-3">
-                        <svg
-                          width="12"
-                          height="10"
-                          viewBox="0 0 12 10"
-                          className="shrink-0"
-                          aria-hidden="true"
-                        >
-                          <path d="M12 0 L0 5 L12 10 Z" fill="currentColor" />
-                        </svg>
-                        <span className="h-px flex-1 bg-current opacity-55" />
+                      <span className="mx-auto flex w-2/3 items-center gap-2">
+                        <SpanArrow />
                         <span className="qc-digest shrink-0 text-[12px] text-ink-2">
                           {shortDigest(g.reports[0]?.digest ?? "")}
                         </span>
-                        <span className="h-px flex-1 bg-current opacity-55" />
-                        <svg
-                          width="12"
-                          height="10"
-                          viewBox="0 0 12 10"
-                          className="shrink-0"
-                          aria-hidden="true"
-                        >
-                          <path d="M0 0 L12 5 L0 10 Z" fill="currentColor" />
-                        </svg>
+                        <SpanArrow flip />
                       </span>
                     </td>
                   ) : (
@@ -282,7 +286,7 @@ export function GenerationTable({ state }: { state: ScastState }) {
                         return (
                           <td
                             key={h}
-                            className="py-1.5 px-3 text-ink-3/50"
+                            className="py-1.5 px-3 text-center text-ink-3/50"
                             title="no report for this generation"
                           >
                             —
@@ -293,16 +297,24 @@ export function GenerationTable({ state }: { state: ScastState }) {
                       return (
                         <td
                           key={h}
-                          className={`qc-digest py-1.5 px-3 text-[12px] ${
+                          className={`qc-digest py-1.5 px-3 text-center text-[12px] ${
                             g.critical ? "text-alarm" : "text-ink-2"
                           }`}
                           title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
                         >
-                          {shortDigest(report.digest)}
-                          <span className="ml-1.5 inline-block w-2 text-[9px] text-ink-3/70">
-                            {mark === undefined
-                              ? ""
-                              : MATCH_MARKS[mark % MATCH_MARKS.length]}
+                          {/* The digest is centred in its column; the marker
+                              hangs OUT of the flow beside it. In flow it added
+                              ~14px to the right of every digest, so the whole
+                              grid of digests sat 7px left of the column grid -
+                              and the agreed row's arrow tips then could not
+                              land on both neighbours symmetrically. */}
+                          <span className="relative inline-block">
+                            {shortDigest(report.digest)}
+                            <span className="absolute top-0 left-full ml-1.5 w-2 text-[9px] text-ink-3/70">
+                              {mark === undefined
+                                ? ""
+                                : MATCH_MARKS[mark % MATCH_MARKS.length]}
+                            </span>
                           </span>
                         </td>
                       );
