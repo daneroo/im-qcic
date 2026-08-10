@@ -101,16 +101,17 @@ export function ConvergenceStrip({
 /* ------------------------------------------------------------------ *
  * GENERATION TABLE — three visual layers, one job each, no overlap.
  *
- *   CONTRAST    agreed vs split. Collapsing an agreed row into one merged
- *               cell was tried and abandoned: centring a value across three
- *               host columns lands it under the MIDDLE one and reads as that
- *               copy's, and every fix for that - rules to the cell edges,
- *               flanking arrows - either clashed with the row dividers or was
- *               too faint to see. So the grid stays perfectly regular and
- *               agreement is carried by INK instead: an agreed row is dimmed,
- *               a split row is not. The calm case still disappears, by
- *               contrast rather than by collapsing, and identical strings side
- *               by side are what agreement actually looks like.
+ *   COLLAPSE    agreed vs split. Three identical digests are replaced by ONE,
+ *               in a merged cell spanning the host columns. Centring alone is
+ *               not enough - the centre of three equal columns IS the middle
+ *               one, so a bare centred digest reads as that copy's value. The
+ *               span is therefore stated by a dimension line whose width is
+ *               chosen to cross the column boundaries: wider than any single
+ *               column, narrower than the table. See the note at the cell.
+ *
+ *               The fallback, if this fails on the page, is to give up the
+ *               collapse and carry agreement by ink alone - an agreed row
+ *               dimmed, a split row not - which is where this started.
  *
  *   MARKER       which digests are identical, for aiming a manual resync.
  *                Only groups with more than one member get one, so a
@@ -237,32 +238,40 @@ export function GenerationTable({ state }: { state: ScastState }) {
                           those glyphs, so the browser fell back to a stub with
                           no head at all. That, not size or opacity, is why
                           they were invisible. SVG heads depend on no font.
-                          The shafts stretch to the edges of the merged cell,
-                          so the mark reads as spanning all the host columns
-                          rather than belonging to the middle one. */}
-                      <span className="flex items-center justify-center gap-1.5 text-ink-3">
+
+                          WIDTH IS THE WHOLE POINT. The first SVG attempt was
+                          ~120px of visible mark centred in a 641px merged
+                          cell, which put the entire assembly INSIDE the middle
+                          host column - so it read as that copy's value with
+                          decoration. At 72% the shafts cross both column
+                          boundaries, so the mark is visibly wider than any one
+                          column while still stopping short of the table edges,
+                          where a full-width hairline would read as a rule.
+                          Heads are 12x10, larger than the 12px digest's cap
+                          height, so they are terminators rather than specks. */}
+                      <span className="mx-auto flex w-[72%] items-center gap-2 text-ink-3">
                         <svg
-                          width="6"
-                          height="6"
-                          viewBox="0 0 6 6"
+                          width="12"
+                          height="10"
+                          viewBox="0 0 12 10"
                           className="shrink-0"
                           aria-hidden="true"
                         >
-                          <path d="M6 0 L0 3 L6 6 Z" fill="currentColor" />
+                          <path d="M12 0 L0 5 L12 10 Z" fill="currentColor" />
                         </svg>
-                        <span className="h-px w-4 bg-current opacity-60" />
-                        <span className="qc-digest text-[12px] text-ink-2">
+                        <span className="h-px flex-1 bg-current opacity-55" />
+                        <span className="qc-digest shrink-0 text-[12px] text-ink-2">
                           {shortDigest(g.reports[0]?.digest ?? "")}
                         </span>
-                        <span className="h-px w-4 bg-current opacity-60" />
+                        <span className="h-px flex-1 bg-current opacity-55" />
                         <svg
-                          width="6"
-                          height="6"
-                          viewBox="0 0 6 6"
+                          width="12"
+                          height="10"
+                          viewBox="0 0 12 10"
                           className="shrink-0"
                           aria-hidden="true"
                         >
-                          <path d="M0 0 L6 3 L0 6 Z" fill="currentColor" />
+                          <path d="M0 0 L12 5 L0 10 Z" fill="currentColor" />
                         </svg>
                       </span>
                     </td>
