@@ -164,15 +164,16 @@ export function ScastStrata({ feed }: { feed: ScastFeed }) {
       >
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <div>
+            {/* Provenance, and nothing else. The record and history-scope
+                counts that used to follow were plumbing volume, not service
+                quality - they said nothing about whether the copies agree, and
+                the "48h rolling window" among them was wrong besides: that
+                figure came from dividing ALL held records by three hosts, when
+                half of them are the `history` scope this view discards. A
+                number the page has no reason to print cannot be wrong. */}
             <p className="text-sm text-ink">
               NATS JetStream — ordered consumer on{" "}
               <span className="qc-digest">scastDigest</span>, 24h replay
-            </p>
-            <p className="mt-1 text-xs text-ink-3">
-              <span className="qc-num">{feed.count}</span> records held, a 48h
-              rolling window. {state.historyRecords} of them are the{" "}
-              <span className="qc-digest">history</span> scope, which this view
-              does not use.
             </p>
           </div>
           <LivenessLabel status={feed.status} />
@@ -358,13 +359,11 @@ export function ScastSheet({ feed }: { feed: ScastFeed }) {
           </table>
         </div>
 
-        <p className="mt-4 max-w-prose text-xs text-ink-3">
-          Convergence is reported in cycles, not nines: a 48h window holds only
-          ~{state.generations.length} generations, so one divergence would
-          already read as 2.46 nines. The unit has to match what the data can
-          carry.
-        </p>
-
+        {/* A paragraph arguing why this page does not use nines used to sit
+            here. It was the page explaining its own reasoning to a reader who
+            never asked - and arguing against a unit that is not on screen. It
+            also carried the same wrong 48h. The argument belongs in the
+            glossary, where it already is. */}
         <GenerationRecord state={state} className="mt-6" />
 
         <Byline>im.scast.scrape.digest</Byline>

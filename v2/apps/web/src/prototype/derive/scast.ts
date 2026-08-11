@@ -27,9 +27,13 @@
 // copy's reporting lag) and `elapsed` (how long that copy's scrape took).
 // parseDigestMessage drops both because the cross-tab doesn't need them.
 //
-// NOT nines. A 48h window holds ~288 generations, so a single divergence is
-// already 2.46 nines and two is 2.16 - a scale too coarse and too jumpy to
-// carry meaning. scast reports in cycles instead. See ./nines.ts.
+// NOT nines. The window is 24h - scast-bridge replays 24h, whatever the client
+// buffer holds - so it carries ~144 generations, and a single divergence is
+// already 2.16 nines. A scale too coarse and too jumpy to carry meaning. scast
+// reports in generations instead.
+//
+// The 48h/~288 this used to say came from dividing ALL held records by three
+// hosts; half of them are the `history` scope this module discards.
 
 /** Generations are 10-minute scrape cycles. */
 export const GENERATION_MS = 10 * 60 * 1000;

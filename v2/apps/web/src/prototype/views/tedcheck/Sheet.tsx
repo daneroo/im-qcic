@@ -9,8 +9,8 @@
 //
 // The vocabulary is deliberately NOT "everything gets nines". A nines figure
 // needs sample density to mean anything: 86400 samples/day earns one, but
-// scast's ~288 generations per 48h does not (one divergence there is already
-// 2.46 nines and two is 2.16 — too coarse and too jumpy to read). So the
+// scast's ~144 generations per 24h does not (one divergence there is already
+// 2.16 nines — too coarse and too jumpy to read). So the
 // universal half is the second half — last big gap, and its duration — and
 // nines is an *optional column*, filled only where the data can carry it.
 // That asymmetry is a finding, not a compromise.
