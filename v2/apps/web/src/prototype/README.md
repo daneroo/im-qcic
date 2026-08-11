@@ -30,12 +30,21 @@ useful for judging whether ted1k is healthy, it belongs in Grafana.**
 ## How to run
 
 ```sh
-cd v2/apps/web && bun run dev
+docker compose -f v2/infra/compose.yaml up -d      # nats + ted1k-derive + scast-bridge
+cd v2/apps/web
+VITE_NATS_WS_URL=ws://$(ipconfig getifaddr en0):9222 bun --bun vite dev --port 3000 --host 0.0.0.0
 ```
 
-Needs `v2/infra/compose.yaml` up (`nats` + `ted1k-derive` + `scast-bridge`) —
-every variant reads the same real data through the existing `useDerivedState` /
+Every variant reads the same real data through the existing `useDerivedState` /
 `useScastFeed` hooks, unchanged.
+
+**Bind to the LAN address, not localhost.** Review happens on a phone and an
+iPad, and the default `ws://localhost:9222` resolves to _the phone_ — so pages
+render and then sit at "connecting" forever with nothing on screen explaining
+why. Vite needs `--host 0.0.0.0` **and** the NATS URL needs the LAN IP.
+`bun run dev` alone is fine only for desktop-only work.
+
+Quality gate: `cd v2 && bun run ci`.
 
 ## Axes
 
@@ -202,6 +211,36 @@ ordinary daily loss, scast's routine two-cycle splits, the tailnet's
 expected-offline peers — the encoding was lying, and fixing it made the page
 more useful rather than merely quieter.
 
+## Design rules these pages hold to
+
+**The page states facts; it does not explain itself.** Captions are captions.
+Reasoning belongs in this glossary, read once, not in the interface, read a
+thousand times. Two paragraphs have already been deleted for breaking this: one
+restating the agreement model on every render, one arguing against a unit that
+was not even on screen.
+
+**Print nothing the page has no reason to print.** Record counts and buffer
+sizes are plumbing volume, not service quality. A number that does not help
+answer the page's own question can still be wrong — and one of them was.
+
+**Plots define their own y-scale and start at zero. Labels do not need an
+axis.** Two labels at the ends beat an axis, and beat a glyph that might not be
+in the font.
+
+**Encode nominal things nominally.** Height and length are magnitude channels.
+Agreement has no magnitude — a generation agrees or it does not — so the
+convergence strip has two heights and carries the rest in tone. ted1k's missing
+time _is_ a magnitude, which is why the two strips deliberately no longer rhyme.
+
+**Match the reading direction.** The Generation Table is newest-first, so the
+strip runs now-on-the-left, backwards in time. Two directions on one page is a
+bug, not a style.
+
+**Measure the DOM before claiming anything about layout.** Every geometric claim
+in this directory's comments is a measured number, because several confident
+ones turned out to be wrong. 1× screenshots cannot settle hairlines or 12px
+type; `getBoundingClientRect` can.
+
 ## What's real and what isn't
 
 **Real, live, from NATS:** everything on `/tedcheck` and `/scast`.
@@ -222,3 +261,46 @@ applies to `missingWeekByDay`'s last row, which is simply today-so-far.
 
 Every variant renders the corrected value and marks the bucket **partial**, a
 state that must read as _incomplete_, never as _bad_.
+
+## Where each variant stands
+
+**Strata has won.** `Circuit` and `Sheet` stay for now as the record of what was
+tried, not as candidates.
+
+| variant   | verdict                                                               |
+| --------- | --------------------------------------------------------------------- |
+| `Strata`  | the winner                                                            |
+| `Circuit` | some elements liked, never enumerated — needs a concrete list to fold |
+| `Sheet`   | marked for deletion, judged too simple to be worth the surface        |
+
+`Sheet`'s finding survives its variant: nines cannot describe scast, so the
+vocabulary shared with tedcheck is _last excursion + duration_, not a rate.
+
+Still open, visual: power columns are too wide on desktop, fine on mobile and
+portrait iPad. The wordmark is EB Garamond, settled for now — bench at
+`/prototype/mark` if that reopens.
+
+## Fold-back
+
+Nothing here merges as-is. When it graduates, it sorts into three piles:
+
+**Domain truth — lands regardless of which variant won.** The ted1k window
+correction, the significant-gap threshold, the scast agreement model, the
+local/UTC time rule, the duration formatter, `critical` and its still-open
+narrowing, and the contiguous latest-divergence slice. This is the valuable pile
+and **the only part that deserves tests** — the prototype is deliberately
+test-free, so these have none.
+
+**Infrastructure — lands early.** The token layer (theme vs semantic split, the
+one-chromatic-token rule), the type decisions, the shared marks.
+
+**Scaffolding — never lands.** `VariantSwitcher`, `?variant=`, the wordmark
+bench, `Sheet`.
+
+Sequencing: tokens → derivations with tests → producer-side fixes → one page at
+a time. Four seams to settle first: where derivations live, the `DataTable`
+untyped `Cell[][]` problem (the real architectural debt), whether the marks
+become a component library, and whether all three themes ship.
+
+This glossary is really domain vocabulary and should graduate into `CONTEXT.md`
+rather than die with this directory.
