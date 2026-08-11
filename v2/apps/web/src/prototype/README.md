@@ -146,11 +146,15 @@ always pending; calling that a disagreement would cry wolf every ten minutes.
 **Converged** / **diverged** — a settled generation whose copies all hold the
 same digest, or don't.
 
-**Self-healing** — a divergence that reconciles within two cycles. The system
-working as designed, so it is drawn in neutral ink.
+**Critical** — a divergence that has run past `CRITICAL_GENERATIONS`, six
+generations, which is one hour. Below it the reconciliation is doing its job and
+the divergence is drawn in neutral ink; past it, and only while the run is still
+open, it earns the alarm colour. A run that ran long but has since closed is
+history, not a fault.
 
-**Stuck run** — a divergence lasting longer than that. Only these are drawn in
-the alarm colour.
+Criticality is a visual advisory and a phrase in the verdict sentence, nothing
+more. If it ever grows teeth it will be as an alarm or notification, and that is
+where the concept would be carried.
 
 **Reporting lag** — a copy's publish `stamp` minus the generation it belongs to.
 **Scrape elapsed** — how long that copy's own run took. Both ride on every
