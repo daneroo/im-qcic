@@ -123,14 +123,12 @@ function FlowLink({
 }) {
   return (
     <div
-      data-flow-link
       className={`relative h-[3.25rem] min-w-[6rem] flex-1 ${unavailable ? "opacity-35" : ""}`}
     >
       <span className="absolute inset-x-1 top-0 text-center text-[10px] leading-4 text-ink-2">
         {fact}
       </span>
       <span
-        data-flow-rail
         className="absolute inset-x-0 top-9 h-px bg-rule-strong"
         aria-hidden="true"
       >
@@ -142,10 +140,7 @@ function FlowLink({
 
 function FlowNode({ children }: { children: ReactNode }) {
   return (
-    <span
-      data-flow-node
-      className="mt-5 flex h-8 shrink-0 items-center rounded-md border border-rule-strong bg-surface px-3 text-[13px] font-medium text-ink"
-    >
+    <span className="mt-5 flex h-8 shrink-0 items-center rounded-md border border-rule-strong bg-surface px-3 text-[13px] font-medium text-ink">
       {children}
     </span>
   );
