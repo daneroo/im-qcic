@@ -40,9 +40,7 @@ export function Stratum({
           className={`min-w-0 flex-1 ${health === "unverifiable" ? "opacity-50" : ""}`}
         >
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-2">
-              {role}
-            </p>
+            <p className="text-[11px] text-ink-3">{role}</p>
             {health === "unverifiable" && (
               <span className="rounded-full border border-dashed border-partial px-2 py-0.5 text-[10px] tracking-wide text-ink-2">
                 unverifiable

@@ -49,11 +49,9 @@ export interface Ted1kBucket {
 }
 
 export interface Ted1kReading {
-  view: ViewName;
   label: string;
   unit: string;
   stamp: Date;
-  hostname: string;
   buckets: Ted1kBucket[];
   whole: Ted1kBucket[];
   worst: Ted1kBucket | null;
@@ -159,11 +157,9 @@ export function deriveView(
     { energy: 0, samples: 0 },
   );
   return {
-    view,
     label: shape.label,
     unit: shape.unit,
     stamp,
-    hostname: payload.meta.hostname,
     buckets,
     whole,
     worst,
