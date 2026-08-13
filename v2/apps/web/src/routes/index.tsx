@@ -16,8 +16,8 @@ function Home() {
           scast
         </Link>{" "}
         and{" "}
-        <Link to="/tedcheck" className="underline decoration-rule-strong">
-          tedcheck
+        <Link to="/ted1k" className="underline decoration-rule-strong">
+          ted1k
         </Link>{" "}
         are live.
       </p>

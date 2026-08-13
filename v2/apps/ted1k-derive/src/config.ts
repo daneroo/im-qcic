@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs";
 import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
 import { log } from "./logger";
-import { queries } from "./tedcheck";
-import type { MysqlCredentials } from "./tedcheck-datasource";
+import { queries } from "./ted1k";
+import type { MysqlCredentials } from "./ted1k-datasource";
 
 export interface NatsCredentials {
   servers: string;
@@ -12,7 +12,7 @@ export interface NatsCredentials {
 export type ViewName = keyof typeof queries;
 
 // This service's identity on the new NATS server's KV bucket - one key per
-// view, matching the query names in tedcheck.ts's `queries` map 1:1, so
+// view, matching the query names in ted1k.ts's `queries` map 1:1, so
 // consumers can watch/fetch a section independently of the others.
 export const KV_BUCKET_NAME = "ted1k-derive";
 

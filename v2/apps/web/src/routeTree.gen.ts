@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as ScastRouteImport } from './routes/scast'
-import { Route as TedcheckRouteImport } from './routes/tedcheck'
+import { Route as Ted1kRouteImport } from './routes/ted1k'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,9 +29,9 @@ const ScastRoute = ScastRouteImport.update({
   path: '/scast',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TedcheckRoute = TedcheckRouteImport.update({
-  id: '/tedcheck',
-  path: '/tedcheck',
+const Ted1kRoute = Ted1kRouteImport.update({
+  id: '/ted1k',
+  path: '/ted1k',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -39,34 +39,34 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/network': typeof NetworkRoute
   '/scast': typeof ScastRoute
-  '/tedcheck': typeof TedcheckRoute
+  '/ted1k': typeof Ted1kRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/network': typeof NetworkRoute
   '/scast': typeof ScastRoute
-  '/tedcheck': typeof TedcheckRoute
+  '/ted1k': typeof Ted1kRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/network': typeof NetworkRoute
   '/scast': typeof ScastRoute
-  '/tedcheck': typeof TedcheckRoute
+  '/ted1k': typeof Ted1kRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/network' | '/scast' | '/tedcheck'
+  fullPaths: '/' | '/network' | '/scast' | '/ted1k'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/network' | '/scast' | '/tedcheck'
-  id: '__root__' | '/' | '/network' | '/scast' | '/tedcheck'
+  to: '/' | '/network' | '/scast' | '/ted1k'
+  id: '__root__' | '/' | '/network' | '/scast' | '/ted1k'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NetworkRoute: typeof NetworkRoute
   ScastRoute: typeof ScastRoute
-  TedcheckRoute: typeof TedcheckRoute
+  Ted1kRoute: typeof Ted1kRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,11 +92,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScastRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tedcheck': {
-      id: '/tedcheck'
-      path: '/tedcheck'
-      fullPath: '/tedcheck'
-      preLoaderRoute: typeof TedcheckRouteImport
+    '/ted1k': {
+      id: '/ted1k'
+      path: '/ted1k'
+      fullPath: '/ted1k'
+      preLoaderRoute: typeof Ted1kRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -106,7 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NetworkRoute: NetworkRoute,
   ScastRoute: ScastRoute,
-  TedcheckRoute: TedcheckRoute,
+  Ted1kRoute: Ted1kRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

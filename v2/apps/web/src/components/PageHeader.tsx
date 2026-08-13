@@ -30,16 +30,13 @@ export function PageHeader() {
         </Link>
 
         <nav aria-label="Subjects" className="flex items-center gap-1">
-          {/* Literal `to` values — the router types each route, so these
-              cannot be built from a loop. `tedcheck` is the retired
-              check-name; the route and this label both become `ted1k` in
-              #265, together, so the header never disagrees with the page. */}
+          {/* Literal `to` values let the router type each route. */}
           <Link
-            to="/tedcheck"
+            to="/ted1k"
             className={navLink}
             activeProps={{ className: navLinkActive }}
           >
-            tedcheck
+            ted1k
           </Link>
           <Link
             to="/scast"

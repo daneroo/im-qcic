@@ -4,15 +4,9 @@ Homelab dashboard, replacing `site` — TanStack Start + Tailwind, fully
 static/client-rendered (no server-side data fetching). See
 [../../AGENTS.md](../../AGENTS.md) for workspace-wide conventions.
 
-This is the scaffold only (see
-[issue #241](https://github.com/daneroo/im-qcic/issues/241)): basic page/layout
-and a light/dark theme toggle. No NATS connection yet — live Tedcheck and
-Logcheck views land in follow-up tickets
-([#249](https://github.com/daneroo/im-qcic/issues/249),
-[#250](https://github.com/daneroo/im-qcic/issues/250)), which is why no server
-functions or loaders are written here: every future data fetch happens
-client-side, directly over a NATS websocket connection, matching this app's
-fully-static shape from the start.
+The subject pages read live data client-side, directly over NATS WebSocket
+connections; no server functions or loaders fetch application data. The shared
+header carries navigation plus the theme-family and light/dark controls.
 
 ## Theming
 

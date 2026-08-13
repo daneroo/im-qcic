@@ -1,5 +1,5 @@
-import { asTable, iso8601ify, queries, type Table } from "./tedcheck";
-import type { TedcheckDataSource } from "./tedcheck-datasource";
+import { asTable, iso8601ify, queries, type Table } from "./ted1k";
+import type { Ted1kDataSource } from "./ted1k-datasource";
 import type { ViewName } from "./config";
 
 export interface ViewPayload {
@@ -7,14 +7,14 @@ export interface ViewPayload {
     stamp: string;
     hostname: string;
     version: { name: string; version: string; runtime: string };
-    type: "tedcheck";
+    type: "ted1k";
     view: ViewName;
   };
   data: Table;
 }
 
 export interface PollDeps {
-  datasource: TedcheckDataSource;
+  datasource: Ted1kDataSource;
   publish(view: ViewName, payload: ViewPayload): Promise<void>;
   hostname: string;
   version: ViewPayload["meta"]["version"];
@@ -38,7 +38,7 @@ export async function pollView(
       stamp: (deps.now?.() ?? new Date()).toISOString(),
       hostname: deps.hostname,
       version: deps.version,
-      type: "tedcheck",
+      type: "ted1k",
       view,
     },
     data: iso8601ify(asTable(rows)),

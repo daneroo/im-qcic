@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { decodeDecimalBuffers } from "./tedcheck-datasource";
+import { decodeDecimalBuffers } from "./ted1k-datasource";
 
 describe("decodeDecimalBuffers", () => {
   test("decodes DECIMAL columns Bun's mysql client returns as Buffer", () => {
