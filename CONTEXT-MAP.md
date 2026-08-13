@@ -49,6 +49,8 @@ Cuts across almost every context above — worth tracking as its own axis rather
 
 Site and Status — the only two packages with real daily use — are being ported into a new self-contained `v2/` subtree (Bun workspaces, structured after `/Users/daniel/Code/iMetrical/ai-garden/prosodio`), decoupled from the existing lerna/pnpm root. See [ADR-0002](./docs/adr/0002-v2-bun-monorepo-subtree.md) for why a subtree, and Status's CONTEXT.md for the full port plan.
 
+`v2/` has since grown past those two: `apps/web` (TanStack Start dashboard), `apps/ted1k-derive` (polls ted1k's MySQL, publishes into NATS KV) and `apps/scast-bridge` (scrobblecast digests onto the bus) all live there now. `v2/` is expected to become the repo, so its [CONTEXT.md](./v2/CONTEXT.md) holds the monitoring vocabulary for the whole project rather than per-app glossaries.
+
 - **Status** — Phase 1 port done (#224–#227): faithful/behavior-frozen lift to TypeScript + ESM + Hono, running on Bun, Dockerized. Not yet wired into `infra/gateway`'s real deploy — that cutover is a deliberately separate, later decision.
 - **Site** — deliberately out of scope here; needs its own `/wayfinder` session (framework, styling, whether it still proxies state through Natsql per ADR-0001, and how central NATS should be to the client — a decision that could retroactively make Status's phase-2 evolution moot).
 
@@ -58,6 +60,7 @@ Site and Status — the only two packages with real daily use — are being port
 
 (confirmed active — has its own CONTEXT.md)
 
+- [QCIC (v2)](./v2/CONTEXT.md) — the Bun workspace rebuilding the repo; owns the monitoring vocabulary (continuity, agreement, states of knowledge)
 - [Gateway](./infra/gateway/CONTEXT.md) — always-up Ubuntu VM hosting caddy, nats, natsql, status
 - [Hass](./infra/hass/CONTEXT.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
 - [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois
