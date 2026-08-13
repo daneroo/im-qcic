@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { asTable, iso8601ify } from "./tedcheck";
+import { asTable, iso8601ify } from "./ted1k";
 
-describe("tedcheck", () => {
+describe("ted1k", () => {
   describe("asTable", () => {
     test("converts rows into a header + value table", () => {
       const rows = [

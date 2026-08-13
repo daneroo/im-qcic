@@ -1,4 +1,4 @@
-import type { Row } from "./tedcheck";
+import type { Row } from "./ted1k";
 
 export interface MysqlCredentials {
   host: string;
@@ -7,7 +7,7 @@ export interface MysqlCredentials {
   database: string;
 }
 
-export interface TedcheckDataSource {
+export interface Ted1kDataSource {
   query(sql: string): Promise<Row[]>;
 }
 
@@ -17,12 +17,12 @@ export interface TedcheckDataSource {
 // is safe; only querying without credentials throws.
 export function createMysqlDataSource(
   credentials: MysqlCredentials | null,
-): TedcheckDataSource {
+): Ted1kDataSource {
   let client: Bun.SQL | null = null;
 
   function getClient(): Bun.SQL {
     if (!credentials) {
-      throw new Error("tedcheck: mysql credentials not configured");
+      throw new Error("ted1k: mysql credentials not configured");
     }
     if (!client) {
       client = new Bun.SQL({

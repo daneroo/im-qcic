@@ -34,6 +34,6 @@ vocabulary is [`v2/CONTEXT.md`](../../../../CONTEXT.md)'s — **missing**,
 
 ## What is not here
 
-`kwhPerDay` and the localised time labels (`localHM`, `utcDate`, `utcISO`,
-`tzLabel`) are still on the prototype branch, and land with the pages that use
-them — consumption is ted1k's, and the timezone rule is worth its own argument.
+`kwhPerDay` remains subject-local; the localised time labels (`localHM`,
+`utcDate`, `utcISO`, `tzLabel`) land with the pages that use them — consumption
+is ted1k's, and the timezone rule is worth its own argument.

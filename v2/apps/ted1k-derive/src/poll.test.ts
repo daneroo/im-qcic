@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import { pollView } from "./poll";
-import { queries, type Row } from "./tedcheck";
-import type { TedcheckDataSource } from "./tedcheck-datasource";
+import { queries, type Row } from "./ted1k";
+import type { Ted1kDataSource } from "./ted1k-datasource";
 
-function fakeDatasource(rowsBySql: Record<string, Row[]>): TedcheckDataSource {
+function fakeDatasource(rowsBySql: Record<string, Row[]>): Ted1kDataSource {
   return {
     async query(sql: string): Promise<Row[]> {
       return rowsBySql[sql] ?? [];
@@ -37,7 +37,7 @@ describe("pollView", () => {
         stamp: "2026-08-04T12:00:00.000Z",
         hostname: "test-host",
         version,
-        type: "tedcheck",
+        type: "ted1k",
         view: "missingLastDay",
       },
       data: [

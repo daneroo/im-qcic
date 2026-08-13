@@ -1,14 +1,13 @@
 # @daneroo/qcic-ted1k-derive
 
-Polls Ted1k's MySQL `watt` table for Tedcheck's three missing-sample views —
+Polls Ted1k's MySQL `watt` table for three missing-sample views —
 `missingLastDay`, `missingWeekByDay`, `missingDayByHour` — and publishes each
 one to its own key in a NATS KV bucket on the new `v2/infra` NATS server,
-replacing the HTTP request/response cycle `site` used to poll `/api/tedcheck`
-with a push. See [../../AGENTS.md](../../AGENTS.md) for workspace-wide
-conventions.
+replacing the HTTP request/response cycle the old site used to poll with a push.
+See [../../AGENTS.md](../../AGENTS.md) for workspace-wide conventions.
 
-Reuses `v2/apps/status/src/tedcheck.ts` (queries, `asTable`, `iso8601ify`) and
-`tedcheck-datasource.ts` (`createMysqlDataSource`, including the
+Owns the queries, `asTable`, and `iso8601ify` in `ted1k.ts`, plus
+`ted1k-datasource.ts` (`createMysqlDataSource`, including the
 `decodeDecimalBuffers` Bun.SQL DECIMAL fix) unchanged — this service never talks
 to the production NATS server, only MySQL as input and the new NATS server as
 output.
@@ -28,7 +27,7 @@ Each KV entry is a self-contained `{meta, data}` payload — `data` is that view
 table, `meta` carries its own `stamp` (since views now refresh independently)
 plus `hostname`/`version`/`type`/`view`. Bucket `ted1k-derive`, keys
 `missingLastDay` / `missingWeekByDay` / `missingDayByHour` — matching the query
-names in `tedcheck.ts`'s `queries` map 1:1.
+names in `ted1k.ts`'s `queries` map 1:1.
 
 **Future refinements, deliberately deferred** (see issue #237's discussion):
 fetch-on-demand instead of/alongside periodic push, and making

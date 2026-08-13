@@ -1,7 +1,7 @@
-# tedcheck
+# ted1k
 
-The live Tedcheck views (`/tedcheck` route). See
-[issue #249](https://github.com/daneroo/im-qcic/issues/249).
+The live ted1k continuity readings (`/ted1k` route). See
+[issue #265](https://github.com/daneroo/im-qcic/issues/265).
 
 Reads `ted1k-derive`'s three independently-cadenced KV entries (bucket
 `ted1k-derive`, keys `missingLastDay`/`missingWeekByDay`/`missingDayByHour`)
@@ -11,9 +11,13 @@ directly from the browser (`@nats-io/nats-core`'s `wsconnect()` +
 ## Module shape
 
 Mirrors `../scast/`'s split between pure transform, connection/retry, and the
-React seam - though there's no transform module here, since KV values already
-arrive as the exact `{meta,data}` shape to render (`watch()`'s `entry.json<T>()`
-does the decoding):
+React seam. The wire table remains deliberately untyped; `deriveView` turns it
+into boundary-corrected `Ted1kReading` values for the page:
+
+- **`derive.ts`** — typed bucket derivation, rolling-window correction,
+  significant-gap threshold, largest complete gap, and partial marking.
+- **`Ted1kPage.tsx`** / **`marks.tsx`** / **`BucketTable.tsx`** — the Strata
+  page and ted1k-specific readings, coverage, consumption, and record marks.
 
 - **`watch.ts`** — connection/retry/subscription orchestration for a single KV
   key. Knows nothing about NATS specifics or React:
@@ -31,8 +35,8 @@ does the decoding):
 - **`useDerivedState.ts`** — the seam into React:
   `useDerivedState<T>(servers, bucket, key)`, called once per view. Decodes each
   KV entry via `entry.json<T>()` and exposes `{status, value}`.
-  `src/routes/tedcheck.tsx` calls this three times (once per key) and never
-  reaches into `watch.ts`'s or `kv-source.ts`'s internals.
+  `useTed1kFeed.ts` calls this three times (once per key) and never reaches into
+  `watch.ts`'s or `kv-source.ts`'s internals.
 - **`config.ts`** / **`types.ts`** — the bucket/key names and wire shape
   `ted1k-derive` publishes, copied (not imported) from its own
   `src/config.ts`/`src/poll.ts` — separate deployables agreeing on a contract,
@@ -48,5 +52,5 @@ cd v2/apps/web
 bun run dev
 ```
 
-Open `/tedcheck` — each of the three views should show live data within a few
+Open `/ted1k` — each of the three views should show live data within a few
 seconds, and update independently on its own cadence (60s / 5min / 10min).

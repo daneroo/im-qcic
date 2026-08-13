@@ -83,7 +83,7 @@ export function watchKey(
             // connection to the catch below - isolated here so that catch
             // stays meaningful (connection/watch errors only), and one bad
             // entry doesn't tear down an otherwise-healthy watch.
-            console.error("tedcheck watch: onEntry threw", err);
+            console.error("ted1k watch: onEntry threw", err);
           }
         }
       } catch {

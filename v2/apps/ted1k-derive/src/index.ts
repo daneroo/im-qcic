@@ -4,10 +4,10 @@ import {
   pollIntervalMs,
   type ViewName,
 } from "./config";
-import { createMysqlDataSource } from "./tedcheck-datasource";
+import { createMysqlDataSource } from "./ted1k-datasource";
 import { createKvSink } from "./kv-sink";
 import { pollView } from "./poll";
-import { queries } from "./tedcheck";
+import { queries } from "./ted1k";
 import { log } from "./logger";
 
 const datasource = createMysqlDataSource(config.mysql);

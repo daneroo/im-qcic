@@ -1,7 +1,7 @@
 {
   "name": "@daneroo/qcic-ted1k-derive",
   "version": "1.0.0",
-  "description": "Polls Ted1k's MySQL watt table for missing-sample gaps (Tedcheck) and publishes the result to a NATS KV bucket on the new v2/infra NATS server",
+  "description": "Polls Ted1k's MySQL watt table for missing-sample gaps and publishes the result to a NATS KV bucket on the new v2/infra NATS server",
   "type": "module",
   "private": true,
   "scripts": {

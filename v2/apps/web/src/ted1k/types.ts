@@ -6,12 +6,12 @@
 export type Cell = string | number | null;
 export type Table = Cell[][];
 
-export interface TedcheckViewPayload {
+export interface Ted1kViewPayload {
   meta: {
     stamp: string;
     hostname: string;
     version: { name: string; version: string; runtime: string };
-    type: "tedcheck";
+    type: "ted1k";
     view: string;
   };
   data: Table;
