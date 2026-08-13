@@ -1,6 +1,6 @@
 import type { DigestRecord } from "./generation";
 
-/** A generation is one ten-minute scrape interval. */
+/** Generations normally arrive every ten minutes. */
 export const GENERATION_MS = 10 * 60 * 1000;
 
 /** An open divergence older than one hour is an active anomaly. */
