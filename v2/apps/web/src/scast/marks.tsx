@@ -36,7 +36,9 @@ export function ConvergenceStrip({
   return (
     <div className="w-full">
       <div className="mb-1.5 flex items-baseline justify-between gap-3">
-        <span className="text-[11px] text-ink-3">agreement by generation</span>
+        <span className="text-[11px] text-ink-3">
+          convergence by generation
+        </span>
         <span className="qc-num text-[10px] text-ink-3">
           {generations.length} generations
         </span>
@@ -44,7 +46,7 @@ export function ConvergenceStrip({
       <div className="flex h-14 w-full items-start border-t border-rule-strong">
         {newestFirst.map((generation) => {
           const key = generation.generation.toISOString();
-          if (generation.agreement === "converged") {
+          if (generation.convergence === "converged") {
             return (
               <span
                 key={key}
@@ -167,7 +169,7 @@ function GenerationTable({ reading }: { reading: ScastReading }) {
                   </span>
                 )}
               </td>
-              {generation.agreement === "converged" ? (
+              {generation.convergence === "converged" ? (
                 <td
                   colSpan={reading.hosts.length}
                   className="py-1.5 text-center"

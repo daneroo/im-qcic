@@ -20,7 +20,7 @@ export interface GenerationReading {
   missing: string[];
   distinct: string[];
   settlement: "settled" | "pending";
-  agreement: "converged" | "diverged" | null;
+  convergence: "converged" | "diverged" | null;
   matchGroup: Record<string, number>;
   /** True only when this row belongs to an overlong run that is still open. */
   critical: boolean;
@@ -64,9 +64,9 @@ function median(values: number[]): number | null {
 
 function matchingGroups(
   reports: HostReport[],
-  agreement: GenerationReading["agreement"],
+  convergence: GenerationReading["convergence"],
 ): Record<string, number> {
-  if (agreement !== "diverged") return {};
+  if (convergence !== "diverged") return {};
   const byDigest = new Map<string, string[]>();
   for (const report of reports) {
     const hosts = byDigest.get(report.digest) ?? [];
@@ -131,7 +131,7 @@ export function deriveScast(records: DigestRecord[]): ScastReading {
         new Set(reports.map((report) => report.digest)),
       );
       const settlement = missing.length === 0 ? "settled" : "pending";
-      const agreement =
+      const convergence =
         settlement === "pending"
           ? null
           : distinct.length === 1
@@ -143,8 +143,8 @@ export function deriveScast(records: DigestRecord[]): ScastReading {
         missing,
         distinct,
         settlement,
-        agreement,
-        matchGroup: matchingGroups(reports, agreement),
+        convergence,
+        matchGroup: matchingGroups(reports, convergence),
         critical: false,
       };
     });
@@ -167,7 +167,7 @@ export function deriveScast(records: DigestRecord[]): ScastReading {
   };
 
   settled.forEach((generation, index) => {
-    if (generation.agreement === "diverged") {
+    if (generation.convergence === "diverged") {
       run.push(generation);
       if (index === settled.length - 1) closeRun(true);
     } else {
@@ -212,7 +212,7 @@ export function deriveScast(records: DigestRecord[]): ScastReading {
     settled,
     latest: generations.at(-1) ?? null,
     latestSettled,
-    converged: latestSettled?.agreement === "converged",
+    converged: latestSettled?.convergence === "converged",
     divergences,
     latestDivergence,
     latestDivergenceRows: divergenceSlice(generations, latestDivergence),

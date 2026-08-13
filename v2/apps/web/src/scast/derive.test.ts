@@ -34,23 +34,24 @@ describe("deriveScast", () => {
     ]);
 
     expect(
-      reading.generations.map(({ settlement, agreement }) => ({
+      reading.generations.map(({ settlement, convergence }) => ({
         settlement,
-        agreement,
+        convergence,
       })),
     ).toEqual([
-      { settlement: "settled", agreement: "converged" },
-      { settlement: "settled", agreement: "diverged" },
-      { settlement: "pending", agreement: null },
+      { settlement: "settled", convergence: "converged" },
+      { settlement: "settled", convergence: "diverged" },
+      { settlement: "pending", convergence: null },
     ]);
   });
 
   test("marks an overlong divergence critical only while it is open", () => {
-    const split = Array.from({ length: CRITICAL_GENERATIONS + 1 }, (_, index) =>
-      generation(index, ["a", "b", "a"]),
+    const divergence = Array.from(
+      { length: CRITICAL_GENERATIONS + 1 },
+      (_, index) => generation(index, ["a", "b", "a"]),
     ).flat();
 
-    const open = deriveScast(split);
+    const open = deriveScast(divergence);
     expect(open.latestDivergence).toMatchObject({
       generations: CRITICAL_GENERATIONS + 1,
       ongoing: true,
@@ -59,7 +60,7 @@ describe("deriveScast", () => {
     expect(open.generations.every((row) => row.critical)).toBe(true);
 
     const closed = deriveScast([
-      ...split,
+      ...divergence,
       ...generation(CRITICAL_GENERATIONS + 1, ["z", "z", "z"]),
     ]);
     expect(closed.latestDivergence).toMatchObject({

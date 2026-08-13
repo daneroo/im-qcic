@@ -19,7 +19,7 @@ Working with real (mock) data revealed the kinds of things that need to be prope
 
 - **Color token layering** — two distinct layers need to be separated:
   - _Theme tokens_ — contextual and aesthetic (card surface, border, background, glow) — these vary per theme and define the atmosphere
-  - _Semantic tokens_ — data-driven and meaning-based (out-of-bounds warning, liveness, agreement/divergence states) — these should remain consistent across themes even as the base palette shifts
+  - _Semantic tokens_ — data-driven and meaning-based (out-of-bounds warning, liveness, convergence/divergence states) — these should remain consistent across themes even as the base palette shifts
   - The hard problem: a semantic "error red" still has to harmonize with all three theme backgrounds. DaisyUI/Tailwind concepts like `error`, `warning`, `success` are useful references, but the split between what belongs to the _theme_ and what belongs to the _metric card contract_ needs to be explicit
 - **Typography system** — the fluid scaling approach (short values grow, long values shrink) works but the specific `clamp()` ratios need calibration; font split (mono for values, sans for chrome) should be a named convention
 - **Value formatting** — digest truncation, duration humanization, and numeric formatting are currently inline hooks; they need a generalized abstraction
@@ -121,7 +121,7 @@ The dashboard displays three specific data points in a responsive grid:
 - **Heartbeat**
   - **Context:** Number of hosts that are broadcasting a heartbeat on the NATS subject `im.qcic.heartbeat` every second.
 - **Cast Synch**
-  - **Context:** Three workers scraping and synchronizing amongst themselves a full podcast listening history/activity. The entire state (history) is captured in a digest (e.g., `sha1:0f5218c`) and the metric tracks the number of hosts that agree (usually 3).
+  - **Context:** Three workers scraping and synchronizing amongst themselves a full podcast listening history/activity. The entire state (history) is captured in a digest (e.g., `sha1:0f5218c`) and the metric tracks whether the hosts converge.
 - **Ted1k Status**
   - **Context:** A whole home energy capture process (1 reading per second). "9's" is used as a top-level fun metric. Underneath, it tracks data format like:
 

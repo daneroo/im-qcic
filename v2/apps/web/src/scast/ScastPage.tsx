@@ -31,7 +31,7 @@ function Headline({ feed }: { feed: ScastFeedState }) {
         >
           {word}
         </span>
-        {reading.latestSettled?.agreement === "converged" && (
+        {reading.latestSettled?.convergence === "converged" && (
           <span className="qc-digest text-sm text-ink-3">
             {reading.latestSettled.reports[0]?.digest.slice(0, 7)}
           </span>

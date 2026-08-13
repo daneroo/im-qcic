@@ -1,7 +1,7 @@
 # scast
 
 The `/scast` reading shows whether Scrobblecast's independently maintained
-copies converge, and how many generations a divergence lasts. Agreement is
+copies converge, and how many generations a divergence lasts. Convergence is
 nominal: there is no majority, consensus value, or per-copy score.
 
 The browser reads `scast-bridge`'s copied `scastDigest` JetStream stream from
@@ -12,7 +12,7 @@ the ordered consumer requests the stream's 24-hour replay.
 
 - **`generation.ts`** validates item-scope wire messages and keeps their
   generation, publish stamp, digest, host, and scrape duration.
-- **`derive.ts`** is the framework-free agreement model. It distinguishes
+- **`derive.ts`** is the framework-free convergence model. It distinguishes
   pending from settled generations, convergence from divergence, identifies
   runs, and marks only an overlong run that is still open as critical.
 - **`feed.ts`** owns connection, retry, and subscription orchestration behind an
