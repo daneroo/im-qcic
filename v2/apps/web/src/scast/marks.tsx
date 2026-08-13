@@ -259,7 +259,6 @@ export function CopyTable({
             <th className="px-3 py-1.5 text-right font-semibold">reports</th>
             <th className="px-3 py-1.5 text-right font-semibold">lag</th>
             <th className="px-3 py-1.5 text-right font-semibold">scrape</th>
-            <th className="px-3 py-1.5 text-right font-semibold">missed</th>
           </>
         }
       >
@@ -288,9 +287,6 @@ export function CopyTable({
               {host.medianElapsed === null
                 ? "—"
                 : formatSeconds(host.medianElapsed)}
-            </td>
-            <td className="qc-num px-3 py-2 text-right text-ink-3">
-              {host.missed || "—"}
             </td>
           </tr>
         ))}

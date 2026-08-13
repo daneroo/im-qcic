@@ -40,7 +40,6 @@ export interface HostReading {
   reports: number;
   medianLagMs: number | null;
   medianElapsed: number | null;
-  missed: number;
 }
 
 export interface ScastReading {
@@ -201,8 +200,6 @@ export function deriveScast(records: DigestRecord[]): ScastReading {
           report.elapsed === null ? [] : [report.elapsed],
         ),
       ),
-      missed: settled.filter((generation) => generation.missing.includes(host))
-        .length,
     };
   });
 
