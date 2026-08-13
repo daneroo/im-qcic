@@ -2,7 +2,7 @@
 
 QCIC watches whether the watchers are working. It reports on the **service
 quality** of the homelab's own monitoring — whether ted1k is still recording,
-whether scrobblecast's copies still agree, whether the fabric under them is
+whether scrobblecast's copies still converge, whether the fabric under them is
 reachable. It is deliberately not a dashboard for the things being monitored:
 power consumption belongs to Grafana, which already does that job well.
 
@@ -30,7 +30,7 @@ from chronic flakiness, which a window total cannot.
 house reads at a glance. Secondary context for judging whether a gap mattered,
 never the point of a page. _Avoid_: usage, load, demand
 
-## scast — agreement
+## scast — convergence
 
 **Generation**: One scrobblecast scrape cycle, identified by the message's own
 authoritative field rather than a reconstructed time bucket. _Avoid_: cycle,
@@ -41,11 +41,11 @@ has not yet. Copies report minutes apart, so the newest generation is almost
 always pending — and that is not a disagreement.
 
 **Converged** / **Diverged**: A settled generation whose copies all hold the
-same digest, or don't. Agreement is nominal, not a magnitude: two copies
-agreeing are not more right than the third, so there is no majority to compute
-and no per-copy statistic to derive from comparing digests. The only agreement
-quantity is run length. _Avoid_: consensus, majority, quorum, odd-one-out,
-agreement score, drift
+same digest, or don't. Convergence is nominal, not a magnitude: two copies
+holding the same digest are not more right than the third, so there is no
+majority to compute and no per-copy statistic to derive from comparing digests.
+The only convergence quantity is run length. _Avoid_: agreed, split, consensus,
+majority, quorum, odd-one-out, agreement score, drift
 
 **Critical**: A divergence whose run has passed a fixed number of generations
 **and is still open**. A run that ran long but has since closed is history, not

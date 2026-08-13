@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableChrome } from "../components/TableChrome";
 import { formatCoverage } from "../format/coverage";
 import { formatMissing } from "../format/duration";
 import { localHM, tzLabel, utcDate, utcISO } from "../format/time";
@@ -39,76 +40,74 @@ export function BucketTable({ reading }: { reading: Ted1kReading }) {
           </button>
         )}
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[30rem] border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-rule-strong text-[10px] uppercase tracking-[0.12em] text-ink-3">
-              <th className="py-1.5 pr-3 text-left font-semibold">
-                {reading.unit}{" "}
-                <span className="normal-case">
-                  ({reading.unit === "hour" ? tzLabel() : "UTC"})
+      <TableChrome
+        minWidth="30rem"
+        header={
+          <>
+            <th className="py-1.5 pr-3 text-left font-semibold">
+              {reading.unit}{" "}
+              <span className="normal-case">
+                ({reading.unit === "hour" ? tzLabel() : "UTC"})
+              </span>
+            </th>
+            <th className="px-3 py-1.5 text-right font-semibold">watt</th>
+            <th className="px-3 py-1.5 text-right font-semibold">samples</th>
+            <th className="px-3 py-1.5 text-right font-semibold">missing</th>
+            <th className="py-1.5 pl-3 text-right font-semibold">ok</th>
+          </>
+        }
+      >
+        {rows.map((bucket) => (
+          <tr
+            key={bucket.start.toISOString()}
+            className="border-b border-rule/60 last:border-0 hover:bg-surface-2/60"
+          >
+            <td
+              className="qc-num py-1.5 pr-3 text-left text-ink-2"
+              title={utcISO(bucket.start)}
+            >
+              {bucketLabel(bucket, reading.unit)}
+              {bucket.partial && (
+                <span
+                  className="ml-2 rounded-sm border border-dashed border-partial px-1 text-[9px] uppercase tracking-wider text-partial"
+                  title="Clipped by the rolling window — incomplete, not faulty"
+                >
+                  partial
                 </span>
-              </th>
-              <th className="px-3 py-1.5 text-right font-semibold">watt</th>
-              <th className="px-3 py-1.5 text-right font-semibold">samples</th>
-              <th className="px-3 py-1.5 text-right font-semibold">missing</th>
-              <th className="py-1.5 pl-3 text-right font-semibold">ok</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((bucket) => (
-              <tr
-                key={bucket.start.toISOString()}
-                className="border-b border-rule/60 last:border-0 hover:bg-surface-2/60"
-              >
-                <td
-                  className="qc-num py-1.5 pr-3 text-left text-ink-2"
-                  title={utcISO(bucket.start)}
-                >
-                  {bucketLabel(bucket, reading.unit)}
-                  {bucket.partial && (
-                    <span
-                      className="ml-2 rounded-sm border border-dashed border-partial px-1 text-[9px] uppercase tracking-wider text-partial"
-                      title="Clipped by the rolling window — incomplete, not faulty"
-                    >
-                      partial
-                    </span>
-                  )}
-                </td>
-                <td className="qc-num px-3 py-1.5 text-right text-ink">
-                  {bucket.watt ?? "—"}
-                </td>
-                <td className="qc-num px-3 py-1.5 text-right text-ink-2">
-                  {bucket.samples.toLocaleString()}
-                </td>
-                <td
-                  className={`qc-num px-3 py-1.5 text-right ${
-                    bucket.partial
-                      ? "text-partial"
-                      : bucket.significant
-                        ? "font-medium text-alarm"
-                        : bucket.missing > 0
-                          ? "text-ink-2"
-                          : "text-ink-3/50"
-                  }`}
-                  title={
-                    bucket.partial
-                      ? `raw ${bucket.rawMissing}; ${bucket.missing} within the covered window`
-                      : `${bucket.missing} samples`
-                  }
-                >
-                  {bucket.missing > 0 ? formatMissing(bucket.missing) : "—"}
-                </td>
-                <td
-                  className={`qc-num py-1.5 pl-3 text-right ${bucket.significant ? "font-medium text-alarm" : "text-ink-2"}`}
-                >
-                  {formatCoverage(bucket.missing, bucket.expected)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+              )}
+            </td>
+            <td className="qc-num px-3 py-1.5 text-right text-ink">
+              {bucket.watt ?? "—"}
+            </td>
+            <td className="qc-num px-3 py-1.5 text-right text-ink-2">
+              {bucket.samples.toLocaleString()}
+            </td>
+            <td
+              className={`qc-num px-3 py-1.5 text-right ${
+                bucket.partial
+                  ? "text-partial"
+                  : bucket.significant
+                    ? "font-medium text-alarm"
+                    : bucket.missing > 0
+                      ? "text-ink-2"
+                      : "text-ink-3/50"
+              }`}
+              title={
+                bucket.partial
+                  ? `raw ${bucket.rawMissing}; ${bucket.missing} within the covered window`
+                  : `${bucket.missing} samples`
+              }
+            >
+              {bucket.missing > 0 ? formatMissing(bucket.missing) : "—"}
+            </td>
+            <td
+              className={`qc-num py-1.5 pl-3 text-right ${bucket.significant ? "font-medium text-alarm" : "text-ink-2"}`}
+            >
+              {formatCoverage(bucket.missing, bucket.expected)}
+            </td>
+          </tr>
+        ))}
+      </TableChrome>
     </div>
   );
 }

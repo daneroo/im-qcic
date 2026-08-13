@@ -60,7 +60,7 @@ Site and Status — the only two packages with real daily use — are being port
 
 (confirmed active — has its own CONTEXT.md)
 
-- [QCIC (v2)](./v2/CONTEXT.md) — the Bun workspace rebuilding the repo; owns the monitoring vocabulary (continuity, agreement, states of knowledge)
+- [QCIC (v2)](./v2/CONTEXT.md) — the Bun workspace rebuilding the repo; owns the monitoring vocabulary (continuity, convergence, states of knowledge)
 - [Gateway](./infra/gateway/CONTEXT.md) — always-up Ubuntu VM hosting caddy, nats, natsql, status
 - [Hass](./infra/hass/CONTEXT.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
 - [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois

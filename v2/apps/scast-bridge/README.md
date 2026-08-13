@@ -13,7 +13,7 @@ to be a design mistake: the cross-tab adds no information — every fact in the
 output was already present in the input messages, it's pure rearrangement.
 That's not derivation, and it's fully portable: the same transform run
 client-side (in `web`) or server-side produces identical output. A genuine
-derived fact would be a **synchronization verdict** (do all hosts agree for a
+derived fact would be a **synchronization verdict** (do all hosts converge for a
 given generation) — a real judgment computed by comparing across messages — but
 there's no server-side home for that yet, so it's deliberately deferred.
 

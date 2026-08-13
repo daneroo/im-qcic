@@ -36,7 +36,7 @@
    name and wrapping user CSS in it breaks the parse. Plain selectors work. */
 
 /* ---- sketch (default): monochrome, warm paper and graphite ------------ */
-/* Deliberately monochrome: liveness and agreement are carried by SHAPE and
+/* Deliberately monochrome: liveness and convergence are carried by SHAPE and
    weight, not hue, so the one chromatic token stays shocking when used. The
    bare `html` selector is the fallback for a page whose family was never set
    — it must name the same palette as DEFAULT_THEME_FAMILY. */

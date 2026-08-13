@@ -1,7 +1,7 @@
 // The real MessageSource (see feed.ts) - thin wiring over wsconnect() +
 // an ordered JetStream consumer. Kept separate from feed.ts's retry
 // orchestration and untested directly here (verified live instead, see
-// README) - same split scast-bridge uses between its pure bridge.ts and
+// README) - same separation scast-bridge uses between its pure bridge.ts and
 // its real scrobblecast-source.ts/scast-sink.ts.
 
 import { wsconnect } from "@nats-io/nats-core";

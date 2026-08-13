@@ -35,11 +35,11 @@ that produced this spec. Use its terms; don't drift to the words listed under
 and `Sheet` are gone there is only one design language, and "the page has horizontal
 sections" is a general UI concept — the glossary excludes those even when the project
 uses them constantly. What graduated instead is the rule underneath it, which was
-never about layout: a reading whose substrate has failed goes *unverifiable*, not red.
+never about layout: a reading whose substrate has failed goes _unverifiable_, not red.
 That now lives on the `Fabric`/`Bus`/`Services` entry. Avoid `band` as a synonym.
 
 The one change that touches code broadly: **`tedcheck` and `logcheck` are dead
-names.** They named the *check*; the subjects are named for the thing watched —
+names.** They named the _check_; the subjects are named for the thing watched —
 **ted1k** and **scast**. The single exception is `v2/apps/status`, a deliberately
 behaviour-frozen port of the old service, where those names are its API contract
 and must not change.
@@ -52,8 +52,8 @@ Fold each derivation file into the subject slice that owns it — `src/ted1k/`,
 `src/scast/`, `src/network/`. The `prototype/derive/` folder does not survive.
 
 Those slices already exist with their own tests and READMEs, and they cut by
-*subject*, the same axis `CONTEXT.md` organises vocabulary along. A `derive/`
-folder groups by technical role instead, which files scast's agreement model next
+_subject_, the same axis `CONTEXT.md` organises vocabulary along. A `derive/`
+folder groups by technical role instead, which files scast's convergence model next
 to ted1k's boundary correction on the grounds that both are "computed" — not a
 relationship.
 
@@ -65,7 +65,7 @@ consumer actually exists.
 
 ### The ted1k boundary correction stays consumer-side
 
-`ted1k-derive`'s SQL computes `<bucketSeconds> - count(*)` over a *rolling* window,
+`ted1k-derive`'s SQL computes `<bucketSeconds> - count(*)` over a _rolling_ window,
 so the first and last buckets report their unelapsed remainder as a gap. Live
 example from the branch: two `21:00` rows reading 2803 and 797 missing, summing to
 exactly 3600, when corrected against `meta.stamp` they are 1 and 0 — the cleanest
@@ -83,7 +83,7 @@ exactly the routes this work replaces. The fix for an interface nothing calls is
 deletion, not a redesign.
 
 `Cell` and `Table` stay: they describe the shape `ted1k-derive` publishes, which is
-not changing. The untypedness is the *wire format's*, not the component's —
+not changing. The untypedness is the _wire format's_, not the component's —
 `DataTable` was only the last place it surfaced. `BucketTable` shows what the
 untyped matrix made impossible: right-aligned tabular numerals, and rendering
 `missing` as a duration rather than a raw count.
@@ -100,13 +100,13 @@ what a column means.
 The branch has four formatters and a dead alias where the fold-back plan claims
 one:
 
-| current                        | disposition                                                                     |
-| ------------------------------ | ------------------------------------------------------------------------------- |
-| `formatMissing(seconds)`       | **canonical.** Largest unit that fits, later segments zero-padded, trailing zero segments dropped, interior ones kept |
-| `formatMissingShort(seconds)`  | **delete** — its entire body is `return formatMissing(seconds)`                  |
-| `formatDuration(ms)`           | becomes a **ms adapter** over the canonical rule                                 |
-| `formatSeconds(value)`         | keep — sub-10s precision is a different question                                 |
-| `since(from, to)`              | keep — relative time, deliberately single-unit                                   |
+| current                       | disposition                                                                                                           |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `formatMissing(seconds)`      | **canonical.** Largest unit that fits, later segments zero-padded, trailing zero segments dropped, interior ones kept |
+| `formatMissingShort(seconds)` | **delete** — its entire body is `return formatMissing(seconds)`                                                       |
+| `formatDuration(ms)`          | becomes a **ms adapter** over the canonical rule                                                                      |
+| `formatSeconds(value)`        | keep — sub-10s precision is a different question                                                                      |
+| `since(from, to)`             | keep — relative time, deliberately single-unit                                                                        |
 
 `formatDuration` currently **caps at minutes**, so a two-hour reporting lag prints
 `"127m"` — exactly the ambiguity the padding rule exists to prevent. Fix it by
@@ -123,18 +123,18 @@ reserved for nothing missing at all.
 Call-site counts across the surviving views (`Circuit` and `Sheet` excluded, since
 they don't land):
 
-| mark                                       | uses | disposition                          |
-| ------------------------------------------ | ---- | ------------------------------------ |
-| `Masthead`                                  | 10 across 4 files | → `src/components/`     |
-| `Byline`                                    | 9 across 4        | → `src/components/`     |
-| `ConnectionDot` (was `LivenessDot`)         | 8 across 4        | → `src/components/`     |
-| `Eyebrow`                                   | 7 across 4        | → `src/components/`     |
-| `ConnectionLabel` (was `LivenessLabel`)     | 4 across 2        | → `src/components/`     |
-| `Reading` (was `Figure`)                    | 1                 | → `src/ted1k/`          |
-| `CoverageStrip`                             | 1                 | → `src/ted1k/`          |
-| `ConsumptionStrip` (was `PowerStrip`)       | 1                 | → `src/ted1k/`          |
-| `Tile`                                      | 1                 | → the home route        |
-| `StructureLabel`                            | **0**             | **delete** — exported, never rendered |
+| mark                                    | uses              | disposition                           |
+| --------------------------------------- | ----------------- | ------------------------------------- |
+| `Masthead`                              | 10 across 4 files | → `src/components/`                   |
+| `Byline`                                | 9 across 4        | → `src/components/`                   |
+| `ConnectionDot` (was `LivenessDot`)     | 8 across 4        | → `src/components/`                   |
+| `Eyebrow`                               | 7 across 4        | → `src/components/`                   |
+| `ConnectionLabel` (was `LivenessLabel`) | 4 across 2        | → `src/components/`                   |
+| `Reading` (was `Figure`)                | 1                 | → `src/ted1k/`                        |
+| `CoverageStrip`                         | 1                 | → `src/ted1k/`                        |
+| `ConsumptionStrip` (was `PowerStrip`)   | 1                 | → `src/ted1k/`                        |
+| `Tile`                                  | 1                 | → the home route                      |
+| `StructureLabel`                        | **0**             | **delete** — exported, never rendered |
 
 Renames borrow words the glossary already owns: a **reading** is what a subject
 currently says, and **consumption** is the term for normalised mean power ("power
@@ -162,9 +162,9 @@ page and shipping to production. The `?variant=` structure axis does not survive
 all; `Strata` won.
 
 **One chromatic token.** `--qc-alarm` is the only high-chroma colour in any theme
-and is spent only on an *active* anomaly, so a healthy page shows it zero times.
+and is spent only on an _active_ anomaly, so a healthy page shows it zero times.
 Every place it appeared without something actually being wrong — ted1k's ordinary
-daily loss, scast's routine two-cycle splits, the tailnet's expected-offline peers —
+daily loss, scast's routine two-generation divergences, the tailnet's expected-offline peers —
 the encoding was lying.
 
 ### The network page ships
@@ -212,7 +212,7 @@ and `Circuit` itself apart from the stratum above. The wordmark is **EB Garamond
 settled.
 
 `Sheet`'s finding outlives its variant: nines cannot describe scast, so the
-vocabulary shared with ted1k is *last excursion + duration*, not a rate.
+vocabulary shared with ted1k is _last excursion + duration_, not a rate.
 
 ## Tickets
 
@@ -229,7 +229,7 @@ Each is independently shippable — a slice with no page is dead code.
    `Ted1kReading`; `meta.type` → `"ted1k"`; route `/tedcheck` → `/ted1k`. The
    window correction, significant-gap threshold, largest gap and partial marking,
    with tests. Marks placed. `Strata` becomes the page, with the flow stratum.
-4. **scast slice and page.** The agreement model — settled/pending,
+4. **scast slice and page.** The convergence model — settled/pending,
    converged/diverged, critical run length, the contiguous latest-divergence slice
    — with tests. `ScastState` → `ScastReading`. `parseRich` disappears into
    `parseDigestMessage`, which takes on `stamp` and `elapsed`. `/scast` page.
@@ -263,7 +263,7 @@ cd v2 && bun run ci        # fmt:check, lint, check, test — after every edit
 ```
 
 Review happens on a phone and an iPad, so the dev server must bind the LAN address
-— `ws://localhost:9222` resolves to *the phone* and the page sits at "connecting"
+— `ws://localhost:9222` resolves to _the phone_ and the page sits at "connecting"
 forever with nothing on screen explaining why:
 
 ```sh
