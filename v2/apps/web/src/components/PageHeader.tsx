@@ -48,6 +48,13 @@ export function PageHeader() {
           >
             scast
           </Link>
+          <Link
+            to="/network"
+            className={navLink}
+            activeProps={{ className: navLinkActive }}
+          >
+            network
+          </Link>
         </nav>
 
         {/* Two controls, one per theme axis: which family, and light vs dark

@@ -5,3 +5,9 @@
 // defaulting to v2/infra/compose.yaml's local dev address.
 export const NATS_WS_URL =
   import.meta.env.VITE_NATS_WS_URL || "ws://localhost:9222";
+
+// Temporary exception to ADR-0004 for #267: the browser reads the NATS
+// monitoring API until the network collector owns it. This address is public
+// client configuration just like NATS_WS_URL.
+export const NATS_MONITOR_URL =
+  import.meta.env.VITE_NATS_MONITOR_URL || "http://localhost:8222";

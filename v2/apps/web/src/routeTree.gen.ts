@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NetworkRouteImport } from './routes/network'
 import { Route as ScastRouteImport } from './routes/scast'
 import { Route as TedcheckRouteImport } from './routes/tedcheck'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NetworkRoute = NetworkRouteImport.update({
+  id: '/network',
+  path: '/network',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScastRoute = ScastRouteImport.update({
@@ -31,30 +37,34 @@ const TedcheckRoute = TedcheckRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/network': typeof NetworkRoute
   '/scast': typeof ScastRoute
   '/tedcheck': typeof TedcheckRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/network': typeof NetworkRoute
   '/scast': typeof ScastRoute
   '/tedcheck': typeof TedcheckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/network': typeof NetworkRoute
   '/scast': typeof ScastRoute
   '/tedcheck': typeof TedcheckRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/scast' | '/tedcheck'
+  fullPaths: '/' | '/network' | '/scast' | '/tedcheck'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/scast' | '/tedcheck'
-  id: '__root__' | '/' | '/scast' | '/tedcheck'
+  to: '/' | '/network' | '/scast' | '/tedcheck'
+  id: '__root__' | '/' | '/network' | '/scast' | '/tedcheck'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  NetworkRoute: typeof NetworkRoute
   ScastRoute: typeof ScastRoute
   TedcheckRoute: typeof TedcheckRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/network': {
+      id: '/network'
+      path: '/network'
+      fullPath: '/network'
+      preLoaderRoute: typeof NetworkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scast': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  NetworkRoute: NetworkRoute,
   ScastRoute: ScastRoute,
   TedcheckRoute: TedcheckRoute,
 }
