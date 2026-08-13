@@ -12,9 +12,9 @@ function ScastPage() {
   const { status, table } = useScastFeed(NATS_WS_URL);
 
   return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold">scast</h1>
-      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-8">
+      <h1 className="text-2xl font-semibold text-ink">scast</h1>
+      <p className="mt-1 text-sm text-ink-2">
         {status === "connected" ? "Live" : status}
       </p>
       <DataTable table={shorten(table)} />

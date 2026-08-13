@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PILL } from "./pill";
 import {
   applyTheme,
   persistTheme,
@@ -15,25 +16,26 @@ import {
 // wrong value until the correction effect runs, a frame or two after mount.
 const SSR_THEME: Theme = "light";
 
+// WHO WRITES <html>: the same division as ThemeFamilyToggle's. This component
+// writes only a value it has resolved or been given, never the SSR guess —
+// applying `theme` from an effect keyed on it would strip `.dark` on mount
+// before the resolve effect put it back.
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(SSR_THEME);
 
   useEffect(() => {
-    setTheme(
-      resolveInitialTheme(
-        window.localStorage,
-        window.matchMedia("(prefers-color-scheme: dark)").matches,
-      ),
+    const initial = resolveInitialTheme(
+      window.localStorage,
+      window.matchMedia("(prefers-color-scheme: dark)").matches,
     );
+    applyTheme(document.documentElement, initial);
+    setTheme(initial);
   }, []);
-
-  useEffect(() => {
-    applyTheme(document.documentElement, theme);
-  }, [theme]);
 
   function handleClick() {
     const next = toggleTheme(theme);
     persistTheme(window.localStorage, next);
+    applyTheme(document.documentElement, next);
     setTheme(next);
   }
 
@@ -41,8 +43,13 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={handleClick}
-      aria-label="Toggle color theme"
-      className="rounded border border-gray-300 px-3 py-1 text-sm dark:border-gray-600"
+      // The visible label is the current state, so the accessible name has to
+      // carry both it and the action - "Toggle light and dark" alone would
+      // hide which one is showing from a screen reader.
+      aria-label={
+        theme === "dark" ? "Dark — switch to light" : "Light — switch to dark"
+      }
+      className={`${PILL} border border-rule text-ink-2 hover:bg-surface-2 hover:text-ink`}
     >
       {theme === "dark" ? "Dark" : "Light"}
     </button>

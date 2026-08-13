@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Design tokens and type. Imported after tailwind so `@theme inline` can
+   extend the utility set (bg-paper, text-ink-2, font-serif, ...). */
+@import "./theme.css";
+
 /* Tailwind v4 dark mode is prefers-color-scheme by default - this custom
    variant switches it to class-based (a .dark class on <html>, set by
    ThemeToggle/THEME_INIT_SCRIPT) so the toggle actually overrides the

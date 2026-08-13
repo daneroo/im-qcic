@@ -11,8 +11,8 @@ export const Route = createFileRoute("/tedcheck")({
 
 function TedcheckPage() {
   return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold">tedcheck</h1>
+    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-8">
+      <h1 className="text-2xl font-semibold text-ink">tedcheck</h1>
       {VIEW_NAMES.map((view) => (
         <TedcheckView key={view} view={view} />
       ))}
@@ -30,8 +30,8 @@ function TedcheckView({ view }: { view: ViewName }) {
   return (
     <section className="mt-8">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-medium">{view}</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <h2 className="text-lg font-medium text-ink">{view}</h2>
+        <p className="text-sm text-ink-2">
           {status === "connected" ? "Live" : status}
           {value ? ` · updated ${value.meta.stamp}` : ""}
         </p>
