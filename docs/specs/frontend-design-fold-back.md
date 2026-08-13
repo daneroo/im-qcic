@@ -174,6 +174,10 @@ networking slice). `network` rather than `mesh`: mesh names a topology only
 Tailscale has — NATS is the bus, DNS is neither — so it would over-claim two of the
 page's three rungs and get less true as the page grows.
 
+The selected Strata reading order stays **services → bus → fabric**: start with
+the readings a person came for, then read down through the things they depend
+on. The substrate sits visually underneath its dependants.
+
 `fixtures/network.ts` is three things and splits accordingly:
 
 - **Types** (`Peer`, `Identity`, `BusStats`, `HttpProbe`, `Heartbeat`) — the wire

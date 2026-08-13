@@ -6,6 +6,7 @@ export function Stratum({
   role,
   tone,
   health = "live",
+  grow = false,
   children,
 }: {
   index: number;
@@ -13,6 +14,7 @@ export function Stratum({
   role: string;
   tone: "paper" | "sunken" | "deep";
   health?: "live" | "unverifiable";
+  grow?: boolean;
   children: ReactNode;
 }) {
   const background = {
@@ -22,7 +24,9 @@ export function Stratum({
   }[tone];
 
   return (
-    <section className={`${background} border-t border-rule`}>
+    <section
+      className={`${background} border-t border-rule ${grow ? "flex-1" : ""}`}
+    >
       <div className="mx-auto flex max-w-5xl gap-5 px-4 py-8 sm:gap-8 sm:px-8">
         <div className="flex w-7 shrink-0 flex-col items-center gap-2 sm:w-9">
           <span className="qc-num text-[11px] font-medium text-ink-2">

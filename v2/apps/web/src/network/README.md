@@ -1,8 +1,9 @@
 # network
 
-The `/network` subject reports the three dependency rungs in dependency order:
-fabric, bus, then services. A failed substrate makes the readings above it
-unverifiable; it does not prove those subjects are faulty.
+The `/network` subject reports the three dependency rungs in the selected Strata
+reading order: services, bus, then fabric. The page starts with what a person
+came for and reads down into its substrate. A failed substrate makes the
+readings above it unverifiable; it does not prove those subjects are faulty.
 
 ## Module shape
 

@@ -24,40 +24,6 @@ export function NetworkPage() {
 
       <Stratum
         index={1}
-        name="fabric"
-        role="The tailnet every other reading travels over"
-        tone="deep"
-      >
-        <p className="mb-4 text-sm text-ink-2">
-          <span className="qc-digest text-ink">
-            {fixture.identity.hostnameFqdn}
-          </span>{" "}
-          · {fixture.identity.lanIp} · {fixture.identity.tailscaleIp}
-        </p>
-        <FabricSummaryLine peers={fixture.peers} />
-        <div className="mt-4">
-          <PeerTable peers={fixture.peers} />
-        </div>
-        <Byline>tailscale status · tailscale ping</Byline>
-      </Stratum>
-
-      <Stratum
-        index={2}
-        name="bus"
-        role="NATS — how state gets anywhere"
-        tone="sunken"
-        health={bus.status === "live" ? "live" : "unverifiable"}
-      >
-        {bus.status === "live" ? (
-          <BusPanel bus={bus.stats} />
-        ) : (
-          <UnavailableBus loading={bus.status === "loading"} />
-        )}
-        <Byline>{NATS_MONITOR_URL}/varz · /connz</Byline>
-      </Stratum>
-
-      <Stratum
-        index={3}
         name="services"
         role="The things that do the work"
         tone="paper"
@@ -82,6 +48,40 @@ export function NetworkPage() {
           : <span className="qc-digest">{fixture.heartbeat.lastText}</span>
         </div>
         <Byline>im.qcic.heartbeat</Byline>
+      </Stratum>
+
+      <Stratum
+        index={2}
+        name="bus"
+        role="NATS — how state gets anywhere"
+        tone="sunken"
+        health={bus.status === "live" ? "live" : "unverifiable"}
+      >
+        {bus.status === "live" ? (
+          <BusPanel bus={bus.stats} />
+        ) : (
+          <UnavailableBus loading={bus.status === "loading"} />
+        )}
+        <Byline>{NATS_MONITOR_URL}/varz · /connz</Byline>
+      </Stratum>
+
+      <Stratum
+        index={3}
+        name="fabric"
+        role="The tailnet every other reading travels over"
+        tone="deep"
+      >
+        <p className="mb-4 text-sm text-ink-2">
+          <span className="qc-digest text-ink">
+            {fixture.identity.hostnameFqdn}
+          </span>{" "}
+          · {fixture.identity.lanIp} · {fixture.identity.tailscaleIp}
+        </p>
+        <FabricSummaryLine peers={fixture.peers} />
+        <div className="mt-4">
+          <PeerTable peers={fixture.peers} />
+        </div>
+        <Byline>tailscale status · tailscale ping</Byline>
       </Stratum>
     </main>
   );

@@ -90,11 +90,12 @@ moment.
 Provenance as a designed element rather than a debug affordance. _Avoid_:
 source, origin label, debug info
 
-**Fabric** / **Bus** / **Services**: The three dependency rungs, never
-reordered: if the fabric is down the bus cannot be reached, and if the bus is
-down no service reading can be trusted. So a failure travels upward as doubt,
-not as fault — when a rung fails, the readings resting on it become
-_unverifiable_, never alarming.
+**Services** / **Bus** / **Fabric**: The three dependency rungs, presented from
+the readings a person came for down into their substrate: services, bus, then
+fabric. If the fabric is down the bus cannot be reached, and if the bus is down
+no service reading can be trusted. So a failure travels upward as doubt, not as
+fault — when a rung fails, the readings resting on it become _unverifiable_,
+never alarming.
 
 ## Presentation discipline
 
