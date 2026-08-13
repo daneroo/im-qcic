@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   Byline,
   ConnectionLabel,
@@ -8,6 +8,7 @@ import { Stratum } from "../components/Stratum";
 import { formatCoverage } from "../format/coverage";
 import { formatMissing, since } from "../format/duration";
 import { localHM, tzLabel, utcDate } from "../format/time";
+import { useCurrentTime } from "../useCurrentTime";
 import { BucketTable } from "./BucketTable";
 import type { Ted1kReading } from "./derive";
 import { ConsumptionStrip, CoverageStrip, Reading } from "./marks";
@@ -303,15 +304,4 @@ export function Ted1kPage() {
       </Stratum>
     </main>
   );
-}
-
-function useCurrentTime(): Date {
-  const [now, setNow] = useState(() => new Date());
-
-  useEffect(() => {
-    const interval = window.setInterval(() => setNow(new Date()), 60_000);
-    return () => window.clearInterval(interval);
-  }, []);
-
-  return now;
 }

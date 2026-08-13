@@ -77,6 +77,7 @@ describe("buildHomeSubjects", () => {
       "bus:nats",
       "fabric:tailnet",
     ]);
+    expect(subjects.find(({ id }) => id === "scast")?.label).toBe("scast");
     expect(subjects.every((subject) => subject.byline.length > 0)).toBe(true);
     expect(subjects.filter((subject) => subject.tone === "alarm")).toEqual([]);
   });
@@ -89,17 +90,26 @@ describe("buildHomeSubjects", () => {
       now: NOW,
     });
 
-    expect(
-      subjects.find((subject) => subject.id === "tailnet")?.knowledge,
-    ).toBe("fixture");
-    expect(subjects.find((subject) => subject.id === "nats")?.knowledge).toBe(
-      "unverifiable",
-    );
+    expect(subjects.find((subject) => subject.id === "tailnet")).toMatchObject({
+      source: "fixture",
+      verifiability: "available",
+    });
+    expect(subjects.find((subject) => subject.id === "nats")).toMatchObject({
+      source: "live",
+      verifiability: "unverifiable",
+    });
     expect(
       subjects
         .filter((subject) => subject.layer === "services")
-        .every((subject) => subject.knowledge === "unverifiable"),
+        .every((subject) => subject.verifiability === "unverifiable"),
     ).toBe(true);
+    expect(
+      subjects
+        .filter(({ id }) => id === "endpoints" || id === "heartbeat")
+        .every(({ source }) => source === "fixture"),
+    ).toBe(true);
+    expect(subjects.find(({ id }) => id === "ted1k")?.age).toBe("just now");
+    expect(subjects.find(({ id }) => id === "scast")?.age).toBe("9m ago");
     expect(subjects.filter((subject) => subject.tone === "alarm")).toEqual([]);
   });
 });

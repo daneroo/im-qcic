@@ -9,7 +9,8 @@ import type { ScastFeedState } from "../scast/useScastFeed";
 import type { Ted1kFeed } from "../ted1k/useTed1kFeed";
 
 export type HomeLayer = "fabric" | "bus" | "services";
-export type Knowledge = "live" | "fixture" | "unverifiable";
+export type HomeSource = "live" | "fixture";
+export type Verifiability = "available" | "unverifiable";
 
 export interface HomeSubject {
   id: "tailnet" | "nats" | "ted1k" | "scast" | "endpoints" | "heartbeat";
@@ -19,7 +20,9 @@ export interface HomeSubject {
   unit?: string;
   secondary: { label: string; value: string }[];
   byline: string;
-  knowledge: Knowledge;
+  source: HomeSource;
+  verifiability: Verifiability;
+  age?: string;
   tone: "normal" | "alarm";
   status?: ConnectionState;
   to: "/network" | "/ted1k" | "/scast";
@@ -32,21 +35,21 @@ export interface HomeInputs {
   now: Date;
 }
 
-function serviceKnowledge(
+function serviceVerifiability(
   bus: BusReading,
   own: ConnectionState | "fixture",
   hasReading = true,
-): Knowledge {
+): Verifiability {
   if (bus.status !== "live") return "unverifiable";
-  if (own === "fixture") return "fixture";
-  return own === "connected" && hasReading ? "live" : "unverifiable";
+  if (own === "fixture") return "available";
+  return own === "connected" && hasReading ? "available" : "unverifiable";
 }
 
-function withKnowledgeTone(
-  knowledge: Knowledge,
+function withVerifiabilityTone(
+  verifiability: Verifiability,
   anomaly: boolean,
 ): HomeSubject["tone"] {
-  return knowledge !== "unverifiable" && anomaly ? "alarm" : "normal";
+  return verifiability !== "unverifiable" && anomaly ? "alarm" : "normal";
 }
 
 export function buildHomeSubjects({
@@ -62,15 +65,25 @@ export function buildHomeSubjects({
   const month = ted.weekByDay.reading;
   const latestGap = month?.significantGaps.at(-1) ?? null;
   const latestDivergence = scast.reading.latestDivergence;
+  const latestScastStamp =
+    scast.reading.latestSettled?.reports.reduce<Date | null>(
+      (latest, report) =>
+        !latest || report.stamp > latest ? report.stamp : latest,
+      null,
+    );
 
-  const tedKnowledge = serviceKnowledge(bus, ted.lastDay.status, day !== null);
-  const scastKnowledge = serviceKnowledge(
+  const tedVerifiability = serviceVerifiability(
+    bus,
+    ted.lastDay.status,
+    day !== null,
+  );
+  const scastVerifiability = serviceVerifiability(
     bus,
     scast.status,
     scast.reading.latestSettled !== null,
   );
-  const endpointsKnowledge = serviceKnowledge(bus, "fixture");
-  const heartbeatKnowledge = serviceKnowledge(bus, "fixture");
+  const endpointsVerifiability = serviceVerifiability(bus, "fixture");
+  const heartbeatVerifiability = serviceVerifiability(bus, "fixture");
 
   return [
     {
@@ -92,9 +105,14 @@ export function buildHomeSubjects({
         },
       ],
       byline: "kv:ted1k-derive",
-      knowledge: tedKnowledge,
-      tone: withKnowledgeTone(
-        tedKnowledge,
+      source: "live",
+      verifiability: tedVerifiability,
+      age:
+        tedVerifiability === "unverifiable" && day
+          ? since(day.stamp, now)
+          : undefined,
+      tone: withVerifiabilityTone(
+        tedVerifiability,
         Boolean(day?.significantGaps.length),
       ),
       status: ted.lastDay.status,
@@ -102,7 +120,7 @@ export function buildHomeSubjects({
     },
     {
       id: "scast",
-      label: "scrobblecast",
+      label: "scast",
       layer: "services",
       value: scast.reading.latestSettled
         ? scast.reading.converged
@@ -125,9 +143,14 @@ export function buildHomeSubjects({
         },
       ],
       byline: "im.scast.scrape.digest",
-      knowledge: scastKnowledge,
-      tone: withKnowledgeTone(
-        scastKnowledge,
+      source: "live",
+      verifiability: scastVerifiability,
+      age:
+        scastVerifiability === "unverifiable" && latestScastStamp
+          ? since(latestScastStamp, now)
+          : undefined,
+      tone: withVerifiabilityTone(
+        scastVerifiability,
         latestDivergence?.critical === true,
       ),
       status: scast.status,
@@ -147,7 +170,8 @@ export function buildHomeSubjects({
         { label: "failing", value: String(probes.failing.length) },
       ],
       byline: "curl",
-      knowledge: endpointsKnowledge,
+      source: "fixture",
+      verifiability: endpointsVerifiability,
       tone: "normal",
       to: "/network",
     },
@@ -162,7 +186,8 @@ export function buildHomeSubjects({
         { label: "last", value: fixture.heartbeat.lastHost },
       ],
       byline: "im.qcic.heartbeat",
-      knowledge: heartbeatKnowledge,
+      source: "fixture",
+      verifiability: heartbeatVerifiability,
       tone: "normal",
       to: "/network",
     },
@@ -186,7 +211,8 @@ export function buildHomeSubjects({
             ]
           : [],
       byline: "/varz · /connz",
-      knowledge: bus.status === "live" ? "live" : "unverifiable",
+      source: "live",
+      verifiability: bus.status === "live" ? "available" : "unverifiable",
       tone: "normal",
       to: "/network",
     },
@@ -202,7 +228,8 @@ export function buildHomeSubjects({
         { label: "unreachable", value: String(fabric.unreachable) },
       ],
       byline: "tailscale status · tailscale ping",
-      knowledge: "fixture",
+      source: "fixture",
+      verifiability: "available",
       tone: "normal",
       to: "/network",
     },

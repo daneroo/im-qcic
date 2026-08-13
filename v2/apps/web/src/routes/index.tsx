@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { ConnectionDot } from "../components/marks";
 import { Stratum } from "../components/Stratum";
 import { NATS_MONITOR_URL, NATS_WS_URL } from "../config";
@@ -11,6 +10,7 @@ import {
 import { useDirectNatsMonitoring } from "../network/direct-monitoring-source";
 import { useScastFeed } from "../scast/useScastFeed";
 import { useTed1kFeed } from "../ted1k/useTed1kFeed";
+import { useCurrentTime } from "../useCurrentTime";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -43,73 +43,84 @@ const LAYERS: {
 ];
 
 function Tile({ subject }: { subject: HomeSubject }) {
-  const unavailable = subject.knowledge === "unverifiable";
-  const marker =
-    subject.knowledge === "fixture" ? (
-      <span
-        className="rounded-full border border-dashed border-partial px-1.5 py-0.5 text-[9px] tracking-wide text-partial"
-        title="Recorded shape — not observed live by this browser"
-      >
-        fixture
-      </span>
-    ) : unavailable ? (
-      <span className="rounded-full border border-dashed border-partial px-1.5 py-0.5 text-[9px] tracking-wide text-ink-2">
-        unverifiable
-      </span>
-    ) : (
-      <ConnectionDot status={subject.status ?? "connected"} />
-    );
+  const unavailable = subject.verifiability === "unverifiable";
+  const marker = (
+    <span className="flex items-center gap-1.5">
+      {subject.source === "fixture" && (
+        <span
+          className="rounded-full border border-dashed border-partial px-1.5 py-0.5 text-[9px] tracking-wide text-partial"
+          title="Recorded shape — not observed live by this browser"
+        >
+          fixture
+        </span>
+      )}
+      {unavailable ? (
+        <span className="rounded-full border border-dashed border-partial px-1.5 py-0.5 text-[9px] tracking-wide text-ink-2">
+          unverifiable
+        </span>
+      ) : subject.source === "live" ? (
+        <ConnectionDot status={subject.status ?? "connected"} />
+      ) : null}
+    </span>
+  );
 
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-xl border border-rule bg-surface p-5">
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-1.5 left-0 max-w-full truncate px-4 text-4xl font-bold text-ink opacity-[0.04] select-none"
-      >
-        {subject.label}
-      </span>
-
-      <div className="relative flex items-baseline justify-between gap-2">
-        <h3 className="text-[12px] font-medium text-ink">
-          <Link
-            to={subject.to}
-            className="rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-          >
-            {subject.label}
-          </Link>
-        </h3>
-        {marker}
-      </div>
-
-      <div className="relative mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+    <Link
+      to={subject.to}
+      className="group block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      aria-label={`Open ${subject.label}`}
+    >
+      <article className="relative flex h-full flex-col overflow-hidden rounded-xl border border-rule bg-surface p-5 group-hover:border-rule-strong">
         <span
-          className={`qc-num text-3xl leading-none font-light tracking-tight ${subject.tone === "alarm" ? "text-alarm" : "text-ink"}`}
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-1.5 left-0 max-w-full truncate px-4 text-4xl font-bold text-ink opacity-[0.04] select-none"
         >
-          {subject.value}
+          {subject.label}
         </span>
-        {subject.unit && (
-          <span className="text-[11px] text-ink-3">{subject.unit}</span>
+
+        <div className="relative flex items-baseline justify-between gap-2">
+          <h3 className="text-[12px] font-medium text-ink">{subject.label}</h3>
+          {marker}
+        </div>
+
+        <div className="relative mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span
+            className={`qc-num text-3xl leading-none font-light tracking-tight ${subject.tone === "alarm" ? "text-alarm" : "text-ink"}`}
+          >
+            {subject.value}
+          </span>
+          {subject.unit && (
+            <span className="text-[11px] text-ink-3">{subject.unit}</span>
+          )}
+        </div>
+
+        {subject.secondary.length > 0 && (
+          <dl className="relative mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+            {subject.secondary.map((reading) => (
+              <div key={reading.label} className="flex items-baseline gap-1.5">
+                <dt className="text-[10px] text-ink-3">{reading.label}</dt>
+                <dd className="qc-num text-[12px] text-ink-2">
+                  {reading.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         )}
-      </div>
 
-      {subject.secondary.length > 0 && (
-        <dl className="relative mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
-          {subject.secondary.map((reading) => (
-            <div key={reading.label} className="flex items-baseline gap-1.5">
-              <dt className="text-[10px] text-ink-3">{reading.label}</dt>
-              <dd className="qc-num text-[12px] text-ink-2">{reading.value}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
+        {unavailable && subject.age && (
+          <p className="relative mt-2 text-[10px] text-ink-3">
+            last known <span className="qc-num">{subject.age}</span>
+          </p>
+        )}
 
-      <div className="relative mt-auto flex items-center gap-2 pt-4">
-        <span className="h-px flex-1 bg-rule" />
-        <p className="qc-digest text-[9px] lowercase text-ink-3">
-          {subject.byline}
-        </p>
-      </div>
-    </article>
+        <div className="relative mt-auto flex items-center gap-2 pt-4">
+          <span className="h-px flex-1 bg-rule" />
+          <p className="qc-digest text-[9px] lowercase text-ink-3">
+            {subject.byline}
+          </p>
+        </div>
+      </article>
+    </Link>
   );
 }
 
@@ -149,8 +160,8 @@ function Home() {
               <p className="mt-6 max-w-prose text-[11px] leading-relaxed text-ink-3">
                 Subjects marked <span className="text-partial">fixture</span>{" "}
                 are shapes, not readings — this browser cannot observe the
-                tailnet or run HTTP probes. ted1k, scrobblecast, and NATS are
-                observed live.
+                tailnet or run HTTP probes. ted1k, scast, and NATS use live
+                sources when connected.
               </p>
             )}
           </Stratum>
@@ -158,15 +169,4 @@ function Home() {
       })}
     </main>
   );
-}
-
-function useCurrentTime(): Date {
-  const [now, setNow] = useState(() => new Date());
-
-  useEffect(() => {
-    const interval = window.setInterval(() => setNow(new Date()), 60_000);
-    return () => window.clearInterval(interval);
-  }, []);
-
-  return now;
 }
