@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ConnectionDot, type ConnectionState } from "../components/marks";
+import { TableChrome } from "../components/TableChrome";
 import { formatDuration, formatSeconds } from "../format/duration";
 import { localHM, tzLabel, utcISO } from "../format/time";
 import {
@@ -64,7 +65,7 @@ export function ConvergenceStrip({
           return (
             <span
               key={key}
-              title={`${utcISO(generation.generation)} — ${generation.distinct.length} distinct digests`}
+              title={`${utcISO(generation.generation)} — copies diverged`}
               className={`h-full min-w-0 flex-1 ${generation.critical ? "bg-alarm" : "bg-ink-3/70"}`}
             />
           );
@@ -114,7 +115,7 @@ function GenerationTable({ reading }: { reading: ScastReading }) {
               ? `No divergence in the window — the most recent ${latestRows.length}`
               : divergence.ongoing
                 ? `Diverged for ${divergence.generations} generation${divergence.generations === 1 ? "" : "s"}, still open`
-                : `Latest divergence — ${divergence.generations} generation${divergence.generations === 1 ? "" : "s"}, healed`}
+                : `Latest divergence — ${divergence.generations} generation${divergence.generations === 1 ? "" : "s"}, closed`}
         </p>
         <button
           type="button"
@@ -128,10 +129,12 @@ function GenerationTable({ reading }: { reading: ScastReading }) {
         <span className="text-ink-2">●</span> same digest as another copy ·
         times in {tzLabel()}
       </p>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[17rem] table-fixed border-collapse text-sm sm:min-w-[34rem]">
-          <thead>
-            <tr className="border-b border-rule-strong text-[10px] uppercase tracking-[0.12em] text-ink-3">
+      <div className="[&_table]:sm:min-w-[34rem]">
+        <TableChrome
+          minWidth="17rem"
+          fixed
+          header={
+            <>
               <th className="w-[26%] py-1.5 pr-2 text-left font-semibold sm:pr-3">
                 <span className="sm:hidden">gen</span>
                 <span className="hidden sm:inline">generation</span>
@@ -145,78 +148,77 @@ function GenerationTable({ reading }: { reading: ScastReading }) {
                   {host}
                 </th>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((generation) => (
-              <tr
-                key={generation.generation.toISOString()}
-                className={`border-b border-rule/60 last:border-0 ${generation.critical ? "bg-alarm/10" : "hover:bg-surface-2/60"}`}
+            </>
+          }
+        >
+          {rows.map((generation) => (
+            <tr
+              key={generation.generation.toISOString()}
+              className={`border-b border-rule/60 last:border-0 ${generation.critical ? "bg-alarm/10" : "hover:bg-surface-2/60"}`}
+            >
+              <td
+                className="qc-num py-1.5 pr-2 text-ink-2 sm:pr-3"
+                title={utcISO(generation.generation)}
               >
+                {localHM(generation.generation)}
+                {generation.settlement === "pending" && (
+                  <span className="ml-2 rounded-sm border border-dashed border-partial px-1 text-[9px] uppercase tracking-wider text-partial">
+                    pending
+                  </span>
+                )}
+              </td>
+              {generation.agreement === "converged" ? (
                 <td
-                  className="qc-num py-1.5 pr-2 text-ink-2 sm:pr-3"
-                  title={utcISO(generation.generation)}
+                  colSpan={reading.hosts.length}
+                  className="py-1.5 text-center"
+                  title={`all copies hold ${generation.reports[0]?.digest}`}
                 >
-                  {localHM(generation.generation)}
-                  {generation.settlement === "pending" && (
-                    <span className="ml-2 rounded-sm border border-dashed border-partial px-1 text-[9px] uppercase tracking-wider text-partial">
-                      pending
+                  <span className="mx-auto flex w-2/3 items-center gap-3">
+                    <SpanArrow />
+                    <span className="qc-digest shrink-0 text-[12px] text-ink-2">
+                      <Digest value={generation.reports[0]?.digest ?? ""} />
                     </span>
-                  )}
+                    <SpanArrow flip />
+                  </span>
                 </td>
-                {generation.agreement === "converged" ? (
-                  <td
-                    colSpan={reading.hosts.length}
-                    className="py-1.5 text-center"
-                    title={`all copies hold ${generation.reports[0]?.digest}`}
-                  >
-                    <span className="mx-auto flex w-2/3 items-center gap-3">
-                      <SpanArrow />
-                      <span className="qc-digest shrink-0 text-[12px] text-ink-2">
-                        <Digest value={generation.reports[0]?.digest ?? ""} />
-                      </span>
-                      <SpanArrow flip />
-                    </span>
-                  </td>
-                ) : (
-                  reading.hosts.map((host) => {
-                    const report = generation.reports.find(
-                      (candidate) => candidate.host === host,
-                    );
-                    if (!report) {
-                      return (
-                        <td
-                          key={host}
-                          title="no report for this generation"
-                          className="px-2 py-1.5 text-center text-ink-3/50 sm:px-3"
-                        >
-                          —
-                        </td>
-                      );
-                    }
-                    const mark = generation.matchGroup[host];
+              ) : (
+                reading.hosts.map((host) => {
+                  const report = generation.reports.find(
+                    (candidate) => candidate.host === host,
+                  );
+                  if (!report) {
                     return (
                       <td
                         key={host}
-                        title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the cycle`}
-                        className={`qc-digest px-2 py-1.5 text-center text-[12px] sm:px-3 ${generation.critical ? "text-alarm" : "text-ink-2"}`}
+                        title="no report for this generation"
+                        className="px-2 py-1.5 text-center text-ink-3/50 sm:px-3"
                       >
-                        <span className="relative inline-block">
-                          <Digest value={report.digest} />
-                          <span className="absolute top-0 left-full ml-1.5 w-2 text-[9px] text-ink-3/70">
-                            {mark === undefined
-                              ? ""
-                              : MATCH_MARKS[mark % MATCH_MARKS.length]}
-                          </span>
-                        </span>
+                        —
                       </td>
                     );
-                  })
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  }
+                  const mark = generation.matchGroup[host];
+                  return (
+                    <td
+                      key={host}
+                      title={`${report.digest} · reported ${formatDuration(report.lagMs)} after the generation`}
+                      className={`qc-digest px-2 py-1.5 text-center text-[12px] sm:px-3 ${generation.critical ? "text-alarm" : "text-ink-2"}`}
+                    >
+                      <span className="relative inline-block">
+                        <Digest value={report.digest} />
+                        <span className="absolute top-0 left-full ml-1.5 w-2 text-[9px] text-ink-3/70">
+                          {mark === undefined
+                            ? ""
+                            : MATCH_MARKS[mark % MATCH_MARKS.length]}
+                        </span>
+                      </span>
+                    </td>
+                  );
+                })
+              )}
+            </tr>
+          ))}
+        </TableChrome>
       </div>
     </div>
   );
@@ -247,51 +249,52 @@ export function CopyTable({
   status: ConnectionState;
 }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[34rem] table-fixed border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-rule-strong text-[10px] uppercase tracking-[0.12em] text-ink-3">
+    <div>
+      <TableChrome
+        minWidth="34rem"
+        fixed
+        header={
+          <>
             <th className="py-1.5 pr-3 text-left font-semibold">copy</th>
             <th className="px-3 py-1.5 text-right font-semibold">reports</th>
             <th className="px-3 py-1.5 text-right font-semibold">lag</th>
             <th className="px-3 py-1.5 text-right font-semibold">scrape</th>
             <th className="px-3 py-1.5 text-right font-semibold">missed</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reading.perHost.map((host) => (
-            <tr
-              key={host.host}
-              className="border-b border-rule/60 last:border-0 hover:bg-surface-2/60"
-            >
-              <td className="py-2 pr-3">
-                <span className="flex items-center gap-2">
-                  <ConnectionDot status={status} />
-                  <span className="qc-digest text-[13px] text-ink">
-                    {host.host}
-                  </span>
+          </>
+        }
+      >
+        {reading.perHost.map((host) => (
+          <tr
+            key={host.host}
+            className="border-b border-rule/60 last:border-0 hover:bg-surface-2/60"
+          >
+            <td className="py-2 pr-3">
+              <span className="flex items-center gap-2">
+                <ConnectionDot status={status} />
+                <span className="qc-digest text-[13px] text-ink">
+                  {host.host}
                 </span>
-              </td>
-              <td className="qc-num px-3 py-2 text-right text-ink-2">
-                {host.reports}
-              </td>
-              <td className="qc-num px-3 py-2 text-right text-ink">
-                {host.medianLagMs === null
-                  ? "—"
-                  : formatDuration(host.medianLagMs)}
-              </td>
-              <td className="qc-num px-3 py-2 text-right text-ink-2">
-                {host.medianElapsed === null
-                  ? "—"
-                  : formatSeconds(host.medianElapsed)}
-              </td>
-              <td className="qc-num px-3 py-2 text-right text-ink-3">
-                {host.missed || "—"}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </span>
+            </td>
+            <td className="qc-num px-3 py-2 text-right text-ink-2">
+              {host.reports}
+            </td>
+            <td className="qc-num px-3 py-2 text-right text-ink">
+              {host.medianLagMs === null
+                ? "—"
+                : formatDuration(host.medianLagMs)}
+            </td>
+            <td className="qc-num px-3 py-2 text-right text-ink-2">
+              {host.medianElapsed === null
+                ? "—"
+                : formatSeconds(host.medianElapsed)}
+            </td>
+            <td className="qc-num px-3 py-2 text-right text-ink-3">
+              {host.missed || "—"}
+            </td>
+          </tr>
+        ))}
+      </TableChrome>
       <p className="mt-2 text-[11px] text-ink-3">
         Lag is publish time minus generation; scrape is the run duration.
       </p>
@@ -329,7 +332,7 @@ export function ConvergenceVerdict({ reading }: { reading: ScastReading }) {
     <>
       All {reading.hosts.length} copies converged. Latest divergence lasted{" "}
       <span className="qc-num text-ink">{latest.generations}</span>{" "}
-      {latest.generations === 1 ? "generation" : "generations"} and healed.
+      {latest.generations === 1 ? "generation" : "generations"} and closed.
     </>
   );
 }

@@ -40,15 +40,11 @@ function Headline({ feed }: { feed: ScastFeedState }) {
       <p className="mt-3 max-w-prose text-sm text-ink-2">
         <ConvergenceVerdict reading={reading} />
       </p>
-      {reading.divergences.length > 0 && (
+      {reading.longestDivergence !== null && (
         <p className="mt-2 text-xs text-ink-3">
-          <span className="qc-num text-ink-2">
-            {reading.divergences.length}
-          </span>{" "}
-          divergence{reading.divergences.length === 1 ? "" : "s"} in{" "}
-          <span className="qc-num text-ink-2">{reading.settled.length}</span>{" "}
-          settled generations · longest{" "}
+          Longest divergence{" "}
           <span className="qc-num text-ink-2">{reading.longestDivergence}</span>
+          {reading.longestDivergence === 1 ? " generation" : " generations"}
         </p>
       )}
     </div>

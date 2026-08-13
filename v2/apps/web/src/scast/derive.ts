@@ -1,6 +1,6 @@
 import type { DigestRecord } from "./generation";
 
-/** Generations are ten-minute scrape cycles. */
+/** A generation is one ten-minute scrape interval. */
 export const GENERATION_MS = 10 * 60 * 1000;
 
 /** An open divergence older than one hour is an active anomaly. */
@@ -31,7 +31,7 @@ export interface Divergence {
   to: Date;
   generations: number;
   ongoing: boolean;
-  /** Active critical state, never a label for a healed historical run. */
+  /** Active critical state, never a label for a closed historical run. */
   critical: boolean;
 }
 

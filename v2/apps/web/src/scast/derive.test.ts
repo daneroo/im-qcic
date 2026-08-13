@@ -58,16 +58,16 @@ describe("deriveScast", () => {
     });
     expect(open.generations.every((row) => row.critical)).toBe(true);
 
-    const healed = deriveScast([
+    const closed = deriveScast([
       ...split,
       ...generation(CRITICAL_GENERATIONS + 1, ["z", "z", "z"]),
     ]);
-    expect(healed.latestDivergence).toMatchObject({
+    expect(closed.latestDivergence).toMatchObject({
       generations: CRITICAL_GENERATIONS + 1,
       ongoing: false,
       critical: false,
     });
-    expect(healed.generations.some((row) => row.critical)).toBe(false);
+    expect(closed.generations.some((row) => row.critical)).toBe(false);
   });
 
   test("returns the latest divergence as one contiguous slice with context", () => {
