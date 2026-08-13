@@ -36,11 +36,9 @@ export interface HomeInputs {
 }
 
 function serviceVerifiability(
-  bus: BusReading,
   own: ConnectionState | "fixture",
   hasReading = true,
 ): Verifiability {
-  if (bus.status !== "live") return "unverifiable";
   if (own === "fixture") return "available";
   return own === "connected" && hasReading ? "available" : "unverifiable";
 }
@@ -73,17 +71,15 @@ export function buildHomeSubjects({
     );
 
   const tedVerifiability = serviceVerifiability(
-    bus,
     ted.lastDay.status,
     day !== null,
   );
   const scastVerifiability = serviceVerifiability(
-    bus,
     scast.status,
     scast.reading.latestSettled !== null,
   );
-  const endpointsVerifiability = serviceVerifiability(bus, "fixture");
-  const heartbeatVerifiability = serviceVerifiability(bus, "fixture");
+  const endpointsVerifiability = serviceVerifiability("fixture");
+  const heartbeatVerifiability = serviceVerifiability("fixture");
 
   return [
     {

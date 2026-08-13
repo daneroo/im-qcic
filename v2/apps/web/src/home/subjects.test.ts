@@ -82,7 +82,7 @@ describe("buildHomeSubjects", () => {
     expect(subjects.filter((subject) => subject.tone === "alarm")).toEqual([]);
   });
 
-  test("propagates an unavailable bus upward as unverifiable without alarms", () => {
+  test("keeps monitoring-endpoint failure scoped to NATS", () => {
     const subjects = buildHomeSubjects({
       ted: ted1kFeed(),
       scast: scastFeed(),
@@ -101,15 +101,34 @@ describe("buildHomeSubjects", () => {
     expect(
       subjects
         .filter((subject) => subject.layer === "services")
-        .every((subject) => subject.verifiability === "unverifiable"),
+        .every((subject) => subject.verifiability === "available"),
     ).toBe(true);
     expect(
       subjects
         .filter(({ id }) => id === "endpoints" || id === "heartbeat")
         .every(({ source }) => source === "fixture"),
     ).toBe(true);
-    expect(subjects.find(({ id }) => id === "ted1k")?.age).toBe("just now");
-    expect(subjects.find(({ id }) => id === "scast")?.age).toBe("9m ago");
     expect(subjects.filter((subject) => subject.tone === "alarm")).toEqual([]);
+  });
+
+  test("marks a disconnected live subject unverifiable with its retained age", () => {
+    const ted = ted1kFeed();
+    ted.lastDay.status = "closed";
+    const subjects = buildHomeSubjects({
+      ted,
+      scast: scastFeed(),
+      bus: LIVE_BUS,
+      now: NOW,
+    });
+
+    expect(subjects.find(({ id }) => id === "ted1k")).toMatchObject({
+      source: "live",
+      verifiability: "unverifiable",
+      age: "just now",
+      tone: "normal",
+    });
+    expect(subjects.find(({ id }) => id === "scast")?.verifiability).toBe(
+      "available",
+    );
   });
 });

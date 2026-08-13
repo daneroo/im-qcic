@@ -135,10 +135,9 @@ function Home() {
     <main className="flex min-h-[calc(100vh-3rem)] flex-col bg-paper">
       {LAYERS.map(({ layer, name, role, tone }, index) => {
         const readings = subjects.filter((subject) => subject.layer === layer);
-        const unavailable =
-          layer === "bus"
-            ? bus.status !== "live"
-            : layer === "services" && bus.status !== "live";
+        const unavailable = readings.every(
+          (subject) => subject.verifiability === "unverifiable",
+        );
 
         return (
           <Stratum
