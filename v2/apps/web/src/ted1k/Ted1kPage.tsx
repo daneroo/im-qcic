@@ -123,12 +123,18 @@ function FlowLink({
 }) {
   return (
     <div
-      className={`flex min-w-[6rem] flex-1 flex-col items-center gap-1 px-1 ${unavailable ? "opacity-35" : ""}`}
+      data-flow-link
+      className={`relative h-[3.25rem] min-w-[6rem] flex-1 ${unavailable ? "opacity-35" : ""}`}
     >
-      <span className="text-center text-[10px] text-ink-2">{fact}</span>
-      <span className="relative flex w-full items-center" aria-hidden="true">
-        <span className="h-px w-full bg-rule-strong" />
-        <span className="absolute left-1/2 h-1.5 w-1.5 -translate-x-1/2 rotate-45 bg-rule-strong" />
+      <span className="absolute inset-x-1 top-0 text-center text-[10px] leading-4 text-ink-2">
+        {fact}
+      </span>
+      <span
+        data-flow-rail
+        className="absolute inset-x-0 top-9 h-px bg-rule-strong"
+        aria-hidden="true"
+      >
+        <span className="absolute top-1/2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-rule-strong" />
       </span>
     </div>
   );
@@ -136,7 +142,10 @@ function FlowLink({
 
 function FlowNode({ children }: { children: ReactNode }) {
   return (
-    <span className="shrink-0 rounded-md border border-rule-strong bg-surface px-3 py-1.5 text-[13px] font-medium text-ink">
+    <span
+      data-flow-node
+      className="mt-5 flex h-8 shrink-0 items-center rounded-md border border-rule-strong bg-surface px-3 text-[13px] font-medium text-ink"
+    >
       {children}
     </span>
   );
@@ -147,7 +156,7 @@ function Flow({ feed, now }: { feed: Ted1kFeed; now: Date }) {
   const unavailable = feed.busStatus !== "connected";
   return (
     <div className="overflow-x-auto pb-2">
-      <div className="flex min-w-[48rem] items-end gap-1">
+      <div className="flex min-w-[48rem] items-start gap-0">
         <FlowNode>ted</FlowNode>
         <FlowLink
           unavailable={unavailable}
@@ -167,7 +176,9 @@ function Flow({ feed, now }: { feed: Ted1kFeed; now: Date }) {
         <FlowNode>kv</FlowNode>
         <FlowLink
           fact={
-            feed.busStatus === "connected" ? "websocket live" : feed.busStatus
+            feed.busStatus === "connected"
+              ? "3 websockets live"
+              : feed.busStatus
           }
         />
         <FlowNode>browser</FlowNode>
