@@ -29,7 +29,7 @@ export function ConnectionDot({ status }: { status: ConnectionState }) {
   }
   if (status === "closed") {
     return (
-      <span className="inline-block h-2 w-2 shrink-0 rounded-full border border-alarm" />
+      <span className="inline-block h-2 w-2 shrink-0 rounded-full border border-partial" />
     );
   }
   return (

@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Byline,
   ConnectionLabel,
-  Eyebrow,
   type ConnectionState,
 } from "../components/marks";
+import { Stratum } from "../components/Stratum";
 import { formatCoverage } from "../format/coverage";
 import { formatMissing, since } from "../format/duration";
 import { localHM, tzLabel, utcDate } from "../format/time";
@@ -12,54 +12,6 @@ import { BucketTable } from "./BucketTable";
 import type { Ted1kReading } from "./derive";
 import { ConsumptionStrip, CoverageStrip, Reading } from "./marks";
 import { useTed1kFeed, type Ted1kFeed } from "./useTed1kFeed";
-
-function Stratum({
-  index,
-  name,
-  role,
-  tone,
-  unverifiable,
-  children,
-}: {
-  index: number;
-  name: string;
-  role: string;
-  tone: "paper" | "sunken" | "deep";
-  unverifiable?: boolean;
-  children: ReactNode;
-}) {
-  const background =
-    tone === "paper" ? "bg-paper" : tone === "sunken" ? "bg-sunken" : "bg-deep";
-  return (
-    <section className={`${background} border-t border-rule`}>
-      <div className="mx-auto flex max-w-5xl gap-5 px-4 py-8 sm:gap-8 sm:px-8">
-        <div className="flex w-7 shrink-0 flex-col items-center gap-2 sm:w-9">
-          <span className="qc-num text-[11px] font-medium text-ink-2">
-            {String(index).padStart(2, "0")}
-          </span>
-          <span
-            className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-3"
-            style={{ writingMode: "vertical-rl" }}
-          >
-            {name}
-          </span>
-          <span className="w-px flex-1 bg-rule" />
-        </div>
-        <div className={`min-w-0 flex-1 ${unverifiable ? "opacity-45" : ""}`}>
-          <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
-            <Eyebrow>{role}</Eyebrow>
-            {unverifiable && (
-              <span className="rounded-full border border-dashed border-partial px-2 py-0.5 text-[10px] text-partial">
-                unverifiable — substrate down
-              </span>
-            )}
-          </div>
-          {children}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function Snapshot({
   label,
@@ -255,7 +207,7 @@ export function Ted1kPage() {
   const day = feed.lastDay.reading;
   const today = feed.dayByHour.reading;
   const month = feed.weekByDay.reading;
-  const now = day?.stamp ?? new Date();
+  const now = useCurrentTime();
   const unverifiable = feed.busStatus !== "connected";
 
   return (
@@ -265,7 +217,7 @@ export function Ted1kPage() {
         name="signal"
         role="Where ted1k stands, and which periods lost time"
         tone="paper"
-        unverifiable={unverifiable}
+        health={unverifiable ? "unverifiable" : "live"}
       >
         <div className="grid gap-8 sm:grid-cols-2">
           <Snapshot label="Last Day" reading={day} now={now} />
@@ -292,7 +244,7 @@ export function Ted1kPage() {
         name="producer"
         role="Who computed each reading, and how recently"
         tone="sunken"
-        unverifiable={unverifiable}
+        health={unverifiable ? "unverifiable" : "live"}
       >
         <p className="mb-4 text-sm text-ink-2">
           <span className="font-medium text-ink">ted1k-derive</span>
@@ -333,7 +285,7 @@ export function Ted1kPage() {
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <div>
             <p className="text-sm text-ink">
-              NATS — three KV watches over one websocket
+              NATS — three KV watches over three WebSocket connections
             </p>
             <p className="mt-1 text-xs text-ink-3">
               This is the browser&rsquo;s own connection state. If it drops, the
@@ -345,4 +297,15 @@ export function Ted1kPage() {
       </Stratum>
     </main>
   );
+}
+
+function useCurrentTime(): Date {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return now;
 }

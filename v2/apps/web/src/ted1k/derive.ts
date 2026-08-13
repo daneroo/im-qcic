@@ -58,12 +58,9 @@ export interface Ted1kReading {
   whole: Ted1kBucket[];
   worst: Ted1kBucket | null;
   significantGaps: Ted1kBucket[];
-  lastSignificantGap: Ted1kBucket | null;
   total: { expected: number; missing: number };
-  baseline: number;
   significantThreshold: number;
   meanWatt: number | null;
-  wattRange: { min: number; max: number } | null;
 }
 
 function numberFrom(cell: unknown): number | null {
@@ -151,15 +148,6 @@ export function deriveView(
       : largest;
   }, null);
   const significantGaps = whole.filter((bucket) => bucket.significant);
-  const lastSignificantGap = significantGaps.reduce<Ted1kBucket | null>(
-    (latest, bucket) =>
-      latest === null || bucket.start > latest.start ? bucket : latest,
-    null,
-  );
-  const losses = whole
-    .filter((bucket) => bucket.missing > 0)
-    .map((bucket) => bucket.missing)
-    .sort((left, right) => left - right);
   const weighted = buckets.reduce(
     (summary, bucket) =>
       bucket.watt === null
@@ -169,9 +157,6 @@ export function deriveView(
             samples: summary.samples + bucket.samples,
           },
     { energy: 0, samples: 0 },
-  );
-  const watts = buckets.flatMap((bucket) =>
-    bucket.watt === null ? [] : [bucket.watt],
   );
   return {
     view,
@@ -183,17 +168,11 @@ export function deriveView(
     whole,
     worst,
     significantGaps,
-    lastSignificantGap,
     total: {
       expected: buckets.reduce((sum, bucket) => sum + bucket.expected, 0),
       missing: buckets.reduce((sum, bucket) => sum + bucket.missing, 0),
     },
-    baseline: losses[Math.floor(losses.length / 2)] ?? 0,
     significantThreshold: shape.significantSeconds,
     meanWatt: weighted.samples > 0 ? weighted.energy / weighted.samples : null,
-    wattRange:
-      watts.length > 0
-        ? { min: Math.min(...watts), max: Math.max(...watts) }
-        : null,
   };
 }
