@@ -40,7 +40,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             either axis - see theme.ts's comment. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className="bg-paper font-sans text-ink antialiased">
+      {/* Browser extensions may annotate body before React hydrates. The app
+          does not own those attributes, so ignore that one-level mismatch. */}
+      <body
+        className="bg-paper font-sans text-ink antialiased"
+        suppressHydrationWarning
+      >
         <PageHeader />
         {children}
         <Scripts />
