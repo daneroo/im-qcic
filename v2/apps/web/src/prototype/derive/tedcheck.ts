@@ -20,6 +20,14 @@
 // meta.stamp they are 1 and 0 missing - the two cleanest hours on the page.
 // Rendering them raw (which is what the app does today) makes a healthy day
 // look like it began and ended in catastrophe.
+//
+// CORRECTED HERE, ON PURPOSE, AND NOT PUSHED UPSTREAM. It was proposed that
+// ted1k-derive publish an `expected` per bucket, since it owns the NOW() that
+// clips them and could hand consumers the answer. REJECTED: `expected` is a
+// poor concept to freeze into the wire format. How boundaries should be
+// treated is not settled and will change, and a field like that in temporary
+// upstream code would fix today's answer in place just as it starts to move.
+// The consumer absorbing it is the reversible choice.
 
 import type { Table, TedcheckViewPayload } from "../../tedcheck/types";
 import type { ViewName } from "../../tedcheck/config";

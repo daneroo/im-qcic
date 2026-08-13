@@ -74,9 +74,25 @@ interface RawMessage {
 
 /**
  * Like ../../scast/generation.ts's parseDigestMessage, but keeps `stamp`,
- * `elapsed` and both scopes. Deliberately a separate function rather than a
- * change to the production one: that module's narrow shape is correct for
- * what it does, and a prototype should not widen it.
+ * `elapsed` and both scopes.
+ *
+ * A DEFERRED FOLD, not a fork. WHEN THIS VIEWING CODE MERGES,
+ * parseDigestMessage should be widened to carry `stamp` and `elapsed`, and
+ * this function disappears into it. That is the intended end state; it is not
+ * scheduled, and nothing should be widened before then.
+ *
+ * The two are separate only because a prototype must not widen production code
+ * it may never merge. parseDigestMessage was written for the cross-tab, which
+ * needs exactly generation/host/digest; it could not have foreseen a use for
+ * the other two fields, and it is narrow correctly for its own job. That
+ * narrowness stops being right at the moment a shipped page needs the other
+ * two - which is precisely what merging this code would mean.
+ *
+ * What the extra fields buy: `stamp` minus `generation` is a copy's reporting
+ * lag, and `elapsed` is how long its scrape took. Both turn out to be near
+ * constants set by the host's disk - nvme, ssd, spinning rust, in that order -
+ * so they describe the hardware rather than the health of the sync. That is
+ * also why nothing here alarms on them.
  */
 export function parseRich(raw: unknown): DigestRecord | null {
   if (typeof raw !== "object" || raw === null) return null;

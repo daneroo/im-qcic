@@ -297,10 +297,20 @@ one-chromatic-token rule), the type decisions, the shared marks.
 **Scaffolding — never lands.** `VariantSwitcher`, `?variant=`, the wordmark
 bench, `Sheet`.
 
-Sequencing: tokens → derivations with tests → producer-side fixes → one page at
-a time. Four seams to settle first: where derivations live, the `DataTable`
-untyped `Cell[][]` problem (the real architectural debt), whether the marks
-become a component library, and whether all three themes ship.
+Sequencing: tokens → derivations with tests → widen `parseDigestMessage` → one
+page at a time. Four seams to settle first: where derivations live, the
+`DataTable` untyped `Cell[][]` problem (the real architectural debt), whether
+the marks become a component library, and whether all three themes ship.
+
+**One fold is already identified and deferred, not optional.** `parseRich` in
+`derive/scast.ts` exists only because a prototype must not widen production code
+it may never merge; when these pages land, `parseDigestMessage` takes on `stamp`
+and `elapsed` and `parseRich` disappears into it.
+
+**One was proposed and rejected.** Having `ted1k-derive` publish an `expected`
+per bucket would spare consumers the rolling-window correction, but it freezes a
+boundary convention into the wire format while that convention is still moving.
+The consumer absorbing it stays reversible; see `derive/tedcheck.ts`.
 
 This glossary is really domain vocabulary and should graduate into `CONTEXT.md`
 rather than die with this directory.
