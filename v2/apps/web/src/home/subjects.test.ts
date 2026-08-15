@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { BusReading } from "../network/direct-monitoring-source";
+import type { HealthFeedState } from "../health/types";
 import { deriveScast } from "../scast/derive";
 import type { DigestRecord } from "../scast/generation";
 import type { ScastFeedState } from "../scast/useScastFeed";
@@ -29,7 +29,7 @@ function ted1kFeed(): Ted1kFeed {
     lastDay: { status: "connected", reading: ted1kReading() },
     dayByHour: { status: "connected", reading: null },
     weekByDay: { status: "connected", reading: null },
-    busStatus: "connected",
+    natsStatus: "connected",
     producer: "galois",
   };
 }
@@ -48,15 +48,55 @@ function scastFeed(): ScastFeedState {
   return { status: "connected", reading: deriveScast(records) };
 }
 
-const LIVE_BUS: BusReading = {
-  status: "live",
-  stats: {
-    server: "nats",
-    connections: 5,
-    subscriptions: 12,
-    msgsPerSecIn: 3,
-    msgsPerSecOut: 4,
-    slowConsumers: 0,
+const LIVE_HEALTH: HealthFeedState = {
+  publicReading: {
+    schema: 1,
+    observer: "syno",
+    nats: { available: true, observedAt: "2026-08-13T18:59:00Z" },
+    tailnet: { available: true, observedAt: "2026-08-13T18:59:00Z" },
+  },
+  nats: {
+    status: "live",
+    transportStatus: "connected",
+    value: {
+      schema: 1,
+      observer: "syno",
+      observedAt: "2026-08-13T18:59:00Z",
+      serverName: "nats",
+      version: "2.14.4",
+      uptime: "1h",
+      connections: 5,
+      subscriptions: 12,
+      inMessages: 3,
+      outMessages: 4,
+      slowConsumers: 0,
+      jetstreamMemoryBytes: 0,
+      jetstreamStorageBytes: 100,
+    },
+  },
+  tailnet: {
+    status: "live",
+    transportStatus: "connected",
+    value: {
+      schema: 1,
+      observer: "syno",
+      observedAt: "2026-08-13T18:59:00Z",
+      version: "1.102.1",
+      backendState: "Running",
+      selfHostName: "syno",
+      selfDnsName: "syno.tail.test.",
+      selfTailscaleIp: "100.64.0.1",
+      peers: [
+        {
+          hostName: "galois",
+          dnsName: "galois.tail.test.",
+          tailscaleIp: "100.64.0.2",
+          online: true,
+          lastSeen: "0001-01-01T00:00:00Z",
+          path: { kind: "direct", latencyMs: 2 },
+        },
+      ],
+    },
   },
 };
 
@@ -65,17 +105,17 @@ describe("buildHomeSubjects", () => {
     const subjects = buildHomeSubjects({
       ted: ted1kFeed(),
       scast: scastFeed(),
-      bus: LIVE_BUS,
+      health: LIVE_HEALTH,
       now: NOW,
     });
 
     expect(subjects.map(({ id, layer }) => `${layer}:${id}`)).toEqual([
-      "services:ted1k",
-      "services:scast",
-      "services:endpoints",
-      "services:heartbeat",
-      "bus:nats",
-      "fabric:tailnet",
+      "endpoints:ted1k",
+      "endpoints:scast",
+      "endpoints:endpoints",
+      "endpoints:heartbeat",
+      "nats:nats",
+      "tailnet:tailnet",
     ]);
     expect(subjects.find(({ id }) => id === "scast")?.label).toBe("scast");
     expect(subjects.find(({ id }) => id === "ted1k")?.byline).toBe(
@@ -85,16 +125,19 @@ describe("buildHomeSubjects", () => {
     expect(subjects.filter((subject) => subject.tone === "alarm")).toEqual([]);
   });
 
-  test("keeps monitoring-endpoint failure scoped to NATS", () => {
+  test("keeps independent NATS failure scoped to NATS", () => {
     const subjects = buildHomeSubjects({
       ted: ted1kFeed(),
       scast: scastFeed(),
-      bus: { status: "unavailable", stats: null },
+      health: {
+        ...LIVE_HEALTH,
+        nats: { ...LIVE_HEALTH.nats, status: "unavailable" },
+      },
       now: NOW,
     });
 
     expect(subjects.find((subject) => subject.id === "tailnet")).toMatchObject({
-      source: "fixture",
+      source: "live",
       verifiability: "available",
     });
     expect(subjects.find((subject) => subject.id === "nats")).toMatchObject({
@@ -103,7 +146,7 @@ describe("buildHomeSubjects", () => {
     });
     expect(
       subjects
-        .filter((subject) => subject.layer === "services")
+        .filter((subject) => subject.layer === "endpoints")
         .every((subject) => subject.verifiability === "available"),
     ).toBe(true);
     expect(
@@ -120,7 +163,7 @@ describe("buildHomeSubjects", () => {
     const subjects = buildHomeSubjects({
       ted,
       scast: scastFeed(),
-      bus: LIVE_BUS,
+      health: LIVE_HEALTH,
       now: NOW,
     });
 

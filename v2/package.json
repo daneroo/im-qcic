@@ -8,6 +8,7 @@
     ],
     "catalogs": {
       "runtime": {
+        "hono": "^4.6.0",
         "pino": "^9.5.0",
         "@nats-io/jetstream": "^3.4.0",
         "@nats-io/kv": "^3.4.0",

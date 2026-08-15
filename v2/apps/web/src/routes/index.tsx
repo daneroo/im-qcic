@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ConnectionDot } from "../components/marks";
 import { Stratum } from "../components/Stratum";
-import { NATS_MONITOR_URL, NATS_WS_URL } from "../config";
+import { HEALTH_HTTP_URL, NATS_WS_URL } from "../config";
+import { useHealthFeed } from "../health/useHealthFeed";
 import {
   buildHomeSubjects,
   type HomeLayer,
   type HomeSubject,
 } from "../home/subjects";
-import { useDirectNatsMonitoring } from "../network/direct-monitoring-source";
 import { useScastFeed } from "../scast/useScastFeed";
 import { useTed1kFeed } from "../ted1k/useTed1kFeed";
 import { useCurrentTime } from "../useCurrentTime";
@@ -23,21 +23,21 @@ const LAYERS: {
   tone: "paper" | "sunken" | "deep";
 }[] = [
   {
-    layer: "services",
-    name: "services",
+    layer: "endpoints",
+    name: "endpoints",
     role: "The things that do the work",
     tone: "paper",
   },
   {
-    layer: "bus",
-    name: "bus",
-    role: "NATS — how state gets anywhere",
+    layer: "nats",
+    name: "nats",
+    role: "How endpoint state reaches the browser",
     tone: "sunken",
   },
   {
-    layer: "fabric",
-    name: "fabric",
-    role: "The tailnet every other reading travels over",
+    layer: "tailnet",
+    name: "tailnet",
+    role: "The private network carrying substrate traffic",
     tone: "deep",
   },
 ];
@@ -127,9 +127,9 @@ function Tile({ subject }: { subject: HomeSubject }) {
 function Home() {
   const ted = useTed1kFeed();
   const scast = useScastFeed(NATS_WS_URL);
-  const bus = useDirectNatsMonitoring(NATS_MONITOR_URL);
+  const health = useHealthFeed(NATS_WS_URL, HEALTH_HTTP_URL);
   const now = useCurrentTime();
-  const subjects = buildHomeSubjects({ ted, scast, bus, now });
+  const subjects = buildHomeSubjects({ ted, scast, health, now });
 
   return (
     <main className="flex min-h-[calc(100vh-3rem)] flex-col bg-paper">
@@ -147,7 +147,7 @@ function Home() {
             role={role}
             tone={tone}
             health={unavailable ? "unverifiable" : "live"}
-            grow={layer === "fabric"}
+            grow={layer === "tailnet"}
           >
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {readings.map((subject) => (
@@ -155,12 +155,12 @@ function Home() {
               ))}
             </div>
 
-            {layer === "fabric" && (
+            {layer === "tailnet" && (
               <p className="mt-6 max-w-prose text-[11px] leading-relaxed text-ink-3">
-                Subjects marked <span className="text-partial">fixture</span>{" "}
+                Readings marked <span className="text-partial">fixture</span>{" "}
                 are shapes, not readings — this browser cannot observe the
-                tailnet or run HTTP probes. ted1k, scast, and NATS use live
-                sources when connected.
+                endpoint and heartbeat probes. ted1k, scast, NATS, and Tailnet
+                use live sources when connected.
               </p>
             )}
           </Stratum>

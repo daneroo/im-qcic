@@ -29,6 +29,34 @@ services:
     # (for `web`) - before ever touching the real production Caddy/gateway
     # config.
 
+  health:
+    build:
+      context: ..
+      dockerfile: apps/health/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - nats
+    environment:
+      HOSTALIAS: ${HOSTALIAS:-v2-dev}
+      NATS_SERVERS: nats:4222
+      NATS_MONITOR_URL: http://nats:8222
+      TAILSCALE_LOCALAPI_MODE: ${TAILSCALE_LOCALAPI_MODE:-unix}
+      TAILSCALE_CREDENTIAL_PATH: /run/secrets/tailscale-localapi.json
+    volumes:
+      - type: bind
+        source: ${TAILSCALE_LOCALAPI_SOURCE:-/run/tailscale/tailscaled.sock}
+        target: ${TAILSCALE_LOCALAPI_TARGET:-/run/tailscale/tailscaled.sock}
+        read_only: true
+        bind:
+          create_host_path: false
+    ports:
+      - "8000:8000"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   ted1k-derive:
     build:
       context: ..

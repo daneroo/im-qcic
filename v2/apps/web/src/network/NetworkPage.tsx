@@ -1,14 +1,19 @@
-import { NATS_MONITOR_URL } from "../config";
+import { HEALTH_HTTP_URL, NATS_WS_URL } from "../config";
+import { Byline } from "../components/marks";
 import { Stratum } from "../components/Stratum";
-import { isRelayed, summariseFabric, summariseProbes } from "./derive";
-import { useDirectNatsMonitoring } from "./direct-monitoring-source";
+import type { NatsHealth, TailnetHealth, TailnetPeer } from "../health/types";
+import { useHealthFeed } from "../health/useHealthFeed";
+import { since } from "../format/duration";
+import { useCurrentTime } from "../useCurrentTime";
+import { isRelayed, summariseProbes, summariseTailnet } from "./derive";
 import { NETWORK_FIXTURE } from "./fixture";
-import type { BusStats, HttpProbe, Peer } from "./types";
+import type { HttpProbe } from "./types";
 
 const fixture = NETWORK_FIXTURE;
 
 export function NetworkPage() {
-  const bus = useDirectNatsMonitoring(NATS_MONITOR_URL);
+  const health = useHealthFeed(NATS_WS_URL, HEALTH_HTTP_URL);
+  const now = useCurrentTime();
 
   return (
     <main className="min-h-[calc(100vh-3rem)] overflow-x-clip bg-paper">
@@ -24,16 +29,16 @@ export function NetworkPage() {
 
       <Stratum
         index={1}
-        name="services"
+        name="endpoints"
         role="The things that do the work"
         tone="paper"
-        health={bus.status === "live" ? "live" : "unverifiable"}
+        health="live"
       >
         <ProbeSummaryLine probes={fixture.probes} />
         <div className="mt-4">
           <ProbeTable probes={fixture.probes} />
         </div>
-        <Byline>curl</Byline>
+        <Byline>curl · fixture</Byline>
         <div className="mt-6 border-t border-rule pt-4 text-sm text-ink-2">
           Heartbeat —{" "}
           <span className="qc-num text-ink">{fixture.heartbeat.hosts}</span>{" "}
@@ -47,41 +52,57 @@ export function NetworkPage() {
           </span>
           : <span className="qc-digest">{fixture.heartbeat.lastText}</span>
         </div>
-        <Byline>im.qcic.heartbeat</Byline>
+        <Byline>im.qcic.heartbeat · fixture</Byline>
       </Stratum>
 
       <Stratum
         index={2}
-        name="bus"
-        role="NATS — how state gets anywhere"
+        name="nats"
+        role="How endpoint state reaches the browser"
         tone="sunken"
-        health={bus.status === "live" ? "live" : "unverifiable"}
+        health={health.nats.status === "unavailable" ? "unverifiable" : "live"}
       >
-        {bus.status === "live" ? (
-          <BusPanel bus={bus.stats} />
+        {health.nats.value ? (
+          <NatsPanel
+            nats={health.nats.value}
+            live={health.nats.status === "live"}
+          />
         ) : (
-          <UnavailableBus loading={bus.status === "loading"} />
+          <UnavailableReading
+            loading={health.nats.status === "loading"}
+            label="NATS"
+          />
         )}
-        <Byline>{NATS_MONITOR_URL}/varz · /connz</Byline>
+        {health.nats.status === "unavailable" && health.nats.value && (
+          <LastKnown observedAt={health.nats.value.observedAt} now={now} />
+        )}
+        <Byline>kv:im-qcic-health/nats</Byline>
       </Stratum>
 
       <Stratum
         index={3}
-        name="fabric"
-        role="The tailnet every other reading travels over"
+        name="tailnet"
+        role="The private network carrying substrate traffic"
         tone="deep"
+        health={
+          health.tailnet.status === "unavailable" ? "unverifiable" : "live"
+        }
       >
-        <p className="mb-4 text-sm text-ink-2">
-          <span className="qc-digest text-ink">
-            {fixture.identity.hostnameFqdn}
-          </span>{" "}
-          · {fixture.identity.lanIp} · {fixture.identity.tailscaleIp}
-        </p>
-        <FabricSummaryLine peers={fixture.peers} />
-        <div className="mt-4">
-          <PeerTable peers={fixture.peers} />
-        </div>
-        <Byline>tailscale status · tailscale ping</Byline>
+        {health.tailnet.value ? (
+          <TailnetPanel
+            tailnet={health.tailnet.value}
+            live={health.tailnet.status === "live"}
+          />
+        ) : (
+          <UnavailableReading
+            loading={health.tailnet.status === "loading"}
+            label="Tailnet"
+          />
+        )}
+        {health.tailnet.status === "unavailable" && health.tailnet.value && (
+          <LastKnown observedAt={health.tailnet.value.observedAt} now={now} />
+        )}
+        <Byline>kv:im-qcic-health/tailnet</Byline>
       </Stratum>
     </main>
   );
@@ -90,30 +111,59 @@ export function NetworkPage() {
 function FixtureNote() {
   return (
     <p className="mt-4 max-w-2xl text-xs leading-relaxed text-ink-2">
-      <strong className="font-medium text-ink">Fabric and services</strong>{" "}
-      readings are fixtures. The bus reading is live from NATS monitoring.
+      Endpoint and heartbeat readings are marked fixtures. NATS and Tailnet are
+      observed by <span className="qc-digest">apps/health</span> and delivered
+      over NATS.
     </p>
   );
 }
 
-function FabricSummaryLine({ peers }: { peers: Peer[] }) {
-  const summary = summariseFabric(peers);
+function TailnetPanel({
+  tailnet,
+  live,
+}: {
+  tailnet: TailnetHealth;
+  live: boolean;
+}) {
+  return (
+    <div aria-live="polite">
+      <p className="mb-4 text-sm text-ink-2">
+        <ConnectionDot connected={live} />
+        <span className="qc-digest ml-2 text-ink">
+          {tailnet.selfDnsName}
+        </span> · <span className="qc-digest">{tailnet.selfTailscaleIp}</span> ·{" "}
+        {tailnet.version}
+      </p>
+      <TailnetSummaryLine peers={tailnet.peers} />
+      <div className="mt-4">
+        <PeerTable peers={tailnet.peers} />
+      </div>
+    </div>
+  );
+}
+
+function TailnetSummaryLine({ peers }: { peers: TailnetPeer[] }) {
+  const summary = summariseTailnet(peers);
+  const worstDelay = summary.worst?.path?.latencyMs;
 
   return (
     <p className="text-sm leading-relaxed text-ink-2">
       <span className="qc-num text-ink">{summary.online}</span> of{" "}
       <span className="qc-num">{summary.total}</span> peers online,{" "}
       <span className="qc-num text-ink">{summary.direct}</span> direct and{" "}
-      <span className="qc-num text-ink">{summary.relayed}</span> relayed through
-      DERP. Median delay{" "}
+      <span className="qc-num text-ink">{summary.relayed}</span> relayed. Median
+      delay{" "}
       <span className="qc-num text-ink">
-        {summary.medianDelayMs === null ? "—" : `${summary.medianDelayMs} ms`}
+        {summary.medianDelayMs === null
+          ? "—"
+          : formatLatency(summary.medianDelayMs)}
       </span>
-      {summary.worst && (
+      {summary.worst && worstDelay !== undefined && (
         <>
           , worst{" "}
           <span className="qc-digest text-ink">{summary.worst.hostName}</span>{" "}
-          at <span className="qc-num text-ink">{summary.worst.delayMs} ms</span>
+          at{" "}
+          <span className="qc-num text-ink">{formatLatency(worstDelay)}</span>
         </>
       )}
       .
@@ -121,14 +171,11 @@ function FabricSummaryLine({ peers }: { peers: Peer[] }) {
   );
 }
 
-function PeerTable({ peers }: { peers: Peer[] }) {
+function PeerTable({ peers }: { peers: TailnetPeer[] }) {
   const sorted = [...peers].sort((left, right) => {
     if (left.online !== right.online) return left.online ? -1 : 1;
     if (isRelayed(left) !== isRelayed(right)) return isRelayed(left) ? 1 : -1;
-    return (
-      (left.delayMs ?? Number.POSITIVE_INFINITY) -
-      (right.delayMs ?? Number.POSITIVE_INFINITY)
-    );
+    return latency(left) - latency(right);
   });
 
   return (
@@ -147,7 +194,7 @@ function PeerTable({ peers }: { peers: Peer[] }) {
         <tbody>
           {sorted.map((peer) => (
             <tr
-              key={peer.hostName}
+              key={peer.tailscaleIp}
               className="border-b border-rule/60 last:border-0"
             >
               <td className="py-1.5 pr-3">
@@ -162,24 +209,10 @@ function PeerTable({ peers }: { peers: Peer[] }) {
                 {peer.tailscaleIp}
               </td>
               <td className="px-3 py-1.5 text-[12px]">
-                {!peer.online ? (
-                  <span className="text-ink-3">—</span>
-                ) : isRelayed(peer) ? (
-                  <span className="flex items-center gap-1.5 text-ink-2">
-                    <span className="inline-block h-px w-3 bg-partial" />
-                    <span className="inline-block size-1.5 rotate-45 border border-partial" />
-                    <span className="inline-block h-px w-3 bg-partial" />
-                    <span className="qc-digest">{peer.via}</span>
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1.5 text-ink-2">
-                    <span className="inline-block h-px w-9 bg-rule-strong" />
-                    <span className="qc-digest">direct</span>
-                  </span>
-                )}
+                <PathMark peer={peer} />
               </td>
               <td className="qc-num py-1.5 pl-3 text-right text-ink-2">
-                {peer.delayMs === null ? "—" : `${peer.delayMs} ms`}
+                {peer.path ? formatLatency(peer.path.latencyMs) : "—"}
               </td>
             </tr>
           ))}
@@ -189,22 +222,45 @@ function PeerTable({ peers }: { peers: Peer[] }) {
   );
 }
 
-function BusPanel({ bus }: { bus: BusStats }) {
+function PathMark({ peer }: { peer: TailnetPeer }) {
+  if (!peer.online) return <span className="text-ink-3">not online</span>;
+  if (!peer.path) return <span className="text-ink-3">unknown</span>;
+  if (peer.path.kind === "direct") {
+    return (
+      <span className="flex items-center gap-1.5 text-ink-2">
+        <span className="inline-block h-px w-9 bg-rule-strong" />
+        <span className="qc-digest">direct</span>
+      </span>
+    );
+  }
+  return (
+    <span className="flex items-center gap-1.5 text-ink-2">
+      <span className="inline-block h-px w-3 bg-partial" />
+      <span className="inline-block size-1.5 rotate-45 border border-partial" />
+      <span className="inline-block h-px w-3 bg-partial" />
+      <span className="qc-digest">
+        {peer.path.kind === "derp" ? `DERP(${peer.path.region})` : "peer relay"}
+      </span>
+    </span>
+  );
+}
+
+function NatsPanel({ nats, live }: { nats: NatsHealth; live: boolean }) {
   const stats = [
-    ["connections", String(bus.connections)],
-    ["subscriptions", String(bus.subscriptions)],
-    ["msgs/s in", bus.msgsPerSecIn.toFixed(1)],
-    ["msgs/s out", bus.msgsPerSecOut.toFixed(1)],
-    ["slow consumers", String(bus.slowConsumers)],
+    ["connections", formatInteger(nats.connections)],
+    ["subscriptions", formatInteger(nats.subscriptions)],
+    ["messages in", formatInteger(nats.inMessages)],
+    ["messages out", formatInteger(nats.outMessages)],
+    ["slow consumers", formatInteger(nats.slowConsumers)],
   ] as const;
 
   return (
     <div aria-live="polite">
       <p className="mb-3 flex items-center gap-2 text-sm text-ink-2">
-        <ConnectionDot connected />
-        <span className="qc-digest text-ink">{bus.server}</span>
-        <span className="text-[11px] uppercase tracking-wide text-ink-2">
-          live
+        <ConnectionDot connected={live} />
+        <span className="qc-digest text-ink">{nats.serverName}</span>
+        <span className="text-[11px] text-ink-2">
+          v{nats.version} · up {nats.uptime}
         </span>
       </p>
       <dl className="flex flex-wrap gap-x-8 gap-y-3">
@@ -227,21 +283,31 @@ function BusPanel({ bus }: { bus: BusStats }) {
   );
 }
 
-function UnavailableBus({ loading }: { loading: boolean }) {
+function UnavailableReading({
+  loading,
+  label,
+}: {
+  loading: boolean;
+  label: string;
+}) {
   return (
     <div
       aria-live="polite"
       className="border-l border-dashed border-partial pl-4"
     >
       <p className="text-sm text-ink-2">
-        {loading ? "Reading NATS monitoring…" : "Bus reading unavailable."}
+        {loading ? `Reading ${label}…` : `${label} reading unavailable.`}
       </p>
-      {!loading && (
-        <p className="mt-1 text-xs text-ink-2">
-          Services are unverifiable while their substrate cannot be read.
-        </p>
-      )}
     </div>
+  );
+}
+
+function LastKnown({ observedAt, now }: { observedAt: string; now: Date }) {
+  return (
+    <p className="mt-3 text-xs text-ink-2">
+      Last known{" "}
+      <span className="qc-num">{since(new Date(observedAt), now)}</span>.
+    </p>
   );
 }
 
@@ -315,10 +381,16 @@ function ConnectionDot({ connected }: { connected: boolean }) {
   );
 }
 
-function Byline({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="qc-digest mt-5 text-[10px] tracking-wide text-ink-2">
-      {children}
-    </p>
-  );
+function latency(peer: TailnetPeer): number {
+  return peer.path?.latencyMs ?? Number.POSITIVE_INFINITY;
+}
+
+function formatInteger(value: number): string {
+  return new Intl.NumberFormat("en-US").format(value);
+}
+
+function formatLatency(value: number): string {
+  return `${new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 1,
+  }).format(value)} ms`;
 }

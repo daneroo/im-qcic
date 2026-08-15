@@ -4,6 +4,8 @@
 // React/component code - this module only knows "connect, hand me bytes,
 // retry if it stops."
 
+import { followSource } from "../followSource";
+
 export const SCAST_STREAM_NAME = "scastDigest";
 export const SCAST_SUBJECT = "im.scast.scrape.digest";
 
@@ -43,67 +45,23 @@ export interface OpenedSource {
   close(): Promise<void>;
 }
 
-// Owns the connect -> consume -> (on drop) wait -> reconnect loop. Runs
-// until close() is called; every other exit path (a dropped connection, a
-// thrown error) is treated as transient and retried, never surfaced as a
-// terminal failure - onStatus is the only way a caller observes trouble.
+// Adapts scast's message source to the shared reconnecting lifecycle.
 export function subscribe(
   credentials: ScastCredentials,
   opts: SubscribeOptions,
   source: MessageSource,
 ): Feed {
-  const retryDelayMs = opts.retryDelayMs ?? 3000;
-  let closed = false;
-  let activeClose: (() => Promise<void>) | null = null;
-
-  async function run(): Promise<void> {
-    while (!closed) {
-      opts.onStatus?.("connecting");
-      try {
-        const opened = await source.open(credentials);
-        if (closed) {
-          await opened.close();
-          break;
-        }
-        activeClose = opened.close;
-        opts.onStatus?.("connected");
-        for await (const data of opened.messages) {
-          if (closed) break;
-          try {
-            opts.onMessage(data);
-          } catch (err) {
-            // A bug in the caller's onMessage must not look like a dropped
-            // connection to the catch below - isolated here so that catch
-            // stays meaningful (connection/consume errors only), and one
-            // bad message doesn't tear down an otherwise-healthy feed.
-            console.error("scast feed: onMessage threw", err);
-          }
-        }
-      } catch {
-        // Connection/consume errors are always transient here - retried
-        // below, not rethrown. onStatus is the only visibility a caller
-        // gets; there's no terminal failure state for a live feed.
-      }
-      activeClose = null;
-      if (closed) break;
-      opts.onStatus?.("reconnecting");
-      await delay(retryDelayMs);
-    }
-    opts.onStatus?.("closed");
-  }
-
-  const finished = run();
-
-  return {
-    async close(): Promise<void> {
-      if (closed) return;
-      closed = true;
-      await activeClose?.();
-      await finished;
+  return followSource({
+    async open() {
+      const opened = await source.open(credentials);
+      return {
+        values: opened.messages,
+        close: () => opened.close(),
+      };
     },
-  };
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+    onValue: opts.onMessage,
+    onStatus: opts.onStatus,
+    consumerName: "scast feed",
+    retryDelayMs: opts.retryDelayMs,
+  });
 }

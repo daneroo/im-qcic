@@ -149,7 +149,7 @@ function FlowNode({ children }: { children: ReactNode }) {
 
 function Flow({ feed, now }: { feed: Ted1kFeed; now: Date }) {
   const day = feed.lastDay.reading;
-  const unavailable = feed.busStatus !== "connected";
+  const unavailable = feed.natsStatus !== "connected";
   return (
     <div className="overflow-x-auto pb-2">
       <div className="flex min-w-[48rem] items-start gap-0">
@@ -172,9 +172,9 @@ function Flow({ feed, now }: { feed: Ted1kFeed; now: Date }) {
         <FlowNode>kv</FlowNode>
         <FlowLink
           fact={
-            feed.busStatus === "connected"
+            feed.natsStatus === "connected"
               ? "3 websockets live"
-              : feed.busStatus
+              : feed.natsStatus
           }
         />
         <FlowNode>browser</FlowNode>
@@ -215,7 +215,7 @@ export function Ted1kPage() {
   const today = feed.dayByHour.reading;
   const month = feed.weekByDay.reading;
   const now = useCurrentTime();
-  const unverifiable = feed.busStatus !== "connected";
+  const unverifiable = feed.natsStatus !== "connected";
 
   return (
     <main className="min-h-screen bg-paper">
@@ -286,7 +286,7 @@ export function Ted1kPage() {
       <Stratum
         index={4}
         name="substrate"
-        role="The bus this page is reading over"
+        role="The NATS connection this page is reading over"
         tone="deep"
       >
         <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -299,7 +299,7 @@ export function Ted1kPage() {
               readings above become unverifiable.
             </p>
           </div>
-          <ConnectionLabel status={feed.busStatus} />
+          <ConnectionLabel status={feed.natsStatus} />
         </div>
       </Stratum>
     </main>
