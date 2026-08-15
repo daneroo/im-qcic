@@ -4,7 +4,7 @@ The live ted1k continuity readings (`/ted1k` route). See
 [issue #265](https://github.com/daneroo/im-qcic/issues/265).
 
 Reads `ted1k-derive`'s three independently-cadenced KV entries (bucket
-`ted1k-derive`, keys `missingLastDay`/`missingWeekByDay`/`missingDayByHour`)
+`im-ted1k-derive`, keys `missingLastDay`/`missingWeekByDay`/`missingDayByHour`)
 directly from the browser (`@nats-io/nats-core`'s `wsconnect()` +
 `@nats-io/kv`'s `watch()`), on the new NATS server only.
 

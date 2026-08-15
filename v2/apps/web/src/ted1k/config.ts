@@ -3,7 +3,7 @@
 // are separate deployables agreeing on a bucket/key contract, not sharing
 // TypeScript across a package boundary.
 
-export const KV_BUCKET_NAME = "ted1k-derive";
+export const KV_BUCKET_NAME = "im-ted1k-derive";
 
 export const VIEW_NAMES = [
   "missingLastDay",

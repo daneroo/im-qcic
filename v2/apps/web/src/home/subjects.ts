@@ -100,7 +100,7 @@ export function buildHomeSubjects({
           value: latestGap ? since(latestGap.start, now) : "none this month",
         },
       ],
-      byline: "kv:ted1k-derive",
+      byline: "kv:im-ted1k-derive",
       source: "live",
       verifiability: tedVerifiability,
       age:
