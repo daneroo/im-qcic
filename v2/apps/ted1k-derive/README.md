@@ -25,7 +25,7 @@ Each is overridable independently via `POLL_INTERVAL_MISSING_LAST_DAY_MS`,
 
 Each KV entry is a self-contained `{meta, data}` payload — `data` is that view's
 table, `meta` carries its own `stamp` (since views now refresh independently)
-plus `hostname`/`version`/`type`/`view`. Bucket `ted1k-derive`, keys
+plus `hostname`/`version`/`type`/`view`. Bucket `im-ted1k-derive`, keys
 `missingLastDay` / `missingWeekByDay` / `missingDayByHour` — matching the query
 names in `ted1k.ts`'s `queries` map 1:1.
 
@@ -62,7 +62,7 @@ bun run src/index.ts
 Watch a published KV entry directly:
 
 ```sh
-nats -s localhost:4222 kv get ted1k-derive missingLastDay
+nats -s localhost:4222 kv get im-ted1k-derive missingLastDay
 ```
 
 Stop it — `SIGTERM`/`SIGINT` should produce a clean shutdown logged immediately,

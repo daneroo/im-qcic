@@ -22,6 +22,12 @@ When the same dependency is pinned in two or more `apps/*/package.json` (e.g.
 (Convention carried over from `prosodio`.) Don't catalog a dependency that only
 one app currently uses — wait until it's genuinely shared.
 
+## NATS resource names
+
+iMetrical-owned JetStream KV buckets start with `im-`, preserving the owning
+namespace in the otherwise flat resource name. Current and reserved examples are
+`im-ted1k-derive` and `im-qcic-health`.
+
 ## Layout
 
 - `apps/` — runnables, each its own package (e.g. `apps/status`)

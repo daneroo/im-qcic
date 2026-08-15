@@ -78,6 +78,9 @@ describe("buildHomeSubjects", () => {
       "fabric:tailnet",
     ]);
     expect(subjects.find(({ id }) => id === "scast")?.label).toBe("scast");
+    expect(subjects.find(({ id }) => id === "ted1k")?.byline).toBe(
+      "kv:im-ted1k-derive",
+    );
     expect(subjects.every((subject) => subject.byline.length > 0)).toBe(true);
     expect(subjects.filter((subject) => subject.tone === "alarm")).toEqual([]);
   });

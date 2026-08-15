@@ -14,7 +14,7 @@ export type ViewName = keyof typeof queries;
 // This service's identity on the new NATS server's KV bucket - one key per
 // view, matching the query names in ted1k.ts's `queries` map 1:1, so
 // consumers can watch/fetch a section independently of the others.
-export const KV_BUCKET_NAME = "ted1k-derive";
+export const KV_BUCKET_NAME = "im-ted1k-derive";
 
 // Each view gets its own poll cadence, not one shared timer: missingLastDay
 // recomputes a rolling 24h window every call and is the most volatile;

@@ -234,7 +234,7 @@ export function Ted1kPage() {
           {today && <GapAnalysis reading={today} now={now} />}
           {month && <GapAnalysis reading={month} now={now} />}
         </div>
-        <Byline>im.ted1k · kv:ted1k-derive</Byline>
+        <Byline>im.ted1k · kv:im-ted1k-derive</Byline>
       </Stratum>
 
       <Stratum

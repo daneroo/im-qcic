@@ -9,7 +9,7 @@ import type { KvWatchEntry } from "@nats-io/kv";
 
 function fakeEntry(value: string, revision: number): KvWatchEntry {
   return {
-    bucket: "ted1k-derive",
+    bucket: "im-ted1k-derive",
     key: "missingLastDay",
     value: new TextEncoder().encode(value),
     created: new Date(),
@@ -83,7 +83,7 @@ describe("watchKey", () => {
 
     const watch = watchKey(
       { servers: "ws://fake" },
-      "ted1k-derive",
+      "im-ted1k-derive",
       "missingLastDay",
       { onEntry: (e) => entries.push(e) },
       source,
@@ -101,7 +101,7 @@ describe("watchKey", () => {
 
     const watch = watchKey(
       { servers: "ws://fake" },
-      "ted1k-derive",
+      "im-ted1k-derive",
       "missingLastDay",
       { onEntry: () => {}, onStatus: (s) => statuses.push(s) },
       source,
@@ -134,7 +134,7 @@ describe("watchKey", () => {
 
     const watch = watchKey(
       { servers: "ws://fake" },
-      "ted1k-derive",
+      "im-ted1k-derive",
       "missingLastDay",
       {
         onEntry: (e) => entries.push(e),
@@ -179,7 +179,7 @@ describe("watchKey", () => {
 
     const watch = watchKey(
       { servers: "ws://fake" },
-      "ted1k-derive",
+      "im-ted1k-derive",
       "missingLastDay",
       { onEntry: () => {} },
       source,
