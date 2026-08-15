@@ -1,37 +1,45 @@
-import type { HttpProbe, Peer } from "./types";
+import type { TailnetPeer } from "../health/types";
+import type { HttpProbe } from "./types";
 
 /** Whether a peer's path is relayed rather than direct. */
-export function isRelayed(peer: Peer): boolean {
-  return peer.via?.startsWith("DERP") ?? false;
+export function isRelayed(peer: TailnetPeer): boolean {
+  return peer.path?.kind === "derp" || peer.path?.kind === "peer-relay";
 }
 
-export interface FabricSummary {
+export interface TailnetSummary {
   total: number;
   online: number;
-  unreachable: number;
+  notOnline: number;
   relayed: number;
   direct: number;
+  unknownPath: number;
   medianDelayMs: number | null;
-  worst: Peer | null;
+  worst: TailnetPeer | null;
 }
 
-export function summariseFabric(peers: Peer[]): FabricSummary {
+export function summariseTailnet(peers: TailnetPeer[]): TailnetSummary {
   const online = peers.filter((candidate) => candidate.online);
   const relayed = online.filter(isRelayed);
+  const direct = online.filter((peer) => peer.path?.kind === "direct");
   const reachable = online
     .filter(
-      (candidate): candidate is Peer & { delayMs: number } =>
-        candidate.delayMs !== null,
+      (
+        candidate,
+      ): candidate is TailnetPeer & {
+        path: Exclude<TailnetPeer["path"], null>;
+      } => candidate.path !== null,
     )
-    .sort((left, right) => left.delayMs - right.delayMs);
+    .sort((left, right) => left.path.latencyMs - right.path.latencyMs);
 
   return {
     total: peers.length,
     online: online.length,
-    unreachable: peers.length - online.length,
+    notOnline: peers.length - online.length,
     relayed: relayed.length,
-    direct: online.length - relayed.length,
-    medianDelayMs: reachable[Math.floor(reachable.length / 2)]?.delayMs ?? null,
+    direct: direct.length,
+    unknownPath: online.length - relayed.length - direct.length,
+    medianDelayMs:
+      reachable[Math.floor(reachable.length / 2)]?.path.latencyMs ?? null,
     worst: reachable.at(-1) ?? null,
   };
 }

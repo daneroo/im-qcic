@@ -1,30 +1,29 @@
 # network
 
-The `/network` subject reports the three dependency rungs in the selected Strata
-reading order: services, bus, then fabric. The page starts with what a person
-came for and reads down into its substrate. A failed substrate makes the
-readings above it unverifiable; it does not prove those subjects are faulty.
+The `/network` page presents the selected Strata reading order: Endpoints, NATS,
+then Tailnet. Each stratum keeps its own source and knowledge state; a failed
+observation path makes retained detail unverifiable rather than alarming.
 
 ## Module shape
 
-- `types.ts` is the wire contract the network collector will eventually publish.
-- `derive.ts` owns the pure fabric and probe roll-ups and is tested at that
-  public seam.
-- `fixture.ts` holds only the fabric and services readings the browser cannot
-  currently observe.
-- `direct-monitoring-source.ts` is the named, temporary exception to
-  [ADR-0004](../../../../../docs/adr/0004-browser-reads-only-from-the-bus.md).
-  It reads NATS `/varz` and `/connz` directly until the network collector
-  replaces it.
+- `../health/` owns the browser's public HTTP bootstrap, public NATS stream, and
+  `im-qcic-health` KV feed.
+- `derive.ts` owns pure Tailnet and endpoint-probe roll-ups.
+- `fixture.ts` contains only the endpoint and heartbeat readings that remain
+  recorded shapes.
+- `NetworkPage.tsx` renders live NATS and Tailnet detail without reaching
+  `/varz`, `/connz`, or Tailscale LocalAPI from the browser.
 
-For local development, `VITE_NATS_MONITOR_URL` defaults to
-`http://localhost:8222`, matching `v2/infra/compose.yaml`.
+For local development, the defaults match `v2/infra/compose.yaml`:
 
-For review from another device, both browser-facing NATS URLs must name the
-Docker host rather than that device's localhost:
+- `VITE_NATS_WS_URL=ws://localhost:9222`
+- `VITE_HEALTH_HTTP_URL=http://localhost:8000/healthz`
+
+For review from another device, both browser-facing URLs must name the Docker
+host rather than that device's localhost:
 
 ```sh
 VITE_NATS_WS_URL=ws://<docker-host>:9222 \
-VITE_NATS_MONITOR_URL=http://<docker-host>:8222 \
+VITE_HEALTH_HTTP_URL=http://<docker-host>:8000/healthz \
 bun --bun vite dev --port 3000 --host 0.0.0.0
 ```

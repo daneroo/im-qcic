@@ -2,13 +2,13 @@ import type { ConnectionState } from "../components/marks";
 import { formatCoverage } from "../format/coverage";
 import { formatMissing, since } from "../format/duration";
 import { localHM } from "../format/time";
-import { summariseFabric, summariseProbes } from "../network/derive";
-import type { BusReading } from "../network/direct-monitoring-source";
+import type { HealthFeedState } from "../health/types";
+import { summariseProbes, summariseTailnet } from "../network/derive";
 import { NETWORK_FIXTURE } from "../network/fixture";
 import type { ScastFeedState } from "../scast/useScastFeed";
 import type { Ted1kFeed } from "../ted1k/useTed1kFeed";
 
-export type HomeLayer = "fabric" | "bus" | "services";
+export type HomeLayer = "tailnet" | "nats" | "endpoints";
 export type HomeSource = "live" | "fixture";
 export type Verifiability = "available" | "unverifiable";
 
@@ -31,11 +31,11 @@ export interface HomeSubject {
 export interface HomeInputs {
   ted: Ted1kFeed;
   scast: ScastFeedState;
-  bus: BusReading;
+  health: HealthFeedState;
   now: Date;
 }
 
-function serviceVerifiability(
+function readingVerifiability(
   own: ConnectionState | "fixture",
   hasReading = true,
 ): Verifiability {
@@ -53,11 +53,10 @@ function withVerifiabilityTone(
 export function buildHomeSubjects({
   ted,
   scast,
-  bus,
+  health,
   now,
 }: HomeInputs): HomeSubject[] {
   const fixture = NETWORK_FIXTURE;
-  const fabric = summariseFabric(fixture.peers);
   const probes = summariseProbes(fixture.probes);
   const day = ted.lastDay.reading;
   const month = ted.weekByDay.reading;
@@ -70,22 +69,22 @@ export function buildHomeSubjects({
       null,
     );
 
-  const tedVerifiability = serviceVerifiability(
+  const tedVerifiability = readingVerifiability(
     ted.lastDay.status,
     day !== null,
   );
-  const scastVerifiability = serviceVerifiability(
+  const scastVerifiability = readingVerifiability(
     scast.status,
     scast.reading.latestSettled !== null,
   );
-  const endpointsVerifiability = serviceVerifiability("fixture");
-  const heartbeatVerifiability = serviceVerifiability("fixture");
+  const endpointsVerifiability = readingVerifiability("fixture");
+  const heartbeatVerifiability = readingVerifiability("fixture");
 
   return [
     {
       id: "ted1k",
       label: "ted1k",
-      layer: "services",
+      layer: "endpoints",
       value: day ? formatMissing(day.total.missing) : "—",
       unit: day
         ? `missing 24h · ${formatCoverage(day.total.missing, day.total.expected)} ok`
@@ -117,7 +116,7 @@ export function buildHomeSubjects({
     {
       id: "scast",
       label: "scast",
-      layer: "services",
+      layer: "endpoints",
       value: scast.reading.latestSettled
         ? scast.reading.converged
           ? "converged"
@@ -155,7 +154,7 @@ export function buildHomeSubjects({
     {
       id: "endpoints",
       label: "endpoints",
-      layer: "services",
+      layer: "endpoints",
       value: `${probes.ok}/${probes.total}`,
       unit: "answering",
       secondary: [
@@ -174,7 +173,7 @@ export function buildHomeSubjects({
     {
       id: "heartbeat",
       label: "heartbeat",
-      layer: "services",
+      layer: "endpoints",
       value: String(fixture.heartbeat.hosts),
       unit: "hosts broadcasting",
       secondary: [
@@ -190,44 +189,71 @@ export function buildHomeSubjects({
     {
       id: "nats",
       label: "nats",
-      layer: "bus",
-      value: bus.status === "live" ? "live" : "unknown",
-      secondary:
-        bus.status === "live"
-          ? [
-              { label: "connections", value: String(bus.stats.connections) },
-              {
-                label: "subscriptions",
-                value: String(bus.stats.subscriptions),
-              },
-              {
-                label: "messages",
-                value: `${Math.round(bus.stats.msgsPerSecIn + bus.stats.msgsPerSecOut)}/s`,
-              },
-            ]
-          : [],
-      byline: "/varz · /connz",
+      layer: "nats",
+      value: health.nats.status === "live" ? "live" : "unknown",
+      secondary: health.nats.value
+        ? [
+            {
+              label: "connections",
+              value: String(health.nats.value.connections),
+            },
+            {
+              label: "subscriptions",
+              value: String(health.nats.value.subscriptions),
+            },
+            {
+              label: "messages",
+              value: String(
+                health.nats.value.inMessages + health.nats.value.outMessages,
+              ),
+            },
+          ]
+        : [],
+      byline: "kv:im-qcic-health/nats",
       source: "live",
-      verifiability: bus.status === "live" ? "available" : "unverifiable",
+      verifiability:
+        health.nats.status === "live" ? "available" : "unverifiable",
+      age:
+        health.nats.status === "unavailable" && health.nats.value
+          ? since(new Date(health.nats.value.observedAt), now)
+          : undefined,
       tone: "normal",
+      status: health.nats.transportStatus,
       to: "/network",
     },
     {
       id: "tailnet",
       label: "tailnet",
-      layer: "fabric",
-      value: `${fabric.online}/${fabric.total}`,
-      unit: "peers reachable",
-      secondary: [
-        { label: "direct", value: String(fabric.direct) },
-        { label: "relayed", value: String(fabric.relayed) },
-        { label: "unreachable", value: String(fabric.unreachable) },
-      ],
-      byline: "tailscale status · tailscale ping",
-      source: "fixture",
-      verifiability: "available",
+      layer: "tailnet",
+      value: health.tailnet.value
+        ? `${summariseTailnet(health.tailnet.value.peers).online}/${health.tailnet.value.peers.length}`
+        : "—",
+      unit: "peers online",
+      secondary: health.tailnet.value
+        ? tailnetSecondary(health.tailnet.value.peers)
+        : [],
+      byline: "kv:im-qcic-health/tailnet",
+      source: "live",
+      verifiability:
+        health.tailnet.status === "live" ? "available" : "unverifiable",
+      age:
+        health.tailnet.status === "unavailable" && health.tailnet.value
+          ? since(new Date(health.tailnet.value.observedAt), now)
+          : undefined,
       tone: "normal",
+      status: health.tailnet.transportStatus,
       to: "/network",
     },
+  ];
+}
+
+function tailnetSecondary(
+  peers: NonNullable<HealthFeedState["tailnet"]["value"]>["peers"],
+): HomeSubject["secondary"] {
+  const summary = summariseTailnet(peers);
+  return [
+    { label: "direct", value: String(summary.direct) },
+    { label: "relayed", value: String(summary.relayed) },
+    { label: "not online", value: String(summary.notOnline) },
   ];
 }

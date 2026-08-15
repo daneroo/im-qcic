@@ -1,11 +1,14 @@
-# The browser reads only from the bus
+# The browser reads application detail only from NATS
 
-Every signal QCIC displays reaches the browser over NATS. Where a signal has some
-other origin — a MySQL table, another NATS server, a shell command, an HTTP admin
-endpoint — a small collector service owns that origin and publishes into a KV
-bucket, and the browser consumes the bucket. `ted1k-derive` and `scast-bridge`
-already work this way; the network page's tailnet, bus and probe readings will
-too.
+Every detailed live signal QCIC displays reaches the browser over NATS. Where a
+signal has some other origin — a MySQL table, another NATS server, a shell
+command, or an HTTP admin endpoint — a small collector owns that origin and
+publishes into NATS. `health`, `ted1k-derive`, and `scast-bridge` follow this
+pattern.
+
+`health` also exposes one deliberately coarse public HTTP reading. The static
+browser uses it as a bootstrap and fallback before continuing with the public
+NATS stream; it never reaches NATS monitoring or Tailscale LocalAPI directly.
 
 ## Considered options
 
@@ -18,16 +21,17 @@ skip a collector entirely. Rejected as the standing pattern for three reasons:
   publishing that port through Caddy, which publishes all of it.
 - It would establish a second ingestion path alongside the bus, so every future
   signal starts with an argument about which one it uses.
-- A collector has to exist regardless: tailnet state comes from the Tailscale
-  daemon, which cannot be reached from inside a container. Once something is
-  running host-side for that, the bus counters cost nothing to carry along.
+- A collector exists regardless: Tailnet state comes from Tailscale LocalAPI,
+  reached through a read-only Unix-socket mount on Linux/Synology or authenticated
+  host LocalAPI on macOS.
 
 ## Consequences
 
-Until that collector exists, the network page's bus rung fetches `/varz` and
-`/connz` from the browser directly. That is a deliberate, temporary placeholder —
-chosen over fixture data because the signal is genuinely available — and not an
-instance of the pattern. It comes out when the collector lands.
+`apps/health` owns `/varz`, `/connz`, and Tailscale LocalAPI. It publishes NATS
+and Tailnet detail to `im-qcic-health`, publishes coarse health to the public
+health stream, and answers both HTTP and NATS coarse requests from the same
+in-memory observations.
 
-The page's fixture note must always name exactly which rungs are not live.
-Blending live and recorded readings is allowed; blending them silently is not.
+The page's fixture note must always name exactly which endpoint readings remain
+recorded. Blending live and recorded readings is allowed; blending them silently
+is not.

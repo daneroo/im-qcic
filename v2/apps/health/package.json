@@ -1,0 +1,18 @@
+{
+  "name": "@daneroo/qcic-health",
+  "version": "1.0.0",
+  "description": "Observes Tailnet and NATS health for QCIC",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "@nats-io/jetstream": "catalog:runtime",
+    "@nats-io/kv": "catalog:runtime",
+    "@nats-io/transport-node": "catalog:runtime",
+    "hono": "catalog:runtime",
+    "pino": "catalog:runtime"
+  }
+}

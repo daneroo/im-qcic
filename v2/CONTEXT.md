@@ -2,7 +2,7 @@
 
 QCIC watches whether the watchers are working. It reports on the **service
 quality** of the homelab's own monitoring — whether ted1k is still recording,
-whether scrobblecast's copies still converge, whether the fabric under them is
+whether scrobblecast's copies still converge, whether the Tailnet under them is
 reachable. It is deliberately not a dashboard for the things being monitored:
 power consumption belongs to Grafana, which already does that job well.
 
@@ -32,9 +32,10 @@ never the point of a page. _Avoid_: usage, load, demand
 
 ## scast — convergence
 
-**Generation**: One scrobblecast scrape cycle, identified by the message's own
-authoritative field rather than a reconstructed time bucket. _Avoid_: cycle,
-scrape, round, time bucket
+**Generation**: One scrobblecast comparison point, identified by the message's
+own authoritative field rather than a reconstructed timestamp. Generations
+normally arrive at ten-minute intervals. _Avoid_: cycle, scrape, round, time
+bucket
 
 **Settled** / **Pending**: A generation every known copy has reported for, or
 has not yet. Copies report minutes apart, so the newest generation is almost
@@ -65,9 +66,9 @@ invalid
 value and its age are knowable. Drawn as unknown, never as broken — the page
 does not know that it is. _Avoid_: down, offline, stale, error
 
-**Live** / **Fixture**: Observed from the bus right now, versus a shape recorded
-because the observer genuinely cannot see it. Never blended silently. _Avoid_:
-mock, stub, sample data
+**Live** / **Fixture**: Observed from its owning source right now, versus a
+shape recorded because the observer genuinely cannot see it. Never blended
+silently. _Avoid_: mock, stub, sample data
 
 **What missing time cannot tell you**: A house never draws zero, so an outage
 can only appear as missing samples — and a recorder failure looks identical. The
@@ -86,16 +87,16 @@ behaviour-frozen port of the old status service.
 **Reading**: What a subject currently says — one figure or verdict, at one
 moment.
 
-**Byline**: The originating bus subject or command, printed under a reading.
-Provenance as a designed element rather than a debug affordance. _Avoid_:
-source, origin label, debug info
+**Byline**: The originating NATS subject, KV key, or command, printed under a
+reading. Provenance as a designed element rather than a debug affordance.
+_Avoid_: source, origin label, debug info
 
-**Services** / **Bus** / **Fabric**: The three dependency rungs, presented from
-the readings a person came for down into their substrate: services, bus, then
-fabric. If the fabric is down the bus cannot be reached, and if the bus is down
-no service reading can be trusted. So a failure travels upward as doubt, not as
-fault — when a rung fails, the readings resting on it become _unverifiable_,
-never alarming.
+**Endpoints** / **NATS** / **Tailnet**: The three network strata, presented from
+the endpoints a person came for down into their substrates. NATS and Tailnet are
+observed independently; a deployment may route NATS over Tailnet, but no reading
+infers one substrate's state from the other. Failure propagates only through an
+actual observation path, turning dependent readings _unverifiable_, never
+alarming. _Avoid_ (as stratum names): services, bus, fabric, subjects
 
 ## Presentation discipline
 

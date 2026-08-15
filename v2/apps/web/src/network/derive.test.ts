@@ -1,62 +1,66 @@
 import { describe, expect, test } from "bun:test";
-import { isRelayed, summariseFabric, summariseProbes } from "./derive";
-import type { HttpProbe, Peer } from "./types";
+import type { TailnetPath, TailnetPeer } from "../health/types";
+import { isRelayed, summariseProbes, summariseTailnet } from "./derive";
+import type { HttpProbe } from "./types";
 
-const peer = (via: string | null): Peer => ({
+const peer = (path: TailnetPath): TailnetPeer => ({
   hostName: "peer",
+  dnsName: "peer.tail.test.",
   tailscaleIp: "100.64.0.1",
   online: true,
-  via,
-  delayMs: 5,
+  lastSeen: "0001-01-01T00:00:00Z",
+  path,
 });
 
 describe("isRelayed", () => {
   test("distinguishes a DERP path from direct and unreachable paths", () => {
-    expect(isRelayed(peer("DERP(tor)"))).toBe(true);
-    expect(isRelayed(peer("192.168.1.31:41641"))).toBe(false);
+    expect(
+      isRelayed(peer({ kind: "derp", region: "tor", latencyMs: 31 })),
+    ).toBe(true);
+    expect(isRelayed(peer({ kind: "direct", latencyMs: 2 }))).toBe(false);
     expect(isRelayed(peer(null))).toBe(false);
   });
 });
 
-describe("summariseFabric", () => {
+describe("summariseTailnet", () => {
   test("rolls up reachability and path shape from peer readings", () => {
     const relayedPeer = {
-      ...peer("DERP(tor)"),
+      ...peer({ kind: "derp", region: "tor", latencyMs: 31 }),
       hostName: "relay",
-      delayMs: 31,
     };
-    const peers: Peer[] = [
-      { ...peer("192.168.1.31:41641"), hostName: "direct", delayMs: 2 },
+    const peers: TailnetPeer[] = [
+      { ...peer({ kind: "direct", latencyMs: 2 }), hostName: "direct" },
       relayedPeer,
-      { ...peer("192.168.1.42:41641"), hostName: "slow", delayMs: 5 },
+      { ...peer({ kind: "direct", latencyMs: 5 }), hostName: "slow" },
       {
         ...peer(null),
         hostName: "offline",
         online: false,
-        delayMs: null,
       },
     ];
 
-    expect(summariseFabric(peers)).toEqual({
+    expect(summariseTailnet(peers)).toEqual({
       total: 4,
       online: 3,
-      unreachable: 1,
+      notOnline: 1,
       relayed: 1,
       direct: 2,
+      unknownPath: 0,
       medianDelayMs: 5,
       worst: relayedPeer,
     });
   });
 
   test("has no latency claims when no online peer answered a ping", () => {
-    const unreachable = { ...peer(null), online: false, delayMs: null };
+    const notOnline = { ...peer(null), online: false };
 
-    expect(summariseFabric([unreachable])).toEqual({
+    expect(summariseTailnet([notOnline])).toEqual({
       total: 1,
       online: 0,
-      unreachable: 1,
+      notOnline: 1,
       relayed: 0,
       direct: 0,
+      unknownPath: 0,
       medianDelayMs: null,
       worst: null,
     });

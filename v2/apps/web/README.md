@@ -4,9 +4,11 @@ Homelab dashboard, replacing `site` — TanStack Start + Tailwind, fully
 static/client-rendered (no server-side data fetching). See
 [../../AGENTS.md](../../AGENTS.md) for workspace-wide conventions.
 
-The subject pages read live data client-side, directly over NATS WebSocket
-connections; no server functions or loaders fetch application data. The shared
-header carries navigation plus the theme-family and light/dark controls.
+The pages read live detail client-side over NATS WebSocket connections; no
+server functions or loaders fetch application data. `/network` and the home page
+bootstrap coarse substrate health from the public `apps/health` HTTP endpoint,
+then consume its public NATS stream and private KV detail. The shared header
+carries navigation plus the theme-family and light/dark controls.
 
 ## Theming
 

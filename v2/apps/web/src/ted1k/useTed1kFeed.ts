@@ -14,7 +14,7 @@ export interface Ted1kFeed {
   lastDay: WatchedReading;
   dayByHour: WatchedReading;
   weekByDay: WatchedReading;
-  busStatus: ConnectionState;
+  natsStatus: ConnectionState;
   producer: string | null;
 }
 
@@ -35,7 +35,7 @@ export function useTed1kFeed(): Ted1kFeed {
     "missingWeekByDay",
   );
   const statuses = [lastDay.status, dayByHour.status, weekByDay.status];
-  const busStatus: ConnectionState = statuses.every(
+  const natsStatus: ConnectionState = statuses.every(
     (status) => status === "connected",
   )
     ? "connected"
@@ -56,7 +56,7 @@ export function useTed1kFeed(): Ted1kFeed {
       status: weekByDay.status,
       reading: deriveView("missingWeekByDay", weekByDay.value),
     },
-    busStatus,
+    natsStatus,
     producer:
       lastDay.value?.meta.hostname ??
       dayByHour.value?.meta.hostname ??

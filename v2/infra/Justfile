@@ -1,0 +1,16 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
+# Show this helpful listing.
+default:
+    @just --list --unsorted
+
+# Run Docker Compose directly (Linux/Synology use the default Unix socket).
+@compose +args:
+    @docker compose {{args}}
+
+# Start Compose on macOS after refreshing its LocalAPI credential file.
+@macos-up *args: _macos-credentials
+    @TAILSCALE_LOCALAPI_MODE=macos TAILSCALE_LOCALAPI_SOURCE=./credentials/credentials.tailscale-localapi.json TAILSCALE_LOCALAPI_TARGET=/run/secrets/tailscale-localapi.json docker compose up {{args}}
+
+@_macos-credentials:
+    @bun ../apps/health/scripts/macos-local-creds.ts
