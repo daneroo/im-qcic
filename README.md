@@ -53,6 +53,7 @@ In `./infra` we handle deployment of the `qcic` related resources.
   - ddclient (REMOVED 2023-09-11)
 - Jellyfin - deployed to Synology as docker compose
 - PLANNED - docker@galois
+  - [OCI Registry](https://distribution.github.io/distribution/) - build elsewhere, pull from here. Serves docker and incus (`--protocol=oci`), plus helm/ORAS artifacts. Useful for everything below
   - [Immich 3.0](https://docs.immich.app/install/docker-compose)
   - [Forgejo](https://forgejo.org/) - Git hosting
   - [Borgbackup](https://borgbackup.readthedocs.io/en/1.4-maint/index.html#) - deduplicating backup
