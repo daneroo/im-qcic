@@ -60,8 +60,15 @@ depend on these A records. They control reachability only.
 - [ ] `sudo systemctl unmask docker && sudo systemctl enable --now docker`
       (currently masked, as deliberate deconfliction)
 - [ ] Revert the clone's hand-edits to `infra/gateway/{config/caddy/Caddyfile,docker-compose.yaml}`
+      — these are uncommitted changes to *tracked* files and will block the
+      checkout below
 - [ ] Delete `infra/gateway/*.gateway2-original` (2 files)
-- [ ] `git pull`
+- [ ] `git fetch origin && git checkout agent/gateway2-rollout` — **not
+      `git pull`**. `infra/gateway2/` only exists on the feature branch until
+      the PR merges, so gateway2's clone has to sit on the branch to run any
+      of this. Verified reachable from gateway2 over SSH.
+- [ ] After the PR merges: `git checkout main && git pull` to put the clone
+      back on the mainline
 - [ ] Copy in `credentials/caddy/CREDS.env` (existing `CF_API_TOKEN`)
 - [ ] Copy in `credentials/credentials.mysql.json` (ted1k-derive)
 - [ ] Copy in `credentials/credentials.nats-prod.json` (scast-bridge)
@@ -112,6 +119,10 @@ Synology's concurrent load.
       behind at `eeac2a88` (2026-02-24) and has never fetched; the delta under
       `infra/gateway/` is two doc files — verifiably a no-op for the running
       stack. **Do not rebuild.**
+- [ ] Land the Caddyfile change on `main` via its **own** commit/PR — separate
+      from the gateway2 branch, since production's clone tracks `main` and this
+      is the file production actually serves from. Then `git pull` on
+      production picks it up.
 - [ ] Add one block to `infra/gateway/config/caddy/Caddyfile`:
 
       health.qcic.dl.imetrical.com {
