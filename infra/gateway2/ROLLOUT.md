@@ -163,6 +163,13 @@ confirms all three resolve.
 
       **Not needed.** Measured 2026-09-22 on the VM untouched at 3911 MiB /
       4 vCPU: **peak 742 MiB, 3.2 GiB headroom, swap never left 1 MiB.**
+
+      Confirmed against the big machine the same day. Gateway (15.6 GiB)
+      built its own four-service stack in **572.8s**; gateway2 (3.8 GiB) took
+      **690s** — only ~17% slower on a quarter of the RAM. Different image
+      sets, so not a controlled comparison, but four times the memory buying
+      17% says the build is CPU/IO bound, not memory bound. The OOM risk was
+      never real.
       `xcaddy` — the step feared most — passed without incident. The RAM was
       never raised, so "drop RAM back before measuring" below is a no-op and
       #294's baseline comes from a VM that was never resized.
