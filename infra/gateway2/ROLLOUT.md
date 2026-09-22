@@ -85,6 +85,33 @@ depend on these A records. They control reachability only.
 
 ### A2 · Prepare gateway2
 
+**Trap — read before unmasking on any fresh clone.** gateway2 is a clone of
+gateway, so `infra/gateway/` on it carries a complete *production* stack whose
+containers were created with `restart: unless-stopped`. The systemd mask was
+the only thing holding them. Starting the daemon resumed all four
+(`caddy`, `nats`, `natsql`, `status`) with no further command — a direct
+breach of the additive-only rule.
+
+What that cost on 2026-09-22, 17:32:50–17:34:44: `natsql` joined the
+*production* bus and republished heartbeats under the production identity
+`natsql.dl.imetrical.com`. Nothing durable — `natsql` has no database path
+(no `INSERT`/`REPLACE` in `packages/natsql/src`; it is a GraphQL↔NATS
+bridge), `caddy` renewed only `localhost` from its local issuer and merely
+read ARI for the public names, and `nats` restored the *clone's* stale
+JetStream dir, not production's. Resolved by `docker compose stop` then
+`docker compose rm` on the inherited project.
+
+Note the ordering trap has no clean escape: `docker compose down` needs a
+running daemon, so you cannot neutralize the inherited project before the
+daemon starts it. Editing the compose file does not help either — the restart
+policy is baked into the existing containers at creation. On a fresh clone,
+either sever the VM from the tailnet/LAN first, start the daemon, `down` the
+inherited project, and restore networking; or accept a few seconds of
+exposure and `down` it immediately.
+
+- [x] **First:** confirm the inherited `gateway` project is gone —
+      `docker compose ls -a` must not list it. Done 2026-09-22: all four
+      containers removed, so a future daemon start is now safe.
 - [x] `sudo systemctl unmask docker.socket && sudo systemctl unmask docker && sudo systemctl enable --now docker`
       (currently masked, as deliberate deconfliction). **Daniel must run this** —
       `sudo` on gateway2 requires a password, so an agent over SSH cannot.
