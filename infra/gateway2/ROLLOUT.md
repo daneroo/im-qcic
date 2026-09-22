@@ -390,35 +390,11 @@ fail loudly instead of silently, and it is the fix, not the monitor.
       No `tls` block — the name resolves through the `*.dl` wildcard, so
       HTTP-01 works. Reload Caddy; do not rebuild the stack.
 
-      Landed 2026-09-22 as `155a3eb3`, direct on `main`. HTTP-01 confirmed:
-      the router does forward port 80 to gateway, so `docker-compose.yaml`'s
-      `"80:80" # local only` comment is stale and misleading — it is worth
-      correcting on its own.
+      Landed 2026-09-22 as `155a3eb3`, direct on `main`, and applied by
+      recreating the caddy container — `docker compose up -d
+      --force-recreate --no-deps caddy`. No image built; `nats`, `natsql`
+      and `status` untouched.
 
-      **`caddy reload` does not work after a `git pull`. It never has.**
-      The mount is `./config/caddy/Caddyfile:/etc/caddy/Caddyfile` — a
-      *single file*, so Docker binds the inode. `git pull` replaces the file
-      by rename, giving it a new inode, and the container stays pinned to the
-      old one. Measured here: host `4720500`/3265 bytes with the block,
-      container `4719946`/2637 bytes without it.
-
-      Every step reported success while reading the stale file:
-      `caddy validate` returned `Valid configuration` (of the old config,
-      truthfully) and `caddy reload` returned `config is unchanged`
-      (correctly — the file it could see had not changed). There is no error
-      to notice. **A clean reload is the expected output of this failure**,
-      which is what makes it worth writing down.
-
-      The fix is to recreate the container so the mount re-resolves:
-
-          docker compose up -d --force-recreate --no-deps caddy
-
-      `--force-recreate` is required: nothing in `compose.yaml` or the image
-      changed, so a plain `up -d` reports the container up-to-date and does
-      nothing. `--no-deps` leaves `nats`, `natsql` and `status` alone —
-      verified, they stayed `Up About an hour` while caddy went to `Up 29
-      seconds`. No image is built, so "reloaded, not rebuilt" still holds.
-      Cost was one restart of caddy, ~9s.
 - [x] Confirm `https://health.qcic.dl.imetrical.com/healthz` → 200
 
       Verified 2026-09-22 19:48Z from outside: 200, body reporting

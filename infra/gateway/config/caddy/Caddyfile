@@ -68,8 +68,7 @@ health.qcic.dl.imetrical.com {
 	# there would surface here as a 502.
 	# No tls block needed — this name resolves through the existing *.dl
 	# wildcard to this host (CNAME syno-im.synology.me), the same chain the
-	# .dl sites above use, so HTTP-01 works unaided. Port 80 is forwarded
-	# from the router, despite docker-compose.yaml calling it "local only".
+	# .dl sites above use, so HTTP-01 works unaided.
 	reverse_proxy gateway2.imetrical.net:80
 }
 
