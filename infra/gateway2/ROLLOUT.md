@@ -213,7 +213,7 @@ succeeds if Darwin's MySQL is reachable.
 VMM restarts are graceful, so these compare to the doc's Event B (3m16s).
 
 - [x] Sample 1
-- [ ] Sample 2
+- [x] Sample 2
 - [ ] Sample 3
 - [ ] Sample 4
 - [ ] Sample 5
@@ -233,6 +233,7 @@ five `StartedAt` stamps, expressed as an offset from `uptime -s`.
 | # | kernel | userspace | stall | containers started | notes |
 | - | ------ | --------- | ----- | ------------------ | ----- |
 | 1 | 5.678s | 1m02.333s | **0.586s** | +37.5s → +39.7s | boot 18:53:07Z; total 1m08.0s; `fsck` clean; `docker.service` 41.1s; all five `restarts=0` |
+| 2 | 4.575s | 35.059s | **0.709s** | +20.6s → +22.4s | boot 18:57:19Z; total 39.6s; `fsck` clean; `docker.service` 27.4s; all five `restarts=0` |
 
 ## Phase B — expose health publicly (touches production) · #295
 
