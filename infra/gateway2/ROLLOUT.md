@@ -166,18 +166,34 @@ confirms all three resolve.
 - [x] `just build` — **~11m30s wall clock** (17:40:00 → ~17:51:30), `EXIT=0`,
       all four images. Worth keeping as the number to beat once images are
       built elsewhere and pulled.
-- [ ] `just start`
+- [x] `just start` — five containers up 2026-09-22 18:00
 - [x] **Drop RAM back to 3.8 GiB before measuring** — no-op, never raised
 
 ### A4 · Verify
 
-- [ ] `https://gateway2.ts.imetrical.net` → "Hello, gateway2!" (DNS-01 works)
-- [ ] `https://gateway2.imetrical.net` → same, over LAN
-- [ ] `https://health.qcic.ts.imetrical.net/healthz` → 200
-- [ ] `just status` → 5 containers up
-- [ ] `docker compose logs nats` → healthy
-- [ ] `docker compose logs scast-bridge` → reading production's `scrobblecastDigest`
-- [ ] `docker compose logs ted1k-derive` → polling Darwin's MySQL
+- [x] `https://gateway2.ts.imetrical.net` → "Hello, gateway2!" (DNS-01 works)
+- [x] `https://gateway2.imetrical.net` → same, over LAN
+- [x] `https://health.qcic.ts.imetrical.net/healthz` → 200
+- [x] `https://health.qcic.imetrical.net/healthz` → 200 (direct LAN name; in
+      #293's acceptance criteria, was missing from this list)
+- [x] `just status` → 5 containers up
+- [x] `docker compose logs nats` → healthy
+- [x] `docker compose logs scast-bridge` → reading production's `scrobblecastDigest`
+- [x] `docker compose logs ted1k-derive` → polling Darwin's MySQL
+
+Verified 2026-09-22 18:01. All four certificates issued by the real
+Let's Encrypt CA via DNS-01 — `gateway2{,.ts}` and `health.qcic{,.ts}` —
+which is the transitive proof #293 asks for: DNS resolves, issuance works
+against the real CA, Caddy routes by host, health serves.
+
+Health returns `{"observer":"gateway2","tailnet":{"available":true},
+"nats":{"available":true}}` — both observations live.
+
+Both workers are doing real work against their upstreams, not merely running:
+`scast-bridge` copying digests from `d1-px1`, `darwin` and `scast-hilbert`
+around seq 1338693; `ted1k-derive` publishing all three views
+(`missingLastDay`, `missingDayByHour`, `missingWeekByDay`), which only
+succeeds if Darwin's MySQL is reachable.
 
 ### A5 · Baseline restart samples — with-workload baseline · #294
 
