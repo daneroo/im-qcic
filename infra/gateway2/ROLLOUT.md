@@ -237,7 +237,13 @@ notification publishing; adapting `pin-docker-tags.sh`; bumping the `nats` pin
 ## Open risks
 
 - **Build OOM on 3.8 GiB.** Mitigated by a temporary RAM bump; no cross-build
-  escape hatch.
+  escape hatch. The real fix is to stop building on a host tuned for
+  operation, which needs *two* things that do not exist yet, not one:
+  somewhere to put images (the OCI registry, a `PLANNED` line under
+  `docker@galois` in the root README), **and** something that can emit
+  `linux/amd64` — galois is arm64. Candidates for the second: `buildx` +
+  QEMU on galois, GitHub Actions pushing to ghcr (half-started —
+  `ghcr.io/daneroo/caddy:2-dns` 403s), or a real x86_64 host.
 - **The `nats` digest pin is duplicated** in `v2/infra/compose.yaml` and
   `infra/gateway2/compose.yaml`, with nothing checking they agree. The sync
   rule is in `compose.yaml`'s header; it depends on someone reading it.
