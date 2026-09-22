@@ -215,7 +215,7 @@ VMM restarts are graceful, so these compare to the doc's Event B (3m16s).
 - [x] Sample 1
 - [x] Sample 2
 - [x] Sample 3
-- [ ] Sample 4
+- [x] Sample 4
 - [ ] Sample 5
 
 Per run collect: `systemd-analyze`, `systemd-analyze blame | head -20`,
@@ -235,6 +235,7 @@ five `StartedAt` stamps, expressed as an offset from `uptime -s`.
 | 1 | 5.678s | 1m02.333s | **0.586s** | +37.5s → +39.7s | boot 18:53:07Z; total 1m08.0s; `fsck` clean; `docker.service` 41.1s; all five `restarts=0` |
 | 2 | 4.575s | 35.059s | **0.709s** | +20.6s → +22.4s | boot 18:57:19Z; total 39.6s; `fsck` clean; `docker.service` 27.4s; all five `restarts=0` |
 | 3 | 4.460s | 36.123s | **0.513s** | +20.2s → +21.7s | boot 18:59:16Z; total 40.6s; `fsck` clean; `docker.service` 27.9s; all five `restarts=0` |
+| 4 | 4.546s | 36.412s | **0.518s** | +21.4s → +23.2s | boot 19:01:11Z; total 41.0s; `fsck` clean; `docker.service` 27.7s; all five `restarts=0` |
 
 ## Phase B — expose health publicly (touches production) · #295
 
