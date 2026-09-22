@@ -65,10 +65,16 @@ deployable; this does not tell you whether the build fits in 3.8 GiB.
 All four **DNS only (grey cloud)**. Cloudflare cannot proxy RFC1918 or CGNAT
 addresses, and proxying would break both names.
 
-- [ ] `A  gateway2         192.168.2.138`  — DNS-01 proof + Phase B upstream
-- [ ] `A  gateway2.ts      100.99.157.63`  — DNS-01 proof, tailnet
-- [ ] `A  health.qcic      192.168.2.138`  — direct to health, LAN
-- [ ] `A  health.qcic.ts   100.99.157.63`  — direct to health, tailnet
+- [x] `A  gateway2         192.168.2.138`  — DNS-01 proof + Phase B upstream
+- [x] `A  gateway2.ts      100.99.157.63`  — DNS-01 proof, tailnet
+- [x] `A  health.qcic      192.168.2.138`  — direct to health, LAN
+- [x] `A  health.qcic.ts   100.99.157.63`  — direct to health, tailnet
+
+Created 2026-09-22. All four verified against both `1.1.1.1` and `8.8.8.8`,
+returning the addresses above rather than the zone's catch-all parking IP
+`64.98.145.30` (which is what they returned before). Grey cloud needs no
+separate check: Cloudflare cannot proxy RFC1918 or CGNAT, so an answer of
+`192.168.2.138` / `100.99.157.63` is itself proof the records are DNS-only.
 
 **Hover / `imetrical.com`: no changes.** Verified authoritatively —
 `health.qcic.dl.imetrical.com` already resolves through the existing `*.dl`
