@@ -12,6 +12,17 @@ host.
 
 Check boxes as work lands. Record measurements inline under Phase A5 / C.
 
+## Tickets
+
+Spec: **#292**. Decisions and their reasoning live there; state lives here.
+
+| Ticket | Covers | Blocked by |
+| ------ | ------ | ---------- |
+| **#293** | Phase A, sections A0–A4 | — |
+| **#294** | Phase A, section A5 | #293 |
+| **#295** | Phase B | #293 |
+| **#296** | Phase C | #294 |
+
 ---
 
 ## Phase 0 — repo
@@ -25,7 +36,7 @@ Check boxes as work lands. Record measurements inline under Phase A5 / C.
       TLS policy)
 - [x] Commit and push `infra/gateway2/`
 
-## Phase A — stand up gateway2 (additive-only)
+## Phase A — stand up gateway2 (additive-only) · #293, #294
 
 ### A0 · Build-only smoke test on galois
 
@@ -92,7 +103,7 @@ depend on these A records. They control reachability only.
 - [ ] `docker compose logs scast-bridge` → reading production's `scrobblecastDigest`
 - [ ] `docker compose logs ted1k-derive` → polling Darwin's MySQL
 
-### A5 · Baseline restart samples — with-workload baseline
+### A5 · Baseline restart samples — with-workload baseline · #294
 
 VMM restarts are graceful, so these compare to the doc's Event B (3m16s).
 
@@ -113,7 +124,7 @@ Synology's concurrent load.
 | - | ------ | --------- | ----- | ------------------ | ----- |
 |   |        |           |       |                    |       |
 
-## Phase B — expose health publicly (touches production)
+## Phase B — expose health publicly (touches production) · #295
 
 - [ ] `git pull` on **production gateway's** clone first. It is 91 commits
       behind at `eeac2a88` (2026-02-24) and has never fetched; the delta under
@@ -137,7 +148,7 @@ Synology's concurrent load.
       `scrobblecast.dl…/api/status`). `/healthz` observes NATS + Tailnet only
       and does not yet cover scrobblecast — swapping would drop coverage.
 
-## Phase C — the restart experiment
+## Phase C — the restart experiment · #296
 
 - [ ] De-cruft gateway2: remove `open-iscsi`, `multipath-tools`, `glances`,
       `cloud-init`; set `MODULES=dep`; rebuild initramfs
