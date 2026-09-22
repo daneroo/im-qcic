@@ -221,10 +221,21 @@ Synology's concurrent load.
 
 ## Phase B — expose health publicly (touches production) · #295
 
-- [ ] `git pull` on **production gateway's** clone first. It is 91 commits
+- [x] `git pull` on **production gateway's** clone first. It is 91 commits
       behind at `eeac2a88` (2026-02-24) and has never fetched; the delta under
       `infra/gateway/` is two doc files — verifiably a no-op for the running
       stack. **Do not rebuild.**
+
+      Done 2026-09-22, now at `fca9fce`. Confirmed after the fact:
+      `git diff --stat eeac2a88..fca9fce -- infra/gateway/` is `CONTEXT.md`
+      and `README.md` only, the four containers stayed `Up 3 days`, and
+      production's `qcic-caddy:latest` kept its own image ID — distinct from
+      gateway2's, so nothing was overwritten.
+
+      Note this clone now carries `infra/gateway2/` in its working tree.
+      Harmless *because* caddy no longer tags itself `qcic-caddy:latest`; a
+      stray build here would produce `gateway2-caddy` and leave production's
+      image alone.
 - [ ] Land the Caddyfile change on `main` via its **own** commit/PR — separate
       from the gateway2 branch, since production's clone tracks `main` and this
       is the file production actually serves from. Then `git pull` on
