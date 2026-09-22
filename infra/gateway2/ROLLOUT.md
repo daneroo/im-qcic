@@ -281,10 +281,17 @@ it was found by taking five restarts, and it is why `restarts=0` in the notes
 column must not be read as "healthy". The containers stay up; their run loops
 do not.
 
-`ted1k-derive` and `scast-bridge` both declare `depends_on: nats`, which
-orders container *start* and says nothing about when `nats-server` is ready to
-accept a connection. All five containers start within ~2s of each other, so
-the two workers race it, and neither recovers from losing:
+Filed as **#297**, with the analysis below and a standing request to
+re-derive it before implementing.
+
+The two workers fail for *different* reasons — an earlier version of this note
+blamed `depends_on: nats` for both, which is wrong for `scast-bridge`.
+`ted1k-derive` does race the local `nats-server`'s readiness (`depends_on`
+orders container *start*, not readiness, and all five start within ~2s of each
+other). `scast-bridge`'s `duplicate subscription` comes from the **production**
+server: a reboot kills it without draining, so prod NATS still holds its
+durable push consumer bound to a now-dead inbox. That tracks reboot recency,
+not local nats timing. Neither recovers from losing:
 
 | boot | nats started | ted1k-derive | scast-bridge |
 | ---- | ------------ | ------------ | ------------ |
@@ -296,7 +303,8 @@ the two workers race it, and neither recovers from losing:
 
 Two of five boots for each worker. On boot 4 `ted1k-derive` started *before*
 `nats`, so the compose network alias did not yet resolve — hence `ENOTFOUND`
-rather than a refused connection.
+rather than a refused connection. That the two columns fail on *different*
+boots is itself the evidence they are not one bug.
 
 The failure is permanent, not transient. `ted1k-derive` retries its poll every
 60s and was still logging `connection refused` at 19:06:23, more than three
@@ -306,11 +314,19 @@ startup, not re-dialing. `scast-bridge` is worse: it logs `run failed` once
 and goes silent. Neither container exits, so `restart: unless-stopped` never
 fires and `docker ps` shows five healthy-looking services.
 
-Out of scope for #294 and deliberately not fixed here. Needs its own ticket;
-the likely shape is a `nats` healthcheck plus
-`depends_on: {nats: {condition: service_healthy}}`, but that only narrows the
-window — the durable fix is for both clients to reconnect rather than fail
-once. Note the same `depends_on` pattern is in `v2/infra/compose.yaml`.
+Out of scope for #294 and deliberately not fixed here. The proposed fix in
+#297 is *not* a healthcheck: in a container `restart: unless-stopped` is
+already the supervisor, and both apps defeat it — `scast-bridge` sets
+`process.exitCode = 1` without exiting, and `ted1k-derive` catches every
+error in its poll loop while holding a cached rejected `connect()` promise
+that it re-awaits forever instead of re-dialing. Letting unrecoverable
+startup failures be fatal makes both self-heal and makes `depends_on`
+unnecessary. All four files are under `v2/apps/*`, shared with
+`v2/infra/compose.yaml`, so this is not gateway2-specific.
+
+It also bears on #295: `/healthz` observes NATS and the tailnet only, and
+returned 200 throughout this episode. Worth deciding whether it should cover
+worker liveness before it goes on Better Stack.
 
 ## Phase B — expose health publicly (touches production) · #295
 
