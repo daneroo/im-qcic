@@ -325,8 +325,11 @@ unnecessary. All four files are under `v2/apps/*`, shared with
 `v2/infra/compose.yaml`, so this is not gateway2-specific.
 
 It also bears on #295: `/healthz` observes NATS and the tailnet only, and
-returned 200 throughout this episode. Worth deciding whether it should cover
-worker liveness before it goes on Better Stack.
+returned 200 throughout this episode. **Decided 2026-09-22 — it stays that
+way for now.** `/healthz` does not cover worker liveness, and goes on Better
+Stack as-is. So a green monitor attests to NATS and the tailnet, and to
+nothing about `ted1k-derive` or `scast-bridge`; #297 is what makes those two
+fail loudly instead of silently, and it is the fix, not the monitor.
 
 ## Phase B — expose health publicly (touches production) · #295
 
@@ -373,7 +376,9 @@ worker liveness before it goes on Better Stack.
       No `tls` block — the name resolves through the `*.dl` wildcard, so
       HTTP-01 works. Reload Caddy; do not rebuild the stack.
 - [ ] Confirm `https://health.qcic.dl.imetrical.com/healthz` → 200
-- [ ] **Add** `https://health.qcic.dl.imetrical.com/healthz` to Better Stack
+- [ ] **Add** `https://health.qcic.dl.imetrical.com/healthz` to Better Stack —
+      as-is. It observes NATS and the tailnet only; worker liveness was
+      considered and deliberately left out for now (2026-09-22, see A5).
 - [ ] **Keep** both existing monitors (`natsql.dl…/health`,
       `scrobblecast.dl…/api/status`). `/healthz` observes NATS + Tailnet only
       and does not yet cover scrobblecast — swapping would drop coverage.
