@@ -4,7 +4,10 @@ Tracking file for standing up `gateway2` and finishing the Synology restart
 diagnostics in [docs/research/synology-gateway-startup.md](../../docs/research/synology-gateway-startup.md).
 
 **Governing rule: gateway2 is additive-only.** Nothing currently running
-changes state. Phase A touches no production machine at all.
+changes state. Phase A is *intended* to touch no production machine at all —
+it breached that once, on 2026-09-22, when unmasking docker resumed the stack
+this VM inherited from its parent. See the trap note in A2; the rule stands,
+but it is not self-enforcing.
 
 `gateway2` is a transitory name — at least one more iteration of the
 replacement server is expected, so nothing client-facing is named after the
@@ -18,7 +21,7 @@ Spec: **#292**. Decisions and their reasoning live there; state lives here.
 
 | Ticket | Covers | Blocked by |
 | ------ | ------ | ---------- |
-| **#293** | Phase A, sections A0–A4 | — |
+| **#293** | Phase A, sections A0–A4 | — · **done 2026-09-22** |
 | **#294** | Phase A, section A5 | #293 |
 | **#295** | Phase B | #293 |
 | **#296** | Phase C | #294 |
@@ -163,6 +166,9 @@ confirms all three resolve.
 
       **Not needed.** Measured 2026-09-22 on the VM untouched at 3911 MiB /
       4 vCPU: **peak 742 MiB, 3.2 GiB headroom, swap never left 1 MiB.**
+      `xcaddy` — the step feared most — passed without incident. The RAM was
+      never raised, so "drop RAM back before measuring" below is a no-op and
+      #294's baseline comes from a VM that was never resized.
 
       Confirmed against the big machine the same day. Gateway (15.6 GiB)
       built its own four-service stack in **572.8s**; gateway2 (3.8 GiB) took
@@ -170,9 +176,6 @@ confirms all three resolve.
       sets, so not a controlled comparison, but four times the memory buying
       17% says the build is CPU/IO bound, not memory bound. The OOM risk was
       never real.
-      `xcaddy` — the step feared most — passed without incident. The RAM was
-      never raised, so "drop RAM back before measuring" below is a no-op and
-      #294's baseline comes from a VM that was never resized.
 - [x] `just build` — **~11m30s wall clock** (17:40:00 → ~17:51:30), `EXIT=0`,
       all four images. Worth keeping as the number to beat once images are
       built elsewhere and pulled.
@@ -243,6 +246,21 @@ Synology's concurrent load.
       Harmless *because* caddy no longer tags itself `qcic-caddy:latest`; a
       stray build here would produce `gateway2-caddy` and leave production's
       image alone.
+
+      **"Do not rebuild" was overtaken the same day.** Production was rebuilt
+      (`make build`, 572.8s) and redeployed (`make start`) at 18:34 — a
+      deliberate call taken with observability in place, outside #293. So the
+      "two doc files, a no-op" reasoning above describes how the clone got
+      current, *not* the state of the running stack: `caddy`, `natsql` and
+      `status` now run images built 2026-09-22, not the 2026-09-19 ones.
+      All four came up with `restarts=0` and all public endpoints returned
+      200. Cost, measured by the ted1k pump on d1-px1: 50 rows `MissingInB`
+      across 18:33:31–18:34:20 — the restart window itself — fully self-healed
+      on the next pump run.
+
+      **Consequence for the steps below:** do not treat production as
+      unchanged since February. Verify the running stack on its own terms
+      before adding the `reverse_proxy` block.
 - [ ] Land the Caddyfile change on `main` via its **own** commit/PR — separate
       from the gateway2 branch, since production's clone tracks `main` and this
       is the file production actually serves from. Then `git pull` on
@@ -286,8 +304,10 @@ notification publishing; adapting `pin-docker-tags.sh`; bumping the `nats` pin
 
 ## Open risks
 
-- **Build OOM on 3.8 GiB.** Mitigated by a temporary RAM bump; no cross-build
-  escape hatch. The real fix is to stop building on a host tuned for
+- ~~**Build OOM on 3.8 GiB.**~~ **Resolved 2026-09-22 — measured false.**
+  Peak 742 MiB of 3911 MiB, and 4x the RAM on gateway bought only ~17% build
+  time, so this is CPU/IO bound. No RAM bump was ever needed. Kept here
+  because the rest of this entry still stands: the real fix is to stop building on a host tuned for
   operation, which needs *two* things that do not exist yet, not one:
   somewhere to put images (the OCI registry, a `PLANNED` line under
   `docker@galois` in the root README), **and** something that can emit
