@@ -275,6 +275,43 @@ cannot be evaluated against these five samples alone. Establishing that the
 stall reproduces on gateway2 at all is step 3 of the research doc's proposed
 experiment, and these five did not reproduce it.
 
+**What the sampling did find: a startup race that leaves both workers dead.**
+Not a boot-timing result, and it does not move any number in the table — but
+it was found by taking five restarts, and it is why `restarts=0` in the notes
+column must not be read as "healthy". The containers stay up; their run loops
+do not.
+
+`ted1k-derive` and `scast-bridge` both declare `depends_on: nats`, which
+orders container *start* and says nothing about when `nats-server` is ready to
+accept a connection. All five containers start within ~2s of each other, so
+the two workers race it, and neither recovers from losing:
+
+| boot | nats started | ted1k-derive | scast-bridge |
+| ---- | ------------ | ------------ | ------------ |
+| 1 | 18:53:44.55 | +0.85s ok | +1.37s ok |
+| 2 | 18:57:39.63 | +1.80s ok | +1.56s ok |
+| 3 | 18:59:36.55 | +0.89s ok | +1.11s **`duplicate subscription`** |
+| 4 | 19:01:33.92 | **−1.05s** **`getaddrinfo ENOTFOUND`** | −0.24s ok |
+| 5 | 19:03:11.81 | +0.13s **`connection refused`** | +1.54s **`duplicate subscription`** |
+
+Two of five boots for each worker. On boot 4 `ted1k-derive` started *before*
+`nats`, so the compose network alias did not yet resolve — hence `ENOTFOUND`
+rather than a refused connection.
+
+The failure is permanent, not transient. `ted1k-derive` retries its poll every
+60s and was still logging `connection refused` at 19:06:23, more than three
+minutes after boot, while `bash -c 'echo > /dev/tcp/nats/4222'` from *inside
+that same container* returned OPEN. It is holding a connection that failed at
+startup, not re-dialing. `scast-bridge` is worse: it logs `run failed` once
+and goes silent. Neither container exits, so `restart: unless-stopped` never
+fires and `docker ps` shows five healthy-looking services.
+
+Out of scope for #294 and deliberately not fixed here. Needs its own ticket;
+the likely shape is a `nats` healthcheck plus
+`depends_on: {nats: {condition: service_healthy}}`, but that only narrows the
+window — the durable fix is for both clients to reconnect rather than fail
+once. Note the same `depends_on` pattern is in `v2/infra/compose.yaml`.
+
 ## Phase B — expose health publicly (touches production) · #295
 
 - [x] `git pull` on **production gateway's** clone first. It is 91 commits
