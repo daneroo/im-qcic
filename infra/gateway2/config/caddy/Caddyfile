@@ -1,0 +1,51 @@
+# gateway2's Caddy. Two independent ingresses to the same `health`:
+#
+#   direct   health.qcic{,.ts}.imetrical.net  -> DNS-01 here, via cloudflare
+#   public   health.qcic.dl.imetrical.com     -> HTTP-01 at the real gateway,
+#                                                which reverse-proxies here
+#
+# DNS-01 is the only ACME path available to this host: the router forwards
+# 443 to the real gateway (192.168.2.101), so HTTP-01 and TLS-ALPN-01 can
+# never reach here for any name.
+#
+# imetrical.net is on Cloudflare; imetrical.com is on Hover (no API, no
+# caddy-dns provider), which is why the direct names are .net.
+#
+# Token: same scoped token as infra/gateway (imetrical.net Zone:Read,
+# DNS:Edit) - Cloudflare cannot scope below a zone.
+#
+# Note: with DNS-01, issuance succeeds whether or not an A record exists -
+# validation is a TXT record. imetrical.net has a catch-all `*` pointing at
+# a Hover parking IP, so a missing A record yields a valid cert on an
+# unreachable name rather than an error. Create the A records first:
+#
+#   gateway2.imetrical.net        A  192.168.2.138   (DNS only, not proxied)
+#   gateway2.ts.imetrical.net     A  100.99.157.63   (DNS only, not proxied)
+#   health.qcic.imetrical.net     A  192.168.2.138   (DNS only, not proxied)
+#   health.qcic.ts.imetrical.net  A  100.99.157.63   (DNS only, not proxied)
+
+# Proof the DNS-01 path works on this host, before trusting it with a
+# service. Mirrors infra/gateway's gateway{,.ts}.imetrical.net blocks.
+gateway2.imetrical.net, gateway2.ts.imetrical.net {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+	}
+	respond "Hello, gateway2! (DNS Challenge - cloudflare)"
+}
+
+health.qcic.imetrical.net, health.qcic.ts.imetrical.net {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+	}
+	reverse_proxy health:8000
+}
+
+# Step 2: the public path. TLS is terminated at the real gateway, which
+# proxies here over plain HTTP. The `http://` prefix is load-bearing -
+# without it Caddy attempts automatic HTTPS for this name and retries
+# forever, since HTTP-01 can never reach this host.
+#
+# Inert until infra/gateway's Caddyfile gains the matching site block.
+http://health.qcic.dl.imetrical.com {
+	reverse_proxy health:8000
+}

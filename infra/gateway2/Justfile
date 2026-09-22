@@ -1,0 +1,41 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
+# New, derived from v2/infra/Justfile - not a copy. Dropped that file's
+# `macos-up`/`_macos-credentials` recipes: gateway2 is Linux-only, and the
+# macOS LocalAPI affordance lives in compose.yaml's
+# TAILSCALE_LOCALAPI_MODE/SOURCE/TARGET defaults, which are preserved intact.
+# Convenience targets follow infra/gateway's Makefile.
+#
+# `default` lists --unsorted, so recipe order here is the listing order:
+# typical usage order, generic escape hatch last.
+
+# Show this helpful listing.
+default:
+    @just --list --unsorted
+
+# Show container status.
+status:
+    @docker compose ps
+
+# Build all images, pulling fresh bases.
+build:
+    @docker compose build --pull
+    @echo "if this fails (on synology, or on a small VM):"
+    @echo "  COMPOSE_HTTP_TIMEOUT=300 docker compose build caddy"
+    @echo "  xcaddy and the bun builds are the memory-hungry ones"
+
+# Start everything in the background.
+start:
+    @docker compose up -d
+
+# Follow logs, optionally for named services.
+logs *args:
+    @docker compose logs -f --tail=100 {{args}}
+
+# Stop and remove containers (bind-mounted data under ./data is untouched).
+down:
+    @docker compose down
+
+# Run Docker Compose directly (Linux/Synology use the default Unix socket).
+@compose +args:
+    @docker compose {{args}}
