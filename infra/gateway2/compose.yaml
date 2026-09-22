@@ -128,7 +128,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-caddy
-    image: qcic-caddy:latest
+    # No explicit `image:`. Compose names this `gateway2-caddy` from the
+    # project prefix, matching the other three built services. It previously
+    # read `qcic-caddy:latest`, inherited along with the service from
+    # infra/gateway - which is production's tag, so building here overwrote
+    # it. infra/gateway still carries that name; not worth fixing, since
+    # gateway is what gateway2 eventually replaces.
     restart: unless-stopped
     env_file:
       # SHOULD contain CF_API_TOKEN

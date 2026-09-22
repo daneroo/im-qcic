@@ -45,7 +45,7 @@ start.** Galois is arm64 and gateway2 is x86_64, so these images are not
 deployable; this does not tell you whether the build fits in 3.8 GiB.
 
 - [x] `just build` — all four images built on galois (2026-09-22)
-- [x] `docker run --rm -e CF_API_TOKEN=0123456789abcdef0123456789abcdef01234567 -v "$PWD/config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" qcic-caddy:latest caddy validate --config /etc/caddy/Caddyfile`
+- [x] `docker run --rm -e CF_API_TOKEN=0123456789abcdef0123456789abcdef01234567 -v "$PWD/config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" gateway2-caddy caddy validate --config /etc/caddy/Caddyfile`
       — validates the Caddyfile *including* the cloudflare DNS plugin, without
       starting anything or contacting an ACME server. Returns
       `Valid configuration`.
@@ -236,6 +236,11 @@ Synology's concurrent load.
 ---
 
 ## Not in scope
+
+Renaming `infra/gateway`'s own `qcic-caddy:latest` — gateway2's copy was
+renamed to `gateway2-caddy` so the two stacks stop sharing an image tag, but
+production keeps its name: gateway is what gateway2 eventually replaces, so
+the tag gets retired with the host rather than fixed in place.
 
 Cutover (router forward, `.dl.` names); `natsql`/`status` retirement;
 migrating the four bus clients off the 2.7.3-beta server; `apps/web`; QCIC
