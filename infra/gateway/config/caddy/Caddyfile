@@ -66,8 +66,12 @@ health.qcic.dl.imetrical.com {
 	# Plain HTTP upstream is deliberate: proxying to https:// would make this
 	# public endpoint depend on gateway2's certificate health, so a lapsed cert
 	# there would surface here as a 502.
-	# No tls block needed — the name resolves through the existing *.dl
-	# wildcard, so HTTP-01 works unaided.
+	# No tls block needed — this name resolves through the existing *.dl
+	# wildcard to this host (CNAME syno-im.synology.me), the same chain the
+	# .dl sites above use, and they obtain certificates unaided.
+	# Which ACME challenge does the work is not established: port 80 is
+	# published "local only" per docker-compose.yaml, which would rule out
+	# HTTP-01 and leave TLS-ALPN-01 over the forwarded 443.
 	reverse_proxy gateway2.imetrical.net:80
 }
 
