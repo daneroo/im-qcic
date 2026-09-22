@@ -216,7 +216,7 @@ VMM restarts are graceful, so these compare to the doc's Event B (3m16s).
 - [x] Sample 2
 - [x] Sample 3
 - [x] Sample 4
-- [ ] Sample 5
+- [x] Sample 5
 
 Per run collect: `systemd-analyze`, `systemd-analyze blame | head -20`,
 `journalctl -b -k -o short-monotonic` (locate the initramfs stall), and
@@ -236,6 +236,44 @@ five `StartedAt` stamps, expressed as an offset from `uptime -s`.
 | 2 | 4.575s | 35.059s | **0.709s** | +20.6s → +22.4s | boot 18:57:19Z; total 39.6s; `fsck` clean; `docker.service` 27.4s; all five `restarts=0` |
 | 3 | 4.460s | 36.123s | **0.513s** | +20.2s → +21.7s | boot 18:59:16Z; total 40.6s; `fsck` clean; `docker.service` 27.9s; all five `restarts=0` |
 | 4 | 4.546s | 36.412s | **0.518s** | +21.4s → +23.2s | boot 19:01:11Z; total 41.0s; `fsck` clean; `docker.service` 27.7s; all five `restarts=0` |
+| 5 | 4.843s | 36.570s | **0.724s** | +20.8s → +23.0s | boot 19:02:51Z; total 41.4s; `fsck` clean; `docker.service` 28.7s; all five `restarts=0`; `/healthz` 200 after |
+
+All five taken 2026-09-22 18:53–19:03Z, back to back, via Synology VMM's
+restart — graceful, so `fsck` reported `clean` every time, matching the
+research doc's Event B rather than its power-cut Event A. Memory was
+3911 MiB / 4 vCPU throughout; the VM was never resized (see A3).
+
+**The five numbers.** Total 39.6s–68.0s. Kernel 4.46s–5.68s. Userspace
+35.1s–62.3s. Stall slot 0.513s–0.724s. Containers first-to-last started at
++20.2s–+39.7s from `uptime -s`, the five always within 2.2s of each other.
+No container restarted on any boot.
+
+**Sample 1 is the outlier and has an identified reason.** It followed 2.5
+days of uptime; its extra ~27s of userspace is concentrated in `udisks2`
+(7.6s vs ~1.7s), `containerd` (7.9s vs ~0.8s) and `systemd-journal-flush`
+(4.5s vs ~1.8s). Samples 2–5 were minutes apart and span 39.6s–41.4s total.
+Both readings are kept: 1 is what a restart after a long uptime costs, 2–5
+are what a restart after a recent one costs.
+
+**Confounds, as #294 requires them stated.** gateway2 is 3.8 GiB against
+production gateway's 15.6 GiB. It runs five containers where gateway runs
+four, and they are not the same five. All five samples were taken inside a
+ten-minute window, so they share one sample of the Synology's concurrent
+load rather than five — the doc already measured that load moving userspace
+by 53s, and this run cannot see that.
+
+**No verdict here.** #294 defines no pass threshold and none would be
+honest. The comparison is #296's.
+
+**One observation that #296 needs, recorded as a question, not an answer.**
+The stall slot held under a second on all five, yet gateway2 still carries
+every condition the research doc names as the cause: `scripts/local-top/iscsi`
+in the initramfs, `MODULES=most`, `multipathd` enabled, and
+`systemd-detect-virt` → `microsoft`. Whatever gates the 62s–110s silence on
+gateway, it is not the mere presence of that stack — so Phase C's de-cruft
+cannot be evaluated against these five samples alone. Establishing that the
+stall reproduces on gateway2 at all is step 3 of the research doc's proposed
+experiment, and these five did not reproduce it.
 
 ## Phase B — expose health publicly (touches production) · #295
 
