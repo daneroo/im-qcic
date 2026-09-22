@@ -212,7 +212,7 @@ succeeds if Darwin's MySQL is reachable.
 
 VMM restarts are graceful, so these compare to the doc's Event B (3m16s).
 
-- [ ] Sample 1
+- [x] Sample 1
 - [ ] Sample 2
 - [ ] Sample 3
 - [ ] Sample 4
@@ -225,9 +225,14 @@ Per run collect: `systemd-analyze`, `systemd-analyze blame | head -20`,
 Stated confounds: 3.8 GiB vs gateway's 15.6 GiB; five containers vs four;
 Synology's concurrent load.
 
+The stall is the silence between `Btrfs loaded` and
+`EXT4-fs (dm-0): mounted filesystem` — the same two markers the research doc
+uses for Event B's 110.03s. "Containers started" is the first and last of the
+five `StartedAt` stamps, expressed as an offset from `uptime -s`.
+
 | # | kernel | userspace | stall | containers started | notes |
 | - | ------ | --------- | ----- | ------------------ | ----- |
-|   |        |           |       |                    |       |
+| 1 | 5.678s | 1m02.333s | **0.586s** | +37.5s → +39.7s | boot 18:53:07Z; total 1m08.0s; `fsck` clean; `docker.service` 41.1s; all five `restarts=0` |
 
 ## Phase B — expose health publicly (touches production) · #295
 
