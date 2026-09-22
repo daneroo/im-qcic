@@ -85,9 +85,15 @@ depend on these A records. They control reachability only.
 
 ### A2 · Prepare gateway2
 
-- [ ] `sudo systemctl unmask docker && sudo systemctl enable --now docker`
+- [x] `sudo systemctl unmask docker.socket && sudo systemctl unmask docker && sudo systemctl enable --now docker`
       (currently masked, as deliberate deconfliction). **Daniel must run this** —
       `sudo` on gateway2 requires a password, so an agent over SSH cannot.
+
+      **`docker.socket` is masked too, and must be unmasked first.** Unmasking
+      only `docker.service` gets you as far as `Failed to start
+      docker.service: Unit docker.socket is masked.` Verified 2026-09-22:
+      both units plus `containerd.service` now enabled and active, daemon
+      29.2.1 answering.
 - [x] Revert the clone's hand-edits to `infra/gateway/{config/caddy/Caddyfile,docker-compose.yaml}`
       — these are uncommitted changes to *tracked* files and will block the
       checkout below. All four files below are stamped `2026-09-19 22:35`,
@@ -107,9 +113,17 @@ depend on these A records. They control reachability only.
       of this. Verified reachable from gateway2 over SSH.
 - [ ] After the PR merges: `git checkout main && git pull` to put the clone
       back on the mainline
-- [ ] Copy in `credentials/caddy/CREDS.env` (existing `CF_API_TOKEN`)
-- [ ] Copy in `credentials/credentials.mysql.json` (ted1k-derive)
-- [ ] Copy in `credentials/credentials.nats-prod.json` (scast-bridge)
+- [x] Copy in `credentials/caddy/CREDS.env` (existing `CF_API_TOKEN`) —
+      copied *locally on the VM* from `infra/gateway/credentials/caddy/`, which
+      already holds the same scoped token; no secret crosses machines
+- [x] Copy in `credentials/credentials.mysql.json` (ted1k-derive) — scp'd
+      from galois `v2/infra/credentials/`, the only copy
+- [x] Copy in `credentials/credentials.nats-prod.json` (scast-bridge) — scp'd
+      from galois `v2/infra/credentials/`, the only copy
+
+`credentials/` and `data/` are gitignored, so the checkout never brings these;
+they have to be placed by hand on every new host. `docker compose config`
+confirms all three resolve.
 
 ### A3 · Build and start
 
