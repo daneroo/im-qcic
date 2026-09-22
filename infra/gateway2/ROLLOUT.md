@@ -44,10 +44,21 @@ Catches path/syntax errors before touching the VM. **Build only — do not
 start.** Galois is arm64 and gateway2 is x86_64, so these images are not
 deployable; this does not tell you whether the build fits in 3.8 GiB.
 
-- [ ] `just build`
-- [ ] `docker run --rm -v "$PWD/config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" qcic-caddy:latest caddy validate --config /etc/caddy/Caddyfile`
+- [x] `just build` — all four images built on galois (2026-09-22)
+- [x] `docker run --rm -e CF_API_TOKEN=0123456789abcdef0123456789abcdef01234567 -v "$PWD/config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" qcic-caddy:latest caddy validate --config /etc/caddy/Caddyfile`
       — validates the Caddyfile *including* the cloudflare DNS plugin, without
-      starting anything or contacting an ACME server
+      starting anything or contacting an ACME server. Returns
+      `Valid configuration`.
+
+      `CF_API_TOKEN` must be set to a **40-character** placeholder. The
+      cloudflare module validates the token's *shape* when it provisions the
+      module, so an unset variable fails with ``API token '' appears
+      invalid``, and a descriptive string like `dummy-token` fails the same
+      way. The value is never used — `validate` contacts nothing.
+
+      Bonus confirmation of Phase 0's `http://` finding, logged inline by
+      this run: `srv1` "is listening only on the HTTP port, so no automatic
+      HTTPS will be applied".
 
 ### A1 · DNS — Cloudflare only, zone `imetrical.net`
 
@@ -73,8 +84,17 @@ depend on these A records. They control reachability only.
       `sudo` on gateway2 requires a password, so an agent over SSH cannot.
 - [ ] Revert the clone's hand-edits to `infra/gateway/{config/caddy/Caddyfile,docker-compose.yaml}`
       — these are uncommitted changes to *tracked* files and will block the
-      checkout below
-- [ ] Delete `infra/gateway/*.gateway2-original` (2 files)
+      checkout below. All four files below are stamped `2026-09-19 22:35`,
+      so this was one sitting. The Caddyfile was gutted from 2637 bytes to
+      25 (`:80 { respond "ok" }`) and `natsql`'s `NATSURL` was repointed from
+      `nats.ts.imetrical.com:4222` to `nats:4222` — a reachability experiment
+      on the clone, never intended to land.
+- [ ] Delete `infra/gateway/*.gateway2-original` (2 files) — untracked
+      pre-edit backups made in that same sitting, existing only on the VM and
+      referenced nowhere but this line. Both were diffed against
+      `git show HEAD:<file>` and are **byte-identical to committed HEAD**, so
+      the revert above already restores their content and deleting them loses
+      nothing.
 - [ ] `git fetch origin && git checkout agent/gateway2-rollout` — **not
       `git pull`**. `infra/gateway2/` only exists on the feature branch until
       the PR merges, so gateway2's clone has to sit on the branch to run any
