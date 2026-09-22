@@ -381,7 +381,7 @@ fail loudly instead of silently, and it is the fix, not the monitor.
       own `qcic-caddy:latest` against the pulled file before reload; Caddy's
       reload is atomic, so a config that fails to load is rejected and the
       running one keeps serving. Rollback is `git revert` + pull + reload.
-- [ ] Add one block to `infra/gateway/config/caddy/Caddyfile`:
+- [x] Add one block to `infra/gateway/config/caddy/Caddyfile`:
 
       health.qcic.dl.imetrical.com {
           reverse_proxy gateway2.imetrical.net:80
@@ -389,7 +389,57 @@ fail loudly instead of silently, and it is the fix, not the monitor.
 
       No `tls` block — the name resolves through the `*.dl` wildcard, so
       HTTP-01 works. Reload Caddy; do not rebuild the stack.
-- [ ] Confirm `https://health.qcic.dl.imetrical.com/healthz` → 200
+
+      Landed 2026-09-22 as `155a3eb3`, direct on `main`. HTTP-01 confirmed:
+      the router does forward port 80 to gateway, so `docker-compose.yaml`'s
+      `"80:80" # local only` comment is stale and misleading — it is worth
+      correcting on its own.
+
+      **`caddy reload` does not work after a `git pull`. It never has.**
+      The mount is `./config/caddy/Caddyfile:/etc/caddy/Caddyfile` — a
+      *single file*, so Docker binds the inode. `git pull` replaces the file
+      by rename, giving it a new inode, and the container stays pinned to the
+      old one. Measured here: host `4720500`/3265 bytes with the block,
+      container `4719946`/2637 bytes without it.
+
+      Every step reported success while reading the stale file:
+      `caddy validate` returned `Valid configuration` (of the old config,
+      truthfully) and `caddy reload` returned `config is unchanged`
+      (correctly — the file it could see had not changed). There is no error
+      to notice. **A clean reload is the expected output of this failure**,
+      which is what makes it worth writing down.
+
+      The fix is to recreate the container so the mount re-resolves:
+
+          docker compose up -d --force-recreate --no-deps caddy
+
+      `--force-recreate` is required: nothing in `compose.yaml` or the image
+      changed, so a plain `up -d` reports the container up-to-date and does
+      nothing. `--no-deps` leaves `nats`, `natsql` and `status` alone —
+      verified, they stayed `Up About an hour` while caddy went to `Up 29
+      seconds`. No image is built, so "reloaded, not rebuilt" still holds.
+      Cost was one restart of caddy, ~9s.
+- [x] Confirm `https://health.qcic.dl.imetrical.com/healthz` → 200
+
+      Verified 2026-09-22 19:48Z from outside: 200, body reporting
+      `"observer":"gateway2"`, on a freshly issued Let's Encrypt certificate
+      (`CN=health.qcic.dl.imetrical.com`, issuer `YE2`, valid to
+      2026-12-21) — so the wildcard, the forward, production's cert and the
+      proxy hop all work as designed.
+
+      Proven before the reload, not after: a request carrying
+      `Host: health.qcic.dl.imetrical.com` to gateway2:80 returned 200, which
+      is exactly what production sends — `reverse_proxy` preserves the
+      client's `Host` by default. Controls on the same port confirm the
+      matching is per-host: `health.qcic.imetrical.net` → 308 to HTTPS,
+      an unmatched host → 308, this name → 200. Without the `http://` prefix
+      the name would 308 too, and since Caddy passes upstream redirects
+      through rather than following them, the client would loop between
+      production and gateway2.
+
+      Regression check after the recreate — all 200: `status.dl`,
+      `natsql.dl/health`, `scrobblecast.dl/api/status`, `audiobook.dl`,
+      `gateway.imetrical.net`.
 - [ ] **Add** `https://health.qcic.dl.imetrical.com/healthz` to Better Stack —
       as-is. It observes NATS and the tailnet only; worker liveness was
       considered and deliberately left out for now (2026-09-22, see A5).
