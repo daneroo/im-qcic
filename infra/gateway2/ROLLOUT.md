@@ -69,7 +69,8 @@ depend on these A records. They control reachability only.
 ### A2 · Prepare gateway2
 
 - [ ] `sudo systemctl unmask docker && sudo systemctl enable --now docker`
-      (currently masked, as deliberate deconfliction)
+      (currently masked, as deliberate deconfliction). **Daniel must run this** —
+      `sudo` on gateway2 requires a password, so an agent over SSH cannot.
 - [ ] Revert the clone's hand-edits to `infra/gateway/{config/caddy/Caddyfile,docker-compose.yaml}`
       — these are uncommitted changes to *tracked* files and will block the
       checkout below
