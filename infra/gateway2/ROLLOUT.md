@@ -22,9 +22,13 @@ Spec: **#292**. Decisions and their reasoning live there; state lives here.
 | Ticket | Covers | Blocked by |
 | ------ | ------ | ---------- |
 | **#293** | Phase A, sections A0–A4 | — · **done 2026-09-22** |
-| **#294** | Phase A, section A5 | #293 |
-| **#295** | Phase B | #293 |
-| **#296** | Phase C | #294 |
+| **#294** | Phase A, section A5 | #293 · **done 2026-09-22** |
+| **#295** | Phase B | #293 · **done 2026-09-22** |
+| **#296** | Phase C | #294 · **unblocked, not started** |
+
+Phases 0, A and B are complete; Phase C is all that remains here. #297 —
+`ted1k-derive` and `scast-bridge` dying permanently on restart — came out of
+A5 and is open, unscheduled, and not tracked by this file.
 
 ---
 
