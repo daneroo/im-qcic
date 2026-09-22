@@ -61,6 +61,16 @@ scrobblecast.dl.imetrical.com {
 	reverse_proxy d1-px1.imetrical.com:8000
 }
 
+health.qcic.dl.imetrical.com {
+	# 2026-09-22: health lives on gateway2, the replacement VM (#292, #295).
+	# Plain HTTP upstream is deliberate: proxying to https:// would make this
+	# public endpoint depend on gateway2's certificate health, so a lapsed cert
+	# there would surface here as a 502.
+	# No tls block needed — the name resolves through the existing *.dl
+	# wildcard, so HTTP-01 works unaided.
+	reverse_proxy gateway2.imetrical.net:80
+}
+
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
 # Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
 # Cloudlfare specific: https://github.com/caddy-dns/cloudflare

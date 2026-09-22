@@ -363,10 +363,24 @@ fail loudly instead of silently, and it is the fix, not the monitor.
       **Consequence for the steps below:** do not treat production as
       unchanged since February. Verify the running stack on its own terms
       before adding the `reverse_proxy` block.
-- [ ] Land the Caddyfile change on `main` via its **own** commit/PR — separate
+- [x] Land the Caddyfile change on `main` via its **own** commit — separate
       from the gateway2 branch, since production's clone tracks `main` and this
       is the file production actually serves from. Then `git pull` on
       production picks it up.
+
+      **Direct commit, no PR** (decided 2026-09-22). The criterion said
+      "commit/PR"; its stated reason was separation from the gateway2 branch,
+      and that branch merged as `bfd81dd3` (PR #291) before this ticket
+      started — there is nothing left to be separate from. A PR also buys no
+      test: the block can only be exercised by reloading production's Caddy,
+      and production's clone tracks `main`, so a branch forces either a blind
+      merge or an off-mainline checkout on production — the drift A2 had to
+      unwind on gateway2.
+
+      What protects the change instead: `caddy validate` run on production's
+      own `qcic-caddy:latest` against the pulled file before reload; Caddy's
+      reload is atomic, so a config that fails to load is rejected and the
+      running one keeps serving. Rollback is `git revert` + pull + reload.
 - [ ] Add one block to `infra/gateway/config/caddy/Caddyfile`:
 
       health.qcic.dl.imetrical.com {
