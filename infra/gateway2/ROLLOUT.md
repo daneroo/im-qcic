@@ -82,20 +82,20 @@ depend on these A records. They control reachability only.
 - [ ] `sudo systemctl unmask docker && sudo systemctl enable --now docker`
       (currently masked, as deliberate deconfliction). **Daniel must run this** —
       `sudo` on gateway2 requires a password, so an agent over SSH cannot.
-- [ ] Revert the clone's hand-edits to `infra/gateway/{config/caddy/Caddyfile,docker-compose.yaml}`
+- [x] Revert the clone's hand-edits to `infra/gateway/{config/caddy/Caddyfile,docker-compose.yaml}`
       — these are uncommitted changes to *tracked* files and will block the
       checkout below. All four files below are stamped `2026-09-19 22:35`,
       so this was one sitting. The Caddyfile was gutted from 2637 bytes to
       25 (`:80 { respond "ok" }`) and `natsql`'s `NATSURL` was repointed from
       `nats.ts.imetrical.com:4222` to `nats:4222` — a reachability experiment
       on the clone, never intended to land.
-- [ ] Delete `infra/gateway/*.gateway2-original` (2 files) — untracked
+- [x] Delete `infra/gateway/*.gateway2-original` (2 files) — untracked
       pre-edit backups made in that same sitting, existing only on the VM and
       referenced nowhere but this line. Both were diffed against
       `git show HEAD:<file>` and are **byte-identical to committed HEAD**, so
       the revert above already restores their content and deleting them loses
       nothing.
-- [ ] `git fetch origin && git checkout agent/gateway2-rollout` — **not
+- [x] `git fetch origin && git checkout agent/gateway2-rollout` — **not
       `git pull`**. `infra/gateway2/` only exists on the feature branch until
       the PR merges, so gateway2's clone has to sit on the branch to run any
       of this. Verified reachable from gateway2 over SSH.
