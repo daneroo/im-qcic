@@ -154,12 +154,20 @@ confirms all three resolve.
 
 ### A3 · Build and start
 
-- [ ] Optionally raise RAM above 3.8 GiB for the build — `xcaddy` and the Bun
+- [x] Optionally raise RAM above 3.8 GiB for the build — `xcaddy` and the Bun
       builds are the hungry ones. No cross-build escape hatch exists: galois is
       arm64, and `ghcr.io/daneroo/caddy:2-dns` returns 403 (never shipped).
-- [ ] `just build`
+
+      **Not needed.** Measured 2026-09-22 on the VM untouched at 3911 MiB /
+      4 vCPU: **peak 742 MiB, 3.2 GiB headroom, swap never left 1 MiB.**
+      `xcaddy` — the step feared most — passed without incident. The RAM was
+      never raised, so "drop RAM back before measuring" below is a no-op and
+      #294's baseline comes from a VM that was never resized.
+- [x] `just build` — **~11m30s wall clock** (17:40:00 → ~17:51:30), `EXIT=0`,
+      all four images. Worth keeping as the number to beat once images are
+      built elsewhere and pulled.
 - [ ] `just start`
-- [ ] **Drop RAM back to 3.8 GiB before measuring**
+- [x] **Drop RAM back to 3.8 GiB before measuring** — no-op, never raised
 
 ### A4 · Verify
 
