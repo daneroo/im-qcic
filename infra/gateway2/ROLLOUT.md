@@ -440,12 +440,23 @@ fail loudly instead of silently, and it is the fix, not the monitor.
       Regression check after the recreate — all 200: `status.dl`,
       `natsql.dl/health`, `scrobblecast.dl/api/status`, `audiobook.dl`,
       `gateway.imetrical.net`.
-- [ ] **Add** `https://health.qcic.dl.imetrical.com/healthz` to Better Stack —
+- [x] **Add** `https://health.qcic.dl.imetrical.com/healthz` to Better Stack —
       as-is. It observes NATS and the tailnet only; worker liveness was
       considered and deliberately left out for now (2026-09-22, see A5).
-- [ ] **Keep** both existing monitors (`natsql.dl…/health`,
+- [x] **Keep** both existing monitors (`natsql.dl…/health`,
       `scrobblecast.dl…/api/status`). `/healthz` observes NATS + Tailnet only
       and does not yet cover scrobblecast — swapping would drop coverage.
+
+      Done 2026-09-22 19:50Z. Better Stack now polls three, all `Up`, all at
+      a 3m interval: the new `health.qcic.dl.imetrical.com/healthz`, plus
+      `natsql.dl.imetrical.com/health` and
+      `scrobblecast.dl.imetrical.com/api/status` — added alongside, not
+      swapped, so no coverage was dropped.
+
+      Remember what the green light means: NATS reachable and the tailnet
+      reachable, as observed from gateway2. It says nothing about
+      `ted1k-derive` or `scast-bridge`, which can be dead while this monitor
+      stays green. #297 is what makes those fail loudly.
 
 ## Phase C — the restart experiment · #296
 
