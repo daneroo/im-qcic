@@ -138,8 +138,11 @@ exposure and `down` it immediately.
       `git pull`**. `infra/gateway2/` only exists on the feature branch until
       the PR merges, so gateway2's clone has to sit on the branch to run any
       of this. Verified reachable from gateway2 over SSH.
-- [ ] After the PR merges: `git checkout main && git pull` to put the clone
-      back on the mainline
+- [x] After the PR merges: `git checkout main && git pull` to put the clone
+      back on the mainline — done 2026-09-22, PR #291 merged as `bfd81dd3`.
+      `compose.yaml` and `Caddyfile` checksums were identical either side of
+      the switch, so the running stack did not drift from what is on disk;
+      all five containers stayed up and health kept returning 200.
 - [x] Copy in `credentials/caddy/CREDS.env` (existing `CF_API_TOKEN`) —
       copied *locally on the VM* from `infra/gateway/credentials/caddy/`, which
       already holds the same scoped token; no secret crosses machines
