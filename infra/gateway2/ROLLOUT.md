@@ -501,27 +501,102 @@ not boot — against no measurable gain.
 Preflight, verified 2026-09-22: no held packages, `/boot` 259 MB of 1.5 GB,
 `/` 15 GB of 195 GB, no pending reboot.
 
-- [ ] VMM snapshot of gateway2, taken **with the VM shut down** — see the
-      snapshot note in C2. This is the whole rollback.
-- [ ] Better Stack: pause or warn. Production proxies
-      `health.qcic.dl.imetrical.com` to gateway2 and polls at 3m.
-- [ ] `sudo do-release-upgrade` — Daniel runs it; `sudo` on gateway2 needs a
-      password.
-- [ ] Repoint third-party APT sources and reinstall. **This is the known
-      failure mode**: `do-release-upgrade` disables third-party sources, and
-      the scar from last time is still on disk —
-      `/etc/apt/sources.list.d/tailscale.list.distUpgrade` still holds the
-      `focal` line from the 20.04→22.04 upgrade. Expect `docker.list`
-      (currently `jammy`) and `tailscale.list` (currently `jammy`) to get the
-      same treatment.
-- [ ] Verify: five containers up **and each doing real work, from its own
-      logs** — not `docker ps`. A5 recorded `ted1k-derive` and `scast-bridge`
-      sitting `Up` with `restarts=0` while their run loops were dead (#297).
-- [ ] `/healthz` 200; tailnet identity still `gateway2`; LAN still
-      `192.168.2.138`.
-- [ ] One set of restart samples by A5's method, recorded here. Secondary —
+- [x] VMM snapshot of gateway2, taken **with the VM shut down** — see the
+      snapshot note in C2. This is the whole rollback. Taken 2026-09-23
+      ~02:11Z, labelled "cold, pre 24.04".
+- [x] Pre-upgrade baseline, from the boot at 02:11:32Z: `ted1k-derive` lost
+      the `nats` race (#297) and needed `docker compose restart ted1k-derive`;
+      after that all five did real work — `ted1k-derive` publishing every
+      view, `scast-bridge` copying the 02:10Z and 02:20Z generations.
+- [x] `apt full-upgrade` on 22.04 first — `do-release-upgrade` refuses
+      otherwise. 38 packages: kernel 5.15.0-191→194, Docker 29.2.1→29.8.1,
+      containerd, tailscale. Rebooted 02:56:34Z. Incidental boot sample, not
+      an A5 sample (first boot on a new kernel and a new dockerd):
+      `8.763s (kernel) + 2min 18.838s (userspace)`; stall 4.035s; containers
+      02:57:53.7–02:58:02.4 (+79–88s); NATS ready 02:58:10.35 (+96s).
+      `docker.service` 2min 0.6s in blame — Docker cleaned up stale sandboxes,
+      then took 36s to initialise buildkit after the containers were already
+      up. This time `scast-bridge` lost the race (`duplicate subscription`)
+      and `ted1k-derive` did not.
+- [x] Better Stack: warned, not paused. It alerted to Slack on each reboot and
+      on the Docker package restart, and recovered each time.
+- [x] `sudo do-release-upgrade` — Daniel ran it, 2026-09-23 03:01Z; rebooted
+      into 24.04.5 at 20:52:47Z. Unpack and configure took hours: IO pressure
+      ("full") sat at 75–82% with ~300 KB/s written — dpkg syncs every file.
+      Prompts worth knowing for the next clone:
+      - **GRUB install device** — asked because the clone's disk id differs
+        from Gateway's. Chose `/dev/sda` only.
+      - **postfix** got pulled in and asked for a mail type;
+        `postfix@-.service` now fails at boot and leaves systemd `degraded`.
+        Port 25 is not listening.
+      - **Remove obsolete packages: N** — Docker and Tailscale were `Foreign`
+        with their sources off, so `y` would have removed them.
+      - New SSH connections were refused mid-upgrade, and the fallback sshd on
+        1022 reset them too. Only the open session and the VMM console worked.
+- [x] Repoint third-party APT sources and reinstall. This time
+      `do-release-upgrade` **renamed** `docker.list` and `tailscale.list` to
+      `*.distUpgrade` rather than commenting them out; the old `focal`
+      `tailscale.list.distUpgrade` was overwritten. Recreated both on `noble`,
+      then `apt full-upgrade` (Docker packages to their noble builds, old
+      5.15.0-190/191 kernels removed) and `apt autoremove` (151 packages,
+      1.17 GB — compilers, python3 scientific stack, `python3.10`).
+      `apt-cache policy` shows `docker-ce` and `tailscale` both from `noble`.
+- [x] Verify: five containers up **and each doing real work, from its own
+      logs** — not `docker ps`. Both workers came up dead after the reboot
+      (`ted1k-derive` `connection refused`; `scast-bridge` `getaddrinfo
+      ENOTFOUND`, a new #297 mode) and again after the Docker package restart.
+      After `docker compose restart ted1k-derive scast-bridge` at 21:40Z:
+      `ted1k-derive` published all three views, `scast-bridge` copied the
+      21:30Z generation.
+- [x] `/healthz` 200; tailnet identity still `gateway2`; LAN still
+      `192.168.2.138`. Docker 29.8.1, Tailscale 1.102.4, kernel 6.8.0-142.
+- [x] One set of restart samples by A5's method, recorded here. Secondary —
       22.04 already boots in 39.6s–41.4s and this ticket does not need an
       improvement to have succeeded. Say so plainly if nothing moves.
+
+Samples on 24.04.5 (kernel 6.8.0-142), same method and columns as A5; VMM
+restart, 2026-09-23.
+
+| # | kernel | userspace | stall | containers started | notes |
+| - | ------ | --------- | ----- | ------------------ | ----- |
+| 1 | 4.071s | 1m08.614s | **0.425s** | +34.5s → +36.1s | boot 21:46:51Z; total 1m12.7s; `fsck` clean; `docker.service` 54.9s; NATS ready +38.9s; `ted1k-derive` published; `scast-bridge` restarts=6, last start +77.8s |
+| 2 | 3.725s | 41.736s | **0.387s** | +22.3s → +24.3s | boot 21:50:16Z; total 45.5s; `fsck` clean; `docker.service` 32.3s; NATS ready +25.9s; tailnet `Running` +15s; both workers did real work, all `restarts=0` |
+| 3 | 3.530s | 44.043s | **0.352s** | +21.1s → +23.5s | boot 21:53:24Z; total 47.6s; `fsck` clean; `docker.service` 34.9s; NATS ready +25.2s; tailnet `Running` +16s; `ted1k-derive` published; **`scast-bridge` dead** (`duplicate subscription`, #297) |
+| 4 | 3.614s | 40.480s | **0.358s** | +23.5s → +25.5s | **VMM shut down + start** — new QEMU process launched 21:56:29Z, guest kernel 21:56:35Z (**QEMU → kernel ~6s**, 1s resolution); total 44.1s; `fsck` clean; `docker.service` 31.1s; NATS ready +26.7s; tailnet `Running` +9s; both workers did real work, all `restarts=0` |
+| 5 | 3.616s | 41.070s | **0.396s** | +21.8s → +24.0s | **VMM shut down + start** — QEMU 21:59:29Z, kernel 21:59:35Z (~6s); total 44.7s; `fsck` clean; `docker.service` 31.1s; NATS ready +25.4s; tailnet `Running` +14s; `ted1k-derive` published; **`scast-bridge` dead** (`duplicate subscription`) |
+
+**Against 22.04 (A5 samples 2–5), nothing meaningful moved.** Samples 2–5
+total 44.1–47.6s against 39.6–41.4s — about 5s slower, all in userspace
+(`docker.service` 31–35s against 27–29s). The stall is 0.35–0.43s against
+0.51–0.72s; containers start at +21–25s against +20–23s. Sample 1 is the
+first boot after the upgrade and is excluded, as A5's sample 1 was.
+
+**Shut down + start costs ~6s more than a restart**, all of it QEMU → guest
+kernel; from the kernel on, samples 4–5 match 2–3. Event A's 24s for the
+same stretch was a cold host with two VMs starting at once.
+
+**#297 on 24.04:** `scast-bridge` came up dead in 2 of 5 (samples 3, 5,
+`duplicate subscription`) and crash-looped until the tailnet was up in
+sample 1; `ted1k-derive` was fine in all five.
+
+**Tailscale is slow to come up on 24.04 — this matters the moment anything
+in the critical chain depends on the tailnet.** Sample 1: `tailscaled`
+started logging in at +14s and reached `Running` at **+76s**; the first
+contact with the control plane alone took **60.3s**
+(`control-netmap usec=60281249`) — a timeout signature, cause not yet
+identified. Samples 2 and 3 reached the control plane in 84ms
+(`cached=true`) and 834ms (`cached=false`) and were `Running` at +15s and
++16s — so the 60s is not every boot, and a cold cache alone does not cause
+it. Sample 1 was the first boot after the release upgrade. Until then MagicDNS `gateway2` does not answer (SSH timed out);
+`gateway2.imetrical.com` on the LAN did. Not measured on 22.04, so whether
+this is new is unknown.
+
+`scast-bridge` depends on it directly: its upstream is production NATS over
+the tailnet (`100.120.49.100:4222`). On 24.04 it crashed with
+`ECONNREFUSED` and was restarted by Docker six times until the tailnet was
+up — a different #297 mode from the hangs seen on 22.04. The seventh start
+got as far as mirroring the stream config; no `copied` was confirmed before
+the next restart.
 
 ### C2 · The Synology restart — warm and cold · #296, decision first
 
@@ -559,11 +634,13 @@ Synology — production gateway, Pxbk/PBS, Container Manager workloads, shares.
 end to end, which is the thing actually worth knowing. Meaningless until UPS
 monitoring is configured; without it this is just another hard cut.
 
-- [ ] **Decision from Daniel: warm, cold, both, or neither.** Nothing below
+- [x] **Decision from Daniel: warm, cold, both, or neither.** Nothing below
       happens without it. This is production; the risk is real and is his to
-      accept.
-- [ ] If cold: configure DSM UPS monitoring first, and confirm
-      `upsc ups@localhost` answers.
+      accept. **Decided 2026-09-23: warm only.** Cold is out of scope for
+      #296 — a hard cut triggers a full btrfs scrub (~18h). Revisit with the
+      UPS setup, as its own ticket.
+- [ ] ~~If cold: configure DSM UPS monitoring first, and confirm
+      `upsc ups@localhost` answers.~~ Not in this ticket — see above.
 - [ ] Maintenance window agreed; all **three** Better Stack monitors paused
       (`health.qcic.dl…/healthz`, `natsql.dl…/health`,
       `scrobblecast.dl…/api/status`).
