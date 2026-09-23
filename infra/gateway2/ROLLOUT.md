@@ -24,9 +24,14 @@ Spec: **#292**. Decisions and their reasoning live there; state lives here.
 | **#293** | Phase A, sections A0–A4 | — · **done 2026-09-22** |
 | **#294** | Phase A, section A5 | #293 · **done 2026-09-22** |
 | **#295** | Phase B | #293 · **done 2026-09-22** |
-| **#296** | Phase C | #294 · **unblocked, not started** |
+| **#296** | Phase C, sections C1–C2 | #294 · **rescoped 2026-09-22 — see C0** |
+| **#298** | Phase C, section C3 | — · **exploratory, not scheduled** |
 
-Phases 0, A and B are complete; Phase C is all that remains here. #297 —
+Phases 0, A and B are complete. Phase C was rescoped on 2026-09-22: its
+original subject — de-crufting gateway2 to move the initramfs stall — does not
+have the defect it proposed to fix (C0). It now covers an OS upgrade (C1) and
+a decision about restarting the Synology itself (C2), which is where the
+unmeasured time actually is. #297 —
 `ted1k-derive` and `scast-bridge` dying permanently on restart — came out of
 A5 and is open, unscheduled, and not tracked by this file.
 
@@ -438,14 +443,147 @@ fail loudly instead of silently, and it is the fix, not the monitor.
       `ted1k-derive` or `scast-bridge`, which can be dead while this monitor
       stays green. #297 is what makes those fail loudly.
 
-## Phase C — the restart experiment · #296
+## Phase C — OS rebuild, and the restart question that is actually open · #296, #298
 
-- [ ] De-cruft gateway2: remove `open-iscsi`, `multipath-tools`, `glances`,
-      `cloud-init`; set `MODULES=dep`; rebuild initramfs
-- [ ] 5 more restart samples, identical method to A5
-- [ ] Compare against A5 — the initramfs stall varies 62s–110s for the same
-      bug, so a single sample cannot distinguish improvement from noise
-- [ ] Update `docs/research/synology-gateway-startup.md` with both sets
+Phase C was originally "de-cruft gateway2 and re-measure." That is not
+runnable, for the reason recorded below. What replaced it is two things: a
+cheap OS upgrade on gateway2 (#296), and a decision about testing the
+Synology itself — which is where the unmeasured time actually is.
+
+### C0 · Why the original Phase C was dropped — verified, keep this
+
+**#296 as originally written could not be run: its subject does not have the
+defect it proposed to fix.** A5's five samples put gateway2's stall slot at
+0.513s–0.724s, every sample. There is no 62s–110s silence on gateway2 to move.
+
+Verified 2026-09-22 by direct read-only comparison of the two guests:
+
+| | gateway (production) | gateway2 |
+| - | - | - |
+| kernel | 5.15.0-191-generic | *identical* |
+| cmdline | `root=/dev/mapper/ubuntu--vg-ubuntu--lv ro maybe-ubiquity` | *identical* |
+| disk | `SYNOLOGY Storage`, 200 G, `sda3` → LVM → `/` | *identical* |
+| `MODULES=` | `most` | *identical* |
+| initramfs | `scripts/local-top/iscsi`, `iscsistart`, `be2iscsi`, `multipath.ko`, `hv_*` | *identical* |
+| packages | `open-iscsi`, `multipath-tools`, `cloud-init`, `cloud-initramfs-dyn-netconf` | *identical* |
+| `/etc/iscsi/nodes` | **absent** | **absent** |
+| `systemd-detect-virt` | `microsoft` | *identical* |
+| swap / crypttab | `/swap.img` 2 G, no `RESUME`, empty crypttab | *identical* |
+| RAM | 15989 MiB | 3911 MiB |
+| **stall** | **62.2s** (`4.32s` → `66.55s`, boot of 2026-09-19) | **0.513–0.724s**, 5/5 |
+
+Every condition the research doc named as the cause is present on both hosts in
+identical form. One stalls; the other does not. **The named cause is falsified
+as a sufficient explanation.** Note also that *neither* host has an iSCSI node
+database, so `local-top/iscsi` has no target to time out against on either
+machine — that was assumed, never checked.
+
+Two differentiators remain, neither of which de-crufting touches: host-side LUN
+lineage (gateway's LUN is four years old, 140.6 GiB allocated, 11 snapshots),
+and guest RAM (15.6 vs 3.8 GiB).
+
+One methodological hole in the research doc, recorded here because it changes
+how much the doc's central inference is worth: LVM activation in the initramfs
+is **userspace** and emits nothing to the kernel ring buffer, so silence in
+`journalctl -k` is not evidence of a timeout rather than slow work. And the
+"slow storage — ruled out" row rests on a `drop_caches` test run on a **warm,
+idle** Synology, which does not reproduce boot-time host conditions.
+
+**De-cruft is therefore not scheduled.** On a VM that already boots in 40s it
+is hygiene at best, and it carries a real risk — a rebuilt initramfs that does
+not boot — against no measurable gain.
+
+### C1 · Upgrade gateway2 to the current Ubuntu LTS · #296
+
+`do-release-upgrade -c` on gateway2 returns **24.04.5 LTS** — one hop, not two.
+`Prompt=lts` is already set; 26.04 is not offered.
+
+Preflight, verified 2026-09-22: no held packages, `/boot` 259 MB of 1.5 GB,
+`/` 15 GB of 195 GB, no pending reboot.
+
+- [ ] VMM snapshot of gateway2, taken **with the VM shut down** — see the
+      snapshot note in C2. This is the whole rollback.
+- [ ] Better Stack: pause or warn. Production proxies
+      `health.qcic.dl.imetrical.com` to gateway2 and polls at 3m.
+- [ ] `sudo do-release-upgrade` — Daniel runs it; `sudo` on gateway2 needs a
+      password.
+- [ ] Repoint third-party APT sources and reinstall. **This is the known
+      failure mode**: `do-release-upgrade` disables third-party sources, and
+      the scar from last time is still on disk —
+      `/etc/apt/sources.list.d/tailscale.list.distUpgrade` still holds the
+      `focal` line from the 20.04→22.04 upgrade. Expect `docker.list`
+      (currently `jammy`) and `tailscale.list` (currently `jammy`) to get the
+      same treatment.
+- [ ] Verify: five containers up **and each doing real work, from its own
+      logs** — not `docker ps`. A5 recorded `ted1k-derive` and `scast-bridge`
+      sitting `Up` with `restarts=0` while their run loops were dead (#297).
+- [ ] `/healthz` 200; tailnet identity still `gateway2`; LAN still
+      `192.168.2.138`.
+- [ ] One set of restart samples by A5's method, recorded here. Secondary —
+      22.04 already boots in 39.6s–41.4s and this ticket does not need an
+      improvement to have succeeded. Say so plainly if nothing moves.
+
+### C2 · The Synology restart — warm and cold · #296, decision first
+
+**This is where the unmeasured time is.** Event A's only full-chain
+measurement puts the Synology stage at **3m42s of 7m16s — 51%** — and the
+research doc lists its internal 205s as "not decomposed." Nothing inside any
+VM affects it. Five more VM restarts cannot see it.
+
+**Prerequisite finding — the UPS does not do what it is assumed to do.**
+Re-verified on syno 2026-09-22 21:05Z:
+
+```text
+/usr/syno/etc/ups/synoups.conf   17 bytes, mtime Jun 24 2021
+upsc ups@localhost               Connection refused   (no UPS daemon running)
+supportups="yes"                 DSM capability flag, not configuration
+```
+
+`supportups="yes"` only says DSM *can* monitor a UPS. Nothing is listening.
+So better UPS hardware changes the runtime, but **every power event is still a
+hard cut** as far as DSM is concerned — which is exactly what Event A recorded
+(`fsck … recovering journal`). Configuring UPS monitoring is a prerequisite for
+the cold test to mean anything, and is arguably worth doing on its own merits
+regardless of this ticket.
+
+Also note: syno's uptime at the time of writing is 3 days — it has not rebooted
+since the Event A power cut of 2026-09-19.
+
+Two tests, very different costs:
+
+**Warm — a graceful DSM reboot.** Decomposes the 205s and measures the
+realistic recovery path. Cost: a controlled outage of *everything* on the
+Synology — production gateway, Pxbk/PBS, Container Manager workloads, shares.
+
+**Cold — pull mains and let the UPS drive it.** Tests the whole safety chain
+end to end, which is the thing actually worth knowing. Meaningless until UPS
+monitoring is configured; without it this is just another hard cut.
+
+- [ ] **Decision from Daniel: warm, cold, both, or neither.** Nothing below
+      happens without it. This is production; the risk is real and is his to
+      accept.
+- [ ] If cold: configure DSM UPS monitoring first, and confirm
+      `upsc ups@localhost` answers.
+- [ ] Maintenance window agreed; all **three** Better Stack monitors paused
+      (`health.qcic.dl…/healthz`, `natsql.dl…/health`,
+      `scrobblecast.dl…/api/status`).
+- [ ] Method matches the research doc's Event A collection so the numbers are
+      comparable: syno boot time and per-subsystem start, then the guest
+      timeline. Commands are in the doc's Method section.
+- [ ] Decompose the Synology stage — the 205s between kernel boot and VMM
+      starting QEMU is the specific unknown.
+- [ ] Record here and in the research doc; state plainly if it is inconclusive.
+
+**Snapshot note that applies to everything in this phase.** VMM snapshots are
+`isAppConsistence=no` — crash-consistent — even though `qemu-guest-agent` is
+installed and active. A snapshot taken of a *running* VM restores like a power
+cut. Shut the VM down first and the rollback point boots clean.
+
+### C3 · NixOS · #298
+
+Separate ticket, exploratory, not scheduled. Options deliberately left open
+there — in-place conversion, fresh install on the same VM, or a new VM
+alongside. See #298.
 
 ---
 
