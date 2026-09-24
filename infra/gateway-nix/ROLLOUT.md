@@ -48,13 +48,18 @@ is off; the install wipes it.
       `~/.ssh/authorized_keys` · Daniel. Wiped by the install; the NixOS
       config does not carry it. (Agent forwarding was dropped: galois runs no
       ssh-agent.)
-- [ ] gauss · run, with `<ip>` from step 1 · Daniel
+- [x] gauss · run, with `<ip>` from step 1 · Daniel
 
       nix run github:nix-community/nixos-anywhere -- \
         --flake 'github:daneroo/im-qcic/agent/gateway-nix?dir=infra/gateway-nix#gateway-nix' \
         --target-host daniel@<ip>
 
-- [ ] Record wall-clock install time
+- [x] Record wall-clock install time — **4m57.5s** (2026-09-24 05:21–05:26Z):
+      kexec 19s, disko, closure upload, GRUB, reboot. First NixOS boot:
+      `0.87s kernel + 9.35s initrd + 34.9s userspace = 45.1s` (no stack yet).
+      New DHCP lease **`192.168.2.92`** — dhcpcd's client-id differs from
+      networkd's, so the router saw a new client. BIOS GRUB and
+      `/boot/EFI/BOOT/BOOTX64.EFI` both installed.
 - [ ] gateway-nix · `sudo tailscale up` → open auth URL · Daniel
 - [ ] gateway-nix · `git clone` im-qcic to `~/Code/iMetrical/im-qcic` · agent
 - [ ] galois → gateway-nix · scp the three `credentials/` files · Daniel
@@ -109,3 +114,15 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 ## NixOS install notes
 
 Reusable findings go here as they land.
+
+- **`nixos-anywhere` over a running Ubuntu** needs only SSH plus
+  passwordless sudo for a user. The kexec installer restores the target's
+  IPs and routes, so it comes back on the same address (19s here).
+- **During the install the target is the kexec installer**, which authorizes
+  only the key that launched it (as root). SSH as your user prompts for a
+  password there. Don't enter one.
+- **Expect a new DHCP lease on first boot** when moving from networkd
+  (Ubuntu) to dhcpcd (NixOS default): the client-id changes even though the
+  MAC does not.
+- **A clone with a new MAC waited 8.5 min for its first lease** from the
+  router. That was first-lease only: a reboot got it in 2s.
