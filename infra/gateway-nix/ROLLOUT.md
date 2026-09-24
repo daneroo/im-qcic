@@ -62,8 +62,13 @@ is off; the install wipes it.
       `/boot/EFI/BOOT/BOOTX64.EFI` both installed.
 - [x] gateway-nix · `sudo tailscale up` → open auth URL · Daniel — `100.108.116.17`,
       `ssh gateway-nix` works by MagicDNS. `--operator=daniel` set by hand.
-- [ ] gateway-nix · `git clone` im-qcic to `~/Code/iMetrical/im-qcic` · agent
-- [ ] galois → gateway-nix · scp the three `credentials/` files · Daniel
+- [x] gateway-nix · `git clone` im-qcic to `~/Code/iMetrical/im-qcic` · agent —
+      public repo over HTTPS, no GitHub credentials on the host
+- [x] galois → gateway-nix · scp the three `credentials/` files · agent — CF
+      token from galois's `infra/gateway/credentials/caddy/CREDS.env`
+- [x] Config changes applied in place with
+      `sudo nixos-rebuild switch --flake github:…#gateway-nix` run **on the
+      VM** (1m49s; no gauss needed): Tailscale `--operator=daniel`, `btop`
 - [ ] gateway-nix · `just build && just start` · agent
 - [ ] Verify serving **from worker logs**, not `docker ps`
 
@@ -97,6 +102,12 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
 | 4   |        |           |                    |            |       |
 | 5   |        |           |                    |            |       |
+
+## Tomorrow
+
+- DNS names for gateway-nix (`imetrical.net`, `.com`, `.ts`). The Caddyfile
+  serves only `gateway2*` names, so this touches stack config, which is out of
+  bounds for the comparison. Decide first.
 
 ## 6 · Close
 
