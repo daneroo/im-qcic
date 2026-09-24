@@ -183,8 +183,9 @@ as a one-click rollback. Run it after the scrub finishes.
       destroy,format,mount --flake <ref>#gateway-nix-ext4` → `/mnt` · agent —
       1m37s (scrub running); target checked empty first; `--yes-wipe-all-disks`
       needed non-interactively
-- [ ] gateway-nix · `sudo nixos-install --flake <ref>#gateway-nix-ext4
-      --root /mnt --no-root-passwd` · agent
+- [x] gateway-nix · `sudo nixos-install --flake <ref>#gateway-nix-ext4
+      --root /mnt --no-root-passwd` · agent — 2m35s; GRUB i386-pc on the new
+      disk by id plus x86_64-efi `BOOTX64.EFI`
 - [ ] gateway-nix · stop docker; `rsync -aHAXS --numeric-ids` `/var/lib/tailscale`,
       `/var/lib/docker`, `/home/daniel` → `/mnt` · agent
 - [ ] VMM · gateway-nix · Shut down; boot from the new disk; detach (don't
