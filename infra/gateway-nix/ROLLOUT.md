@@ -69,8 +69,14 @@ is off; the install wipes it.
 - [x] Config changes applied in place with
       `sudo nixos-rebuild switch --flake github:…#gateway-nix` run **on the
       VM** (1m49s; no gauss needed): Tailscale `--operator=daniel`, `btop`
-- [ ] gateway-nix · `just build && just start` · agent
-- [ ] Verify serving **from worker logs**, not `docker ps`
+- [x] gateway-nix · `just build && just start` · agent — build **39m26s**
+      (05:38:42 → 06:18:08Z, `EXIT=0`) against gateway2's ~11m30s. Cold host
+      (no layer cache, every base image pulled), containerd snapshotter, btrfs
+      zstd — not separated. Not a boot-timing number.
+- [x] Verify serving **from worker logs**, not `docker ps` — 06:21Z: nats
+      `Server is ready`; `ted1k-derive` published all three views;
+      `scast-bridge` copying `darwin` and `scast-hilbert` generations (seq
+      1339948); caddy obtained real LE certs via DNS-01; `/healthz` 200
 
 ## 3 · Samples — install 1 (3)
 
