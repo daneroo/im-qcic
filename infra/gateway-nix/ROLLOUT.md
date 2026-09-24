@@ -44,8 +44,10 @@ is off; the install wipes it.
 
 ## 2 · Install 1 — `nixos-anywhere` over the Ubuntu clone
 
-- [ ] galois · `ssh -A gauss` (agent forwarding: gauss uses galois's key
-      without holding it) · Daniel
+- [ ] galois → gateway-nix · append gauss's public key to
+      `~/.ssh/authorized_keys` · Daniel. Wiped by the install; the NixOS
+      config does not carry it. (Agent forwarding was dropped: galois runs no
+      ssh-agent.)
 - [ ] gauss · run, with `<ip>` from step 1 · Daniel
 
       nix run github:nix-community/nixos-anywhere -- \
