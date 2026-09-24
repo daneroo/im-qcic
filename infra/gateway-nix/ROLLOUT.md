@@ -88,7 +88,7 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
 | 1   | 0.83s  | 3m09.2s   | +1:58 → +2:15      | **+3:00**  | VMM restart 06:46:13Z; initrd 7.0s; `docker.service` 2m51.7s — dockerd `Loading containers` 06:46:51→06:49:16 (2m25s); tailnet `Running` ~+22s; `ted1k-derive` dead (`connection refused`, #297). **Not a valid sample — see disk finding below.** |
 | 2   | 0.88s  | 1m04.0s   | +46s → +54s        | **+68s**   | VMM restart 07:45:46Z, **Synology scrub running**; initrd 5.1s; `docker.service` 52.2s — `Loading containers` 46s; NATS start→ready 14s; tailnet `Running` +18s; `ted1k-derive` dead — first poll 0.8s before NATS ready (#297); both workers logged `RequestError: connection disconnected` stack traces on the previous shutdown (#297 shutdown side). |
-| 3   |        |           |                    |            |       |
+| 3   | 0.85s  | 1m02.1s   | +44s → +54s        | **+63s**   | **VMM shut down + start**, scrub running; Start ~07:51:31Z → kernel 07:51:34Z (≤3s, click time approximate); initrd 4.6s; `docker.service` 49.9s — `Loading containers` 45s; tailnet `Running` +8s; both workers did real work (`ted1k-derive` published all three views, `scast-bridge` copied). |
 
 ### Disk finding, 2026-09-24 ~07:00Z — stop sampling until explained
 
@@ -115,8 +115,10 @@ Bun's signal handling — re-test before filing it anywhere.
 Next, before any sample:
 - [ ] Same `dd` on gateway2 (ext4 on its own LUN), same Synology — baseline
 - [x] Synology: check for background activity — **a scrub was running** during
-      sample 1, the `dd` test and sample 2 (Daniel, 2026-09-24). Re-run `dd` on
-      both hosts after it finishes.
+      samples 1–3 and the `dd` test (Daniel, 2026-09-24). Started 05:00Z
+      (01:00 local); ~17h expected → ends ~22:00Z. Progress needs
+      `sudo btrfs scrub status /volume1` on syno. Re-run `dd` on both hosts
+      and resample after it finishes.
 - [ ] Decide: keep btrfs in the guest, or ext4 (the LUN already sits on btrfs)
 
 ## 4 · Install 2 — ISO, same flake
