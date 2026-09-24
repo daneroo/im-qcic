@@ -114,7 +114,9 @@ Bun's signal handling — re-test before filing it anywhere.
 
 Next, before any sample:
 - [ ] Same `dd` on gateway2 (ext4 on its own LUN), same Synology — baseline
-- [ ] Synology: check for background activity (VMM clone copy, scrub, backup)
+- [x] Synology: check for background activity — **a scrub was running** during
+      sample 1, the `dd` test and sample 2 (Daniel, 2026-09-24). Re-run `dd` on
+      both hosts after it finishes.
 - [ ] Decide: keep btrfs in the guest, or ext4 (the LUN already sits on btrfs)
 
 ## 4 · Install 2 — ISO, same flake
