@@ -54,7 +54,16 @@ Each step: **machine · file/place · action · who.**
    `nixos`). Find the address without the console: VMM MACs start
    `02:11:32`, so `arp -an | grep ' 2:11:32:'` after a ping sweep.
 
-5. **gauss** · `ssh-copy-id nixos@<ip>` (the password from step 4) · Daniel
+5. **gauss** · give **root** on the installer gauss's key — `nixos-anywhere`
+   connects and installs its own temporary key as root, and loops forever on
+   `1 key(s) remain to be installed` if root has neither key nor password ·
+   Daniel
+
+   ```sh
+   ssh-copy-id nixos@<ip>     # the password from step 4
+   ssh nixos@<ip> 'sudo install -d -m700 /root/.ssh && sudo cp ~/.ssh/authorized_keys /root/.ssh/'
+   ```
+
 6. **gauss** · `ssh nixos@<ip> ls -l /dev/disk/by-id/` · the new disk's
    `scsi-…` id (no `-part` suffix) → `ext4Disk` in `flake.nix`; commit, push · agent
 
@@ -66,9 +75,10 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
 
    ```sh
    nix run github:nix-community/nixos-anywhere -- \
+     -i ~/.ssh/id_ed25519 \
      --phases disko,install,reboot \
      --flake 'github:daneroo/im-qcic/<branch>?dir=infra/qcic-core#qcic-syno' \
-     --target-host nixos@<ip>
+     --target-host root@<ip>
    ```
 
    The target is already a NixOS installer, so the `kexec` phase is skipped.
