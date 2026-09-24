@@ -247,6 +247,43 @@ btrfs. Container stops no longer hang shutdown (4–12s against 17–19s+).
 - [ ] gateway2 · `just start`; workers verified from logs · agent
 - [ ] Samples onto the timeline page
 
+## 7 · Close-out — consolidate into `infra/qcic-core` (decided 2026-09-25)
+
+Decisions: gateway2 is retired as a direction; the stack and its NixOS
+recipe move together into one component directory, **`infra/qcic-core`**
+(the role — may run on several hosts later). The VM is renamed
+**`qcic-syno`** (`<role>-<where it runs>`, like `scast-hilbert`). Per-host
+values come from the flake via `/etc/qcic-core/host.env`: `HOST_NAME` for
+Caddy's host-scoped site, `HOSTALIAS` for containers only (its original
+purpose). Secrets stay as they are — agenix/sops is later, elsewhere.
+
+Repo (agent):
+- [ ] `git mv` `infra/gateway2/*` + `infra/gateway-nix/*` → `infra/qcic-core/`;
+      gateway2's ROLLOUT kept as `ROLLOUT-gateway2.md` (history)
+- [ ] compose: `name: qcic-core`; `HOSTALIAS: ${HOSTALIAS:?…}`; caddy gets
+      `HOST_NAME: ${HOST_NAME:?…}`; header updated
+- [ ] Caddyfile: `{$HOST_NAME}.imetrical.net, {$HOST_NAME}.ts.imetrical.net`
+- [ ] Justfile: every compose call gets `--env-file /etc/qcic-core/host.env`
+- [ ] flake: machine `qcic-syno` (ext4 only — the btrfs output is dropped;
+      it lives in git history), `networking.hostName = "qcic-syno"`,
+      `environment.etc."qcic-core/host.env"` derived from the hostname
+- [ ] Fix references: research doc, timeline page, `v2/infra/compose.yaml`
+      sync rule, `CONTEXT-MAP.md` (plus Hardy: G. H. Hardy, not Hardy Heron)
+
+Host (agent, with Daniel for anything that restarts):
+- [ ] `just down` the old `gateway2` project; checkout the branch
+- [ ] Retag images `gateway2-*` → `qcic-core-*` (no rebuild)
+- [ ] Move `credentials/` and `data/` into `infra/qcic-core/`
+- [ ] `nixos-rebuild switch --flake …#qcic-syno`; `tailscale set --hostname qcic-syno`
+- [ ] `just start`; verify by worker logs; `https://qcic-syno.ts.imetrical.net`
+      cert issued (A records are #292's)
+
+Close (Daniel reviews each):
+- [ ] Docs: one consolidated ROLLOUT, research takeaway, timeline page
+- [ ] #298 verdict comment
+- [ ] #292 harvest comment (settled / open / remaining / out of scope)
+- [ ] PR → main; close #298
+
 ## Known confounds
 
 - GRUB timeout 1s vs Ubuntu's 0 — lands in the QEMU → kernel stage.
