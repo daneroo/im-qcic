@@ -278,6 +278,11 @@ the README wherever reality differs. Nothing carried from gateway-nix, which
 stays shut down but intact until qcic-syno is verified, then is deleted.
 - [x] `README.md` runbook written; credentials staged in galois's
       gitignored `infra/qcic-core/credentials/`
+- [x] gateway-nix: `docker compose down` (4.9s on ext4), powered off
+      2026-09-24 ~22:15Z. Production's `scast-bridge` consumer then showed
+      `push_bound=false` — a clean `down` releases it; only reboots leave it
+      bound (#297). gateway2 off since 2026-09-24 ~04:30Z, autostart off
+- [ ] VMM · gateway-nix · autostart off · Daniel
 - [ ] README steps 1–16 on a new VM `qcic-syno`
 - [ ] Samples on qcic-syno (the final numbers for the verdict)
 - [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`);
