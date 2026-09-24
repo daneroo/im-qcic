@@ -17,8 +17,8 @@ Better Stack is not paused; `health.qcic` alerts while gateway2 is off.
 ## 0 · Prepare
 
 - [x] `flake.nix` written; evaluates on galois (NixOS 26.05, Docker 29.8.0)
-- [ ] Branch `agent/gateway-nix` pushed
-- [ ] System closure builds on gauss
+- [x] Branch `agent/gateway-nix` pushed
+- [x] System closure and disko script build on gauss; Docker ships compose 5.4.0 + buildx 0.31.1
 
 ## 1 · gateway2 → clone
 
