@@ -36,7 +36,7 @@ Each step: **machine · file/place · action · who.**
    (any recent one; the graphical ISO works — only its SSH is used) · Daniel
 2. **Syno** · VMM → Create → Linux · name `qcic-syno`; 4 vCPU; 4 GB RAM;
    one 200 GB disk; same network as the other VMs; ISO in the CD drive;
-   machine type **Q35**; firmware **UEFI** · Daniel. Q35 is the modern
+   machine type **Q35**; firmware **UEFI**; priority **Above normal** (as gateway2 had; production gateway is High) · Daniel. Q35 is the modern
    chipset (native PCIe), the usual pairing with UEFI and what Proxmox
    recommends; PC (i440FX) and Legacy BIOS also work — the disk layout boots
    both, and gateway2 / gateway-nix ran PC + BIOS.
