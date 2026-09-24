@@ -154,7 +154,10 @@ Next, before any sample:
       Don't sample on the 24th.
 - [x] Synology: check for background activity — **a scrub was running** during
       samples 1–4 and the first `dd` test (Daniel, 2026-09-24). Started 05:00Z;
-      1.68 TiB of 13.14 TiB after 2h54m → ends ~03:40Z 09-25. Progress needs
+      1.68 TiB after 2h54m (~170 MB/s, throttled while we loaded the
+      system); paused 08:05–08:22Z; then 2.19 TiB at 3h09m — **~615 MB/s**
+      unloaded (disks read ~114 MB/s each, md2 100% busy). ETA ~14:00Z
+      09-24. Progress needs
       `sudo btrfs scrub status /volume1` on syno. Re-run `dd` on both hosts
       and resample after it finishes.
 - [ ] Decide: keep btrfs in the guest, or ext4 (the LUN already sits on btrfs)
