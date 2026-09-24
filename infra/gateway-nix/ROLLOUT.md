@@ -60,7 +60,8 @@ is off; the install wipes it.
       New DHCP lease **`192.168.2.92`** — dhcpcd's client-id differs from
       networkd's, so the router saw a new client. BIOS GRUB and
       `/boot/EFI/BOOT/BOOTX64.EFI` both installed.
-- [ ] gateway-nix · `sudo tailscale up` → open auth URL · Daniel
+- [x] gateway-nix · `sudo tailscale up` → open auth URL · Daniel — `100.108.116.17`,
+      `ssh gateway-nix` works by MagicDNS. `--operator=daniel` set by hand.
 - [ ] gateway-nix · `git clone` im-qcic to `~/Code/iMetrical/im-qcic` · agent
 - [ ] galois → gateway-nix · scp the three `credentials/` files · Daniel
 - [ ] gateway-nix · `just build && just start` · agent
