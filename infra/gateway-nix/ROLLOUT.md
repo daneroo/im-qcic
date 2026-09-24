@@ -87,7 +87,7 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 | #   | kernel | userspace | containers started | NATS ready | notes |
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
 | 1   | 0.83s  | 3m09.2s   | +1:58 → +2:15      | **+3:00**  | VMM restart 06:46:13Z; initrd 7.0s; `docker.service` 2m51.7s — dockerd `Loading containers` 06:46:51→06:49:16 (2m25s); tailnet `Running` ~+22s; `ted1k-derive` dead (`connection refused`, #297). **Not a valid sample — see disk finding below.** |
-| 2   |        |           |                    |            |       |
+| 2   | 0.88s  | 1m04.0s   | +46s → +54s        | **+68s**   | VMM restart 07:45:46Z, **Synology scrub running**; initrd 5.1s; `docker.service` 52.2s — `Loading containers` 46s; NATS start→ready 14s; tailnet `Running` +18s; `ted1k-derive` dead — first poll 0.8s before NATS ready (#297); both workers logged `RequestError: connection disconnected` stack traces on the previous shutdown (#297 shutdown side). |
 | 3   |        |           |                    |            |       |
 
 ### Disk finding, 2026-09-24 ~07:00Z — stop sampling until explained
