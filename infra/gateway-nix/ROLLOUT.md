@@ -130,6 +130,11 @@ Repeated at 08:07–08:09Z with the scrub **paused** (DSM Storage Manager):
 | gateway-nix vfat `/boot` | 17.2s | 86 ms |
 | production gateway ext4 `/` (Ubuntu, LVM) | 21.6s | 108 ms |
 
+After install 2, 10:22Z, scrub paused: **gateway-nix ext4 11.8s (59 ms per
+fsync)** against production ext4 26.2s (131 ms). Guest ext4 is ~3× guest
+btrfs on the same host; the fresh LUN is ~2× production's four-year-old LUN
+(11 snapshots) at the same filesystem — the "LUN lineage" C0 flagged.
+
 The LUN itself is ~100 ms per fsync for every guest, Ubuntu included. The
 scrub multiplies that ~6×; guest btrfs adds ~1.6–2× on top.
 
