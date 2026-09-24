@@ -218,8 +218,11 @@ was the whole gap.
 
 | #   | kernel | userspace | containers started | NATS ready | notes |
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
-| 4   |        |           |                    |            |       |
-| 5   |        |           |                    |            |       |
+| E1  | 0.98s  | 15.2s     | +17s               | **+18s**   | guest `sudo systemctl reboot`, scrub paused; issued 10:23:30Z, journal stopped 10:23:34Z (**shutdown 4s**), boot 10:23:39Z; total 20.1s; `Loading containers` 4s; tailnet +10s; both workers did real work |
+| E2  | 0.85s  | 15.8s     | +18s               | **+19s**   | guest reboot 55s after E1; shutdown 12s; total 20.4s; tailnet +17s; `ted1k-derive` published; **`scast-bridge` dead** (`duplicate subscription` — prod still held E1's consumer, #297) → restarted |
+
+ext4 fsync, scrub paused: 11.8s for 200 × 4 KiB (59 ms) against 35.4s on
+btrfs. Container stops no longer hang shutdown (4–12s against 17–19s+).
 
 ## Tomorrow
 
