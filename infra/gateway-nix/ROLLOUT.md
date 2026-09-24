@@ -44,7 +44,7 @@ is off; the install wipes it.
 
 ## 2 · Install 1 — `nixos-anywhere` over the Ubuntu clone
 
-- [ ] galois → gateway-nix · append gauss's public key to
+- [x] galois → gateway-nix · append gauss's public key to
       `~/.ssh/authorized_keys` · Daniel. Wiped by the install; the NixOS
       config does not carry it. (Agent forwarding was dropped: galois runs no
       ssh-agent.)
