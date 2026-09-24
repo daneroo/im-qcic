@@ -162,19 +162,31 @@ Next, before any sample:
       and resample after it finishes.
 - [ ] Decide: keep btrfs in the guest, or ext4 (the LUN already sits on btrfs)
 
-## 4 · Install 2 — ISO, same flake
+## 4 · Install 2 — ext4, second disk, from inside the running guest
 
-- [ ] VMM · gateway-nix · mount
-      `nixos-graphical-26.05.4364.0ad6f47ea4fe-x86_64-linux.iso` on `sr0`,
-      boot from it · Daniel
-- [ ] Installer console · `passwd` (for nixos) and note IP · Daniel
-- [ ] gauss · same `nixos-anywhere` command, `--target-host nixos@<ip>` · Daniel
-- [ ] Tailscale admin · delete the old `gateway-nix` node, then
-      `sudo tailscale up` · Daniel
-- [ ] Credentials, build, start, verify — as in section 2
-- [ ] Record wall-clock install time
+The ISO rerun was dropped (2026-09-24): `nixos-anywhere` already proved the
+reinstall path. What install 2 tests now is **ext4 vs guest btrfs** — only the
+root filesystem changes (flake output `gateway-nix-ext4`; containerd
+snapshotter unchanged). Installing from inside the guest onto a second disk
+keeps Tailscale identity, credentials and images, and leaves the btrfs disk
+as a one-click rollback. Run it after the scrub finishes.
 
-## 5 · Samples — install 2 (2)
+- [ ] VMM · gateway-nix · Shut down, snapshot, Start · Daniel
+- [ ] VMM · gateway-nix · attach a second virtual disk (same size) · Daniel
+- [ ] gateway-nix · `ls -l /dev/disk/by-id/` → put the new disk's id into
+      `ext4Disk` in `flake.nix`; push · agent
+- [ ] gateway-nix · `sudo nix run github:nix-community/disko -- --mode
+      destroy,format,mount --flake <ref>#gateway-nix-ext4` → `/mnt` · agent
+- [ ] gateway-nix · `sudo nixos-install --flake <ref>#gateway-nix-ext4
+      --root /mnt --no-root-passwd` · agent
+- [ ] gateway-nix · stop docker; `rsync -aHAXS --numeric-ids` `/var/lib/tailscale`,
+      `/var/lib/docker`, `/home/daniel` → `/mnt` · agent
+- [ ] VMM · gateway-nix · Shut down; boot from the new disk; detach (don't
+      delete) the btrfs disk · Daniel
+- [ ] Verify: tailnet still `gateway-nix` at `100.108.116.17`, stack serving by
+      worker logs; later rebuilds target `#gateway-nix-ext4`
+
+## 5 · Samples — install 2 (ext4), scrub-free
 
 | #   | kernel | userspace | containers started | NATS ready | notes |
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
