@@ -86,9 +86,36 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 
 | #   | kernel | userspace | containers started | NATS ready | notes |
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
-| 1   |        |           |                    |            |       |
+| 1   | 0.83s  | 3m09.2s   | +1:58 → +2:15      | **+3:00**  | VMM restart 06:46:13Z; initrd 7.0s; `docker.service` 2m51.7s — dockerd `Loading containers` 06:46:51→06:49:16 (2m25s); tailnet `Running` ~+22s; `ted1k-derive` dead (`connection refused`, #297). **Not a valid sample — see disk finding below.** |
 | 2   |        |           |                    |            |       |
 | 3   |        |           |                    |            |       |
+
+### Disk finding, 2026-09-24 ~07:00Z — stop sampling until explained
+
+Synchronous 4 KiB writes (`dd bs=4k count=200 oflag=dsync`) on gateway-nix:
+
+| target | time | per fsync |
+| ------ | ---: | --------: |
+| btrfs `/` (guest btrfs on Synology btrfs) | 220.4s | **1.1s** |
+| vfat `/boot` (no CoW) | 79.3s | **0.4s** |
+
+Double btrfs costs ~2.8×, but even vfat is ~0.4s per fsync, so the base
+slowness is **below the guest** — the LUN, or the Synology at that moment
+(background clone copy? scheduled job?). It fits every slow thing seen here:
+the 39m build, `journal-flush` 8.9s, dockerd's 2m25s `Loading containers`,
+and container stops of 6–57s that all exited 0 but whose exit events dockerd
+acted on ~10s late ("failed to exit within 10s… using the force" after
+`shim disconnected`).
+
+Stop timings, one by one after a fresh `just start` (all `exit=0`):
+scast-bridge 9.96s · ted1k-derive 6.13s · health 6.14s · caddy 16.31s ·
+nats 57.21s. So the slow-stop hand-off in section 6 is probably the disk, not
+Bun's signal handling — re-test before filing it anywhere.
+
+Next, before any sample:
+- [ ] Same `dd` on gateway2 (ext4 on its own LUN), same Synology — baseline
+- [ ] Synology: check for background activity (VMM clone copy, scrub, backup)
+- [ ] Decide: keep btrfs in the guest, or ext4 (the LUN already sits on btrfs)
 
 ## 4 · Install 2 — ISO, same flake
 
