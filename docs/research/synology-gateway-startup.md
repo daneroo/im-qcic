@@ -15,14 +15,14 @@ bottom. Times are EDT; guest logs are UTC (−4).
 >
 > Every measured boot and both shutdowns:
 > [synology-gateway-startup-timeline.html](synology-gateway-startup-timeline.html).
-> Detail in [infra/gateway2/ROLLOUT.md](../../infra/gateway2/ROLLOUT.md) C1–C2.
+> Detail in [infra/qcic-core/ROLLOUT-gateway2.md](../../infra/qcic-core/ROLLOUT-gateway2.md) C1–C2.
 
 > **Status, 2026-09-22.** The experiment this document proposed has now been
 > partly run, and it **falsified the stated cause of the initramfs stall**. See
 > [The initramfs stall](#the-initramfs-stall--stated-cause-falsified-as-sufficient)
 > and [The experiment](#the-experiment--what-was-run-and-what-it-returned).
 > Operational state lives in
-> [infra/gateway2/ROLLOUT.md](../../infra/gateway2/ROLLOUT.md).
+> [infra/qcic-core/ROLLOUT-gateway2.md](../../infra/qcic-core/ROLLOUT-gateway2.md).
 
 ## Event A — cold power cycle, 2026-09-19
 
@@ -285,7 +285,7 @@ Docker 29.2.1, overlay2, 4 images / 4 containers. `dockerd` 97 MB,
 kernel 5.15.0-191. **4 vCPU, 3911 MiB**, five containers (`caddy`, `nats`,
 `health`, `ted1k-derive`, `scast-bridge`). `192.168.2.138`. Identical guest
 software stack to Gateway — see the falsification table above. Stood up under
-issue #293; standing state in `infra/gateway2/ROLLOUT.md`.
+issue #293; standing state in `infra/qcic-core/ROLLOUT-gateway2.md`.
 
 **Gateway's disk** — a 200 GiB iSCSI **Block LUN** (`type=BLUN`), not a qcow2
 file. Attached via `vhost-scsi-pci`, `wwpn=naa.bc6c6099-…`.
@@ -381,7 +381,7 @@ Caveats when reading journals:
 This section was a **plan** until 2026-09-22. Steps 1–3 have now been executed
 and step 3 returned a negative result that invalidated step 4. Operational
 detail and the raw samples live in
-[infra/gateway2/ROLLOUT.md](../../infra/gateway2/ROLLOUT.md).
+[infra/qcic-core/ROLLOUT-gateway2.md](../../infra/qcic-core/ROLLOUT-gateway2.md).
 
 ### Objective, as originally stated
 

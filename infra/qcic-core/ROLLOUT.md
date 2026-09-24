@@ -1,4 +1,4 @@
-# gateway-nix rollout
+# qcic-core rollout (was: gateway-nix, #298)
 
 Tracking file for **#298** — gateway2's stack on NixOS. Exploratory; decisions
 and reasons are in the ticket's 2026-09-24 comment.
@@ -258,16 +258,18 @@ Caddy's host-scoped site, `HOSTALIAS` for containers only (its original
 purpose). Secrets stay as they are — agenix/sops is later, elsewhere.
 
 Repo (agent):
-- [ ] `git mv` `infra/gateway2/*` + `infra/gateway-nix/*` → `infra/qcic-core/`;
+- [x] `git mv` `infra/gateway2/*` + `infra/gateway-nix/*` → `infra/qcic-core/`;
       gateway2's ROLLOUT kept as `ROLLOUT-gateway2.md` (history)
-- [ ] compose: `name: qcic-core`; `HOSTALIAS: ${HOSTALIAS:?…}`; caddy gets
+- [x] compose: `name: qcic-core`; `HOSTALIAS: ${HOSTALIAS:?…}`; caddy gets
       `HOST_NAME: ${HOST_NAME:?…}`; header updated
-- [ ] Caddyfile: `{$HOST_NAME}.imetrical.net, {$HOST_NAME}.ts.imetrical.net`
-- [ ] Justfile: every compose call gets `--env-file /etc/qcic-core/host.env`
-- [ ] flake: machine `qcic-syno` (ext4 only — the btrfs output is dropped;
+- [x] Caddyfile: `{$HOST_NAME}.imetrical.net, {$HOST_NAME}.ts.imetrical.net`
+- [x] Justfile: `export COMPOSE_ENV_FILES := "/etc/qcic-core/host.env"` —
+      compose refuses to start without it (verified: `required variable
+      HOSTALIAS is missing a value`)
+- [x] flake: machine `qcic-syno` (ext4 only — the btrfs output is dropped;
       it lives in git history), `networking.hostName = "qcic-syno"`,
       `environment.etc."qcic-core/host.env"` derived from the hostname
-- [ ] Fix references: research doc, timeline page, `v2/infra/compose.yaml`
+- [x] Fix references: research doc, timeline page, `v2/infra/compose.yaml`
       sync rule, `CONTEXT-MAP.md` (plus Hardy: G. H. Hardy, not Hardy Heron)
 
 Host (agent, with Daniel for anything that restarts):

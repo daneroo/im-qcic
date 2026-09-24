@@ -1,7 +1,11 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
+# Per-host values (HOSTALIAS, HOST_NAME), written by the host's NixOS config.
+# compose.yaml requires both, so a missing file fails loudly.
+export COMPOSE_ENV_FILES := "/etc/qcic-core/host.env"
+
 # New, derived from v2/infra/Justfile - not a copy. Dropped that file's
-# `macos-up`/`_macos-credentials` recipes: gateway2 is Linux-only, and the
+# `macos-up`/`_macos-credentials` recipes: qcic-core hosts are Linux-only, and the
 # macOS LocalAPI affordance lives in compose.yaml's
 # TAILSCALE_LOCALAPI_MODE/SOURCE/TARGET defaults, which are preserved intact.
 # Convenience targets follow infra/gateway's Makefile.

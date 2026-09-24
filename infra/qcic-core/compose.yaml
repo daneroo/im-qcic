@@ -1,29 +1,32 @@
-# gateway2 - the replacement Gateway VM on Syno, running an additive-only
-# workload alongside the real `infra/gateway`. Nothing here changes the state
-# of anything currently running.
+# qcic-core - the QCIC v2 stack plus Caddy, as deployed on a qcic-core host
+# (today: qcic-syno, a NixOS VM on the Synology; see flake.nix, ROLLOUT.md).
 #
 # This file is a COPY of v2/infra/compose.yaml. Keep the two in sync. Run
-# `diff v2/infra/compose.yaml infra/gateway2/compose.yaml` - the delta is
+# `diff v2/infra/compose.yaml infra/qcic-core/compose.yaml` - the delta is
 # deliberately only:
-#   1. this header
+#   1. this header, and the top-level `name:`
 #   2. build contexts are `../../v2` instead of `..`
 #   3. the `caddy` service, appended at the end (not in v2/infra)
 #   4. v2/infra's "Future idea ... natural place to test Caddy" comment on
 #      the nats service is dropped - Caddy is built here, so it is no longer
 #      a future idea
-#   5. health's HOSTALIAS is set explicitly rather than taking v2/infra's
-#      `${HOSTALIAS:-v2-dev}` dev default - see the comment on that line
+#   5. health's HOSTALIAS is required from the host rather than taking
+#      v2/infra's `${HOSTALIAS:-v2-dev}` dev default - see that line
 # Services are kept in v2/infra's order so `diff` against it stays readable.
 #
 # The `nats` digest pin is now duplicated here - updating the pin means
 # updating BOTH files (see v2/AGENTS.md, "Digest-pinned base images").
 #
-# `gateway2` is a transitory name; at least one more iteration of the
-# replacement server is expected. Nothing outside this directory is named
-# after the host.
+# Per-host values come from /etc/qcic-core/host.env, written by the host's
+# NixOS config (flake.nix) and passed in by the Justfile (COMPOSE_ENV_FILES):
+#   HOSTALIAS  the host's name, for containers only (log/reading bylines)
+#   HOST_NAME  the host's DNS label, for Caddy's host-scoped site
+# Both are required: compose refuses to start without them.
 #
-# Run from within infra/gateway2/:
-#   docker compose up -d --build
+# Run from within infra/qcic-core/:
+#   just start
+
+name: qcic-core
 
 services:
   nats:
@@ -53,12 +56,12 @@ services:
     depends_on:
       - nats
     environment:
-      # Set explicitly, not left to v2/infra's `${HOSTALIAS:-v2-dev}` dev
-      # default. Two things defeat health's own `HOSTALIAS || hostname`
+      # Required from the host, not left to v2/infra's `${HOSTALIAS:-v2-dev}`
+      # dev default. Two things defeat health's own `HOSTALIAS || hostname`
       # fallback here: compose injects the literal default so the fallback
       # never fires, and a container's hostname is its container ID, not the
       # VM's name. Without this every reading's byline would read "v2-dev".
-      HOSTALIAS: gateway2
+      HOSTALIAS: ${HOSTALIAS:?set in /etc/qcic-core/host.env by the host's NixOS config}
       NATS_SERVERS: nats:4222
       NATS_MONITOR_URL: http://nats:8222
       TAILSCALE_LOCALAPI_MODE: ${TAILSCALE_LOCALAPI_MODE:-unix}
@@ -128,13 +131,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-caddy
-    # No explicit `image:`. Compose names this `gateway2-caddy` from the
-    # project prefix, matching the other three built services. It previously
-    # read `qcic-caddy:latest`, inherited along with the service from
-    # infra/gateway - which is production's tag, so building here overwrote
-    # it. infra/gateway still carries that name; not worth fixing, since
-    # gateway is what gateway2 eventually replaces.
+    # No explicit `image:`. Compose names this `qcic-core-caddy` from the
+    # project name, matching the other three built services. It once read
+    # `qcic-caddy:latest`, inherited from infra/gateway - which is
+    # production's tag, so building here overwrote it.
     restart: unless-stopped
+    environment:
+      # The host's DNS label for the host-scoped site in the Caddyfile.
+      HOST_NAME: ${HOST_NAME:?set in /etc/qcic-core/host.env by the host's NixOS config}
     env_file:
       # SHOULD contain CF_API_TOKEN
       - credentials/caddy/CREDS.env

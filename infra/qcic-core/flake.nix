@@ -1,17 +1,18 @@
-# gateway-nix: the smallest NixOS host that runs infra/gateway2/compose.yaml
-# unchanged. Exploratory (#298); tracking in ./ROLLOUT.md.
+# qcic-syno: a qcic-core host - the smallest NixOS machine that runs
+# ./compose.yaml. Exploratory origin: #298; tracking in ./ROLLOUT.md.
 #
-# Two outputs, one host, differing only in disk layout:
-#   gateway-nix       btrfs root on /dev/sda (install 1, via nixos-anywhere)
-#   gateway-nix-ext4  ext4 root on a second disk (installed from inside the
-#                     running guest; see ROLLOUT.md section 4)
+# One machine today; a second qcic-core host would be another entry in
+# nixosConfigurations sharing `common`.
 #
-# Install (from gauss, see ROLLOUT.md):
-#   nix run github:nix-community/nixos-anywhere -- \
-#     --flake 'github:daneroo/im-qcic/agent/gateway-nix?dir=infra/gateway-nix#gateway-nix' \
-#     --target-host daniel@<ip>
+# The machine was installed with nixos-anywhere (btrfs, #298 install 1), then
+# moved to ext4 on a second disk from inside the running guest (install 2):
+# guest btrfs on the Synology's btrfs tripled fsync cost. The btrfs layout
+# lives in git history.
+#
+# Apply from the machine itself:
+#   sudo nixos-rebuild switch --flake 'github:daneroo/im-qcic/<branch>?dir=infra/qcic-core#qcic-syno'
 {
-  description = "gateway-nix: Docker + Tailscale host for the gateway2 stack";
+  description = "qcic-core hosts: Docker + Tailscale for the QCIC v2 stack";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -26,8 +27,8 @@
     let
       # GPT with both a BIOS-boot and an ESP partition, so the same disk boots
       # under SeaBIOS (VMM today) or OVMF (VMM UEFI, Proxmox). Mounts are by
-      # partlabel (`disk-<name>-<partition>`), so each layout gets its own
-      # disk name and the two can be attached at once without colliding.
+      # partlabel (`disk-<name>-<partition>`); the disk name `ext4` keeps them
+      # distinct from the retired btrfs layout's `disk-main-*`.
       gptDisk = device: root: {
         type = "disk";
         inherit device;
@@ -57,40 +58,10 @@
         };
       };
 
-      btrfsDisk = {
-        # By-id: attaching a second disk renamed this one sda -> sdb.
-        disko.devices.disk.main = gptDisk "/dev/disk/by-id/scsi-360014052636e7a6d7683d4f56d9193d2" {
-          type = "btrfs";
-          extraArgs = [ "-f" ];
-          subvolumes =
-            let
-              opts = [
-                "compress=zstd"
-                "noatime"
-              ];
-            in
-            {
-              "@" = {
-                mountpoint = "/";
-                mountOptions = opts;
-              };
-              "@nix" = {
-                mountpoint = "/nix";
-                mountOptions = opts;
-              };
-              # Keeps image/container churn out of root snapshots.
-              "@docker" = {
-                mountpoint = "/var/lib/docker";
-                mountOptions = opts;
-              };
-            };
-        };
-      };
-
-      # The LUN already sits on the Synology's btrfs; guest btrfs on top cost
-      # ~1.6-2x per fsync (ROLLOUT.md, disk finding). Same layout, ext4 root.
-      # By-id, not /dev/sdb: the name changes once the btrfs disk is detached,
-      # and GRUB's install target has to survive that.
+      # ext4, not btrfs: the LUN already sits on the Synology's btrfs, and
+      # guest btrfs on top cost ~3x per fsync (ROLLOUT.md, disk finding).
+      # By id, not /dev/sdX: attaching a disk renamed them once already, and
+      # GRUB's install target has to survive that.
       ext4Disk = {
         disko.devices.disk.ext4 = gptDisk "/dev/disk/by-id/scsi-360014055f88e136dd2fdd491fda50dd5" {
           type = "filesystem";
@@ -101,7 +72,12 @@
       };
 
       common =
-        { modulesPath, pkgs, ... }:
+        {
+          config,
+          modulesPath,
+          pkgs,
+          ...
+        }:
         {
           # Synology VMM presents a plain QEMU i440FX guest: virtio-net,
           # virtio-scsi, virtio console. This profile covers it, so there is
@@ -119,7 +95,13 @@
           # menu reachable at a known cost to the QEMU -> kernel stage.
           boot.loader.timeout = 1;
 
-          networking.hostName = "gateway-nix";
+          # Per-host values for compose (see compose.yaml's header), derived
+          # from the hostname so they cannot drift. HOSTALIAS is for
+          # containers only; HOST_NAME is Caddy's host-scoped site label.
+          environment.etc."qcic-core/host.env".text = ''
+            HOSTALIAS=${config.networking.hostName}
+            HOST_NAME=${config.networking.hostName}
+          '';
           time.timeZone = "UTC";
 
           services.qemuGuest.enable = true;
@@ -176,18 +158,18 @@
         };
 
       host =
-        disk:
+        hostName: disk:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
             disko.nixosModules.disko
             common
             disk
+            { networking.hostName = hostName; }
           ];
         };
     in
     {
-      nixosConfigurations.gateway-nix = host btrfsDisk;
-      nixosConfigurations.gateway-nix-ext4 = host ext4Disk;
+      nixosConfigurations.qcic-syno = host "qcic-syno" ext4Disk;
     };
 }
