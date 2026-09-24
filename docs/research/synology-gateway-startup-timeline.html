@@ -9,6 +9,8 @@
   h1 { font-size:20px; margin:0 0 4px; }
   h2 { font-size:16px; margin:28px 0 6px; }
   p.note { color:var(--muted); margin:4px 0; }
+  .takeaway { border-left:3px solid #5cb85c; background:#f6f8f6; padding:8px 14px; margin:14px 0; }
+  .takeaway ul { margin:6px 0 0; padding-left:20px; }
   .controls { display:flex; gap:18px; flex-wrap:wrap; margin:12px 0; }
   .controls label { cursor:pointer; }
   .legend { display:flex; gap:14px; flex-wrap:wrap; margin:8px 0 4px; font-size:12px; }
@@ -22,6 +24,14 @@
 <body>
 <h1>Synology → gateway: restart timelines</h1>
 <p class="note">Every measured boot, one row per guest per event. Source figures: <code>synology-gateway-startup.md</code> and <code>infra/gateway2/ROLLOUT.md</code> (A5, C1, C2). Hover a bar for exact values.</p>
+
+<div class="takeaway">
+  <strong>Takeaway, 2026-09-24 — what the availability story has to account for.</strong>
+  <ul>
+    <li><strong>VM restart: ~25–30s</strong> to NATS ready. That is the floor.</li>
+    <li><strong>Full Synology cycle: up to ~9 min.</strong> Power cut 7m16s; planned DSM restart 8m15s (shutdown ~1.5 min + boot ~6.5 min). The Synology's own stage before any VM starts is a stable ~3 min, and guests boot ~7× slower while it settles. A DSM <em>Shut Down</em> can also hang at power-off (once in one sample, 72 min, no trace in any log).</li>
+  </ul>
+</div>
 
 <div class="controls">
   <span>Align on:
