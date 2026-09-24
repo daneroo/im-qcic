@@ -118,6 +118,12 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 ## 6 · Close
 
 - [ ] Verdict on #298
+- [ ] Hand-off for later tickets, in the verdict: **slow container stop.**
+      `just down` on gateway2 took ~41s (caddy, health); gateway-nix's
+      shutdown shows systemd's "a stop job is running". Likely Bun as PID 1
+      without an init (`tini` / compose `init: true`) ignoring SIGTERM until
+      Docker's kill timeout. Belongs with #297's signal/exit handling, not
+      here — measure the shutdown time first.
 - [ ] Remove `wheelNeedsPassword = false`, redeploy
 - [ ] VMM · gateway-nix · Shut down; gateway2 · Autostart back on, Power on · Daniel
 - [ ] gateway2 · `just start`; workers verified from logs · agent
