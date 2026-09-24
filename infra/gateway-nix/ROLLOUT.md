@@ -111,9 +111,8 @@ Repeated at 08:07–08:09Z with the scrub **paused** (DSM Storage Manager):
 The LUN itself is ~100 ms per fsync for every guest, Ubuntu included. The
 scrub multiplies that ~6×; guest btrfs adds ~1.6–2× on top.
 
-Double btrfs costs ~2.8×, but even vfat is ~0.4s per fsync, so the base
-slowness is **below the guest** — the LUN, or the Synology at that moment
-(background clone copy? scheduled job?). It fits every slow thing seen here:
+The scrub explains the first table. The per-fsync cost under it fits every
+slow thing seen here:
 the 39m build, `journal-flush` 8.9s, dockerd's 2m25s `Loading containers`,
 and container stops of 6–57s that all exited 0 but whose exit events dockerd
 acted on ~10s late ("failed to exit within 10s… using the force" after
@@ -132,8 +131,8 @@ Next, before any sample:
       2022-01-24 05:00Z, `run_all_time`) — the 24th of every month at 05:00Z.
       Don't sample on the 24th.
 - [x] Synology: check for background activity — **a scrub was running** during
-      samples 1–3 and the `dd` test (Daniel, 2026-09-24). Started 05:00Z
-      (01:00 local); ~17h expected → ends ~22:00Z. Progress needs
+      samples 1–4 and the first `dd` test (Daniel, 2026-09-24). Started 05:00Z;
+      1.68 TiB of 13.14 TiB after 2h54m → ends ~03:40Z 09-25. Progress needs
       `sudo btrfs scrub status /volume1` on syno. Re-run `dd` on both hosts
       and resample after it finishes.
 - [ ] Decide: keep btrfs in the guest, or ext4 (the LUN already sits on btrfs)
