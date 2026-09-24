@@ -58,7 +58,8 @@
       };
 
       btrfsDisk = {
-        disko.devices.disk.main = gptDisk "/dev/sda" {
+        # By-id: attaching a second disk renamed this one sda -> sdb.
+        disko.devices.disk.main = gptDisk "/dev/disk/by-id/scsi-360014052636e7a6d7683d4f56d9193d2" {
           type = "btrfs";
           extraArgs = [ "-f" ];
           subvolumes =
@@ -91,7 +92,7 @@
       # By-id, not /dev/sdb: the name changes once the btrfs disk is detached,
       # and GRUB's install target has to survive that.
       ext4Disk = {
-        disko.devices.disk.ext4 = gptDisk "/dev/disk/by-id/REPLACE-WITH-SECOND-DISK" {
+        disko.devices.disk.ext4 = gptDisk "/dev/disk/by-id/scsi-360014055f88e136dd2fdd491fda50dd5" {
           type = "filesystem";
           format = "ext4";
           mountpoint = "/";
