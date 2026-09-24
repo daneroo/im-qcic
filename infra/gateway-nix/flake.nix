@@ -146,6 +146,7 @@
               };
 
               environment.systemPackages = with pkgs; [
+                btop
                 git
                 just
               ];
