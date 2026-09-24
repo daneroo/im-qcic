@@ -83,9 +83,20 @@ is off; the install wipes it.
 **Samples 1–4 are discarded** (Daniel, 2026-09-24): taken during the
 Synology's monthly scrub, which multiplied fsync cost ~6×. Kept below for the
 record only. Samples 5–6 were taken with the scrub paused and are the ones
-comparable to C1 (~25–27s): **+31s** (guest reboot) and **+38s** (VMM
-restart). The remaining 5–12s is all in the Docker stage — consistent with
-guest btrfs's ~1.6–2× fsync cost; install 2 on ext4 tests that.
+comparable to C1 (~25–27s). Samples 5–8, scrub paused:
+
+| method | Ubuntu 24.04 (C1) | NixOS, btrfs guest |
+| ------ | ----------------- | ------------------ |
+| VMM restart | +25.9s, +25.2s | +38s, +39s |
+| VMM shut down + start | +26.7s, +25.4s | +32s |
+| guest reboot | — | +31s |
+| total boot (`systemd-analyze`) | 44–48s | 40.4–43.0s |
+
+To kernel + systemd, NixOS is even or slightly faster. NATS ready is 5–13s
+later, all of it in the Docker stage — consistent with guest btrfs's ~1.6–2×
+fsync cost; install 2 on ext4 tests that. `ted1k-derive` came up dead on 3 of
+4 paused boots: NixOS's container start order puts it ahead of NATS more often
+(#297).
 
 Same method and columns as gateway2 A5/C1: `systemd-analyze`,
 `systemd-analyze blame | head -20`, `journalctl -b -k -o short-monotonic`,
@@ -99,6 +110,8 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 | 4   | 0.92s  | 1m03.9s   | +43s → +57s        | **+62s**   | **guest `sudo systemctl reboot`** (extra, not in C1), scrub running; issued 07:56:09Z, journal stopped 07:56:28Z (shutdown 19s), boot 07:56:32Z; initrd 4.9s; `Loading containers` 48s; tailnet `Running` +17s; `ted1k-derive` published; **`scast-bridge` dead** — `duplicate subscription` (#297, prod-side durable consumer). |
 | 5   | 0.82s  | 36.1s     | +25s → +31s        | **+31s**   | guest `sudo systemctl reboot`, **scrub paused**; issued 08:12:14Z, journal stopped 08:12:31Z (shutdown 17s), boot 08:12:35Z; total 40.8s; initrd 3.9s; `Loading containers` 25s; tailnet `Running` +10s; `ted1k-derive` published; **`scast-bridge` dead** (`duplicate subscription`, #297). **The one sample comparable to C1's ~26s.** |
 | 6   | 0.82s  | 38.1s     | +28s → +33s        | **+38s**   | **VMM restart**, scrub paused; journal stopped 08:15:23Z, boot 08:15:27Z; total 43.0s; initrd 4.0s; `Loading containers` 26s; tailnet `Running` +16s; **`ted1k-derive` dead** — started 1.7s before NATS (#297); `scast-bridge` copied. |
+| 7   | 0.81s  | 35.9s     | +27s → +32s        | **+39s**   | **VMM restart**, scrub paused; journal stopped 08:17:55Z, boot 08:17:59Z; total 40.4s; `Loading containers` 24s; tailnet `Running` +9s; **`ted1k-derive` dead** (`getaddrinfo ENOTFOUND`, started 4.7s before NATS). |
+| 8   | 0.86s  | 36.3s     | +22s → +28s        | **+32s**   | **VMM shut down + start**, scrub paused; Start ~08:20:03–08:20:14Z → kernel 08:20:15Z; total 40.8s; `Loading containers` 24s; tailnet `Running` +11s; **`ted1k-derive` dead** (`connection refused`, started 2.9s before NATS). |
 
 ### Disk finding, 2026-09-24 ~07:00Z — stop sampling until explained
 
