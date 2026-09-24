@@ -192,10 +192,22 @@ as a one-click rollback. Run it after the scrub finishes.
       rsync 101s (docker 3.4G, home 84M incl. repo + credentials, tailscale
       state); `/mnt` unmounted. rsync isn't in the system — `nix shell
       nixpkgs/nixos-26.05#rsync` was enough
-- [ ] VMM · gateway-nix · Shut down; boot from the new disk; detach (don't
-      delete) the btrfs disk · Daniel
-- [ ] Verify: tailnet still `gateway-nix` at `100.108.116.17`, stack serving by
-      worker logs; later rebuilds target `#gateway-nix-ext4`
+- [x] VMM · gateway-nix · Shut down; **Reorder** so the ext4 disk is first;
+      btrfs disk kept attached as rollback (partlabels differ, no collision) ·
+      Daniel — VMM warns "may not recognize the volume"; harmless here
+- [x] **SSH host keys were not carried** — `/etc/ssh/ssh_host_*` is state too;
+      the new root generated fresh keys and galois warned. Fixed by mounting the
+      btrfs `@` subvolume read-only and copying the old keys back
+- [x] Verify: tailnet still `gateway-nix` at `100.108.116.17` (no re-auth),
+      same SSH host keys, stack serving: `ted1k-derive` published;
+      `scast-bridge` dead (`duplicate subscription`, #297) → restarted.
+      Later rebuilds target `#gateway-nix-ext4`
+
+First ext4 boot (10:17:32Z, VMM start, **scrub still running**): total
+**25.1s** (0.85s kernel + 5.1s initrd + 19.2s userspace); `Loading
+containers` 8s; all five containers +18s; **NATS ready +23s**; tailnet
+`Running` +16s. Faster than Ubuntu on an idle Synology (~26s): guest btrfs
+was the whole gap.
 
 ## 5 · Samples — install 2 (ext4), scrub-free
 
