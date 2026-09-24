@@ -75,6 +75,12 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
    Wipes the disk named in `ext4Disk`.
 
 8. **Syno** · VMM · eject the ISO so the next boot is from disk · Daniel
+
+   If the installer was booted under Legacy BIOS to get a working console
+   (the graphical ISO's display freezes under VMM's UEFI), switch the
+   firmware to UEFI now, with the VM shut down. The installed system has no
+   graphical boot, and this proves the disk boots under both firmwares.
+
 9. **galois** · `ssh daniel@<new ip>` · the installed system takes a **new
    DHCP lease** (different client id from the installer); find it in VMM
    (the guest agent reports it) or on the console · Daniel
