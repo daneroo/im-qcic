@@ -47,6 +47,13 @@ Each step: **machine · file/place · action · who.**
 4. **VM console** · a terminal in the installer · `passwd` (twice), then
    `ip -br a` for the address. If SSH does not answer later:
    `sudo systemctl start sshd` · Daniel
+
+   Under UEFI the VMM console can freeze at "Starting Show Plymouth Boot
+   Screen" while the installer boots fine behind it. Reopen the console
+   window, or send Ctrl+Alt+F2 for a text console (auto-logged in as
+   `nixos`). Find the address without the console: VMM MACs start
+   `02:11:32`, so `arp -an | grep ' 2:11:32:'` after a ping sweep.
+
 5. **gauss** · `ssh-copy-id nixos@<ip>` (the password from step 4) · Daniel
 6. **gauss** · `ssh nixos@<ip> ls -l /dev/disk/by-id/` · the new disk's
    `scsi-…` id (no `-part` suffix) → `ext4Disk` in `flake.nix`; commit, push · agent
