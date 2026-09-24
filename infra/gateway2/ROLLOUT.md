@@ -25,7 +25,7 @@ Spec: **#292**. Decisions and their reasoning live there; state lives here.
 | **#294** | Phase A, section A5     | #293 · **done 2026-09-22**              |
 | **#295** | Phase B                 | #293 · **done 2026-09-22**              |
 | **#296** | Phase C, sections C1–C2 | #294 · **rescoped 2026-09-22 — see C0** |
-| **#298** | Phase C, section C3     | — · **exploratory, not scheduled**      |
+| **#298** | Phase C, section C3     | — · **exploratory, started 2026-09-24** |
 
 Phases 0, A and B are complete. Phase C was rescoped on 2026-09-22: its
 original subject — de-crufting gateway2 to move the initramfs stall — does not
@@ -811,9 +811,7 @@ cut. Shut the VM down first and the rollback point boots clean.
 
 ### C3 · NixOS · #298
 
-Separate ticket, exploratory, not scheduled. Options deliberately left open
-there — in-place conversion, fresh install on the same VM, or a new VM
-alongside. See #298.
+Tracked in [infra/gateway-nix/ROLLOUT.md](../gateway-nix/ROLLOUT.md).
 
 ---
 
