@@ -78,7 +78,14 @@ is off; the install wipes it.
       `scast-bridge` copying `darwin` and `scast-hilbert` generations (seq
       1339948); caddy obtained real LE certs via DNS-01; `/healthz` 200
 
-## 3 · Samples — install 1 (3)
+## 3 · Samples — install 1
+
+**Samples 1–4 are discarded** (Daniel, 2026-09-24): taken during the
+Synology's monthly scrub, which multiplied fsync cost ~6×. Kept below for the
+record only. Samples 5–6 were taken with the scrub paused and are the ones
+comparable to C1 (~25–27s): **+31s** (guest reboot) and **+38s** (VMM
+restart). The remaining 5–12s is all in the Docker stage — consistent with
+guest btrfs's ~1.6–2× fsync cost; install 2 on ext4 tests that.
 
 Same method and columns as gateway2 A5/C1: `systemd-analyze`,
 `systemd-analyze blame | head -20`, `journalctl -b -k -o short-monotonic`,
@@ -91,6 +98,7 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 | 3   | 0.85s  | 1m02.1s   | +44s → +54s        | **+63s**   | **VMM shut down + start**, scrub running; Start ~07:51:31Z → kernel 07:51:34Z (≤3s, click time approximate); initrd 4.6s; `docker.service` 49.9s — `Loading containers` 45s; tailnet `Running` +8s; both workers did real work (`ted1k-derive` published all three views, `scast-bridge` copied). |
 | 4   | 0.92s  | 1m03.9s   | +43s → +57s        | **+62s**   | **guest `sudo systemctl reboot`** (extra, not in C1), scrub running; issued 07:56:09Z, journal stopped 07:56:28Z (shutdown 19s), boot 07:56:32Z; initrd 4.9s; `Loading containers` 48s; tailnet `Running` +17s; `ted1k-derive` published; **`scast-bridge` dead** — `duplicate subscription` (#297, prod-side durable consumer). |
 | 5   | 0.82s  | 36.1s     | +25s → +31s        | **+31s**   | guest `sudo systemctl reboot`, **scrub paused**; issued 08:12:14Z, journal stopped 08:12:31Z (shutdown 17s), boot 08:12:35Z; total 40.8s; initrd 3.9s; `Loading containers` 25s; tailnet `Running` +10s; `ted1k-derive` published; **`scast-bridge` dead** (`duplicate subscription`, #297). **The one sample comparable to C1's ~26s.** |
+| 6   | 0.82s  | 38.1s     | +28s → +33s        | **+38s**   | **VMM restart**, scrub paused; journal stopped 08:15:23Z, boot 08:15:27Z; total 43.0s; initrd 4.0s; `Loading containers` 26s; tailnet `Running` +16s; **`ted1k-derive` dead** — started 1.7s before NATS (#297); `scast-bridge` copied. |
 
 ### Disk finding, 2026-09-24 ~07:00Z — stop sampling until explained
 
