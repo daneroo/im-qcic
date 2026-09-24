@@ -171,7 +171,8 @@ snapshotter unchanged). Installing from inside the guest onto a second disk
 keeps Tailscale identity, credentials and images, and leaves the btrfs disk
 as a one-click rollback. Run it after the scrub finishes.
 
-- [ ] VMM · gateway-nix · Shut down, snapshot, Start · Daniel
+- [x] VMM · gateway-nix · Shut down, snapshot, Start · Daniel — snapshot
+      `nixos-btrfs-pre-ext4`, 2026-09-24 10:03Z, VM off ("File system consistent"), locked
 - [ ] VMM · gateway-nix · attach a second virtual disk (same size) · Daniel
 - [ ] gateway-nix · `ls -l /dev/disk/by-id/` → put the new disk's id into
       `ext4Disk` in `flake.nix`; push · agent
