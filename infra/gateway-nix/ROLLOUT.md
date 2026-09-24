@@ -35,7 +35,9 @@ Done 2026-09-24. gateway2 set to **not autostart** in VMM, so a Synology
 restart does not bring it up alongside the clone — set it back at close.
 Clone MAC `02:11:32:2a:40:56` (VMM regenerates it; not shown in Edit), DHCP
 `192.168.2.139`. That first lease took **8.5 min** (boot 05:05:19Z, lease
-05:13:54Z) — the router, not the guest: networkd asked at boot.
+05:13:54Z) — the router, not the guest: networkd asked at boot. A reboot at
+05:16Z got the same lease 2s after networkd started, so the delay is a
+first-lease-for-a-new-MAC cost. Tailnet came up `Running` as `gateway2`.
 
 The clone boots Ubuntu with gateway2's Tailscale key. Harmless while gateway2
 is off; the install wipes it.
