@@ -36,7 +36,7 @@ Each step: **machine · file/place · action · who.**
    (any recent one; the graphical ISO works — only its SSH is used) · Daniel
 2. **Syno** · VMM → Create → Linux · name `qcic-syno`; 4 vCPU; 4 GB RAM;
    one 200 GB disk; same network as the other VMs; ISO in the CD drive;
-   machine type **Q35**; firmware **UEFI**; priority **Above normal** (as gateway2 had; production gateway is High) · Daniel. Q35 is the modern
+   machine type **Q35**; firmware **UEFI**; priority **Above normal** (as gateway2 had; production gateway is High) · Daniel. **VMM fixes the firmware at creation** — it cannot be changed later. Q35 is the modern
    chipset (native PCIe), the usual pairing with UEFI and what Proxmox
    recommends; PC (i440FX) and Legacy BIOS also work — the disk layout boots
    both, and gateway2 / gateway-nix ran PC + BIOS.
@@ -75,11 +75,6 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
    Wipes the disk named in `ext4Disk`.
 
 8. **Syno** · VMM · eject the ISO so the next boot is from disk · Daniel
-
-   If the installer was booted under Legacy BIOS to get a working console
-   (the graphical ISO's display freezes under VMM's UEFI), switch the
-   firmware to UEFI now, with the VM shut down. The installed system has no
-   graphical boot, and this proves the disk boots under both firmwares.
 
 9. **galois** · `ssh daniel@<new ip>` · the installed system takes a **new
    DHCP lease** (different client id from the installer); find it in VMM
