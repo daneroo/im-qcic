@@ -272,13 +272,16 @@ Repo (agent):
 - [x] Fix references: research doc, timeline page, `v2/infra/compose.yaml`
       sync rule, `CONTEXT-MAP.md` (plus Hardy: G. H. Hardy, not Hardy Heron)
 
-Host (agent, with Daniel for anything that restarts):
-- [ ] `just down` the old `gateway2` project; checkout the branch
-- [ ] Retag images `gateway2-*` → `qcic-core-*` (no rebuild)
-- [ ] Move `credentials/` and `data/` into `infra/qcic-core/`
-- [ ] `nixos-rebuild switch --flake …#qcic-syno`; `tailscale set --hostname qcic-syno`
-- [ ] `just start`; verify by worker logs; `https://qcic-syno.ts.imetrical.net`
-      cert issued (A records are #292's)
+Host — **reprovision from scratch** (decided 2026-09-25): a new VMM VM,
+NixOS ISO, `nixos-anywhere`, following `README.md` step by step and fixing
+the README wherever reality differs. Nothing carried from gateway-nix, which
+stays shut down but intact until qcic-syno is verified, then is deleted.
+- [x] `README.md` runbook written; credentials staged in galois's
+      gitignored `infra/qcic-core/credentials/`
+- [ ] README steps 1–16 on a new VM `qcic-syno`
+- [ ] Samples on qcic-syno (the final numbers for the verdict)
+- [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`);
+      remove its Tailscale node
 
 Close (Daniel reviews each):
 - [ ] Docs: one consolidated ROLLOUT, research takeaway, timeline page

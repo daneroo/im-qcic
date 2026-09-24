@@ -72,9 +72,13 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
 ### 4 · First boot
 
 10. **qcic-syno** · `sudo tailscale up` → open the URL · Daniel
-11. **qcic-syno** · `git clone https://github.com/daneroo/im-qcic
-~/Code/iMetrical/im-qcic` (public; no GitHub credentials on the host) ·
-    agent
+11. **qcic-syno** · clone the repo (public; no GitHub credentials on the
+    host; `<branch>` is `main` once qcic-core is merged) · agent
+
+    ```sh
+    git clone -b <branch> https://github.com/daneroo/im-qcic ~/Code/iMetrical/im-qcic
+    ```
+
 12. **galois → qcic-syno** · copy the three gitignored credentials · agent
 
     ```sh
@@ -96,9 +100,9 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
 ### 5 · Start and verify
 
 14. **Only one host may run the stack.** `scast-bridge` binds a durable push
-    consumer on production NATS; a second instance fails with `duplicate
-subscription` (#297). Stop the stack on any other qcic-core or gateway2
-    host first · Daniel
+    consumer on production NATS; a second instance fails with
+    `duplicate subscription` (#297). Stop the stack on any other qcic-core
+    or gateway2 host first · Daniel
 15. **qcic-syno** · `just start` · agent
 16. **qcic-syno** · verify **by worker logs, not `docker ps`** · agent
     - `nats`: `Server is ready`
