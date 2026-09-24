@@ -186,8 +186,12 @@ as a one-click rollback. Run it after the scrub finishes.
 - [x] gateway-nix · `sudo nixos-install --flake <ref>#gateway-nix-ext4
       --root /mnt --no-root-passwd` · agent — 2m35s; GRUB i386-pc on the new
       disk by id plus x86_64-efi `BOOTX64.EFI`
-- [ ] gateway-nix · stop docker; `rsync -aHAXS --numeric-ids` `/var/lib/tailscale`,
-      `/var/lib/docker`, `/home/daniel` → `/mnt` · agent
+- [x] gateway-nix · stop docker; `rsync -aHAXS --numeric-ids` `/var/lib/tailscale`,
+      `/var/lib/docker`, `/home/daniel` → `/mnt` · agent — docker + tailscaled
+      stopped (14s; over LAN `.92`, since stopping tailscaled drops MagicDNS);
+      rsync 101s (docker 3.4G, home 84M incl. repo + credentials, tailscale
+      state); `/mnt` unmounted. rsync isn't in the system — `nix shell
+      nixpkgs/nixos-26.05#rsync` was enough
 - [ ] VMM · gateway-nix · Shut down; boot from the new disk; detach (don't
       delete) the btrfs disk · Daniel
 - [ ] Verify: tailnet still `gateway-nix` at `100.108.116.17`, stack serving by
