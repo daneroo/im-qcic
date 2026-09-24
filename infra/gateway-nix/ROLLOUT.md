@@ -220,6 +220,8 @@ was the whole gap.
 | --- | ------ | --------- | ------------------ | ---------- | ----- |
 | E1  | 0.98s  | 15.2s     | +17s               | **+18s**   | guest `sudo systemctl reboot`, scrub paused; issued 10:23:30Z, journal stopped 10:23:34Z (**shutdown 4s**), boot 10:23:39Z; total 20.1s; `Loading containers` 4s; tailnet +10s; both workers did real work |
 | E2  | 0.85s  | 15.8s     | +18s               | **+19s**   | guest reboot 55s after E1; shutdown 12s; total 20.4s; tailnet +17s; `ted1k-derive` published; **`scast-bridge` dead** (`duplicate subscription` — prod still held E1's consumer, #297) → restarted |
+| E3  | 0.84s  | 14.9s     | +17s               | **+18s**   | **VMM restart**, scrub paused; boot 10:29:59Z; total 19.6s; tailnet +10s; `ted1k-derive` published; `scast-bridge` started clean |
+| E4  | 0.88s  | 24.3s     | +27s               | **+33s**   | **VMM restart**; boot 10:31:33Z; total 34.1s, initrd **8.9s** (vs ~4s) — host-side: scrub not running, but md2 93% busy on ~6 MB/s of small random I/O from something else on the Synology; tailnet +22s; **`ted1k-derive` dead** (`connection refused`) → restarted; `scast-bridge` copied |
 
 ext4 fsync, scrub paused: 11.8s for 200 × 4 KiB (59 ms) against 35.4s on
 btrfs. Container stops no longer hang shutdown (4–12s against 17–19s+).
