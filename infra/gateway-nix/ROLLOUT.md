@@ -108,6 +108,8 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 ## Known confounds
 
 - GRUB timeout 1s vs Ubuntu's 0 — lands in the QEMU → kernel stage.
+- Docker storage: containerd snapshotter (`overlayfs`, the fresh-install
+  default on 29.x) vs gateway2's `overlay2` graph driver (upgraded install).
 - `HOSTALIAS: gateway2` is hard-coded in `compose.yaml`, so health's byline
   reads `gateway2` on this host. Accepted: the compose file stays unchanged.
 
