@@ -103,7 +103,11 @@
               time.timeZone = "UTC";
 
               services.qemuGuest.enable = true;
-              services.tailscale.enable = true;
+              services.tailscale = {
+                enable = true;
+                # Lets daniel run `tailscale` without sudo.
+                extraSetFlags = [ "--operator=daniel" ];
+              };
               services.openssh = {
                 enable = true;
                 settings = {
