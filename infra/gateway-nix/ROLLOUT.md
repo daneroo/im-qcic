@@ -100,6 +100,17 @@ Synchronous 4 KiB writes (`dd bs=4k count=200 oflag=dsync`) on gateway-nix:
 | btrfs `/` (guest btrfs on Synology btrfs) | 220.4s | **1.1s** |
 | vfat `/boot` (no CoW) | 79.3s | **0.4s** |
 
+Repeated at 08:07–08:09Z with the scrub **paused** (DSM Storage Manager):
+
+| target | time | per fsync |
+| ------ | ---: | --------: |
+| gateway-nix btrfs `/` | 35.4s | 177 ms |
+| gateway-nix vfat `/boot` | 17.2s | 86 ms |
+| production gateway ext4 `/` (Ubuntu, LVM) | 21.6s | 108 ms |
+
+The LUN itself is ~100 ms per fsync for every guest, Ubuntu included. The
+scrub multiplies that ~6×; guest btrfs adds ~1.6–2× on top.
+
 Double btrfs costs ~2.8×, but even vfat is ~0.4s per fsync, so the base
 slowness is **below the guest** — the LUN, or the Synology at that moment
 (background clone copy? scheduled job?). It fits every slow thing seen here:
@@ -114,7 +125,12 @@ nats 57.21s. So the slow-stop hand-off in section 6 is probably the disk, not
 Bun's signal handling — re-test before filing it anywhere.
 
 Next, before any sample:
-- [ ] Same `dd` on gateway2 (ext4 on its own LUN), same Synology — baseline
+- [x] Same `dd` on an ext4 guest, same Synology — done on production gateway
+      (gateway2 was off); see the paused-scrub table above
+- [x] The scrub is DSM's **regular monthly** schedule
+      (`/usr/syno/etc/datascrubbing.conf`: `scheduleinterval=1`, anchor
+      2022-01-24 05:00Z, `run_all_time`) — the 24th of every month at 05:00Z.
+      Don't sample on the 24th.
 - [x] Synology: check for background activity — **a scrub was running** during
       samples 1–3 and the `dd` test (Daniel, 2026-09-24). Started 05:00Z
       (01:00 local); ~17h expected → ends ~22:00Z. Progress needs
