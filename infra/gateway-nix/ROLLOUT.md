@@ -173,11 +173,16 @@ as a one-click rollback. Run it after the scrub finishes.
 
 - [x] VMM · gateway-nix · Shut down, snapshot, Start · Daniel — snapshot
       `nixos-btrfs-pre-ext4`, 2026-09-24 10:03Z, VM off ("File system consistent"), locked
-- [ ] VMM · gateway-nix · attach a second virtual disk (same size) · Daniel
-- [ ] gateway-nix · `ls -l /dev/disk/by-id/` → put the new disk's id into
-      `ext4Disk` in `flake.nix`; push · agent
-- [ ] gateway-nix · `sudo nix run github:nix-community/disko -- --mode
-      destroy,format,mount --flake <ref>#gateway-nix-ext4` → `/mnt` · agent
+- [x] VMM · gateway-nix · attach a second virtual disk (same size) · Daniel —
+      200 GB. **The kernel renamed the disks**: new, empty disk became `sda`, the
+      running btrfs disk `sdb`. Both layouts now pinned by id (commit `1105c7ee`).
+- [x] gateway-nix · `ls -l /dev/disk/by-id/` → put the new disk's id into
+      `ext4Disk` in `flake.nix`; push · agent — ext4 `scsi-360014055f88e136dd2fdd491fda50dd5`,
+      btrfs `scsi-360014052636e7a6d7683d4f56d9193d2`
+- [x] gateway-nix · `sudo nix run github:nix-community/disko -- --mode
+      destroy,format,mount --flake <ref>#gateway-nix-ext4` → `/mnt` · agent —
+      1m37s (scrub running); target checked empty first; `--yes-wipe-all-disks`
+      needed non-interactively
 - [ ] gateway-nix · `sudo nixos-install --flake <ref>#gateway-nix-ext4
       --root /mnt --no-root-passwd` · agent
 - [ ] gateway-nix · stop docker; `rsync -aHAXS --numeric-ids` `/var/lib/tailscale`,
