@@ -255,6 +255,50 @@ btrfs. Container stops no longer hang shutdown (4–12s against 17–19s+).
 - `HOSTALIAS: gateway2` is hard-coded in `compose.yaml`, so health's byline
   reads `gateway2` on this host. Accepted: the compose file stays unchanged.
 
+## Prospects — considerations for the conclusion, not measured here
+
+Raised 2026-09-24 after the ext4 result. Stated from documentation and
+general knowledge; none of it was measured in this experiment.
+
+**Why btrfs doubled boot time.** Boot writes little data but issues many
+fsyncs — Docker rewrites each container's state files, containerd's metadata
+database fsyncs every transaction, journald flushes. That makes boot
+latency-bound: ~100 fsyncs × 177 ms (guest btrfs) ≈ 18s, × 59 ms (guest ext4)
+≈ 6s, matching `Loading containers` 24–26s vs 4–8s. Guest btrfs costs more
+per fsync because a copy-on-write commit rewrites several scattered metadata
+blocks (checksum and extent trees, log tree), and each lands on the Synology's
+own btrfs as another copy-on-write write — the layers multiply.
+
+**Keeping btrfs snapshots (e.g. for borg) without that cost** — options:
+ext4 root plus a separate btrfs data disk for the datasets to back up;
+btrfs with `nodatacow` on the hot paths (`/var/lib/docker`, JetStream data);
+ext4 on LVM thin with LVM snapshots; or Synology-level snapshots only.
+
+**A native NixOS hypervisor with Incus system containers** (e.g. on gauss):
+
+- **Subvolumes pass in like bind mounts.** On a btrfs pool each container's
+  root is a host subvolume; custom volumes attach into containers; host-side
+  snapshots per volume.
+- **No nesting.** A system container shares the host kernel and filesystem —
+  no guest filesystem, no disk image — so writes hit the host's btrfs once.
+  One copy-on-write layer instead of two. Incus *VMs* would reintroduce the
+  nesting.
+- **Own network stack.** Each container has its own network namespace and can
+  sit on the LAN via bridge or macvlan. Tailscale runs inside, unprivileged,
+  given `/dev/net/tun` (`incus config device add <ctr> tun unix-char
+  path=/dev/net/tun`) — no Docker `--privileged` / `NET_ADMIN` / host-network
+  workarounds. Full systemd init; NixOS images exist. Cost: a shared kernel
+  (modules like `tun` and `nf_tables` must be on the host).
+- **NVMe changes the arithmetic.** The limit here is fsync latency: 59 ms at
+  best on this Synology's spinning RAID5 behind a virtual disk. Consumer NVMe
+  is ~0.5–2 ms per fsync; enterprise NVMe with power-loss protection well
+  under 0.1 ms — 30× to 500×+. Boot's disk term drops to milliseconds, and the
+  small-database workloads here (containerd metadata, JetStream, SQLite)
+  gain the most.
+
+Next measurement if pursued: the same 200 × 4 KiB `dd oflag=dsync` on gauss
+(NVMe, btrfs mirror).
+
 ## NixOS install notes
 
 Reusable findings go here as they land.
