@@ -22,14 +22,20 @@ Better Stack is not paused; `health.qcic` alerts while gateway2 is off.
 
 ## 1 · gateway2 → clone
 
-- [ ] gateway2 · `~/Code/iMetrical/im-qcic/infra/gateway2` · `just down` · Daniel
-- [ ] VMM · gateway2 · Shut down · Daniel
-- [ ] VMM · gateway2 · Clone → `gateway-nix` · Daniel
-- [ ] VMM · gateway-nix · Edit → Network: confirm MAC differs from gateway2
+- [x] gateway2 · `~/Code/iMetrical/im-qcic/infra/gateway2` · `just down` · Daniel
+- [x] VMM · gateway2 · Shut down · Daniel
+- [x] VMM · gateway2 · Clone → `gateway-nix` · Daniel
+- [x] VMM · gateway-nix · Edit → Network: confirm MAC differs from gateway2
       (`02:11:32:2e:16:6a`), regenerate if not · Daniel
-- [ ] VMM · gateway-nix · Power on; note its DHCP address · Daniel
-- [ ] gateway-nix (Ubuntu) · `/etc/sudoers.d/daniel-nopasswd` ·
+- [x] VMM · gateway-nix · Power on; note its DHCP address · Daniel
+- [x] gateway-nix (Ubuntu) · `/etc/sudoers.d/daniel-nopasswd` ·
       `echo 'daniel ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/daniel-nopasswd` · Daniel
+
+Done 2026-09-24. gateway2 set to **not autostart** in VMM, so a Synology
+restart does not bring it up alongside the clone — set it back at close.
+Clone MAC `02:11:32:2a:40:56` (VMM regenerates it; not shown in Edit), DHCP
+`192.168.2.139`. That first lease took **8.5 min** (boot 05:05:19Z, lease
+05:13:54Z) — the router, not the guest: networkd asked at boot.
 
 The clone boots Ubuntu with gateway2's Tailscale key. Harmless while gateway2
 is off; the install wipes it.
@@ -86,7 +92,7 @@ container `StartedAt`, NATS "Server is ready", worker logs.
 
 - [ ] Verdict on #298
 - [ ] Remove `wheelNeedsPassword = false`, redeploy
-- [ ] VMM · gateway-nix · Shut down; gateway2 · Power on · Daniel
+- [ ] VMM · gateway-nix · Shut down; gateway2 · Autostart back on, Power on · Daniel
 - [ ] gateway2 · `just start`; workers verified from logs · agent
 - [ ] Samples onto the timeline page
 
