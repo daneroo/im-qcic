@@ -63,7 +63,7 @@
       # By id, not /dev/sdX: attaching a disk renamed them once already, and
       # GRUB's install target has to survive that.
       ext4Disk = {
-        disko.devices.disk.ext4 = gptDisk "/dev/disk/by-id/scsi-360014055f88e136dd2fdd491fda50dd5" {
+        disko.devices.disk.ext4 = gptDisk "/dev/disk/by-id/scsi-36001405b15d7a6ed5715d4107da118d9" {
           type = "filesystem";
           format = "ext4";
           mountpoint = "/";
