@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Synology → gateway: restart timelines</title>
+<style>
+  :root { --fg:#1d1d1f; --muted:#6b6b70; --grid:#e6e6e9; --bg:#fff; }
+  body { font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--fg); background:var(--bg); margin:24px; max-width:1300px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  h2 { font-size:16px; margin:28px 0 6px; }
+  p.note { color:var(--muted); margin:4px 0; }
+  .controls { display:flex; gap:18px; flex-wrap:wrap; margin:12px 0; }
+  .controls label { cursor:pointer; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; margin:8px 0 4px; font-size:12px; }
+  .legend span::before { content:""; display:inline-block; width:12px; height:12px; margin-right:5px; vertical-align:-2px; background:var(--c); border-radius:2px; }
+  svg text { font-size:12px; fill:var(--fg); }
+  svg .axis text { fill:var(--muted); font-size:11px; }
+  svg .group text { font-weight:600; fill:var(--muted); }
+  #tip { position:fixed; pointer-events:none; background:#1d1d1f; color:#fff; padding:6px 8px; border-radius:4px; font-size:12px; display:none; white-space:pre; }
+</style>
+</head>
+<body>
+<h1>Synology → gateway: restart timelines</h1>
+<p class="note">Every measured boot, one row per guest per event. Source figures: <code>synology-gateway-startup.md</code> and <code>infra/gateway2/ROLLOUT.md</code> (A5, C1, C2). Hover a bar for exact values.</p>
+
+<div class="controls">
+  <span>Align on:
+    <label><input type="radio" name="align" value="syno" checked> Synology kernel</label>
+    <label><input type="radio" name="align" value="guest"> guest kernel</label>
+  </span>
+  <span>Show:
+    <label><input type="checkbox" id="showSyno" checked> Synology cycles</label>
+    <label><input type="checkbox" id="showVm" checked> VM-only restarts</label>
+  </span>
+</div>
+<div class="legend" id="legend"></div>
+<svg id="boot"></svg>
+<p class="note">VM-only rows have no Synology stage; with “Synology kernel” alignment they are placed so their guest kernel lines up with the median guest kernel of the Synology cycles. A5 stall positions are approximate (duration exact, placed at the end of the kernel phase). Event A starts from a power cut 17s before the Synology kernel.</p>
+
+<h2>Shutdowns (Synology)</h2>
+<svg id="shutdown"></svg>
+<p class="note">t0 = VMM starts shutting down the guests. The Shut Down row's final segment ran ~72 min until forced off at 23:34Z; it is clipped.</p>
+
+<div id="tip"></div>
+
+<script>
+// Boot phases. All times in seconds.
+// qemu, kernel: relative to Synology kernel (Synology cycles only).
+// Everything else: relative to the guest kernel.
+// stall: [start, end]; kphase: systemd-analyze "kernel"; cont: [first, last] container StartedAt; nats: NATS "Server is ready".
+const BOOTS = [
+  // Synology cycles
+  { g:"syno", ev:"A · power cut", date:"2026-09-19", guest:"gateway", os:"22.04", qemu:205, kernel:229, stall:[4.32,66.55], kphase:71.4, cont:[166,167], nats:190, note:"power cut 17s before Synology kernel; fsck recovered journal" },
+  { g:"syno", ev:"Shut Down + power on", date:"2026-09-23", guest:"gateway", os:"22.04", qemu:199, kernel:214, stall:[5.44,11.92], kphase:17.0, cont:[155.6,156.9], nats:176.6, note:"priorities set: gateway High" },
+  { g:"syno", ev:"Shut Down + power on", date:"2026-09-23", guest:"gateway2", os:"24.04", qemu:208, kernel:231, stall:[11.44,14.80], kphase:20.2, cont:[171.2,175.0], nats:183.2, note:"" },
+  { g:"syno", ev:"DSM Restart", date:"2026-09-24", guest:"gateway", os:"22.04", qemu:182, kernel:200, stall:[5.90,8.08], kphase:18.1, cont:[176.3,181.8], nats:195.3, note:"" },
+  { g:"syno", ev:"DSM Restart", date:"2026-09-24", guest:"gateway2", os:"24.04", qemu:193, kernel:217, stall:[30.56,35.60], kphase:41.3, cont:[194.6,199.3], nats:209.0, note:"" },
+  // VM-only
+  { g:"vm", ev:"B · VMM update restart", date:"2026-09-18", guest:"gateway", os:"22.04", stall:[4.19,114.23], kphase:116.4, cont:[177,177], nats:null, note:"graceful; NATS ready not recorded" },
+  ...[[5.678,0.586,37.5,39.7],[4.575,0.709,20.6,22.4],[4.460,0.513,20.2,21.7],[4.546,0.518,21.4,23.2],[4.843,0.724,20.8,23.0]].map((s,i)=>(
+    { g:"vm", ev:`A5-${i+1} · VMM restart`, date:"2026-09-22", guest:"gateway2", os:"22.04", stall:[s[0]-s[1]-0.4,s[0]-0.4], kphase:s[0], cont:[s[2],s[3]], nats:null, note:"stall position approximate; NATS ready not recorded"+(i===0?"; after 2.5 days uptime":"") })),
+  { g:"vm", ev:"reboot after apt upgrade", date:"2026-09-23", guest:"gateway2", os:"22.04", stall:[3.90,7.93], kphase:8.8, cont:[79,88], nats:96, note:"first boot on new kernel + new dockerd" },
+  { g:"vm", ev:"24.04 #1 · VMM restart", date:"2026-09-23", guest:"gateway2", os:"24.04", stall:[3.06,3.48], kphase:4.07, cont:[34.5,36.1], nats:38.9, note:"first boot after release upgrade; tailnet +76s" },
+  { g:"vm", ev:"24.04 #2 · VMM restart", date:"2026-09-23", guest:"gateway2", os:"24.04", stall:[3.03,3.42], kphase:3.73, cont:[22.3,24.3], nats:25.9, note:"" },
+  { g:"vm", ev:"24.04 #3 · VMM restart", date:"2026-09-23", guest:"gateway2", os:"24.04", stall:[2.91,3.26], kphase:3.53, cont:[21.1,23.5], nats:25.2, note:"" },
+  { g:"vm", ev:"24.04 #4 · shut down + start", date:"2026-09-23", guest:"gateway2", os:"24.04", qemuRel:-6, stall:[2.92,3.28], kphase:3.61, cont:[23.5,25.5], nats:26.7, note:"new QEMU process" },
+  { g:"vm", ev:"24.04 #5 · shut down + start", date:"2026-09-23", guest:"gateway2", os:"24.04", qemuRel:-6, stall:[2.95,3.35], kphase:3.62, cont:[21.8,24.0], nats:25.4, note:"new QEMU process" },
+];
+
+const SHUTDOWNS = [
+  { ev:"Shut Down (hung)", date:"2026-09-23", phases:[["guests",0,42],["services",42,73],["iscsi/net",73,79],["cache/volume",79,92],["unlogged, pinging",92,106],["dark / power-off",106,4420]] },
+  { ev:"DSM Restart", date:"2026-09-24", phases:[["guests",0,29],["services",29,48],["iscsi/net",48,56],["cache/volume",56,71],["unlogged, pinging",71,83],["dark / power-off",83,100]] },
+];
+
+const COLORS = {
+  "Synology":"#c9ccd6", "QEMU → kernel":"#9aa5b8", "guest kernel":"#7fb3d5", "stall":"#d9534f",
+  "userspace":"#f0c05a", "containers → NATS":"#5cb85c",
+  "guests":"#7fb3d5", "services":"#f0c05a", "iscsi/net":"#9aa5b8", "cache/volume":"#b39ddb", "unlogged, pinging":"#c9ccd6", "dark / power-off":"#d9534f",
+};
+
+const tip = document.getElementById("tip");
+const fmt = s => s>=60 ? `${Math.floor(s/60)}m${(s%60).toFixed(1).padStart(4,"0")}s` : `${s.toFixed(s<10?2:1)}s`;
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) { const e=document.createElementNS(NS,tag); for (const k in attrs) e.setAttribute(k,attrs[k]); parent&&parent.appendChild(e); return e; }
+function hover(node, text) {
+  node.addEventListener("mousemove", e => { tip.style.display="block"; tip.style.left=(e.clientX+12)+"px"; tip.style.top=(e.clientY+12)+"px"; tip.textContent=text; });
+  node.addEventListener("mouseleave", () => tip.style.display="none");
+}
+function legend(keys) {
+  document.getElementById("legend").innerHTML = keys.map(k=>`<span style="--c:${COLORS[k]}">${k}</span>`).join("");
+}
+
+function bootSegments(b, align, vmOffset) {
+  // returns [label, start, end] on the display axis
+  const segs = [];
+  let k0;
+  if (align === "guest") k0 = 0;
+  else k0 = b.g === "syno" ? b.kernel : vmOffset;
+  if (b.g === "syno" && align === "syno") {
+    segs.push(["Synology", 0, b.qemu]);
+    segs.push(["QEMU → kernel", b.qemu, b.kernel]);
+  } else if (b.g === "syno") {
+    segs.push(["QEMU → kernel", b.qemu - b.kernel, 0]);
+  } else if (b.qemuRel) {
+    segs.push(["QEMU → kernel", k0 + b.qemuRel, k0]);
+  }
+  segs.push(["guest kernel", k0, k0 + b.stall[0]]);
+  segs.push(["stall", k0 + b.stall[0], k0 + b.stall[1]]);
+  segs.push(["guest kernel", k0 + b.stall[1], k0 + b.kphase]);
+  segs.push(["userspace", k0 + b.kphase, k0 + b.cont[0]]);
+  if (b.nats != null) segs.push(["containers → NATS", k0 + b.cont[0], k0 + b.nats]);
+  return segs;
+}
+
+function drawBoot() {
+  const align = document.querySelector("input[name=align]:checked").value;
+  const rows = BOOTS.filter(b => (b.g==="syno" && showSyno.checked) || (b.g==="vm" && showVm.checked));
+  const synoK = BOOTS.filter(b=>b.g==="syno").map(b=>b.kernel).sort((a,b)=>a-b);
+  const vmOffset = synoK[Math.floor(synoK.length/2)];
+  const all = rows.map(b => ({ b, segs: bootSegments(b, align, vmOffset) }));
+  const minX = Math.min(0, ...all.flatMap(r=>r.segs.map(s=>s[1])));
+  const maxX = Math.max(...all.flatMap(r=>r.segs.map(s=>s[2])));
+  drawChart("boot", all.map(r => ({
+    group: r.b.g==="syno" ? "Synology cycles" : "VM-only restarts",
+    label: r.b.ev,
+    guest: r.b.guest,
+    sub: `${r.b.date} · ${r.b.os}`,
+    segs: r.segs,
+    info: r.b,
+  })), minX, maxX, align==="syno" ? "seconds from Synology kernel" : "seconds from guest kernel");
+  legend(["Synology","QEMU → kernel","guest kernel","stall","userspace","containers → NATS"]);
+}
+
+function drawShutdown() {
+  const clip = 130;
+  drawChart("shutdown", SHUTDOWNS.map(s => ({
+    group: "", label: s.ev, sub: s.date,
+    segs: s.phases.map(p => [p[0], p[1], Math.min(p[2], clip)]),
+    full: s.phases,
+  })), 0, clip, "seconds from guest shutdown start");
+}
+
+function drawChart(id, rows, minX, maxX, axisLabel) {
+  const svg = document.getElementById(id);
+  svg.innerHTML = "";
+  const labelW = 440, W = 1280, rowH = 24, top = 10;
+  let y = top, groups = [];
+  const placed = [];
+  let last = null;
+  for (const r of rows) {
+    if (r.group && r.group !== last) { groups.push([r.group, y]); y += 20; last = r.group; }
+    placed.push([r, y]); y += rowH;
+  }
+  const H = y + 40;
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  const span = maxX - minX || 1;
+  const step = span > 600 ? 120 : span > 240 ? 60 : span > 60 ? 30 : 10;
+  const x = v => labelW + (v - minX) / span * (W - labelW - 20);
+  const axis = el("g", {class:"axis"}, svg);
+  for (let t = Math.ceil(minX/step)*step; t <= maxX; t += step) {
+    el("line", {x1:x(t), x2:x(t), y1:top, y2:y, stroke:"#e6e6e9"}, axis);
+    const tx = el("text", {x:x(t), y:y+14, "text-anchor":"middle"}, axis); tx.textContent = t>=60||t<=-60 ? `${t/60}m` : `${t}s`;
+  }
+  const at = el("text", {x:labelW + (W-labelW)/2, y:y+32, "text-anchor":"middle"}, axis); at.textContent = axisLabel;
+  for (const [g, gy] of groups) { const t = el("text", {x:0, y:gy+14}, el("g",{class:"group"},svg)); t.textContent = g; }
+  for (const [r, ry] of placed) {
+    const t = el("text", {x:8, y:ry+15}, svg); t.textContent = r.label;
+    if (r.guest) { const gt = el("text", {x:250, y:ry+15, "font-weight":"600"}, svg); gt.textContent = r.guest; }
+    const s = el("text", {x:labelW-8, y:ry+15, "text-anchor":"end", fill:"#6b6b70"}, svg); s.textContent = r.sub;
+    r.segs.forEach((sg, i) => {
+      const [name, a, b] = sg;
+      if (b <= a) return;
+      const rect = el("rect", {x:x(a), y:ry+3, width:Math.max(1, x(b)-x(a)), height:rowH-8, fill:COLORS[name], rx:2}, svg);
+      const real = r.full ? r.full[i] : sg;
+      let text = `${r.label}${r.guest?" · "+r.guest:""}\n${name}: ${fmt(real[2]-real[1])}`;
+      if (r.info) {
+        const b = r.info;
+        text += `\nstall ${fmt(b.stall[1]-b.stall[0])} · containers +${b.cont[0]}s · NATS ${b.nats!=null?"+"+b.nats+"s":"n/a"} (from guest kernel)`;
+        if (b.g==="syno") text += `\nSynology kernel → NATS ready ${fmt(b.kernel+b.nats)}`;
+        if (b.note) text += `\n${b.note}`;
+      }
+      hover(rect, text);
+    });
+    if (r.full) {
+      const lastP = r.full[r.full.length-1];
+      if (lastP[2] > maxX) { const t2 = el("text", {x:x(maxX)-4, y:ry+15, "text-anchor":"end", fill:"#fff"}, svg); t2.textContent = `→ ${fmt(lastP[2]-lastP[1])}`; }
+    }
+  }
+}
+
+document.querySelectorAll("input").forEach(i => i.addEventListener("change", drawBoot));
+drawBoot();
+drawShutdown();
+</script>
+</body>
+</html>

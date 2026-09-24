@@ -4,6 +4,19 @@ Measured startup chain for `Syno → Gateway (VM) → Docker → NATS + Caddy`.
 All figures below are measured, not estimated. Method and raw commands at the
 bottom. Times are EDT; guest logs are UTC (−4).
 
+> **Takeaway, 2026-09-24 — what the availability story has to account for.**
+>
+> - **VM restart: ~25–30s** to NATS ready. That is the floor.
+> - **Full Synology cycle: up to ~9 min.** Power cut 7m16s; planned DSM
+>   restart 8m15s (shutdown ~1.5 min + boot ~6.5 min). The Synology's own
+>   stage before any VM starts is a stable ~3 min, and guests boot ~7× slower
+>   while it settles. A DSM *Shut Down* can also hang at power-off (once in
+>   one sample, 72 min, no trace in any log).
+>
+> Every measured boot and both shutdowns:
+> [synology-gateway-startup-timeline.html](synology-gateway-startup-timeline.html).
+> Detail in [infra/gateway2/ROLLOUT.md](../../infra/gateway2/ROLLOUT.md) C1–C2.
+
 > **Status, 2026-09-22.** The experiment this document proposed has now been
 > partly run, and it **falsified the stated cause of the initramfs stall**. See
 > [The initramfs stall](#the-initramfs-stall--stated-cause-falsified-as-sufficient)
