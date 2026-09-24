@@ -148,6 +148,7 @@
               environment.systemPackages = with pkgs; [
                 btop
                 git
+                jq
                 just
               ];
 
