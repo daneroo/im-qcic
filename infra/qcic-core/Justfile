@@ -79,7 +79,8 @@ nixos-update:
     set -euo pipefail
     branch=$(git branch --show-current)
     if [ "$branch" != main ]; then
-      read -rp "Checkout is on branch '$branch', not main. Apply this branch's config to the host anyway? [y/N] " ok
+      echo "branch: $branch (not main)"
+      read -rp "apply it anyway? [y/N] " ok
       [ "$ok" = y ] || { echo aborted; exit 1; }
     fi
     git pull --ff-only
