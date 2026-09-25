@@ -8,70 +8,98 @@ export COMPOSE_ENV_FILES := "/etc/qcic-core/host.env"
 # Where the flake lives, for machines without a checkout (provisioning).
 flake_repo := "github:daneroo/im-qcic"
 
+# The flow: edit flake.nix on galois → `just flake-check` → commit, push →
+# on the vm: `just nixos-update`. The stack (docker) is run on the vm.
 # `just` lists recipes by group, in file order.
 [private]
 default:
     @just --list --unsorted
 
-# ── stack: docker compose services — run on the qcic-core host ──────────────
+# ── nix · on galois (dev): change the host config, then commit and push ─────
 
-# Show container status (health is in the worker logs, not here).
-[group('stack · on the host')]
-status:
-    @docker compose ps
+# nix flake update (bump nixpkgs, disko in flake.lock)
+[group('nix · on galois (dev)')]
+flake-update:
+    nix flake update
 
-# Build all images, pulling fresh bases.
-[group('stack · on the host')]
+# evaluate every host in the flake
+[group('nix · on galois (dev)')]
+flake-check:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for h in $(nix eval --json .#nixosConfigurations --apply builtins.attrNames | tr -d '[]"' | tr , ' '); do
+      printf '%s: ' "$h"
+      nix eval --raw ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath"
+      echo
+    done
+
+# ── docker · on vm: the compose services ─────────────────────────────────────
+
+# compose ps -a
+[group('docker · on vm')]
+ps:
+    docker compose ps -a
+
+# compose build --pull
+[group('docker · on vm')]
 build:
     docker compose build --pull
 
-# Start (or update to) the current images and config, in the background.
-[group('stack · on the host')]
+# compose up -d
+[group('docker · on vm')]
 start:
     docker compose up -d
 
-# Stop and remove containers; ./data is untouched.
-[group('stack · on the host')]
+# compose down (./data is kept)
+[group('docker · on vm')]
 down:
     docker compose down
 
-# Restart services, e.g. `just restart scast-bridge` (a worker dead after a reboot: #297).
-[group('stack · on the host')]
-restart +services:
+# compose restart [services] (all if none)
+[group('docker · on vm')]
+restart *services:
     docker compose restart {{services}}
 
-# Follow logs, optionally for named services.
-[group('stack · on the host')]
+# compose logs -f [services]
+[group('docker · on vm')]
 logs *services:
     docker compose logs -f --tail=100 {{services}}
 
-# Any other docker compose command, with host.env applied.
-[group('stack · on the host')]
+# compose <args>
+[group('docker · on vm')]
 compose +args:
     docker compose {{args}}
 
-# ── host: NixOS — run on the qcic-core host ─────────────────────────────────
+# ── nix · on vm: apply what was pushed ───────────────────────────────────────
 
-# Pull this repo and switch the host to its flake entry (named for the hostname).
-[group('host · on the host')]
+# git pull, then nixos-rebuild switch to this host's entry (asks if not on main)
+[group('nix · on vm')]
 nixos-update:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    branch=$(git branch --show-current)
+    if [ "$branch" != main ]; then
+      read -rp "On branch '$branch', not main. Switch to it anyway? [y/N] " ok
+      [ "$ok" = y ] || { echo aborted; exit 1; }
+    fi
     git pull --ff-only
     sudo nixos-rebuild switch --flake ".#$(hostname)"
 
-# List NixOS generations (roll back: `sudo nixos-rebuild switch --rollback`).
-[group('host · on the host')]
+# list generations (roll back: sudo nixos-rebuild switch --rollback)
+[group('nix · on vm')]
 nixos-generations:
     sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 
-# ── provision: a new host — run on gauss (x86_64 NixOS, builds the system) ──
+# ── provision · from a NixOS host: once per new vm ───────────────────────────
+# Needs an x86_64 NixOS machine to build the system (gauss; galois can't).
 
-# Show the disk ids of a booted NixOS installer; put the disk's id in flake.nix.
-[group('provision · on gauss')]
+# disk ids on a booted installer (pin one in flake.nix)
+[group('provision · from NixOS host')]
 provision-disks ip:
     ssh root@{{ip}} ls -l /dev/disk/by-id/ | grep -v -- -part
 
-# Install a host from its flake entry onto a booted installer. Wipes the disk.
-[group('provision · on gauss')]
+# nixos-anywhere: install host onto a booted installer (wipes the disk)
+[group('provision · from NixOS host')]
 provision host ip ref="main":
     nix run github:nix-community/nixos-anywhere -- \
       -i ~/.ssh/id_ed25519 \
