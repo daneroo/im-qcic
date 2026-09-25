@@ -160,6 +160,18 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
 - **Don't measure on the 24th.** The Synology scrubs monthly (24th, 05:00Z,
   no quiet hours) and slows every guest several-fold for hours.
 
+## Watch
+
+- **Snapshots may slow the disk over time.** qcic-syno has a VMM protection
+  plan (1-day RPO: 7 daily, 4 weekly — same as production gateway; crash-
+  consistent). On the Synology's btrfs each snapshot turns the next write to
+  every block into a copy, fragmenting the virtual disk. Production gateway's
+  four-year-old disk (11 snapshots) does fsync ~2× slower than qcic-syno's
+  fresh one. Re-run `dd if=/dev/zero of=t bs=4k count=200 oflag=dsync`
+  monthly (baseline: 11.8s, 2026-09-24, not on the 24th).
+- **Time Machine** (galois → `TM-Galois26` on Syno, hourly) makes md2 ~85%
+  busy while it runs; boot samples during a backup read ~2× slower.
+
 ## Not yet
 
 - Secrets are copied by hand. Planned: agenix or sops-nix, encrypted to each
