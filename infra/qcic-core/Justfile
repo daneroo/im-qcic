@@ -1,45 +1,80 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
 # Per-host values (HOSTALIAS, HOST_NAME), written by the host's NixOS config.
-# compose.yaml requires both, so a missing file fails loudly.
+# compose.yaml requires both, so plain `docker compose` fails loudly without
+# them — use these recipes (or `just compose …`) instead.
 export COMPOSE_ENV_FILES := "/etc/qcic-core/host.env"
 
-# New, derived from v2/infra/Justfile - not a copy. Dropped that file's
-# `macos-up`/`_macos-credentials` recipes: qcic-core hosts are Linux-only, and the
-# macOS LocalAPI affordance lives in compose.yaml's
-# TAILSCALE_LOCALAPI_MODE/SOURCE/TARGET defaults, which are preserved intact.
-# Convenience targets follow infra/gateway's Makefile.
-#
-# `default` lists --unsorted, so recipe order here is the listing order:
-# typical usage order, generic escape hatch last.
+# Where the flake lives, for machines without a checkout (provisioning).
+flake_repo := "github:daneroo/im-qcic"
 
-# Show this helpful listing.
+# `just` lists recipes by group, in file order.
+[private]
 default:
     @just --list --unsorted
 
-# Show container status.
+# ── stack: docker compose services — run on the qcic-core host ──────────────
+
+# Show container status (health is in the worker logs, not here).
+[group('stack · on the host')]
 status:
     @docker compose ps
 
 # Build all images, pulling fresh bases.
+[group('stack · on the host')]
 build:
-    @docker compose build --pull
-    @echo "if this fails (on synology, or on a small VM):"
-    @echo "  COMPOSE_HTTP_TIMEOUT=300 docker compose build caddy"
-    @echo "  xcaddy and the bun builds are the memory-hungry ones"
+    docker compose build --pull
 
-# Start everything in the background.
+# Start (or update to) the current images and config, in the background.
+[group('stack · on the host')]
 start:
-    @docker compose up -d
+    docker compose up -d
+
+# Stop and remove containers; ./data is untouched.
+[group('stack · on the host')]
+down:
+    docker compose down
+
+# Restart services, e.g. `just restart scast-bridge` (a worker dead after a reboot: #297).
+[group('stack · on the host')]
+restart +services:
+    docker compose restart {{services}}
 
 # Follow logs, optionally for named services.
-logs *args:
-    @docker compose logs -f --tail=100 {{args}}
+[group('stack · on the host')]
+logs *services:
+    docker compose logs -f --tail=100 {{services}}
 
-# Stop and remove containers (bind-mounted data under ./data is untouched).
-down:
-    @docker compose down
+# Any other docker compose command, with host.env applied.
+[group('stack · on the host')]
+compose +args:
+    docker compose {{args}}
 
-# Run Docker Compose directly (Linux/Synology use the default Unix socket).
-@compose +args:
-    @docker compose {{args}}
+# ── host: NixOS — run on the qcic-core host ─────────────────────────────────
+
+# Pull this repo and switch the host to its flake entry (named for the hostname).
+[group('host · on the host')]
+nixos-update:
+    git pull --ff-only
+    sudo nixos-rebuild switch --flake ".#$(hostname)"
+
+# List NixOS generations (roll back: `sudo nixos-rebuild switch --rollback`).
+[group('host · on the host')]
+nixos-generations:
+    sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+
+# ── provision: a new host — run on gauss (x86_64 NixOS, builds the system) ──
+
+# Show the disk ids of a booted NixOS installer; put the disk's id in flake.nix.
+[group('provision · on gauss')]
+provision-disks ip:
+    ssh root@{{ip}} ls -l /dev/disk/by-id/ | grep -v -- -part
+
+# Install a host from its flake entry onto a booted installer. Wipes the disk.
+[group('provision · on gauss')]
+provision host ip ref="main":
+    nix run github:nix-community/nixos-anywhere -- \
+      -i ~/.ssh/id_ed25519 \
+      --phases disko,install,reboot \
+      --flake '{{flake_repo}}/{{ref}}?dir=infra/qcic-core#{{host}}' \
+      --target-host root@{{ip}}
