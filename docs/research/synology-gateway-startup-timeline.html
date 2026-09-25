@@ -23,7 +23,7 @@
 </head>
 <body>
 <h1>Synology → gateway: restart timelines</h1>
-<p class="note">Every measured boot, one row per guest per event. Source figures: <code>synology-gateway-startup.md</code> and <code>infra/qcic-core/ROLLOUT-gateway2.md</code> (A5, C1, C2). Hover a bar for exact values.</p>
+<p class="note">Every measured boot, one row per guest per event. Source figures: <code>synology-gateway-startup.md</code> and <code>infra/qcic-core/ROLLOUT-gateway2.md</code> (A5, C1, C2) and <code>infra/qcic-core/ROLLOUT.md</code> (qcic-syno). Hover a bar for exact values.</p>
 
 <div class="takeaway">
   <strong>Takeaway, 2026-09-24 — what the availability story has to account for.</strong>
@@ -75,6 +75,10 @@ const BOOTS = [
   { g:"vm", ev:"24.04 #3 · VMM restart", date:"2026-09-23", guest:"gateway2", os:"24.04", stall:[2.91,3.26], kphase:3.53, cont:[21.1,23.5], nats:25.2, note:"" },
   { g:"vm", ev:"24.04 #4 · shut down + start", date:"2026-09-23", guest:"gateway2", os:"24.04", qemuRel:-6, stall:[2.92,3.28], kphase:3.61, cont:[23.5,25.5], nats:26.7, note:"new QEMU process" },
   { g:"vm", ev:"24.04 #5 · shut down + start", date:"2026-09-23", guest:"gateway2", os:"24.04", qemuRel:-6, stall:[2.95,3.35], kphase:3.62, cont:[21.8,24.0], nats:25.4, note:"new QEMU process" },
+  { g:"vm", ev:"Q1 · guest reboot", date:"2026-09-25", guest:"qcic-syno", os:"NixOS", stall:[5.43,5.43], kphase:5.43, cont:[20,20], nats:23, note:"NixOS 26.05, ext4, Q35/UEFI; no stall; kernel phase = kernel + initrd" },
+  { g:"vm", ev:"Q2 · VMM restart", date:"2026-09-25", guest:"qcic-syno", os:"NixOS", stall:[5.18,5.18], kphase:5.18, cont:[17,17], nats:19, note:"NixOS 26.05, ext4, Q35/UEFI; no stall; kernel phase = kernel + initrd" },
+  { g:"vm", ev:"Q3 · VMM restart", date:"2026-09-25", guest:"qcic-syno", os:"NixOS", stall:[5.24,5.24], kphase:5.24, cont:[18,18], nats:20, note:"NixOS 26.05, ext4, Q35/UEFI; no stall; kernel phase = kernel + initrd" },
+  { g:"vm", ev:"Q4 · shut down + start", date:"2026-09-25", guest:"qcic-syno", os:"NixOS", qemuRel:-6, stall:[5.27,5.27], kphase:5.27, cont:[19,19], nats:21, note:"NixOS 26.05, ext4, Q35/UEFI; no stall; kernel phase = kernel + initrd; new QEMU process; UEFI firmware" },
 ];
 
 const SHUTDOWNS = [

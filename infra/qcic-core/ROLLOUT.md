@@ -1,18 +1,36 @@
-# qcic-core rollout (was: gateway-nix, #298)
+# qcic-core rollout (#298)
 
-Tracking file for **#298** — gateway2's stack on NixOS. Exploratory; decisions
-and reasons are in the ticket's 2026-09-24 comment.
+How the QCIC v2 stack moved from gateway2 (Ubuntu) to **qcic-syno** (NixOS),
+and what was measured on the way. The runbook for provisioning a host is
+[README.md](README.md); the Ubuntu predecessor's history is
+[ROLLOUT-gateway2.md](ROLLOUT-gateway2.md).
 
-**Timebox: 1h on 2026-09-24, 2h max on 2026-09-25.** At the limit, stop and
-write the verdict with what exists. Worth it = provisioning experience plus a
-comparison against 24.04.5 (~25–30s VM restart → NATS ready), whatever the
-number is.
+## Result
 
-Host: VMM clone of gateway2, named `gateway-nix`. gateway2 stays shut down
-for the whole experiment. Config: [flake.nix](flake.nix), one file,
-`nixos-26.05`. Stack: `infra/gateway2/compose.yaml`, unchanged.
+**Restart → NATS ready, quiet Synology** (A5/C1 method, judged by worker logs):
 
-Better Stack is not paused; `health.qcic` alerts while gateway2 is off.
+| host                    | OS · guest filesystem  | NATS ready   | total boot |
+| ----------------------- | ---------------------- | ------------ | ---------- |
+| gateway2 (C1)           | Ubuntu 24.04 · ext4    | **+25–27s**  | 44–48s     |
+| gateway-nix             | NixOS 26.05 · btrfs    | +31–39s      | 40–43s     |
+| gateway-nix             | NixOS 26.05 · ext4     | +18–22s      | 20–31s     |
+| **qcic-syno** (final)   | NixOS 26.05 · ext4     | **+19–23s**  | 20–24s     |
+
+- **The guest filesystem mattered more than the OS.** btrfs inside a VM on
+  the Synology's btrfs tripled fsync cost (59 → 177 ms per 4 KiB sync write)
+  and doubled boot time; boot is fsync-bound (Docker, containerd). On ext4,
+  NixOS beats Ubuntu by ~6s and boots in under half the time.
+- **Provisioning is declarative and fast:** a new VM from an ISO to serving
+  took `nixos-anywhere` ~5 min plus a 3m22s image build. Everything the host
+  is lives in [flake.nix](flake.nix); per-host values reach the stack through
+  `/etc/qcic-core/host.env`.
+- **Live since 2026-09-25:** `health.qcic{,.ts}.imetrical.net` are CNAMEs to
+  `qcic-syno{,.ts}`; production gateway proxies `health.qcic.dl` to the
+  service name; Better Stack green. gateway2 and gateway-nix are deleted.
+- **#297 reproduced on every host** — a worker dead after most reboots; the
+  stale production consumer (`duplicate subscription`) and the startup race.
+
+Everything below is the working record, in the order it happened.
 
 ## 0 · Prepare
 

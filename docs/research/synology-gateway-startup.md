@@ -6,7 +6,14 @@ bottom. Times are EDT; guest logs are UTC (−4).
 
 > **Takeaway, 2026-09-24 — what the availability story has to account for.**
 >
-> - **VM restart: ~25–30s** to NATS ready. That is the floor.
+> - **VM restart: ~25–30s** to NATS ready on Ubuntu 24.04 (gateway2).
+>   **Update 2026-09-25: +19–23s on qcic-syno** (NixOS 26.05, ext4 guest; #298,
+>   [infra/qcic-core/ROLLOUT.md](../../infra/qcic-core/ROLLOUT.md)).
+> - **Guest filesystem matters more than the OS.** btrfs inside a VM on the
+>   Synology's btrfs tripled fsync cost and pushed the same NixOS host to
+>   +31–39s. Boot is fsync-bound (Docker, containerd); use ext4 in guests.
+> - **Don't measure during the monthly scrub** (24th, 05:00Z) — it slows
+>   every guest several-fold.
 > - **Full Synology cycle: up to ~9 min.** Power cut 7m16s; planned DSM
 >   restart 8m15s (shutdown ~1.5 min + boot ~6.5 min). The Synology's own
 >   stage before any VM starts is a stable ~3 min, and guests boot ~7× slower
