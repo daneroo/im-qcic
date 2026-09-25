@@ -42,7 +42,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Netlify** — a real, active account ("Daniel Lauzon's team"), unrelated to the `.n.` DNS convention (that was zeit/now, not Netlify — see above). Confirmed via `netlify sites:list`: 4 sites, none tied to qcic and none using an `imetrical.com` custom domain — all on default `*.netlify.app` URLs: `wifidan`, `djembe-bolt` (has its own repo, `daneroo/djembe-bolt-astro-site`), `ir-logo` (`daneroo/ir-logo`), `helium-logo` (`daneroo/helium-logo`). `packages/ui` does have a `netlify.toml` with a site ID (`f0220657-...`) not in this current list — a genuine but now-gone Netlify deployment attempt, separate from its `.n.` zeit/now alias.
 - **Zeit/now (defunct)** — the provider itself no longer exists; it rebranded to Vercel in 2020. Explains the `.n.` DNS convention and the `now.json` files found in `packages/{ui,docz,time}`. Also explains a real architectural fork: zeit/now originally ran always-on containers (so a deployed service could hold its own state), and losing that on the move to stateless serverless is why Site proxies to the homelab instead of holding state itself — see [ADR-0001](./docs/adr/0001-site-proxies-state-through-natsql.md).
 - **Vercel** — hosts Site (`qcic.v.imetrical.com`). Account scope beyond Site not yet inventoried.
-- **Better Stack** (formerly BetterUptime, [dashboard](https://uptime.betterstack.com/team/t17237/monitors)) — third-party uptime monitoring, replaced EasyCron 2021-09-04. Publicly monitors two confirmed-live endpoints: `natsql.dl.imetrical.com/health` and `scrobblecast.dl.imetrical.com/api/status`. The de facto safety net until QCIC's own dashboard (Design/html-react) can be fully trusted.
+- **Better Stack** (formerly BetterUptime, [dashboard](https://uptime.betterstack.com/team/t17237/monitors)) — third-party uptime monitoring, replaced EasyCron 2021-09-04. Publicly monitors three endpoints: `natsql.dl.imetrical.com/health`, `scrobblecast.dl.imetrical.com/api/status`, and `health.qcic.dl.imetrical.com/healthz` (QCIC v2's health, on qcic-syno, via Gateway's Caddy). The de facto safety net until QCIC's own dashboard (Design/html-react) can be fully trusted.
 - **Tailscale** — the tailnet linking every homelab host (see the `.ts.` DNS convention and Host naming convention above). Also provides an **AI proxy** feature (shows up as an "`ai`" entry in `tailscale status`, not a real peer/host) — centralizes LLM API request management and cost accounting across the tailnet. Not yet inventoried beyond that.
 
 ## v2: Bun monorepo migration (in progress)
@@ -61,7 +61,8 @@ Site and Status — the only two packages with real daily use — are being port
 (confirmed active — has its own CONTEXT.md)
 
 - [QCIC (v2)](./v2/CONTEXT.md) — the Bun workspace rebuilding the repo; owns the monitoring vocabulary (continuity, convergence, states of knowledge)
-- [Gateway](./infra/gateway/CONTEXT.md) — always-up Ubuntu VM hosting caddy, nats, natsql, status
+- [Gateway](./infra/gateway/CONTEXT.md) — legacy always-up Ubuntu VM hosting caddy, nats, natsql, status; kept for the legacy NATS server and public ingress (the `.dl` sites)
+- [Qcic-core](./infra/qcic-core/README.md) — the QCIC v2 stack (NATS, health, ted1k-derive, scast-bridge, Caddy) as docker compose, plus the NixOS flake for its host(s); runs on Qcic-syno. Background: [docs/virtualization-guide.md](./docs/virtualization-guide.md)
 - [Hass](./infra/hass/CONTEXT.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
 - [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois
 - [Cloudrun](./cloudrun/CONTEXT.md) — deployed "myip" service on Google Cloud Run, at myip.g.imetrical.com
@@ -80,6 +81,7 @@ Site and Status — the only two packages with real daily use — are being port
 ## Relationships
 
 - **Gateway → Status, Natsql**: Gateway's `docker-compose.yaml` builds and runs these packages directly as services
+- **Qcic-syno → Qcic-core**: runs the stack; `health.qcic{,.ts}.imetrical.net` are CNAMEs to `qcic-syno{,.ts}`, and Gateway's Caddy proxies `health.qcic.dl` to that service name
 - **Syno → Gateway, Pxbk, Qcic-syno**: Synology NAS host running these as VMs; also runs Jellyfin directly via Container Manager (not a VM)
 - **Syno → Synk**: Synk is an offsite mirror of many of Syno's volume shares
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
@@ -124,7 +126,7 @@ Site and Status — the only two packages with real daily use — are being port
 - **Jetkvm** — a JetKVM hardware device (remote KVM-over-IP), seen offline in Tailscale's peer list. No further detail yet.
 - **Gauss** — a Beelink SER8 running NixOS, with btrfs-mirrored storage used to benchmark against in Fio. Deployed from `daneroo/nix-garden` (see below).
 - **Hardy** — a converted Chromebook running NixOS, deployed from the same config repo as Gauss: **`daneroo/nix-garden`**, an external repo entirely outside this monorepo. Named for G. H. Hardy (Hardy spaces; Ramanujan's mentor), so it fits the mathematician-naming pattern.
-- **Qcic-syno** — a NixOS VM on Syno, the first host of the **qcic-core** component (`infra/qcic-core/`: the QCIC v2 stack plus its NixOS flake). Named `<role>-<where it runs>`, like `scast-hilbert`. Built in #298 as `gateway-nix`; promotion to replace Gateway's backbone role is #292's.
+- **Qcic-syno** — a NixOS VM on Syno, the first host of the **qcic-core** component (`infra/qcic-core/`: the QCIC v2 stack plus its NixOS flake). Named `<role>-<where it runs>`, like `scast-hilbert`. Built in #298 (NixOS 26.05, ext4, provisioned with `nixos-anywhere`); live since 2026-09-25. What else moves off Gateway is #292's.
 - **Nix-garden** (`daneroo/nix-garden`) — a separate repo managing NixOS configuration for at least Hardy and Gauss. Same pattern as `im-ted1k`: real infra-as-code, entirely outside this monorepo.
 - **Euler** — secondary Proxmox server, currently named `px1` (reverting — see naming convention above). Hosts a Ubuntu VM currently named `d1-px1`, soon to be renamed `scast-euler`, running one of Scrobblecast's three copies. No directory/inventory record in this repo.
 - **Davinci** — an iMac M1. No directory/inventory record in this repo.
