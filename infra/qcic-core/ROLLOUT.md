@@ -327,6 +327,20 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
       01:36:55Z; md2 85% busy on small writes). Quiet samples reproduce
       gateway-nix's ext4 result: **+19–21s against Ubuntu's +25–27s**.
 - [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`)
+- [x] DNS (Daniel, 2026-09-25): removed `gateway2{,.ts}` on both Hover and
+      Cloudflare; added `qcic-syno.imetrical.net` A `192.168.2.131` and
+      `qcic-syno.ts.imetrical.net` A `100.74.109.15`; `health.qcic{,.ts}`
+      changed from A records to **CNAMEs** to `qcic-syno{,.ts}` — service
+      names point at the host name, so a host move is one CNAME
+- [x] Production proxy: `infra/gateway` Caddyfile `health.qcic.dl` upstream
+      `gateway2.imetrical.net:80` → **`health.qcic.imetrical.net:80`** (the
+      service name). Direct commit on main `44ab0aa9`; pulled on gateway;
+      `caddy validate` on `qcic-caddy:latest` → valid; `up -d
+      --force-recreate caddy` (8s). Public `/healthz` 502 → 200,
+      observer `qcic-syno`; audiobook 200
+- [ ] DHCP reservation for `.131` — the router's reservation UI is broken
+      ("already in use" by qcic-syno itself); lease is 3 days and survives
+      reboots. Moving DHCP to UniFi is #292's
 - [x] Tailscale: gateway-nix and gateway2 nodes removed; key expiry disabled
       on qcic-syno (Daniel, 2026-09-25). gateway2 would need a fresh
       `tailscale up` if ever started again
