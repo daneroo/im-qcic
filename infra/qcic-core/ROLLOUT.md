@@ -326,8 +326,10 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
       Q1's noise was galois's hourly Time Machine backup to Syno (finished
       01:36:55Z; md2 85% busy on small writes). Quiet samples reproduce
       gateway-nix's ext4 result: **+19–21s against Ubuntu's +25–27s**.
-- [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`);
-      remove its Tailscale node
+- [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`)
+- [x] Tailscale: gateway-nix and gateway2 nodes removed; key expiry disabled
+      on qcic-syno (Daniel, 2026-09-25). gateway2 would need a fresh
+      `tailscale up` if ever started again
 
 Close (Daniel reviews each):
 - [ ] Docs: one consolidated ROLLOUT, research takeaway, timeline page
