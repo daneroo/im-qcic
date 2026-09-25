@@ -41,7 +41,7 @@ independent poll cadence went further than that original idea called for.
 ```sh
 cd v2/apps/ted1k-derive
 bun install
-bun run dev
+HOSTALIAS=$(hostname -s) bun run dev
 ```
 
 Needs two gitignored credential files at the workspace-root
@@ -56,7 +56,7 @@ Needs two gitignored credential files at the workspace-root
 With `v2/infra/compose.yaml` up and both credential files in place:
 
 ```sh
-bun run src/index.ts
+HOSTALIAS=$(hostname -s) bun run src/index.ts
 ```
 
 Watch a published KV entry directly:
@@ -85,6 +85,6 @@ bare-metal `localhost:4222` — see `config.ts`'s comment) and the
 
 ```sh
 cd v2/infra
-docker compose up -d --build ted1k-derive
+just compose up -d --build ted1k-derive
 docker logs -f infra-ted1k-derive-1
 ```

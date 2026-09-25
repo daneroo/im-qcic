@@ -21,7 +21,6 @@ import {
   type NatsConnection,
 } from "nats";
 import {
-  DURABLE_NAME,
   SOURCE_STREAM_NAME,
   SOURCE_SUBJECT,
   type ScrobblecastCredentials,
@@ -48,6 +47,7 @@ export interface ScrobblecastSource {
 
 export function createScrobblecastSource(
   credentials: ScrobblecastCredentials | null,
+  durable: string,
 ): ScrobblecastSource {
   let ncPromise: Promise<NatsConnection> | null = null;
 
@@ -60,7 +60,7 @@ export function createScrobblecastSource(
     if (!ncPromise) {
       ncPromise = connect({
         servers: credentials.servers,
-        name: "scast-bridge",
+        name: durable,
         maxReconnectAttempts: -1,
       });
     }
@@ -81,7 +81,7 @@ export function createScrobblecastSource(
       const js = nc.jetstream();
 
       const opts = consumerOpts();
-      opts.durable(DURABLE_NAME);
+      opts.durable(durable);
       opts.manualAck();
       opts.ackExplicit();
       opts.deliverTo(createInbox());

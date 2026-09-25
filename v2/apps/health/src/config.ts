@@ -1,4 +1,3 @@
-import { hostname as osHostname } from "node:os";
 import type { LocalApiConfig } from "./local-api";
 
 export interface Config {
@@ -13,12 +12,16 @@ export interface Config {
   tailscale: LocalApiConfig;
 }
 
+// HOSTALIAS is required: in a container the hostname is the container ID,
+// never the observer name (#297).
 export function readConfig(
   environment: Record<string, string | undefined> = process.env,
-  hostname = osHostname(),
 ): Config {
+  if (!environment.HOSTALIAS) {
+    throw new Error("health: HOSTALIAS is required");
+  }
   return {
-    observer: environment.HOSTALIAS || hostname,
+    observer: environment.HOSTALIAS,
     port: positiveNumber(environment.PORT, 8000),
     publishIntervalMs: positiveNumber(environment.PUBLISH_INTERVAL_MS, 10_000),
     natsFreshnessMs: positiveNumber(environment.NATS_FRESHNESS_MS, 10_000),
@@ -51,5 +54,3 @@ function positiveNumber(value: string | undefined, fallback: number): number {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
-
-export const config = readConfig();

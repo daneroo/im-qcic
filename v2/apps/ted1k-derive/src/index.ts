@@ -1,5 +1,6 @@
 import {
   config,
+  hostAlias,
   KV_BUCKET_NAME,
   pollIntervalMs,
   type ViewName,
@@ -9,6 +10,14 @@ import { createKvSink } from "./kv-sink";
 import { pollView } from "./poll";
 import { queries } from "./ted1k";
 import { log } from "./logger";
+
+let hostname: string;
+try {
+  hostname = hostAlias(process.env);
+} catch (err) {
+  log.fatal({ err: (err as Error).message }, "invalid configuration");
+  process.exit(1);
+}
 
 const datasource = createMysqlDataSource(config.mysql);
 const sink = createKvSink(config.nats);
@@ -21,7 +30,7 @@ async function cycle(view: ViewName): Promise<void> {
     await pollView(view, {
       datasource,
       publish: sink.publish,
-      hostname: config.hostname,
+      hostname,
       version: config.version,
     });
     log.info({ view }, "published");
