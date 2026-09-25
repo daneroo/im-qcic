@@ -80,7 +80,7 @@ Site and Status — the only two packages with real daily use — are being port
 ## Relationships
 
 - **Gateway → Status, Natsql**: Gateway's `docker-compose.yaml` builds and runs these packages directly as services
-- **Syno → Gateway, Pxbk**: Synology NAS host running these as VMs; also runs Jellyfin directly via Container Manager (not a VM)
+- **Syno → Gateway, Pxbk, Qcic-syno**: Synology NAS host running these as VMs; also runs Jellyfin directly via Container Manager (not a VM)
 - **Syno → Synk**: Synk is an offsite mirror of many of Syno's volume shares
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)
 - **Galois → Jellyfin (dev)**: a disposable local Jellyfin instance runs on Galois for development, reading the same media as the Syno production instance
@@ -111,7 +111,7 @@ Site and Status — the only two packages with real daily use — are being port
 
 (gaps surfaced during inventory — a real thing exists, but has no directory/CONTEXT.md yet)
 
-- **Syno** — the Synology NAS host itself (runs the `Gateway` and `Pxbk` VMs, plus `Jellyfin` via Container Manager). No directory yet; candidate location `infra/syno/`.
+- **Syno** — the Synology NAS host itself (runs the `Gateway`, `Pxbk` and `qcic-syno` VMs, plus `Jellyfin` via Container Manager; its Ubuntu predecessor `gateway2` was deleted 2026-09-25). No directory yet; candidate location `infra/syno/`.
 - **Pxbk** — Proxmox Backup Server VM on Syno. No deployment record in this repo at all; origin/config unknown.
 - **Dirac** — a host Caddy (on Gateway) proxies to (`dirac.imetrical.com:8000`, `:5000`). No deployment record in this repo at all.
 - **Scrobblecast** — bigger than first thought: three copies run across the homelab — `scast-hilbert` (VM 102 on Hilbert), `darwin`, and `scast-euler` (currently named `d1-px1`, a Ubuntu VM on the Euler Proxmox host, running scrobblecast in docker — currently the active proxied one, chosen for power-failure robustness). Reverse-proxied at `scrobblecast.dl.imetrical.com → d1-px1.imetrical.com:8000` and checked for gaps by Status's `logcheck`. `/api/status` confirmed live (curl'd during this inventory) and publicly monitored by Better Stack (see Cloud accounts). Snapshots to S3 under the Personal AWS account. QCIC intends to actively track this one — credentials, S3 assets, and status/sync monitoring across the three copies — not just note it in passing. No source/deployment record in this repo yet.
@@ -123,7 +123,8 @@ Site and Status — the only two packages with real daily use — are being port
 - **Shannon** — a repurposed 19" iMac running Bluefin (the mathematician-named host, Claude Shannon), confirmed alive via Tailscale. Also the same "shannon" `events/`'s old README credited as a credentials source — so it's a real, long-lived host, not just a name in a stale note.
 - **Jetkvm** — a JetKVM hardware device (remote KVM-over-IP), seen offline in Tailscale's peer list. No further detail yet.
 - **Gauss** — a Beelink SER8 running NixOS, with btrfs-mirrored storage used to benchmark against in Fio. Deployed from `daneroo/nix-garden` (see below).
-- **Hardy** — a converted Chromebook running NixOS, deployed from the same config repo as Gauss: **`daneroo/nix-garden`**, an external repo entirely outside this monorepo. Breaks the mathematician-naming pattern deliberately (Ubuntu release codename, "Hardy Heron").
+- **Hardy** — a converted Chromebook running NixOS, deployed from the same config repo as Gauss: **`daneroo/nix-garden`**, an external repo entirely outside this monorepo. Named for G. H. Hardy (Hardy spaces; Ramanujan's mentor), so it fits the mathematician-naming pattern.
+- **Qcic-syno** — a NixOS VM on Syno, the first host of the **qcic-core** component (`infra/qcic-core/`: the QCIC v2 stack plus its NixOS flake). Named `<role>-<where it runs>`, like `scast-hilbert`. Built in #298 as `gateway-nix`; promotion to replace Gateway's backbone role is #292's.
 - **Nix-garden** (`daneroo/nix-garden`) — a separate repo managing NixOS configuration for at least Hardy and Gauss. Same pattern as `im-ted1k`: real infra-as-code, entirely outside this monorepo.
 - **Euler** — secondary Proxmox server, currently named `px1` (reverting — see naming convention above). Hosts a Ubuntu VM currently named `d1-px1`, soon to be renamed `scast-euler`, running one of Scrobblecast's three copies. No directory/inventory record in this repo.
 - **Davinci** — an iMac M1. No directory/inventory record in this repo.
