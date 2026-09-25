@@ -72,7 +72,7 @@ compose +args:
 
 # ── nix · on vm: apply what was pushed ───────────────────────────────────────
 
-# git pull, then nixos-rebuild switch to this host's entry (asks if not on main)
+# git pull, nixos-rebuild switch, say if a reboot is needed (asks if not on main)
 [group('nix · on vm')]
 nixos-update:
     #!/usr/bin/env bash
@@ -84,6 +84,11 @@ nixos-update:
     fi
     git pull --ff-only
     sudo nixos-rebuild switch --flake ".#$(hostname)"
+    need=""
+    for f in kernel initrd kernel-modules kernel-params; do
+      [ "$(readlink -f /run/booted-system/$f)" = "$(readlink -f /run/current-system/$f)" ] || need="$need $f"
+    done
+    if [ -n "$need" ]; then echo "reboot needed:$need changed"; else echo "no reboot needed"; fi
 
 # list generations (roll back: sudo nixos-rebuild switch --rollback)
 [group('nix · on vm')]
