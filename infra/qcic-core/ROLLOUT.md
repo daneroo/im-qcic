@@ -326,7 +326,8 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
       Reproduces gateway-nix's ext4 result: **+19–23s against Ubuntu's
       +25–27s**. A guest reboot is a little slower than a VMM restart here:
       Docker waits for `nss-lookup.target` (~14s, behind DHCP).
-- [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`)
+- [x] Deleted in VMM (Daniel, 2026-09-25): **gateway-nix** and **gateway2**,
+      each with its disks and all snapshots. gateway2 is retired
 - [x] DNS (Daniel, 2026-09-25): removed `gateway2{,.ts}` on both Hover and
       Cloudflare; added `qcic-syno.imetrical.net` A `192.168.2.131` and
       `qcic-syno.ts.imetrical.net` A `100.74.109.15`; `health.qcic{,.ts}`

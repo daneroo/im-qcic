@@ -123,7 +123,7 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
 14. **Only one host may run the stack.** `scast-bridge` binds a durable push
     consumer on production NATS; a second instance fails with
     `duplicate subscription` (#297). Stop the stack on any other qcic-core
-    or gateway2 host first · Daniel
+    host first · Daniel
 15. **qcic-syno** · `just start` · agent
 16. **qcic-syno** · verify **by worker logs, not `docker ps`** · agent
     - `nats`: `Server is ready`

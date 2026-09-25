@@ -111,7 +111,7 @@ Site and Status — the only two packages with real daily use — are being port
 
 (gaps surfaced during inventory — a real thing exists, but has no directory/CONTEXT.md yet)
 
-- **Syno** — the Synology NAS host itself (runs the `Gateway`, `Pxbk` and `qcic-syno` VMs, plus `Jellyfin` via Container Manager; `gateway2`, a retired Ubuntu predecessor of `qcic-syno`, is kept shut down). No directory yet; candidate location `infra/syno/`.
+- **Syno** — the Synology NAS host itself (runs the `Gateway`, `Pxbk` and `qcic-syno` VMs, plus `Jellyfin` via Container Manager; its Ubuntu predecessor `gateway2` was deleted 2026-09-25). No directory yet; candidate location `infra/syno/`.
 - **Pxbk** — Proxmox Backup Server VM on Syno. No deployment record in this repo at all; origin/config unknown.
 - **Dirac** — a host Caddy (on Gateway) proxies to (`dirac.imetrical.com:8000`, `:5000`). No deployment record in this repo at all.
 - **Scrobblecast** — bigger than first thought: three copies run across the homelab — `scast-hilbert` (VM 102 on Hilbert), `darwin`, and `scast-euler` (currently named `d1-px1`, a Ubuntu VM on the Euler Proxmox host, running scrobblecast in docker — currently the active proxied one, chosen for power-failure robustness). Reverse-proxied at `scrobblecast.dl.imetrical.com → d1-px1.imetrical.com:8000` and checked for gaps by Status's `logcheck`. `/api/status` confirmed live (curl'd during this inventory) and publicly monitored by Better Stack (see Cloud accounts). Snapshots to S3 under the Personal AWS account. QCIC intends to actively track this one — credentials, S3 assets, and status/sync monitoring across the three copies — not just note it in passing. No source/deployment record in this repo yet.
