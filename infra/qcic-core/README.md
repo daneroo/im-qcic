@@ -147,6 +147,9 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
   Synology's btrfs; guest btrfs on top tripled the cost of every fsync
   (59 → 177 ms) and doubled boot time. Boot is fsync-bound: Docker and
   containerd write small state files synchronously.
+- **`nomodeset`.** VMM's UEFI VMs present a VMware SVGA II adapter; without
+  it `vmwgfx` takes the display over mid-boot and VMM's console freezes
+  before the login prompt (the installer ISO has the same problem — step 4).
 - **Disks by id** (`/dev/disk/by-id/scsi-…`), not `/dev/sdX`: attaching a
   second disk renamed them once.
 - **GPT with BIOS-boot and ESP partitions**, GRUB installed for both: the

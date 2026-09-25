@@ -305,6 +305,9 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
   - [x] 13 `just build` **3m22s** (00:59:10 → 01:02:32Z, scrub paused) —
         against 39m on btrfs during the scrub and 11m30s on gateway2's Ubuntu
   - [x] 14 gateway-nix and gateway2 off; prod consumer unbound
+  - [x] VMM console froze before the login prompt (UEFI + VMware SVGA II:
+        `vmwgfx` takes over from `simpledrm`). Fixed with
+        `boot.kernelParams = [ "nomodeset" ]` (`b1df58d6`); confirmed by Daniel
   - [x] 15–16 `just start` 01:02Z; verified by worker logs: NATS ready;
         `ted1k-derive` published all three views; `scast-bridge` copied (86,
         catching up since 22:15Z); caddy certs for `qcic-syno{,.ts}.imetrical.net`
