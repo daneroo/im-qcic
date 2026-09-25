@@ -318,14 +318,14 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
 
       | #  | method            | Synology        | total boot | NATS ready | tailnet | workers |
       | -- | ----------------- | --------------- | ---------- | ---------- | ------- | ------- |
-      | Q1 | guest reboot      | Time Machine    | 41.5s      | +39s       | +23s    | scast dead (`duplicate subscription`) |
+      | Q1 | guest reboot      | quiet           | 23.7s      | **+23s**   | +12s    | scast dead (`duplicate subscription`, #297) |
       | Q2 | VMM restart       | quiet           | 20.1s      | **+19s**   | +10s    | both ok |
       | Q3 | VMM restart       | quiet           | 20.7s      | **+20s**   | +17s    | both ok |
       | Q4 | shut down + start | quiet           | 22.4s      | **+21s**   | +8s     | both ok; Start → kernel ~6s (UEFI) |
 
-      Q1's noise was galois's hourly Time Machine backup to Syno (finished
-      01:36:55Z; md2 85% busy on small writes). Quiet samples reproduce
-      gateway-nix's ext4 result: **+19–21s against Ubuntu's +25–27s**.
+      Reproduces gateway-nix's ext4 result: **+19–23s against Ubuntu's
+      +25–27s**. A guest reboot is a little slower than a VMM restart here:
+      Docker waits for `nss-lookup.target` (~14s, behind DHCP).
 - [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`)
 - [x] DNS (Daniel, 2026-09-25): removed `gateway2{,.ts}` on both Hover and
       Cloudflare; added `qcic-syno.imetrical.net` A `192.168.2.131` and
