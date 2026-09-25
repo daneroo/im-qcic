@@ -91,6 +91,11 @@
             efiSupport = true;
             efiInstallAsRemovable = true;
           };
+          # VMM's UEFI VMs present a VMware SVGA II adapter. Without this,
+          # vmwgfx takes the display over from the firmware framebuffer
+          # mid-boot and VMM's console freezes before the login prompt.
+          boot.kernelParams = [ "nomodeset" ];
+
           # Ubuntu on gateway2 uses GRUB_TIMEOUT=0; 1s keeps the generation
           # menu reachable at a known cost to the QEMU -> kernel stage.
           boot.loader.timeout = 1;
