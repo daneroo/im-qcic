@@ -133,7 +133,7 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
       `health.qcic{,.ts}.imetrical.net`
     - `curl -s -H 'Host: health.qcic.dl.imetrical.com' http://127.0.0.1/healthz` → 200
 
-    A worker dead after a restart is #297 — `docker compose restart <worker>`.
+    A worker dead after a restart is #297 — `just compose restart <worker>` (plain `docker compose` lacks `host.env` and refuses).
 
 ## Operate
 
