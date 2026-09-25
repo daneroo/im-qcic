@@ -283,7 +283,26 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
       `push_bound=false` — a clean `down` releases it; only reboots leave it
       bound (#297). gateway2 off since 2026-09-24 ~04:30Z, autostart off
 - [ ] VMM · gateway-nix · autostart off · Daniel
-- [ ] README steps 1–16 on a new VM `qcic-syno`
+- [ ] README steps 1–16 on a new VM `qcic-syno` — progress 2026-09-24/25:
+  - [x] 1–3 VM created: Q35, UEFI, 4 vCPU, 4 GB, 200 GB, Above normal,
+        autostart. VMM fixes firmware at creation
+  - [x] 4 installer: the graphical ISO's display froze under UEFI at the
+        Plymouth handover; booted fine behind it (found by MAC at `.143`).
+        Fixed with GRUB → Options → **No modesetting**; `passwd` in GNOME
+  - [x] 5 keys: `nixos-anywhere` targets **root** — looped on `1 key(s)
+        remain` against `nixos@` (48 tries), and `--env-password` also
+        targets root. Copying the keys to `/root/.ssh` fixed it
+  - [x] 6 disk `scsi-36001405b15d7a6ed5715d4107da118d9` pinned (`f67c489a`)
+  - [x] 7 install: upload 945 MiB peaking 557 Mbps; GRUB i386-pc + x86_64-efi
+  - [x] 8 ISO unmounted (VM off). Installed system boots **UEFI**, ext4;
+        first clean boot 18.2s total with no stack; VMM provides a vTPM
+        (no wait on `/dev/tpm0`). **TRIM is not passed through**
+        (`DISC-MAX 0B`) — thin LUN won't reclaim; for #292
+  - [x] 9 new lease `192.168.2.131`
+  - [x] 10 tailnet `qcic-syno` `100.74.109.15`
+  - [x] 11–12 branch cloned; credentials placed; `host.env` from the flake;
+        `just compose config` passes
+  - [ ] 13 `just build` (started 00:59:10Z, scrub paused)
 - [ ] Samples on qcic-syno (the final numbers for the verdict)
 - [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`);
       remove its Tailscale node
