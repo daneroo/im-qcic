@@ -283,7 +283,7 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
       `push_bound=false` — a clean `down` releases it; only reboots leave it
       bound (#297). gateway2 off since 2026-09-24 ~04:30Z, autostart off
 - [ ] VMM · gateway-nix · autostart off · Daniel
-- [ ] README steps 1–16 on a new VM `qcic-syno` — progress 2026-09-24/25:
+- [x] README steps 1–16 on a new VM `qcic-syno` — progress 2026-09-24/25:
   - [x] 1–3 VM created: Q35, UEFI, 4 vCPU, 4 GB, 200 GB, Above normal,
         autostart. VMM fixes firmware at creation
   - [x] 4 installer: the graphical ISO's display froze under UEFI at the
@@ -302,7 +302,14 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
   - [x] 10 tailnet `qcic-syno` `100.74.109.15`
   - [x] 11–12 branch cloned; credentials placed; `host.env` from the flake;
         `just compose config` passes
-  - [ ] 13 `just build` (started 00:59:10Z, scrub paused)
+  - [x] 13 `just build` **3m22s** (00:59:10 → 01:02:32Z, scrub paused) —
+        against 39m on btrfs during the scrub and 11m30s on gateway2's Ubuntu
+  - [x] 14 gateway-nix and gateway2 off; prod consumer unbound
+  - [x] 15–16 `just start` 01:02Z; verified by worker logs: NATS ready;
+        `ted1k-derive` published all three views; `scast-bridge` copied (86,
+        catching up since 22:15Z); caddy certs for `qcic-syno{,.ts}.imetrical.net`
+        (`HOST_NAME` from the flake) and `health.qcic{,.ts}`; `/healthz` 200
+        with `"observer":"qcic-syno"` (`HOSTALIAS` from the flake)
 - [ ] Samples on qcic-syno (the final numbers for the verdict)
 - [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`);
       remove its Tailscale node
