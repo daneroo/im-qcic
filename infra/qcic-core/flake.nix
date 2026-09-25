@@ -1,5 +1,5 @@
 # qcic-syno: a qcic-core host - the smallest NixOS machine that runs
-# ./compose.yaml. Exploratory origin: #298; tracking in ./ROLLOUT.md.
+# ./compose.yaml. Origin: #298; see ./README.md.
 #
 # One machine today; a second qcic-core host would be another entry in
 # nixosConfigurations sharing `common`.
@@ -59,7 +59,7 @@
       };
 
       # ext4, not btrfs: the LUN already sits on the Synology's btrfs, and
-      # guest btrfs on top cost ~3x per fsync (ROLLOUT.md, disk finding).
+      # guest btrfs on top cost ~3x per fsync (docs/virtualization-guide.md).
       # By id, not /dev/sdX: attaching a disk renamed them once already, and
       # GRUB's install target has to survive that.
       ext4Disk = {

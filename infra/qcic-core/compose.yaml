@@ -1,5 +1,5 @@
 # qcic-core - the QCIC v2 stack plus Caddy, as deployed on a qcic-core host
-# (today: qcic-syno, a NixOS VM on the Synology; see flake.nix, ROLLOUT.md).
+# (today: qcic-syno, a NixOS VM on the Synology; see flake.nix, README.md).
 #
 # This file is a COPY of v2/infra/compose.yaml. Keep the two in sync. Run
 # `diff v2/infra/compose.yaml infra/qcic-core/compose.yaml` - the delta is

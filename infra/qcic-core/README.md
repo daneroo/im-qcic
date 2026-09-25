@@ -1,181 +1,37 @@
 # qcic-core
 
-The QCIC v2 stack — NATS, health, ted1k-derive, scast-bridge — plus Caddy,
-together with the NixOS recipe for the machines that run it.
+The QCIC v2 services (NATS, health, ted1k-derive, scast-bridge, plus Caddy) as
+a **docker compose** stack, together with the **NixOS flake** for the host(s)
+that run it. Today that is one host, `qcic-syno`, a VM on the Synology; a
+second host would be another entry in `flake.nix`. Background:
+[docs/virtualization-guide.md](../../docs/virtualization-guide.md).
 
-| file                  | what                                                                              |
-| --------------------- | --------------------------------------------------------------------------------- |
-| `flake.nix`           | NixOS host config; one `nixosConfigurations` entry per host (today: `qcic-syno`)  |
-| `compose.yaml`        | the stack; a copy of `v2/infra/compose.yaml` plus Caddy (sync rule in its header) |
-| `config/`             | Caddyfile, nats-server.conf                                                       |
-| `Justfile`            | `just build`, `just start`, `just logs`, …                                        |
-| `credentials/`        | gitignored; placed by hand (see below)                                            |
-| `data/`               | gitignored; NATS JetStream and Caddy certs, bind-mounted                          |
-| `ROLLOUT.md`          | how this came to be (#298), with measurements                                     |
-| `ROLLOUT-gateway2.md` | the Ubuntu predecessor's history (#292–#296)                                      |
+## Usage
 
-**Host naming.** `<role>-<where it runs>`, like `scast-hilbert`: `qcic-syno`
-is the qcic-core host on the Synology. A second host is a second
-`nixosConfigurations` entry.
+```sh
+just        # lists every recipe, grouped by where it runs
+```
 
-**Per-host values.** The flake writes `/etc/qcic-core/host.env` from the
-hostname: `HOST_NAME` (Caddy's host-scoped site, `<host>.imetrical.net`) and
-`HOSTALIAS` (containers only). The Justfile passes it to compose; compose
+- **nix · on galois (dev):** edit `flake.nix`, `just flake-check`, commit, push.
+- **nix · on vm:** `just nixos-update` pulls and switches, and says whether a
+  reboot is needed.
+- **docker · on vm:** `ps`, `build`, `start`, `down`, `restart`, `logs`.
+- **provision · from NixOS host:** once per new VM (below).
+
+The flake writes `/etc/qcic-core/host.env` (`HOSTALIAS`, `HOST_NAME`, derived
+from the hostname); the recipes pass it to compose, and plain `docker compose`
 refuses to start without it.
 
-## Provision a new host
+## How qcic-syno was provisioned
 
-A fresh Synology VMM VM, installed from a NixOS ISO with `nixos-anywhere`.
-Nothing is carried over from any other machine.
+A VMM VM (Q35, UEFI, 4 vCPU, 4 GB, 200 GB) booted from a NixOS installer ISO
+(GRUB → Options → No modesetting, or VMM's console freezes). With root on the
+installer reachable by gauss's SSH key and the disk's id pinned in `flake.nix`
+(`just provision-disks <ip>`), one command from gauss installs it:
 
-Each step: **machine · file/place · action · who.**
+```sh
+just provision qcic-syno <ip>
+```
 
-### 1 · Create the VM
-
-1. **galois → Syno** · VMM → Image → ISO · upload a NixOS installer ISO
-   (any recent one; the graphical ISO works — only its SSH is used) · Daniel
-2. **Syno** · VMM → Create → Linux · name `qcic-syno`; 4 vCPU; 4 GB RAM;
-   one 200 GB disk; same network as the other VMs; ISO in the CD drive;
-   machine type **Q35**; firmware **UEFI**; priority **Above normal** (as gateway2 had; production gateway is High) · Daniel. **VMM fixes the firmware at creation** — it cannot be changed later. Q35 is the modern
-   chipset (native PCIe), the usual pairing with UEFI and what Proxmox
-   recommends; PC (i440FX) and Legacy BIOS also work — the disk layout boots
-   both, and gateway2 / gateway-nix ran PC + BIOS.
-3. **Syno** · VMM · Start · Daniel
-
-### 2 · Reach the installer
-
-4. **VM console** · a terminal in the installer · `passwd` (twice), then
-   `ip -br a` for the address. If SSH does not answer later:
-   `sudo systemctl start sshd` · Daniel
-
-   Under UEFI the VMM console can freeze at "Starting Show Plymouth Boot
-   Screen" while the installer boots fine behind it. Reopen the console
-   window, or send Ctrl+Alt+F2 for a text console (auto-logged in as
-   `nixos`). Find the address without the console: VMM MACs start
-   `02:11:32`, so `arp -an | grep ' 2:11:32:'` after a ping sweep.
-
-5. **gauss** · give **root** on the installer gauss's key — `nixos-anywhere`
-   connects and installs its own temporary key as root, and loops forever on
-   `1 key(s) remain to be installed` if root has neither key nor password ·
-   Daniel
-
-   ```sh
-   ssh-copy-id nixos@<ip>     # the password from step 4
-   ssh nixos@<ip> 'sudo install -d -m700 /root/.ssh && sudo cp ~/.ssh/authorized_keys /root/.ssh/'
-   ```
-
-6. **gauss** · `ssh nixos@<ip> ls -l /dev/disk/by-id/` · the new disk's
-   `scsi-…` id (no `-part` suffix) → `ext4Disk` in `flake.nix`; commit, push · agent
-
-A custom installer ISO with the operator's key built in skips steps 4–5.
-
-### 3 · Install
-
-7. **gauss** · install onto the disk, from the pushed branch · Daniel
-
-   ```sh
-   nix run github:nix-community/nixos-anywhere -- \
-     -i ~/.ssh/id_ed25519 \
-     --phases disko,install,reboot \
-     --flake 'github:daneroo/im-qcic/<branch>?dir=infra/qcic-core#qcic-syno' \
-     --target-host root@<ip>
-   ```
-
-   The target is already a NixOS installer, so the `kexec` phase is skipped.
-   Wipes the disk named in `ext4Disk`.
-
-8. **Syno** · VMM · eject the ISO so the next boot is from disk · Daniel
-
-9. **galois** · `ssh daniel@<new ip>` · the installed system takes a **new
-   DHCP lease** (different client id from the installer); find it in VMM
-   (the guest agent reports it) or on the console · Daniel
-
-### 4 · First boot
-
-10. **qcic-syno** · `sudo tailscale up` → open the URL · Daniel
-11. **qcic-syno** · clone the repo (public; no GitHub credentials on the
-    host; `<branch>` is `main` once qcic-core is merged) · agent
-
-    ```sh
-    git clone -b <branch> https://github.com/daneroo/im-qcic ~/Code/iMetrical/im-qcic
-    ```
-
-12. **galois → qcic-syno** · copy the three gitignored credentials · agent
-
-    ```sh
-    cd infra/qcic-core
-    ssh qcic-syno mkdir -p Code/iMetrical/im-qcic/infra/qcic-core/credentials/caddy
-    scp credentials/caddy/CREDS.env qcic-syno:Code/iMetrical/im-qcic/infra/qcic-core/credentials/caddy/
-    scp credentials/credentials.{mysql,nats-prod}.json qcic-syno:Code/iMetrical/im-qcic/infra/qcic-core/credentials/
-    ```
-
-    | file                                     | used by        | canonical copy on galois                          |
-    | ---------------------------------------- | -------------- | ------------------------------------------------- |
-    | `credentials/caddy/CREDS.env`            | caddy (DNS-01) | `infra/gateway/credentials/caddy/CREDS.env`       |
-    | `credentials/credentials.mysql.json`     | ted1k-derive   | `v2/infra/credentials/credentials.mysql.json`     |
-    | `credentials/credentials.nats-prod.json` | scast-bridge   | `v2/infra/credentials/credentials.nats-prod.json` |
-
-13. **qcic-syno** · `cd ~/Code/iMetrical/im-qcic/infra/qcic-core && just build`
-    · agent (≈12 min on an idle Synology; ~40 min during a scrub)
-
-### 5 · Start and verify
-
-14. **Only one host may run the stack.** `scast-bridge` binds a durable push
-    consumer on production NATS; a second instance fails with
-    `duplicate subscription` (#297). Stop the stack on any other qcic-core
-    host first · Daniel
-15. **qcic-syno** · `just start` · agent
-16. **qcic-syno** · verify **by worker logs, not `docker ps`** · agent
-    - `nats`: `Server is ready`
-    - `ted1k-derive`: `published` for all three views
-    - `scast-bridge`: `copied`
-    - `caddy`: certificates obtained for `<host>{,.ts}.imetrical.net` and
-      `health.qcic{,.ts}.imetrical.net`
-    - `curl -s -H 'Host: health.qcic.dl.imetrical.com' http://127.0.0.1/healthz` → 200
-
-    A worker dead after a restart is #297 — `just compose restart <worker>` (plain `docker compose` lacks `host.env` and refuses).
-
-## Operate
-
-- Config change: edit `flake.nix`, push, then on the host
-  `sudo nixos-rebuild switch --refresh --flake 'github:daneroo/im-qcic/<branch>?dir=infra/qcic-core#qcic-syno'`
-- Stack: `just start`, `just down`, `just logs <service>`, `just status`
-
-## Why it is built this way
-
-- **ext4 in the guest, never btrfs.** The virtual disk already sits on the
-  Synology's btrfs; guest btrfs on top tripled the cost of every fsync
-  (59 → 177 ms) and doubled boot time. Boot is fsync-bound: Docker and
-  containerd write small state files synchronously.
-- **`nomodeset`.** VMM's UEFI VMs present a VMware SVGA II adapter; without
-  it `vmwgfx` takes the display over mid-boot and VMM's console freezes
-  before the login prompt (the installer ISO has the same problem — step 4).
-- **Disks by id** (`/dev/disk/by-id/scsi-…`), not `/dev/sdX`: attaching a
-  second disk renamed them once.
-- **GPT with BIOS-boot and ESP partitions**, GRUB installed for both: the
-  same disk boots under Legacy BIOS or UEFI, on VMM or Proxmox.
-- **State that is not in the flake:** `/var/lib/tailscale` (node identity),
-  `/etc/ssh/ssh_host_*` (SSH identity; also the future secrets identity),
-  `credentials/`, `data/`. A reinstall loses them unless carried.
-- **Don't measure on the 24th.** The Synology scrubs monthly (24th, 05:00Z,
-  no quiet hours) and slows every guest several-fold for hours.
-
-## Watch
-
-- **Snapshots may slow the disk over time.** qcic-syno has a VMM protection
-  plan (1-day RPO: 7 daily, 4 weekly — same as production gateway; crash-
-  consistent). On the Synology's btrfs each snapshot turns the next write to
-  every block into a copy, fragmenting the virtual disk. Production gateway's
-  four-year-old disk (11 snapshots) does fsync ~2× slower than qcic-syno's
-  fresh one. Re-run `dd if=/dev/zero of=t bs=4k count=200 oflag=dsync`
-  monthly (baseline: 11.8s on 2026-09-24 with the scrub paused; avoid the 24th and Time Machine runs).
-- **Time Machine** (galois → `TM-Galois26` on Syno, hourly) makes md2 ~85%
-  busy while it runs; boot samples during a backup read ~2× slower.
-
-## Not yet
-
-- Secrets are copied by hand. Planned: agenix or sops-nix, encrypted to each
-  host's SSH host key — in nix-garden first.
-- `sudo` without a password (`wheelNeedsPassword = false`) is temporary.
-- DHCP reservation, DNS A records, production's `reverse_proxy` target, and
-  retiring gateway2 are #292's.
+Then: unmount the ISO, `sudo tailscale up`, clone this repo, copy
+`credentials/` from galois (gitignored), `just build start`.
