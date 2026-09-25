@@ -31,9 +31,9 @@ eventually.
   modern `@nats-io/*` Consumer API hard-fails against this server's actual
   version (`2.7.3-beta.3`, needs ≥2.9.4; see
   `docs/research/nats-js-client-current-practices.md`'s erratum). A **durable
-  named consumer** (`scast-bridge`) means a restart resumes from its last
-  acknowledged position rather than re-replaying — and re-publishing — the whole
-  backlog every time. See `scrobblecast-source.ts`.
+  named consumer** (`scast-bridge-${HOSTALIAS}`, one per host) means a restart
+  resumes from its last acknowledged position rather than re-replaying — and
+  re-publishing — the whole backlog every time. See `scrobblecast-source.ts`.
 - **Write side → the new NATS server** (`v2/infra/compose.yaml`, from #236 —
   genuinely separate infrastructure, never the production server). Uses the
   **modern `@nats-io/*` packages**. The destination stream (`scastDigest`)
@@ -68,7 +68,7 @@ one subject filter.
 ```sh
 cd v2/apps/scast-bridge
 bun install
-bun run dev
+HOSTALIAS=$(hostname -s) bun run dev
 ```
 
 Needs two gitignored credential files at the workspace-root
@@ -89,7 +89,7 @@ nats -s nats.ts.imetrical.com sub -r "im.scrobblecast.>" | pino-pretty -a stamp 
 With `v2/infra/compose.yaml` up and both credential files in place:
 
 ```sh
-bun run src/index.ts
+HOSTALIAS=$(hostname -s) bun run src/index.ts
 ```
 
 Watch the copied stream directly:
@@ -121,6 +121,6 @@ real external host, see `config.ts`'s comment) and the
 
 ```sh
 cd v2/infra
-docker compose up -d --build scast-bridge
+just compose up -d --build scast-bridge
 docker logs -f infra-scast-bridge-1
 ```

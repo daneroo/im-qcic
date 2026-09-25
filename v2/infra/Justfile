@@ -1,5 +1,8 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
+# compose.yaml requires HOSTALIAS (host names, scast-bridge's durable).
+export HOSTALIAS := `hostname -s`
+
 # Show this helpful listing.
 default:
     @just --list --unsorted

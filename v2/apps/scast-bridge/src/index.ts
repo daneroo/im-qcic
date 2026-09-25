@@ -2,6 +2,7 @@ import { JSONCodec } from "nats";
 import {
   config,
   DEST_STREAM_NAME,
+  durableName,
   SOURCE_STREAM_NAME,
   rewriteSubject,
 } from "./config";
@@ -10,9 +11,16 @@ import { createScrobblecastSource } from "./scrobblecast-source";
 import { run, type BridgeMessage } from "./bridge";
 import { log } from "./logger";
 
-const source = createScrobblecastSource(config.natsProd);
+let durable: string;
+try {
+  durable = durableName(process.env);
+} catch (err) {
+  log.fatal({ err: (err as Error).message }, "invalid configuration");
+  process.exit(1);
+}
+const source = createScrobblecastSource(config.natsProd, durable);
 
-log.info({ windowMs: config.initialWindowMs }, "starting");
+log.info({ windowMs: config.initialWindowMs, durable }, "starting");
 
 const sourceStreamConfig = await source.fetchSourceStreamConfig();
 log.info(
@@ -34,6 +42,7 @@ function describeForLog(m: BridgeMessage): Record<string, unknown> {
   }
 }
 
+let shuttingDown = false;
 run({
   messages: source.subscribe(config.initialWindowMs),
   sink,
@@ -41,8 +50,14 @@ run({
   msgIdPrefix: SOURCE_STREAM_NAME,
   onCopy: (m) => log.info({ seq: m.seq, ...describeForLog(m) }, "copied"),
 }).catch((err: Error) => {
+  // Exit, don't linger: the open NATS connections would keep the process
+  // alive with a dead run loop, and `restart: unless-stopped` never fires.
+  // A restart retries the durable, which a reboot can leave push-bound to
+  // our own dead connection for minutes (#297). Not while shutting down:
+  // that path owns the exit, and cutting its drain short leaves the
+  // durable bound.
   log.error({ err: err.message }, "run failed");
-  process.exitCode = 1;
+  if (!shuttingDown) process.exit(1);
 });
 
 // Guarded against re-entry: a signal can be delivered more than once (e.g.
@@ -50,7 +65,6 @@ run({
 // nc.drain() a second time on an already-draining connection throws.
 // Draining source's connection also ends its subscription's iterator,
 // which is what lets run()'s otherwise-indefinite loop return.
-let shuttingDown = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, async () => {
     if (shuttingDown) return;

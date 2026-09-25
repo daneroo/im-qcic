@@ -1,5 +1,5 @@
 import { createApp } from "./app";
-import { config } from "./config";
+import { readConfig, type Config } from "./config";
 import { createHealthObserver } from "./health";
 import { createLocalApi } from "./local-api";
 import { log } from "./logger";
@@ -7,6 +7,14 @@ import { createNatsProbe } from "./nats-probe";
 import { createNatsPublisher } from "./nats-publisher";
 import { createPublicationLoop } from "./publication-loop";
 import { createTailnetProbe } from "./tailnet-probe";
+
+let config: Config;
+try {
+  config = readConfig();
+} catch (err) {
+  log.fatal({ err: (err as Error).message }, "invalid configuration");
+  process.exit(1);
+}
 
 const health = createHealthObserver({
   observer: config.observer,

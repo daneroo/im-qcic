@@ -1,5 +1,4 @@
 import { readFileSync } from "node:fs";
-import { hostname as osHostname } from "node:os";
 import pkg from "../package.json" with { type: "json" };
 import { log } from "./logger";
 import { queries } from "./ted1k";
@@ -30,8 +29,16 @@ export const pollIntervalMs: Record<ViewName, number> = {
     Number(process.env.POLL_INTERVAL_MISSING_WEEK_BY_DAY_MS) || 10 * 60_000,
 };
 
+// The host named in every payload's meta. Required: in a container the hostname is
+// the container ID, never the name a payload should carry (#297).
+export function hostAlias(env: Record<string, string | undefined>): string {
+  if (!env.HOSTALIAS) {
+    throw new Error("ted1k-derive: HOSTALIAS is required");
+  }
+  return env.HOSTALIAS;
+}
+
 export interface Config {
-  hostname: string;
   version: {
     name: string;
     version: string;
@@ -42,7 +49,6 @@ export interface Config {
 }
 
 export const config: Config = {
-  hostname: process.env.HOSTALIAS || osHostname(),
   version: {
     name: pkg.name,
     version: pkg.version,
@@ -57,7 +63,7 @@ export const config: Config = {
   // dev - inside the compose network, "localhost" is the container itself,
   // not the nats service, so NATS_SERVERS (set to "nats:4222" in
   // v2/infra/compose.yaml) overrides it there. Same override pattern as
-  // HOSTALIAS/POLL_INTERVAL_* above.
+  // POLL_INTERVAL_* above.
   nats: process.env.NATS_SERVERS
     ? { servers: process.env.NATS_SERVERS }
     : getCredential<NatsCredentials>(

@@ -15,7 +15,6 @@ export const SOURCE_STREAM_NAME = "scrobblecastDigest";
 export const SOURCE_SUBJECT = "im.scrobblecast.scrape.digest";
 
 // This bridge's own identity on both servers.
-export const DURABLE_NAME = "scast-bridge";
 export const DEST_STREAM_NAME = "scastDigest";
 export const DEST_SUBJECT_PREFIX = "im.scast.scrape.digest";
 
@@ -24,6 +23,18 @@ export const DEST_SUBJECT_PREFIX = "im.scast.scrape.digest";
 // only ever appears once, as the prefix.
 export function rewriteSubject(subject: string): string {
   return subject.replace(SOURCE_SUBJECT, DEST_SUBJECT_PREFIX);
+}
+
+// One durable per host on the production server: a shared name means one
+// push binding and one cursor for every instance, dev and deployed alike
+// (#297). HOSTALIAS is required - in a container the hostname is the
+// container ID, and each recreate would leave a new durable on production.
+export const DURABLE_PREFIX = "scast-bridge";
+export function durableName(env: Record<string, string | undefined>): string {
+  if (!env.HOSTALIAS) {
+    throw new Error("scast-bridge: HOSTALIAS is required");
+  }
+  return `${DURABLE_PREFIX}-${env.HOSTALIAS}`;
 }
 
 export interface Config {

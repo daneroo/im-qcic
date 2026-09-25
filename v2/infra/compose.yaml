@@ -1,8 +1,8 @@
 # v2's own infrastructure - genuinely separate from infra/gateway's real
 # production deploy (see v2/AGENTS.md). Not wired into infra/gateway yet.
 #
-# Run from within v2/infra/:
-#   docker compose up
+# Run from within v2/infra/, through the Justfile (it sets HOSTALIAS):
+#   just compose up
 
 services:
   nats:
@@ -37,7 +37,9 @@ services:
     depends_on:
       - nats
     environment:
-      HOSTALIAS: ${HOSTALIAS:-v2-dev}
+      # Required, no default: a container's hostname is its container ID,
+      # and scast-bridge names its production durable after this (#297).
+      HOSTALIAS: ${HOSTALIAS:?set by this directory's Justfile}
       NATS_SERVERS: nats:4222
       NATS_MONITOR_URL: http://nats:8222
       TAILSCALE_LOCALAPI_MODE: ${TAILSCALE_LOCALAPI_MODE:-unix}
@@ -65,6 +67,7 @@ services:
     depends_on:
       - nats
     environment:
+      HOSTALIAS: ${HOSTALIAS:?set by this directory's Justfile}
       # credentials.nats.json's "localhost:4222" is only correct for
       # bare-metal dev - "localhost" inside this network is the container
       # itself, not the nats service (see config.ts's comment) - so this
@@ -86,6 +89,7 @@ services:
     depends_on:
       - nats
     environment:
+      HOSTALIAS: ${HOSTALIAS:?set by this directory's Justfile}
       # Same override as ted1k-derive's - see its comment above. Only the
       # write side (nats, the new server) needs it; natsProd already names
       # a real external host (nats.ts.imetrical.com), unaffected by which
