@@ -168,7 +168,7 @@ A custom installer ISO with the operator's key built in skips steps 4–5.
   every block into a copy, fragmenting the virtual disk. Production gateway's
   four-year-old disk (11 snapshots) does fsync ~2× slower than qcic-syno's
   fresh one. Re-run `dd if=/dev/zero of=t bs=4k count=200 oflag=dsync`
-  monthly (baseline: 11.8s, 2026-09-24, not on the 24th).
+  monthly (baseline: 11.8s on 2026-09-24 with the scrub paused; avoid the 24th and Time Machine runs).
 - **Time Machine** (galois → `TM-Galois26` on Syno, hourly) makes md2 ~85%
   busy while it runs; boot samples during a backup read ~2× slower.
 
