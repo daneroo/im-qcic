@@ -10,19 +10,17 @@
 
 ## Where restart time goes
 
-A full Synology restart takes **7–9 min** to NATS ready. About **3–3.5 min
-is the Synology itself** (DSM boot up to VMM starting its VMs); nothing inside
-a VM changes that, and guests boot several times slower while it settles.
-
-Inside the VM, we first blamed a 62–110s initramfs stall on gateway's iSCSI
-stack. That was wrong: a clone with the identical stack did not stall. The
-lever that moved VM boot time was **sync-write latency**. Boot is fsync-bound
-(Docker and containerd write small state files synchronously), and the
-virtual disk already sits on the Synology's btrfs; btrfs inside the guest
-copies-on-write a second time and made each fsync ~3× slower (200 × 4 KiB
-`dd oflag=dsync`: ext4 guest 59 ms, btrfs guest 177 ms). **ext4 in the guest,
-btrfs on the Synology** is the compromise: the Synology keeps snapshots and
-checksums; guests boot fast.
+- **Synology itself:** ~3 min of a ~7 min full restart, before any VM starts.
+  Incompressible from inside a VM.
+- **initramfs stall** (62–110s on gateway, blamed on its iSCSI stack): a false
+  lead; a clone with the same stack did not stall.
+- **Guest filesystem sync-write latency is the key to VM boot time.** Boot is
+  fsync-bound (Docker, containerd); btrfs in the guest on the Synology's btrfs
+  made each fsync ~3× slower than ext4.
+- **ext4 in the guest keeps integrity:** the Synology's btrfs still checksums
+  and snapshots the virtual disk.
+- **We only lose guest-native snapshots**, which is fine for the current
+  workload (little state).
 
 ## Start order and priority
 
@@ -34,9 +32,9 @@ qcic-syno **Above normal**, Pxbk Normal.
 
 Restart → NATS ready.
 
-| restart                           | time     |
-| --------------------------------- | -------- |
-| Full Synology restart             | ~7m      |
-| VM: Ubuntu 22.04, ext4 (gateway)  | up to 3m |
-| VM: NixOS 26.05, btrfs            | ~40s     |
-| VM: NixOS 26.05, ext4 (qcic-syno) | ~23s     |
+| restart               | guest       | OS           | filesystem | time     |
+| --------------------- | ----------- | ------------ | ---------- | -------- |
+| Full Synology restart | all         |              |            | ~7m      |
+| VM restart            | gateway     | Ubuntu 22.04 | ext4       | up to 3m |
+| VM restart            | gateway-nix | NixOS 26.05  | btrfs      | ~40s     |
+| VM restart            | qcic-syno   | NixOS 26.05  | ext4       | ~23s     |
