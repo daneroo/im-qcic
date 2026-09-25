@@ -313,7 +313,19 @@ stays shut down but intact until qcic-syno is verified, then is deleted.
         catching up since 22:15Z); caddy certs for `qcic-syno{,.ts}.imetrical.net`
         (`HOST_NAME` from the flake) and `health.qcic{,.ts}`; `/healthz` 200
         with `"observer":"qcic-syno"` (`HOSTALIAS` from the flake)
-- [ ] Samples on qcic-syno (the final numbers for the verdict)
+- [x] Samples on qcic-syno (the final numbers for the verdict) — Q35, UEFI,
+      ext4, `nomodeset`; A5/C1 method; 2026-09-25:
+
+      | #  | method            | Synology        | total boot | NATS ready | tailnet | workers |
+      | -- | ----------------- | --------------- | ---------- | ---------- | ------- | ------- |
+      | Q1 | guest reboot      | Time Machine    | 41.5s      | +39s       | +23s    | scast dead (`duplicate subscription`) |
+      | Q2 | VMM restart       | quiet           | 20.1s      | **+19s**   | +10s    | both ok |
+      | Q3 | VMM restart       | quiet           | 20.7s      | **+20s**   | +17s    | both ok |
+      | Q4 | shut down + start | quiet           | 22.4s      | **+21s**   | +8s     | both ok; Start → kernel ~6s (UEFI) |
+
+      Q1's noise was galois's hourly Time Machine backup to Syno (finished
+      01:36:55Z; md2 85% busy on small writes). Quiet samples reproduce
+      gateway-nix's ext4 result: **+19–21s against Ubuntu's +25–27s**.
 - [ ] Delete gateway-nix (VM, its disks, snapshot `nixos-btrfs-pre-ext4`);
       remove its Tailscale node
 
