@@ -36,14 +36,21 @@ just compose run --rm --entrypoint bun scast-bridge src/durable-rm.ts <durable> 
 
 ## Test locally (with Daniel, galois)
 
-- [ ] dev stack via `just`: durable `scast-bridge-galois` created, copies
-- [ ] qcic-syno's `scast-bridge` stays bound and copying throughout
-- [ ] restart ted1k-derive before nats: recovers on next poll
-- [ ] delete `scast-bridge-galois` via the guarded delete
+- [x] `just macos-up -d --build`: `scast-bridge-galois` created and copying,
+      next to qcic-syno's bound `scast-bridge`
+- [x] ted1k-derive restarted with nats down: `ENOTFOUND`, then published on
+      its own once nats was back
+- [x] guarded delete refuses this host's own durable (dev one is kept)
 
-## Deploy (with Daniel, after merge to main)
+## Deploy (after merge; everything from `main`)
 
-- [ ] qcic-syno: pull main, build, start scast-bridge with a short
-      `INITIAL_WINDOW_MS` once → `scast-bridge-qcic-syno` copies
-- [ ] guarded delete of `scast-bridge` (unbound, no connection)
-- [ ] reboot qcic-syno: both workers do real work, from their logs
+The first start re-copies 24h into qcic-syno's `scastDigest`. Harmless: the
+dashboard keeps one report per host per generation.
+
+1. qcic-syno, `infra/qcic-core`, Daniel: `git pull && just build && just start`
+2. qcic-syno, same, Daniel: `just logs scast-bridge` — `scast-bridge-qcic-syno`,
+   `copied`
+3. qcic-syno, same, Daniel: guarded delete of the old `scast-bridge` — dry run,
+   then `--yes`:
+   `just compose run --rm --entrypoint bun scast-bridge src/durable-rm.ts scast-bridge`
+4. Daniel: reboot qcic-syno; both workers log `published` / `copied`
