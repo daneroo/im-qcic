@@ -54,3 +54,16 @@ dashboard keeps one report per host per generation.
    then `--yes`:
    `just compose run --rm --entrypoint bun scast-bridge src/durable-rm.ts scast-bridge`
 4. Daniel: reboot qcic-syno; both workers log `published` / `copied`
+
+Done 2026-09-25 (agent over ssh, Daniel approving each step): deployed
+`cf1092c`; old `scast-bridge` deleted (unbound); three reboots:
+
+| reboot | systemd | ted1k-derive | scast-bridge                                      |
+| ------ | ------- | ------------ | ------------------------------------------------- |
+| 1      | 21.9s   | published    | 10× `duplicate subscription`, exit, bound at +64s |
+| 2      | 21.2s   | published    | bound first try                                   |
+| 3      | 20.3s   | published    | bound first try                                   |
+
+Open, not in this ticket: the pre-reboot drain did not release the durable on
+reboot 1 (stale binding held ~1 min). Suspected cause — network down before the
+containers stop — unverified.
