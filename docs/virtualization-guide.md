@@ -32,23 +32,11 @@ qcic-syno **Above normal**, Pxbk Normal.
 
 ## Timings
 
-Restart → NATS ready. One character ≈ 10s.
-`S` Synology · `q` QEMU → guest kernel · `k` guest kernel + initrd (stall) ·
-`u` userspace → NATS ready.
+Restart → NATS ready.
 
-```text
-                                              0     1m    2m    3m    4m    5m    6m    7m
-Full Synology restarts (from power cut / Synology boot)
- gateway      Ubuntu 22.04  power cut  09-19  SSSSSSSSSSSSSSSSSSSSSSqqkkkkkkkuuuuuuuuuuuu    7m16s
- gateway2     Ubuntu 24.04  DSM off+on 09-23  SSSSSSSSSSSSSSSSSSSSSqqkkuuuuuuuuuuuuuuuu      6m54s
- gateway2     Ubuntu 24.04  DSM restart 09-24 SSSSSSSSSSSSSSSSSSSqqkkkkuuuuuuuuuuuuuuuuu     7m06s
-VM restarts only (from guest kernel)
- gateway      Ubuntu 22.04  ext4       09-18  kkkkkkkkkkkkuuuuuu                            ~3m  (containers 2m57s)
- gateway2     Ubuntu 24.04  ext4       09-23  kuu                                           25–27s
- gateway-nix  NixOS 26.05   btrfs      09-24  kuuu                                          31–39s
- qcic-syno    NixOS 26.05   ext4       09-25  ku                                            19–23s
-```
-
-The full-restart rows are single samples; the VM rows are 3–5 samples each on
-a quiet Synology. A DSM restart adds ~1.5 min of shutdown before the Synology
-boots.
+| restart                           | time     |
+| --------------------------------- | -------- |
+| Full Synology restart             | ~7m      |
+| VM: Ubuntu 22.04, ext4 (gateway)  | up to 3m |
+| VM: NixOS 26.05, btrfs            | ~40s     |
+| VM: NixOS 26.05, ext4 (qcic-syno) | ~23s     |
