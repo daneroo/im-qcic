@@ -62,14 +62,18 @@ scrobblecast.dl.imetrical.com {
 }
 
 health.qcic.dl.imetrical.com {
-	# 2026-09-22: health lives on gateway2, the replacement VM (#292, #295).
+	# health lives on a qcic-core host (#292, #298; today qcic-syno).
+	# The upstream is the service name, not the host: health.qcic{,.ts}
+	# .imetrical.net are CNAMEs to the current host (qcic-syno{,.ts}
+	# .imetrical.net), so moving the service to another host changes the
+	# CNAME, never this file. 2026-09-25: was gateway2.imetrical.net.
 	# Plain HTTP upstream is deliberate: proxying to https:// would make this
-	# public endpoint depend on gateway2's certificate health, so a lapsed cert
-	# there would surface here as a 502.
+	# public endpoint depend on the upstream's certificate health, so a lapsed
+	# cert there would surface here as a 502.
 	# No tls block needed — this name resolves through the existing *.dl
 	# wildcard to this host (CNAME syno-im.synology.me), the same chain the
 	# .dl sites above use, so HTTP-01 works unaided.
-	reverse_proxy gateway2.imetrical.net:80
+	reverse_proxy health.qcic.imetrical.net:80
 }
 
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
