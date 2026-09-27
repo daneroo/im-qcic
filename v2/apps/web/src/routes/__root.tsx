@@ -8,7 +8,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "im-qcic" },
+      { title: "QCIC" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
