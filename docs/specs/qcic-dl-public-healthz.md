@@ -7,9 +7,10 @@ qcic-core change: the existing `qcic{,.ts}.imetrical.net` block routes
 
 ## 1. Add qcic.dl
 
-- [ ] gateway Caddyfile: `qcic.dl.imetrical.com` block — Claude, PR
-- [ ] gateway: `git pull`, force-recreate caddy — Claude
-- [ ] `https://qcic.dl.imetrical.com/healthz` = `health.qcic.dl` JSON; `/` is the static message — Claude
+- [x] gateway Caddyfile: `qcic.dl.imetrical.com` block — Claude, #306
+- [x] gateway: `git pull`, force-recreate caddy — Claude
+- [x] `https://qcic.dl.imetrical.com/healthz` = `health.qcic.dl` JSON; `/` is the static message — Claude
+      (valid cert, 200; `/network` gets the 74 B message; status.dl, natsql.dl still 200)
 
 ## 2. Switch Better Stack
 
