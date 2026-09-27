@@ -115,6 +115,10 @@
             # Lets daniel run `tailscale` without sudo.
             extraSetFlags = [ "--operator=daniel" ];
           };
+          # Keep /run/tailscale across tailscaled restarts: health bind-mounts
+          # the directory, and a deleted-and-recreated one leaves the container
+          # holding a dead socket until it is recreated.
+          systemd.services.tailscaled.serviceConfig.RuntimeDirectoryPreserve = "yes";
           services.openssh = {
             enable = true;
             settings = {
