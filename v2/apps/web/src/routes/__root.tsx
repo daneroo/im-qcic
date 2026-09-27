@@ -12,8 +12,7 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      // SVG follows the browser's light/dark scheme; the PNG (light) is the
-      // fallback where SVG icons are unsupported.
+      // The PNG is the fallback where SVG icons are unsupported.
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png" },
       // Rubik carries chrome, names and numerals (it has real tabular
