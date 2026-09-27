@@ -1,4 +1,5 @@
-# qcic-core's Caddy. Two independent ingresses to the same `health`:
+# qcic-core's Caddy. The dashboard (qcic{,.ts}.imetrical.net, below) plus
+# two independent ingresses to the same `health`:
 #
 #   direct   health.qcic{,.ts}.imetrical.net  -> DNS-01 here, via cloudflare
 #   public   health.qcic.dl.imetrical.com     -> HTTP-01 at the real gateway,
@@ -14,15 +15,19 @@
 # Token: same scoped token as infra/gateway (imetrical.net Zone:Read,
 # DNS:Edit) - Cloudflare cannot scope below a zone.
 #
-# Note: with DNS-01, issuance succeeds whether or not an A record exists -
+# Note: with DNS-01, issuance succeeds whether or not a DNS record exists -
 # validation is a TXT record. imetrical.net has a catch-all `*` pointing at
-# a Hover parking IP, so a missing A record yields a valid cert on an
-# unreachable name rather than an error. Create the A records first:
+# a Hover parking IP, so a missing record yields a valid cert on an
+# unreachable name rather than an error. Create the records first - each
+# machine name once, then every service name as a CNAME to it, so moving
+# the stack to another host changes only the machine records:
 #
-#   <HOST_NAME>.imetrical.net     A  <LAN address>     (DNS only, not proxied)
-#   <HOST_NAME>.ts.imetrical.net  A  <tailnet address> (DNS only, not proxied)
-#   health.qcic.imetrical.net     A  <LAN address>     (DNS only, not proxied)
-#   health.qcic.ts.imetrical.net  A  <tailnet address> (DNS only, not proxied)
+#   <HOST_NAME>.imetrical.net     A      <LAN address>                (DNS only)
+#   <HOST_NAME>.ts.imetrical.net  A      <tailnet address>            (DNS only)
+#   health.qcic.imetrical.net     CNAME  <HOST_NAME>.imetrical.net    (DNS only)
+#   health.qcic.ts.imetrical.net  CNAME  <HOST_NAME>.ts.imetrical.net (DNS only)
+#   qcic.imetrical.net            CNAME  <HOST_NAME>.imetrical.net    (DNS only)
+#   qcic.ts.imetrical.net         CNAME  <HOST_NAME>.ts.imetrical.net (DNS only)
 
 # Proof the DNS-01 path works on this host, before trusting it with a
 # service. Mirrors infra/gateway's gateway{,.ts}.imetrical.net blocks.
@@ -41,6 +46,24 @@ health.qcic.imetrical.net, health.qcic.ts.imetrical.net {
 		dns cloudflare {env.CF_API_TOKEN}
 	}
 	reverse_proxy health:8000
+}
+
+# The dashboard: LAN and tailnet only, no public ingress. NATS (websocket)
+# and /healthz are on the same origin, so the browser needs no other name and
+# the bundle carries no address (v2/apps/web/src/endpoints.ts).
+qcic.imetrical.net, qcic.ts.imetrical.net {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+	}
+	handle_path /nats* {
+		reverse_proxy nats:9222
+	}
+	handle /healthz {
+		reverse_proxy health:8000
+	}
+	handle {
+		reverse_proxy web:8000
+	}
 }
 
 # Step 2: the public path. TLS is terminated at the real gateway, which

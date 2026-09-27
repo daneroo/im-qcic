@@ -8,7 +8,7 @@
     "dev": "bun --bun vite dev --port 3000",
     "build": "bun --bun vite build",
     "preview": "bun --bun vite preview",
-    "start": "bun run dist/server/server.js"
+    "start": "bun run serve.ts"
   },
   "dependencies": {
     "@nats-io/jetstream": "catalog:runtime",

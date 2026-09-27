@@ -41,6 +41,20 @@ bun run start
 ```
 
 `build` produces `dist/client/` (static assets) and `dist/server/server.js` (the
-SSR entry `start` runs) — despite the server entry, no route in this app does
-server-side data fetching; SSR here only ever renders the same static shell a
-client render would.
+SSR entry) — despite the server entry, no route in this app does server-side
+data fetching; SSR here only ever renders the same static shell a client render
+would. `start` runs `serve.ts` on port 8000: files from `dist/client/`, then the
+SSR entry, which does not serve them itself.
+
+## Endpoints
+
+A production build reaches NATS at `/nats` (websocket) and health at `/healthz`
+on the page's own origin (`src/endpoints.ts`); Caddy routes both in
+`infra/qcic-core`. `bun dev` overrides them with `VITE_NATS_WS_URL` and
+`VITE_HEALTH_HTTP_URL` from `.env.development` (v2/infra's ports).
+
+## Deploy
+
+Built by `apps/web/Dockerfile`, run in `infra/qcic-core` behind Caddy at
+`qcic.imetrical.net` (LAN) and `qcic.ts.imetrical.net` (tailnet). No public
+ingress.
