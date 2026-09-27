@@ -46,8 +46,11 @@ services:
       TAILSCALE_CREDENTIAL_PATH: /run/secrets/tailscale-localapi.json
     volumes:
       - type: bind
-        source: ${TAILSCALE_LOCALAPI_SOURCE:-/run/tailscale/tailscaled.sock}
-        target: ${TAILSCALE_LOCALAPI_TARGET:-/run/tailscale/tailscaled.sock}
+        # The directory, not the socket: a bind pins an inode, and tailscaled
+        # replaces its socket on every restart. Needs the directory to
+        # survive restarts (RuntimeDirectoryPreserve, infra/qcic-core/flake.nix).
+        source: ${TAILSCALE_LOCALAPI_SOURCE:-/run/tailscale}
+        target: ${TAILSCALE_LOCALAPI_TARGET:-/run/tailscale}
         read_only: true
         bind:
           create_host_path: false
