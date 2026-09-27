@@ -86,9 +86,12 @@ nixos-update:
     git pull --ff-only
     sudo nixos-rebuild switch --flake ".#$(hostname)"
     need=""
-    for f in kernel initrd kernel-modules kernel-params; do
+    # Store symlinks: a different path is a different build.
+    for f in kernel initrd kernel-modules; do
       [ "$(readlink -f /run/booted-system/$f)" = "$(readlink -f /run/current-system/$f)" ] || need="$need $f"
     done
+    # A plain file inside each generation, so its path always differs: compare contents.
+    cmp -s /run/booted-system/kernel-params /run/current-system/kernel-params || need="$need kernel-params"
     if [ -n "$need" ]; then echo "reboot needed:$need changed"; else echo "no reboot needed"; fi
 
 # list generations (roll back: sudo nixos-rebuild switch --rollback)
