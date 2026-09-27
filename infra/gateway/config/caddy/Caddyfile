@@ -61,21 +61,6 @@ scrobblecast.dl.imetrical.com {
 	reverse_proxy d1-px1.imetrical.com:8000
 }
 
-health.qcic.dl.imetrical.com {
-	# health lives on a qcic-core host (#292, #298; today qcic-syno).
-	# The upstream is the service name, not the host: health.qcic{,.ts}
-	# .imetrical.net are CNAMEs to the current host (qcic-syno{,.ts}
-	# .imetrical.net), so moving the service to another host changes the
-	# CNAME, never this file. 2026-09-25: was gateway2.imetrical.net.
-	# Plain HTTP upstream is deliberate: proxying to https:// would make this
-	# public endpoint depend on the upstream's certificate health, so a lapsed
-	# cert there would surface here as a 502.
-	# No tls block needed — this name resolves through the existing *.dl
-	# wildcard to this host (CNAME syno-im.synology.me), the same chain the
-	# .dl sites above use, so HTTP-01 works unaided.
-	reverse_proxy health.qcic.imetrical.net:80
-}
-
 # QCIC's public face: /healthz only (Better Stack), proxied over HTTPS to
 # qcic-core, whose qcic.imetrical.net block routes it to health. Host is
 # rewritten to the upstream's name so it matches that block. The dashboard

@@ -42,7 +42,7 @@ Cuts across almost every context above — worth tracking as its own axis rather
 - **Netlify** — a real, active account ("Daniel Lauzon's team"), unrelated to the `.n.` DNS convention (that was zeit/now, not Netlify — see above). Confirmed via `netlify sites:list`: 4 sites, none tied to qcic and none using an `imetrical.com` custom domain — all on default `*.netlify.app` URLs: `wifidan`, `djembe-bolt` (has its own repo, `daneroo/djembe-bolt-astro-site`), `ir-logo` (`daneroo/ir-logo`), `helium-logo` (`daneroo/helium-logo`). `packages/ui` does have a `netlify.toml` with a site ID (`f0220657-...`) not in this current list — a genuine but now-gone Netlify deployment attempt, separate from its `.n.` zeit/now alias.
 - **Zeit/now (defunct)** — the provider itself no longer exists; it rebranded to Vercel in 2020. Explains the `.n.` DNS convention and the `now.json` files found in `packages/{ui,docz,time}`. Also explains a real architectural fork: zeit/now originally ran always-on containers (so a deployed service could hold its own state), and losing that on the move to stateless serverless is why Site proxies to the homelab instead of holding state itself — see [ADR-0001](./docs/adr/0001-site-proxies-state-through-natsql.md).
 - **Vercel** — hosts Site (`qcic.v.imetrical.com`). Account scope beyond Site not yet inventoried.
-- **Better Stack** (formerly BetterUptime, [dashboard](https://uptime.betterstack.com/team/t17237/monitors)) — third-party uptime monitoring, replaced EasyCron 2021-09-04. Publicly monitors three endpoints: `natsql.dl.imetrical.com/health`, `scrobblecast.dl.imetrical.com/api/status`, and `health.qcic.dl.imetrical.com/healthz` (QCIC v2's health, on qcic-syno, via Gateway's Caddy). The de facto safety net until QCIC's own dashboard (Design/html-react) can be fully trusted.
+- **Better Stack** (formerly BetterUptime, [dashboard](https://uptime.betterstack.com/team/t17237/monitors)) — third-party uptime monitoring, replaced EasyCron 2021-09-04. Publicly monitors three endpoints: `natsql.dl.imetrical.com/health`, `scrobblecast.dl.imetrical.com/api/status`, and `qcic.dl.imetrical.com/healthz` (QCIC v2's health, on qcic-syno, via Gateway's Caddy). The de facto safety net until QCIC's own dashboard (Design/html-react) can be fully trusted.
 - **Tailscale** — the tailnet linking every homelab host (see the `.ts.` DNS convention and Host naming convention above). Also provides an **AI proxy** feature (shows up as an "`ai`" entry in `tailscale status`, not a real peer/host) — centralizes LLM API request management and cost accounting across the tailnet. Not yet inventoried beyond that.
 
 ## v2: Bun monorepo migration (in progress)
@@ -81,7 +81,7 @@ Site and Status — the only two packages with real daily use — are being port
 ## Relationships
 
 - **Gateway → Status, Natsql**: Gateway's `docker-compose.yaml` builds and runs these packages directly as services
-- **Qcic-syno → Qcic-core**: runs the stack; `health.qcic{,.ts}.imetrical.net` are CNAMEs to `qcic-syno{,.ts}`, and Gateway's Caddy proxies `health.qcic.dl` to that service name
+- **Qcic-syno → Qcic-core**: runs the stack; `qcic{,.ts}.imetrical.net` are CNAMEs to `qcic-syno{,.ts}`, and Gateway's Caddy proxies `qcic.dl`'s `/healthz` to that service name
 - **Syno → Gateway, Pxbk, Qcic-syno**: Synology NAS host running these as VMs; also runs Jellyfin directly via Container Manager (not a VM)
 - **Syno → Synk**: Synk is an offsite mirror of many of Syno's volume shares
 - **Hilbert → Hass**: Hass runs as a Home Assistant OS VM on Hilbert (Proxmox VE)

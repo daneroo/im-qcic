@@ -14,12 +14,12 @@ qcic-core change: the existing `qcic{,.ts}.imetrical.net` block routes
 
 ## 2. Switch Better Stack
 
-- [ ] monitor URL `health.qcic.dl.imetrical.com/healthz` → `qcic.dl.imetrical.com/healthz` — Daniel
+- [x] monitor URL `health.qcic.dl.imetrical.com/healthz` → `qcic.dl.imetrical.com/healthz` — Daniel
 
 ## 3. Retire health.qcic.*
 
-- [ ] qcic-core Caddyfile: drop `health.qcic{,.ts}` and `http://health.qcic.dl` blocks — Claude, PR
-- [ ] gateway Caddyfile: drop `health.qcic.dl` block — Claude, same PR
-- [ ] docs: CONTEXT-MAP.md (Better Stack), Caddyfile comments — Claude, same PR
+- [x] qcic-core Caddyfile: drop `health.qcic{,.ts}` and `http://health.qcic.dl` blocks — Claude, PR
+- [x] gateway Caddyfile: drop `health.qcic.dl` block — Claude, same PR
+- [x] docs: CONTEXT-MAP.md (Better Stack), Caddyfile comments — Claude, same PR
 - [ ] deploy both Caddys (force-recreate) — Claude
 - [ ] Cloudflare: delete `health.qcic{,.ts}.imetrical.net` — Daniel

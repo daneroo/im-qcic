@@ -1,9 +1,6 @@
-# qcic-core's Caddy. The dashboard (qcic{,.ts}.imetrical.net, below) plus
-# two independent ingresses to the same `health`:
-#
-#   direct   health.qcic{,.ts}.imetrical.net  -> DNS-01 here, via cloudflare
-#   public   health.qcic.dl.imetrical.com     -> HTTP-01 at the real gateway,
-#                                                which reverse-proxies here
+# qcic-core's Caddy: the dashboard at qcic{,.ts}.imetrical.net, LAN and
+# tailnet only. Its /healthz is also the public health check: the real
+# gateway's qcic.dl.imetrical.com proxies that one path here over HTTPS.
 #
 # DNS-01 is the only ACME path available to this host: the router forwards
 # 443 to the real gateway (192.168.2.101), so HTTP-01 and TLS-ALPN-01 can
@@ -24,8 +21,6 @@
 #
 #   <HOST_NAME>.imetrical.net     A      <LAN address>                (DNS only)
 #   <HOST_NAME>.ts.imetrical.net  A      <tailnet address>            (DNS only)
-#   health.qcic.imetrical.net     CNAME  <HOST_NAME>.imetrical.net    (DNS only)
-#   health.qcic.ts.imetrical.net  CNAME  <HOST_NAME>.ts.imetrical.net (DNS only)
 #   qcic.imetrical.net            CNAME  <HOST_NAME>.imetrical.net    (DNS only)
 #   qcic.ts.imetrical.net         CNAME  <HOST_NAME>.ts.imetrical.net (DNS only)
 
@@ -33,19 +28,12 @@
 # service. Mirrors infra/gateway's gateway{,.ts}.imetrical.net blocks.
 # Host-scoped: {$HOST_NAME} is substituted when the Caddyfile is parsed
 # (`{env.X}` is runtime-only and does not work in site addresses). The
-# health.qcic names below are service-scoped and the same on every host.
+# qcic names below are service-scoped and the same on every host.
 {$HOST_NAME}.imetrical.net, {$HOST_NAME}.ts.imetrical.net {
 	tls {
 		dns cloudflare {env.CF_API_TOKEN}
 	}
 	respond "Hello, {$HOST_NAME}! (DNS Challenge - cloudflare)"
-}
-
-health.qcic.imetrical.net, health.qcic.ts.imetrical.net {
-	tls {
-		dns cloudflare {env.CF_API_TOKEN}
-	}
-	reverse_proxy health:8000
 }
 
 # The dashboard: LAN and tailnet only, no public ingress. NATS (websocket)
@@ -64,14 +52,4 @@ qcic.imetrical.net, qcic.ts.imetrical.net {
 	handle {
 		reverse_proxy web:8000
 	}
-}
-
-# Step 2: the public path. TLS is terminated at the real gateway, which
-# proxies here over plain HTTP. The `http://` prefix is load-bearing -
-# without it Caddy attempts automatic HTTPS for this name and retries
-# forever, since HTTP-01 can never reach this host.
-#
-# Inert until infra/gateway's Caddyfile gains the matching site block.
-http://health.qcic.dl.imetrical.com {
-	reverse_proxy health:8000
 }
