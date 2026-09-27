@@ -12,7 +12,9 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      // The PNG is the fallback where SVG icons are unsupported.
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png" },
       // Rubik carries chrome, names and numerals (it has real tabular
       // figures); JetBrains Mono is held back for digests only; EB Garamond
       // is the wordmark alone. See theme.css for why each was chosen.
