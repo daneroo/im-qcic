@@ -15,6 +15,9 @@ export const Route = createRootRoute({
       // The PNG is the fallback where SVG icons are unsupported.
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png" },
+      // Home screen: Android reads the manifest's icons, iOS the touch icon.
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       // Rubik carries chrome, names and numerals (it has real tabular
       // figures); JetBrains Mono is held back for digests only; EB Garamond
       // is the wordmark alone. See theme.css for why each was chosen.
