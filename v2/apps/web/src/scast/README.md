@@ -27,8 +27,8 @@ the ordered consumer requests the stream's 24-hour replay.
 ## Local development
 
 Start `v2/infra/compose.yaml`; its `nats` and `scast-bridge` services provide
-the local stream. The default browser endpoint is `ws://localhost:9222`; set
-`VITE_NATS_WS_URL` only when testing another compose environment.
+the local stream. `bun dev` reaches it at `ws://localhost:9222` via
+`.env.development`; see `../../README.md#endpoints`.
 
 ```sh
 cd v2/apps/web

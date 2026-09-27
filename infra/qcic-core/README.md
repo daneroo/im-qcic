@@ -1,6 +1,6 @@
 # qcic-core
 
-The QCIC v2 services (NATS, health, ted1k-derive, scast-bridge, plus Caddy) as
+The QCIC v2 services (NATS, health, ted1k-derive, scast-bridge, web, plus Caddy) as
 a **docker compose** stack, together with the **NixOS flake** for the host(s)
 that run it. Today that is one host, `qcic-syno`, a VM on the Synology; a
 second host would be another entry in `flake.nix`. Background:
@@ -21,6 +21,9 @@ just        # lists every recipe, grouped by where it runs
 The flake writes `/etc/qcic-core/host.env` (`HOSTALIAS`, `HOST_NAME`, derived
 from the hostname); the recipes pass it to compose, and plain `docker compose`
 refuses to start without it.
+
+The dashboard (`web`) is LAN and tailnet only: `qcic.imetrical.net` and
+`qcic.ts.imetrical.net`, CNAMEs to the host's names (see the Caddyfile).
 
 ## How qcic-syno was provisioned
 

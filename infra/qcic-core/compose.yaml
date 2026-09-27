@@ -6,7 +6,8 @@
 # deliberately only:
 #   1. this header, and the top-level `name:`
 #   2. build contexts are `../../v2` instead of `..`
-#   3. the `caddy` service, appended at the end (not in v2/infra)
+#   3. the `web` and `caddy` services, appended at the end (in dev, web runs
+#      as `bun dev` against v2/infra)
 #   4. v2/infra's "Future idea ... natural place to test Caddy" comment on
 #      the nats service is dropped - Caddy is built here, so it is no longer
 #      a future idea
@@ -123,6 +124,19 @@ services:
         max-file: "5"
 
   # --- not in v2/infra: the whole delta ---------------------------------
+  # The dashboard. Reached only through caddy (qcic{,.ts}.imetrical.net), which
+  # also routes /nats and /healthz on the same origin - so no port here.
+  web:
+    build:
+      context: ../../v2
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   # Same build recipe as infra/gateway's caddy (xcaddy + the cloudflare DNS
   # provider), copied rather than referenced so nothing here reads a file
   # production depends on.
@@ -131,7 +145,7 @@ services:
       context: .
       dockerfile: Dockerfile-caddy
     # No explicit `image:`. Compose names this `qcic-core-caddy` from the
-    # project name, matching the other three built services. It once read
+    # project name, matching the other built services. It once read
     # `qcic-caddy:latest`, inherited from infra/gateway - which is
     # production's tag, so building here overwrote it.
     restart: unless-stopped

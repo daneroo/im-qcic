@@ -1,4 +1,7 @@
-@import "tailwindcss";
+/* Scan src/ only. Without it Tailwind skips only gitignored paths - and a
+   Docker build has no .gitignore, so the server build scanned the client
+   build's dist/ output and emitted a stylesheet the client never had. */
+@import "tailwindcss" source(".");
 
 /* Design tokens and type. Imported after tailwind so `@theme inline` can
    extend the utility set (bg-paper, text-ink-2, font-serif, ...). */

@@ -14,7 +14,7 @@ observation path makes retained detail unverifiable rather than alarming.
 - `NetworkPage.tsx` renders live NATS and Tailnet detail without reaching
   `/varz`, `/connz`, or Tailscale LocalAPI from the browser.
 
-For local development, the defaults match `v2/infra/compose.yaml`:
+For local development, `.env.development` matches `v2/infra/compose.yaml`:
 
 - `VITE_NATS_WS_URL=ws://localhost:9222`
 - `VITE_HEALTH_HTTP_URL=http://localhost:8000/healthz`
