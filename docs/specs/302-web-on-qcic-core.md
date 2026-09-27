@@ -12,7 +12,7 @@ Branch `302-web-on-qcic-core`. qcic-syno deploys from `main` only.
 - [x] qcic-core compose: `web` service; header delta 3
 - [x] Caddyfile: `qcic{,.ts}.imetrical.net` block; DNS comment is CNAME pattern
 - [x] `bun run ci` (175 pass)
-- [ ] /code-review
+- [x] /code-review: stale docs fixed. Port is 8000, not the spec's 3000 (ADR-0003)
 
 ## Checks (galois)
 

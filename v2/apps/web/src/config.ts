@@ -1,9 +1,4 @@
-// web is fully static/client-rendered - there's no gitignored credentials
-// file here (see v2/AGENTS.md's Credentials section for that convention on
-// the server side). The NATS and health addresses aren't secrets - they ship
-// in the client bundle either way. Deployed, both default to the page's own
-// origin (see endpoints.ts); `bun dev` overrides them with build-time env
-// vars from .env.development.
+// Not secrets - they ship in the client bundle. See endpoints.ts.
 import { resolveEndpoints } from "./endpoints";
 
 const endpoints = resolveEndpoints(globalThis.location, {
