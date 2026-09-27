@@ -76,6 +76,22 @@ health.qcic.dl.imetrical.com {
 	reverse_proxy health.qcic.imetrical.net:80
 }
 
+# QCIC's public face: /healthz only (Better Stack), proxied over HTTPS to
+# qcic-core, whose qcic.imetrical.net block routes it to health. Host is
+# rewritten to the upstream's name so it matches that block. The dashboard
+# itself is LAN and tailnet only: everything else is this message.
+qcic.dl.imetrical.com {
+	handle /healthz {
+		reverse_proxy https://qcic.imetrical.net {
+			header_up Host {upstream_hostport}
+		}
+	}
+	handle {
+		header Content-Type "text/html; charset=utf-8"
+		respond `<p>QCIC — no public content. Health: <a href="/healthz">/healthz</a></p>`
+	}
+}
+
 # DNS-challenge: https://caddyserver.com/docs/automatic-https#dns-challenge
 # Wildcard https://caddyserver.com/docs/caddyfile/patterns#wildcard-certificates
 # Cloudlfare specific: https://github.com/caddy-dns/cloudflare
