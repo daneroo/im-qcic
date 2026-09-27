@@ -29,4 +29,4 @@ Branch `302-web-on-qcic-core`. qcic-syno deploys from `main` only.
 - [x] qcic-syno: `git pull`, `just build`, `just start`, force-recreate caddy (2026-09-27)
 - [x] galois, both names: valid certs; `/`, `/network`, css 200; `/healthz` same
       body as `health.qcic`; NATS pub/sub round-trip over `wss://…/nats`
-- [ ] Daniel: desktop (LAN) and phone (tailnet) show live data
+- [x] Daniel: desktop (LAN, tailnet) and Pixel 9 show live data; qcic.dl shows only the static line
