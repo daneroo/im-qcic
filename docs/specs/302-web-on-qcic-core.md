@@ -21,9 +21,10 @@ Branch `302-web-on-qcic-core`. qcic-syno deploys from `main` only.
 - [x] nats + web + caddy (http): `/`, `/network`, css 200; NATS pub/sub round-trip via `/nats`
 - [x] `bun dev`: config resolves to localhost
 
-## Deploy (after Daniel's go and merge)
+## Deploy
 
-- [ ] Cloudflare: `qcic.imetrical.net` CNAME `qcic-syno.imetrical.net`,
-      `qcic.ts.imetrical.net` CNAME `qcic-syno.ts.imetrical.net` (DNS only) — Daniel
+- [x] Cloudflare: `qcic.imetrical.net` CNAME `qcic-syno.imetrical.net`,
+      `qcic.ts.imetrical.net` CNAME `qcic-syno.ts.imetrical.net` (DNS only) — Daniel;
+      resolved via 1.1.1.1
 - [ ] qcic-syno: `git pull`, `just build`, `just start`
 - [ ] Daniel: desktop (LAN) and phone (tailnet) show live data
