@@ -31,7 +31,7 @@ FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=install /temp/prod/apps/web/node_modules apps/web/node_modules
 COPY --from=prerelease /usr/src/app/apps/web/dist apps/web/dist
-COPY --from=prerelease /usr/src/app/apps/web/serve.ts apps/web/serve.ts
+COPY --from=prerelease /usr/src/app/apps/web/server.ts apps/web/server.ts
 COPY --from=prerelease /usr/src/app/apps/web/package.json apps/web/package.json
 
 ENV NODE_ENV=production
@@ -39,4 +39,4 @@ USER bun
 WORKDIR /usr/src/app/apps/web
 EXPOSE 8000
 
-ENTRYPOINT ["bun", "run", "serve.ts"]
+ENTRYPOINT ["bun", "run", "server.ts"]

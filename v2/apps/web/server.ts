@@ -1,6 +1,9 @@
 // Production server: `bun run start`. TanStack Start's built server entry
 // only renders routes - it does not serve dist/client (a 404 for /assets/*),
 // so files there are served first and everything else falls through to it.
+// Simplified from the documented reference server (no preloading, ETags or
+// gzip): https://tanstack.com/start/latest/docs/framework/react/guide/hosting
+// https://github.com/tanstack/router/tree/main/examples/react/start-bun
 import { resolve, sep } from "node:path";
 
 // A built artifact, absent until `bun run build`: imported by a path the

@@ -6,7 +6,7 @@ Branch `302-web-on-qcic-core`. qcic-syno deploys from `main` only.
 
 - [x] `src/endpoints.ts`: same-origin `/nats` and `/healthz`, env overrides win (tests)
 - [x] `.env.development`: `bun dev` keeps localhost:9222 / :8000
-- [x] `serve.ts`: `start` serves `dist/client` (the SSR entry 404s assets), port 8000
+- [x] `server.ts`: `start` serves `dist/client` (the SSR entry 404s assets), port 8000
 - [x] `styles.css`: Tailwind scans `src/` only (Docker build had mismatched CSS hash)
 - [x] `apps/web/Dockerfile`
 - [x] qcic-core compose: `web` service; header delta 3

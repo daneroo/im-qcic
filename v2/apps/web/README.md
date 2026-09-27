@@ -43,8 +43,8 @@ bun run start
 `build` produces `dist/client/` (static assets) and `dist/server/server.js` (the
 SSR entry) — despite the server entry, no route in this app does server-side
 data fetching; SSR here only ever renders the same static shell a client render
-would. `start` runs `serve.ts` on port 8000: files from `dist/client/`, then the
-SSR entry, which does not serve them itself.
+would. `start` runs `server.ts` on port 8000: files from `dist/client/`, then
+the SSR entry, which does not serve them itself.
 
 ## Endpoints
 
