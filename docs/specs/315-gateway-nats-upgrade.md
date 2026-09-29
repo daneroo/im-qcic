@@ -21,7 +21,7 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 
 ## Rollout (gateway)
 
-- [ ] `docker compose stop nats` — agent
+- [x] `docker compose stop nats` — agent
 - [ ] `sudo mv 'data/nats/jetstream/jetstream/$G' data/nats/jetstream/ && sudo rmdir data/nats/jetstream/jetstream` — Daniel
 - [ ] `git pull`, `docker compose up -d --force-recreate nats` — agent
 
@@ -36,7 +36,7 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 
 ## Rollback (gateway), if a check fails
 
-- [ ] `docker compose stop nats` — agent
+- [x] `docker compose stop nats` — agent
 - [ ] `cd ~/Code/iMetrical/im-qcic/infra/gateway && sudo rm -rf data/nats && sudo tar -xzf ~/gateway-data-pre-315.tgz data/nats` (practice restore to /tmp verified) — Daniel
 - [ ] `git checkout 1b665c91`, `docker compose up -d --force-recreate nats` — agent
 - [ ] assess; revert on `main` here
