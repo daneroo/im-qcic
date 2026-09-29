@@ -23,15 +23,15 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 
 - [x] `docker compose stop nats` — agent
 - [x] `sudo mv 'data/nats/jetstream/jetstream/$G' data/nats/jetstream/ && sudo rmdir data/nats/jetstream/jetstream` — Daniel
-- [ ] `git pull`, `docker compose up -d --force-recreate nats` — agent
+- [x] `git pull`, `docker compose up -d --force-recreate nats` — agent (first up hung on image pull; container left "Created", started with `up -d`; name now `8bfcd30f4390_gateway-nats-1`)
 
 ## Checks
 
-- [ ] `/varz`: 2.15.0, websocket 9222, JetStream store `/data/jetstream`
-- [ ] `/connz`: capture.ted1k, subscribe.ted1k, natsql, scrobblecast ×3, scast-bridge-qcic-syno
-- [ ] `watts: N` on `im.qcic.heartbeat`
-- [ ] `scrobblecastDigest`: old messages kept, new digest arrives
-- [ ] `natsql.dl.imetrical.com/health` green
+- [x] `/varz`: 2.15.0, websocket 9222, JetStream store `/data/jetstream`
+- [x] `/connz`: capture.ted1k, subscribe.ted1k, natsql, scrobblecast ×3, scast-bridge-qcic-syno
+- [x] `watts: N` on `im.qcic.heartbeat`
+- [ ] `scrobblecastDigest`: old messages kept, new digest arrives — 858 kept, both consumers kept; new digest pending
+- [x] `natsql.dl.imetrical.com/health` green
 - [ ] close #313 and #315
 
 ## Rollback (gateway), if a check fails
