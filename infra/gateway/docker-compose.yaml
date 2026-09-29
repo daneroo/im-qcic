@@ -28,14 +28,12 @@ services:
         max-file: "5"
 
   nats:
-    # Official image is not working, so keeping synadia nightly
-    # image: nats:2.7.2
-    # Replaced this with synadia nightly to get websockets, pinned to known working version
-    image: synadia/nats-server:nightly-20220224 # This is v2.7.3-beta.3
+    # Same image, config and data mounts as infra/qcic-core (v2.15.0)
+    image: nats:2-alpine@sha256:ac8f88a6494bffc2c2a5289a0ca61cb28a9145c11ba5677cf24265d07f46d8d4
     restart: unless-stopped
     volumes:
-      - ./config/nats/nats-server.conf:/nats/conf/nats-server.conf
-      - ./data/nats/jetstream:/data/jetstream
+      - ./config/nats/nats-server.conf:/etc/nats/nats-server.conf
+      - ./data/nats:/data
     ports:
       - "4222:4222" # for clients - port forwarded from router
       - "6222:6222" # routing port for clustering
