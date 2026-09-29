@@ -22,7 +22,7 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 ## Rollout (gateway)
 
 - [x] `docker compose stop nats` — agent
-- [ ] `sudo mv 'data/nats/jetstream/jetstream/$G' data/nats/jetstream/ && sudo rmdir data/nats/jetstream/jetstream` — Daniel
+- [x] `sudo mv 'data/nats/jetstream/jetstream/$G' data/nats/jetstream/ && sudo rmdir data/nats/jetstream/jetstream` — Daniel
 - [ ] `git pull`, `docker compose up -d --force-recreate nats` — agent
 
 ## Checks
