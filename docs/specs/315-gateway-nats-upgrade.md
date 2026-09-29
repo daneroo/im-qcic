@@ -43,5 +43,5 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 
 ## Result
 
-- Dark 03:59–04:09 UTC. Pump (postgres) missed 533 samples, caught up from MySQL; MySQL lost 2 samples all day.
+- Dark 03:59–04:09 UTC. Pump (postgres) missed 533 samples, caught up from MySQL. No data lost.
 - Leftover: container named `8bfcd30f4390_gateway-nats-1`; next `--force-recreate nats` fixes it.
