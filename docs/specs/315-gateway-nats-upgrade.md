@@ -30,9 +30,9 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 - [x] `/varz`: 2.15.0, websocket 9222, JetStream store `/data/jetstream`
 - [x] `/connz`: capture.ted1k, subscribe.ted1k, natsql, scrobblecast ×3, scast-bridge-qcic-syno
 - [x] `watts: N` on `im.qcic.heartbeat`
-- [ ] `scrobblecastDigest`: old messages kept, new digest arrives — 858 kept, both consumers kept; new digest pending
+- [x] `scrobblecastDigest`: old messages kept, new digest arrives — 858 kept, both consumers kept; new digest 04:13
 - [x] `natsql.dl.imetrical.com/health` green
-- [ ] close #313 and #315
+- [x] close #313 and #315
 
 ## Rollback (gateway), if a check fails
 
@@ -40,3 +40,8 @@ Data layout moves from `data/nats/jetstream/jetstream/$G` (old nested mount) to
 - [ ] `cd ~/Code/iMetrical/im-qcic/infra/gateway && sudo rm -rf data/nats && sudo tar -xzf ~/gateway-data-pre-315.tgz data/nats` (practice restore to /tmp verified) — Daniel
 - [ ] `git checkout 1b665c91`, `docker compose up -d --force-recreate nats` — agent
 - [ ] assess; revert on `main` here
+
+## Result
+
+- Dark 03:59–04:09 UTC. Pump (postgres) missed 533 samples, caught up from MySQL; MySQL lost 2 samples all day.
+- Leftover: container named `8bfcd30f4390_gateway-nats-1`; next `--force-recreate nats` fixes it.
