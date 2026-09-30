@@ -1,6 +1,6 @@
 # Context Map
 
-**Over the Fence**: this repo's inventory process. Every directory starts as "Unclassified" — on our side of the fence. As each one gets reviewed, it's thrown over to either **Live** (still relevant, gets its own `CONTEXT.md`) or **Deprecated** (no longer relevant, noted with a reason, no `CONTEXT.md`). Progress is visible as the Unclassified list shrinks.
+**Over the Fence**: this repo's inventory process. Every directory starts as "Unclassified" — on our side of the fence. As each one gets reviewed, it's thrown over to either **Live** (still relevant, gets its own `GLOSSARY.md`) or **Deprecated** (no longer relevant, noted with a reason, no `GLOSSARY.md`). Progress is visible as the Unclassified list shrinks.
 
 ## DNS subdomain convention (`*.imetrical.com`)
 
@@ -8,7 +8,7 @@
 - **`.v.`** — Vercel (e.g. Site)
 - **`.dl.`** — the homelab, as seen from outside; short for Daniel Lauzon's initials, not a per-provider tag like the others
 - **`.ts.`** — Tailscale
-- **`.n.`** — **not Netlify.** Leftover from **zeit/now** (`now.json`, v1/v2 configs) — "n" stood for "now," zeit's product name before it renamed to Vercel (2020). Confirmed via git history: the switch to `.v.` for this domain happened later, on 2022-02-28 (commit `e72cabf2`, `infra/gateway/Makefile`'s `web` target). That commit updated the Makefile but not `packages/site/vercel.json`'s alias — which is exactly why that file is still stale (see Site's CONTEXT.md). See Cloud accounts.
+- **`.n.`** — **not Netlify.** Leftover from **zeit/now** (`now.json`, v1/v2 configs) — "n" stood for "now," zeit's product name before it renamed to Vercel (2020). Confirmed via git history: the switch to `.v.` for this domain happened later, on 2022-02-28 (commit `e72cabf2`, `infra/gateway/Makefile`'s `web` target). That commit updated the Makefile but not `packages/site/vercel.json`'s alias — which is exactly why that file is still stale (see Site's GLOSSARY.md). See Cloud accounts.
 
 ## Host naming convention
 
@@ -47,9 +47,9 @@ Cuts across almost every context above — worth tracking as its own axis rather
 
 ## v2: Bun monorepo migration (in progress)
 
-Site and Status — the only two packages with real daily use — are being ported into a new self-contained `v2/` subtree (Bun workspaces, structured after `/Users/daniel/Code/iMetrical/ai-garden/prosodio`), decoupled from the existing lerna/pnpm root. See [ADR-0002](./docs/adr/0002-v2-bun-monorepo-subtree.md) for why a subtree, and Status's CONTEXT.md for the full port plan.
+Site and Status — the only two packages with real daily use — are being ported into a new self-contained `v2/` subtree (Bun workspaces, structured after `/Users/daniel/Code/iMetrical/ai-garden/prosodio`), decoupled from the existing lerna/pnpm root. See [ADR-0002](./docs/adr/0002-v2-bun-monorepo-subtree.md) for why a subtree, and Status's GLOSSARY.md for the full port plan.
 
-`v2/` has since grown past those two: `apps/web` (TanStack Start dashboard), `apps/ted1k-derive` (polls ted1k's MySQL, publishes into NATS KV) and `apps/scast-bridge` (scrobblecast digests onto the bus) all live there now. `v2/` is expected to become the repo, so its [CONTEXT.md](./v2/CONTEXT.md) holds the monitoring vocabulary for the whole project rather than per-app glossaries.
+`v2/` has since grown past those two: `apps/web` (TanStack Start dashboard), `apps/ted1k-derive` (polls ted1k's MySQL, publishes into NATS KV) and `apps/scast-bridge` (scrobblecast digests onto the bus) all live there now. `v2/` is expected to become the repo, so its [GLOSSARY.md](./v2/GLOSSARY.md) holds the monitoring vocabulary for the whole project rather than per-app glossaries.
 
 - **Status** — Phase 1 port done (#224–#227): faithful/behavior-frozen lift to TypeScript + ESM + Hono, running on Bun, Dockerized. Not yet wired into `infra/gateway`'s real deploy — that cutover is a deliberately separate, later decision.
 - **Site** — deliberately out of scope here; needs its own `/wayfinder` session (framework, styling, whether it still proxies state through Natsql per ADR-0001, and how central NATS should be to the client — a decision that could retroactively make Status's phase-2 evolution moot).
@@ -58,25 +58,25 @@ Site and Status — the only two packages with real daily use — are being port
 
 ## Live contexts
 
-(confirmed active — has its own CONTEXT.md)
+(confirmed active — has its own GLOSSARY.md)
 
-- [QCIC (v2)](./v2/CONTEXT.md) — the Bun workspace rebuilding the repo; owns the monitoring vocabulary (continuity, convergence, states of knowledge)
-- [Gateway](./infra/gateway/CONTEXT.md) — legacy always-up Ubuntu VM hosting caddy, nats, natsql, status; kept for the legacy NATS server and public ingress (the `.dl` sites)
+- [QCIC (v2)](./v2/GLOSSARY.md) — the Bun workspace rebuilding the repo; owns the monitoring vocabulary (continuity, convergence, states of knowledge)
+- [Gateway](./infra/gateway/GLOSSARY.md) — legacy always-up Ubuntu VM hosting caddy, nats, natsql, status; kept for the legacy NATS server and public ingress (the `.dl` sites)
 - [Qcic-core](./infra/qcic-core/README.md) — the QCIC v2 stack (NATS, health, ted1k-derive, scast-bridge, Caddy) as docker compose, plus the NixOS flake for its host(s); runs on Qcic-syno. Background: [docs/virtualization-guide.md](./docs/virtualization-guide.md)
-- [Hass](./infra/hass/CONTEXT.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
-- [Jellyfin](./infra/jellyfin/CONTEXT.md) — media server: production on Syno, dev instance on Galois
-- [Cloudrun](./cloudrun/CONTEXT.md) — deployed "myip" service on Google Cloud Run, at myip.g.imetrical.com
-- [Site](./packages/site/CONTEXT.md) — Gatsby static site on Vercel, actively used daily, not rebuilt since 2022-03-01; config still has a leftover Netlify-era alias
-- [Status](./packages/status/CONTEXT.md) — health-check service (tedcheck, logcheck), built and run by Gateway; first package being ported to `v2/` (see below)
-- [Natsql](./packages/natsql/CONTEXT.md) — Daniel's own GraphQL-to-NATS subscription bridge; the repo's origin concept, built and run by Gateway
-- [Mail](./mail/CONTEXT.md) — Mailgun notification experiment; content still wanted, slated to move under `scripts/`
-- [Nats (client)](./nats/CONTEXT.md) — dev/test client for a NATS server; content still wanted, slated to move under `scripts/`
-- [Design/html-react](./design/html-react/CONTEXT.md) — active UI prototype for the QCIC status dashboard (Heartbeat/Cast Synch/Ted1k cards)
-- [Network/giga-router](./network/giga-router/CONTEXT.md) — DHCP/device extraction tool for the current Bell Giga Hub router
-- [Network/UniFi-Journey-2025](./network/UniFi-Journey-2025/CONTEXT.md) — active 2025 migration to UniFi/UCG-Fiber, 10GbE backbone upgrade
-- [Packages/myip](./packages/myip/CONTEXT.md) — undeployed rewrite meant to replace Cloudrun's "myip" service
-- [Scripts](./scripts/CONTEXT.md) — active home for health-check/status-reporting script experiments; destination for Mail and Nats (client)
-- [Fio](./fio/CONTEXT.md) — disk I/O characterization scripts, used to compare disk/filesystem performance across hosts
+- [Hass](./infra/hass/GLOSSARY.md) — Home Assistant OS VM on Hilbert, controls TP-Link Kasa smart plugs
+- [Jellyfin](./infra/jellyfin/GLOSSARY.md) — media server: production on Syno, dev instance on Galois
+- [Cloudrun](./cloudrun/GLOSSARY.md) — deployed "myip" service on Google Cloud Run, at myip.g.imetrical.com
+- [Site](./packages/site/GLOSSARY.md) — Gatsby static site on Vercel, actively used daily, not rebuilt since 2022-03-01; config still has a leftover Netlify-era alias
+- [Status](./packages/status/GLOSSARY.md) — health-check service (tedcheck, logcheck), built and run by Gateway; first package being ported to `v2/` (see below)
+- [Natsql](./packages/natsql/GLOSSARY.md) — Daniel's own GraphQL-to-NATS subscription bridge; the repo's origin concept, built and run by Gateway
+- [Mail](./mail/GLOSSARY.md) — Mailgun notification experiment; content still wanted, slated to move under `scripts/`
+- [Nats (client)](./nats/GLOSSARY.md) — dev/test client for a NATS server; content still wanted, slated to move under `scripts/`
+- [Design/html-react](./design/html-react/GLOSSARY.md) — active UI prototype for the QCIC status dashboard (Heartbeat/Cast Synch/Ted1k cards)
+- [Network/giga-router](./network/giga-router/GLOSSARY.md) — DHCP/device extraction tool for the current Bell Giga Hub router
+- [Network/UniFi-Journey-2025](./network/UniFi-Journey-2025/GLOSSARY.md) — active 2025 migration to UniFi/UCG-Fiber, 10GbE backbone upgrade
+- [Packages/myip](./packages/myip/GLOSSARY.md) — undeployed rewrite meant to replace Cloudrun's "myip" service
+- [Scripts](./scripts/GLOSSARY.md) — active home for health-check/status-reporting script experiments; destination for Mail and Nats (client)
+- [Fio](./fio/GLOSSARY.md) — disk I/O characterization scripts, used to compare disk/filesystem performance across hosts
 
 ## Relationships
 
@@ -96,7 +96,7 @@ Site and Status — the only two packages with real daily use — are being port
 
 ## Deprecated / dead
 
-(confirmed no longer relevant — reason noted, no CONTEXT.md)
+(confirmed no longer relevant — reason noted, no GLOSSARY.md)
 
 - **`events/`** — Serverless.com "Event Gateway"; the product itself is discontinued. Credentials referenced "shannon," tied to fully-dead tech, not worth tracking further.
 - **`k8s/`** — abandoned early (2017-18) GKE cluster experiments; superseded by later, unrelated Talos/k3s thinking mentioned in `infra/gateway/README.md`.
@@ -111,7 +111,7 @@ Site and Status — the only two packages with real daily use — are being port
 
 ## Missing
 
-(gaps surfaced during inventory — a real thing exists, but has no directory/CONTEXT.md yet)
+(gaps surfaced during inventory — a real thing exists, but has no directory/GLOSSARY.md yet)
 
 - **Syno** — the Synology NAS host itself (runs the `Gateway`, `Pxbk` and `qcic-syno` VMs, plus `Jellyfin` via Container Manager; its Ubuntu predecessor `gateway2` was deleted 2026-09-25). No directory yet; candidate location `infra/syno/`.
 - **Pxbk** — Proxmox Backup Server VM on Syno. No deployment record in this repo at all; origin/config unknown.

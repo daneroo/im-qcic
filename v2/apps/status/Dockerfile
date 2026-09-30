@@ -2,7 +2,7 @@
 #
 # Build context MUST be the v2/ workspace root, not this apps/status/
 # directory - Bun needs the root package.json/bun.lock to resolve
-# workspace:* links (see infra/gateway/CONTEXT.md for the full note).
+# workspace:* links (see infra/gateway/GLOSSARY.md for the full note).
 # Build from within v2/:
 #   docker build -f apps/status/Dockerfile -t qcic-status:latest .
 #

@@ -2,7 +2,7 @@
 #
 # Build context MUST be the v2/ workspace root, not this apps/scast-bridge/
 # directory - Bun needs the root package.json/bun.lock to resolve
-# workspace:* links and catalog:* references (see infra/gateway/CONTEXT.md
+# workspace:* links and catalog:* references (see infra/gateway/GLOSSARY.md
 # for the full note). Build from within v2/:
 #   docker build -f apps/scast-bridge/Dockerfile -t qcic-scast-bridge:latest .
 #

@@ -8,7 +8,7 @@ comments and verified nowhere. See
 [the fold-back spec](../../../../../docs/specs/frontend-design-fold-back.md).
 
 Pure and framework-free: strings in, strings out, no React, no NATS. The
-vocabulary is [`v2/CONTEXT.md`](../../../../CONTEXT.md)'s — **missing**,
+vocabulary is [`v2/GLOSSARY.md`](../../../../GLOSSARY.md)'s — **missing**,
 **coverage**, **reporting lag**, **scrape elapsed**.
 
 ## Module shape

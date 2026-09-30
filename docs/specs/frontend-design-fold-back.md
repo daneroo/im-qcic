@@ -26,7 +26,7 @@ Grafana.** The prototype drifted across this line once already.
 
 ## Vocabulary
 
-[`v2/CONTEXT.md`](../../v2/CONTEXT.md) is now the glossary for the whole project
+[`v2/GLOSSARY.md`](../../v2/GLOSSARY.md) is now the glossary for the whole project
 and was written from the prototype's working glossary during the design session
 that produced this spec. Use its terms; don't drift to the words listed under
 `_Avoid_`.
@@ -52,7 +52,7 @@ Fold each derivation file into the subject slice that owns it — `src/ted1k/`,
 `src/scast/`, `src/network/`. The `prototype/derive/` folder does not survive.
 
 Those slices already exist with their own tests and READMEs, and they cut by
-_subject_, the same axis `CONTEXT.md` organises vocabulary along. A `derive/`
+_subject_, the same axis `GLOSSARY.md` organises vocabulary along. A `derive/`
 folder groups by technical role instead, which files scast's convergence model next
 to ted1k's boundary correction on the grounds that both are "computed" — not a
 relationship.
@@ -113,7 +113,7 @@ one:
 routing through the canonical rule.
 
 Lands in `src/format/`, the one thing genuinely shared by both subjects, and the
-piece that most deserves tests: its rules are stated in prose in `CONTEXT.md` and
+piece that most deserves tests: its rules are stated in prose in `GLOSSARY.md` and
 verified nowhere. Also covers `formatCoverage`, whose **truncate-never-round**
 behaviour is a domain rule — a month at 99.8611% must not print `100%`, which is
 reserved for nothing missing at all.
@@ -206,7 +206,7 @@ allowed; blending them silently is not.
 `ted → mysql → derive → kv → browser`, each link carrying its own fact and dimming
 when its substrate is down. Nodes are drawn plainly.
 
-This is **a visual, not a model.** Nothing about it enters `CONTEXT.md`. It shows
+This is **a visual, not a model.** Nothing about it enters `GLOSSARY.md`. It shows
 where the numbers come from and it looks good; that is the whole claim.
 
 ### Never lands

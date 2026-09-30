@@ -5,7 +5,7 @@ An active (2025) staged migration plan from the Bell Giga Hub to Ubiquiti UniFi 
 ## Language
 
 **Boole**:
-A new host — the UCG-Fiber (UniFi Cloud Gateway Fiber), replacing the Giga Hub as the homelab's router. Continues the household's mathematician-naming convention (see `CONTEXT-MAP.md`). Credentials in 1Password under "boole (UCG-Fiber)".
+A new host — the UCG-Fiber (UniFi Cloud Gateway Fiber), replacing the Giga Hub as the homelab's router. Continues the household's mathematician-naming convention (see `GLOSSARY-MAP.md`). Credentials in 1Password under "boole (UCG-Fiber)".
 
 **UCG-Fiber**:
 The specific Ubiquiti router model being migrated to. Provides a built-in 4-port 2.5GbE managed switch (one PoE+) plus 3x 10GbE-capable LAN ports.

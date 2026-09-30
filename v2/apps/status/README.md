@@ -6,7 +6,7 @@ behavior-frozen port of the repo root's `packages/status` onto Bun/Hono/TS. See
 [docs/adr](../../../docs/adr/) for why this exists.
 
 Not yet wired into `infra/gateway`'s real deploy — see
-[../../../packages/status/CONTEXT.md](../../../packages/status/CONTEXT.md) for
+[../../../packages/status/GLOSSARY.md](../../../packages/status/GLOSSARY.md) for
 cutover status.
 
 ## Local dev

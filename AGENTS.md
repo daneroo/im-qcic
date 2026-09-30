@@ -10,4 +10,4 @@ Default five canonical labels (needs-triage, needs-info, ready-for-agent, ready-
 
 ## Domain docs
 
-Multi-context layout (root `CONTEXT-MAP.md` pointing to per-package `CONTEXT.md` files, one per `packages/*`). See `docs/agents/domain.md`.
+Multi-context layout (root `GLOSSARY-MAP.md` pointing to per-package `GLOSSARY.md` files, one per `packages/*`). See `docs/agents/domain.md`.

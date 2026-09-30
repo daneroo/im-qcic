@@ -107,4 +107,4 @@ concept existed, since credentials are infrastructure the workspace depends on,
 not app source.)
 
 None of this is wired into `infra/gateway`'s real deploy yet — see each app's
-own `CONTEXT.md` (under the repo root's `packages/`) for cutover status.
+own `GLOSSARY.md` (under the repo root's `packages/`) for cutover status.

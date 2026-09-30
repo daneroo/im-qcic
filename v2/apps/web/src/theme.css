@@ -25,7 +25,7 @@
 
    `--qc-partial` must read as UNKNOWN — never as bad. It marks a PARTIAL
    bucket: one clipped by a rolling window, opening or still in progress.
-   CONTEXT.md's other state of knowledge, UNVERIFIABLE — a reading whose
+   GLOSSARY.md's other state of knowledge, UNVERIFIABLE — a reading whose
    substrate is down — has no token of its own yet and borrows this one. They
    are drawn alike because both mean "not knowable", but they are different
    claims, and a page that needs to tell them apart will need a second token.
