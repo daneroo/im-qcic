@@ -33,7 +33,7 @@
   "dependencies": {
     "@fastify/forwarded": "^1.0.0",
     "close-with-grace": "^1.1.0",
-    "fastify": "^3.27.2",
+    "fastify": "^5.12.5",
     "fastify-cors": "^6.0.3",
     "ulid": "^2.3.0"
   },
